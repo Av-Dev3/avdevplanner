@@ -1,4 +1,5 @@
 const form = document.getElementById('task-form');
+
 if (form) {
   const textInput = document.getElementById('task-text');
   const dateInput = document.getElementById('task-date');
@@ -41,12 +42,13 @@ if (container) {
   }
 
   function formatTime(timeStr) {
-    if (!timeStr) return '';
-    const [hour, minute] = timeStr.split(":").map(Number);
-    const h = hour;
-    const ampm = h >= 12 ? "PM" : "AM";
-    const hour12 = h % 12 === 0 ? 12 : h % 12;
-    return `${hour12}:${String(minute).padStart(2, '0')} ${ampm}`;
+    if (!timeStr) return "";
+    const [hourStr, minuteStr] = timeStr.split(":");
+    const hour = parseInt(hourStr, 10);
+    const minute = parseInt(minuteStr, 10);
+    const ampm = hour >= 12 ? "PM" : "AM";
+    const hour12 = hour % 12 === 0 ? 12 : hour % 12;
+    return `${hour12}:${minute.toString().padStart(2, '0')} ${ampm}`;
   }
 
   function formatDate(dateStr) {
@@ -63,29 +65,19 @@ if (container) {
     return `${month} ${day}${suffix}, ${year}`;
   }
 
-  function getLocalDateString(dateStr) {
-    const local = new Date(dateStr + 'T00:00');
-    return local.toISOString().split('T')[0];
-  }
-
-  function getTodayDateString() {
-    const now = new Date();
-    const offset = now.getTimezoneOffset() * 60000;
-    const localDate = new Date(now - offset);
-    return localDate.toISOString().split('T')[0];
-  }
-
   function showDateTime() {
     const now = new Date();
-    const offset = now.getTimezoneOffset() * 60000;
-    const localNow = new Date(now - offset);
-    const formattedDate = formatDate(localNow.toISOString().split("T")[0]);
-    const hours = localNow.getHours().toString().padStart(2, '0');
-    const minutes = localNow.getMinutes().toString().padStart(2, '0');
-    const formattedTime = formatTime(`${hours}:${minutes}`);
-
     const dateEl = document.getElementById('current-date');
     const timeEl = document.getElementById('current-time');
+
+    const formattedDate = formatDate(now.toISOString().split("T")[0]);
+
+    const hour = now.getHours();
+    const minute = now.getMinutes();
+    const ampm = hour >= 12 ? "PM" : "AM";
+    const hour12 = hour % 12 === 0 ? 12 : hour % 12;
+    const formattedTime = `${hour12}:${minute.toString().padStart(2, '0')} ${ampm}`;
+
     if (dateEl && timeEl) {
       dateEl.textContent = formattedDate;
       timeEl.textContent = formattedTime;
@@ -97,13 +89,13 @@ if (container) {
     setInterval(showDateTime, 60000);
   }
 
+  // Group tasks by date
   const tasksByDate = {};
   taskList.forEach(task => {
-    const key = getLocalDateString(task.date);
-    if (!tasksByDate[key]) {
-      tasksByDate[key] = [];
+    if (!tasksByDate[task.date]) {
+      tasksByDate[task.date] = [];
     }
-    tasksByDate[key].push(task);
+    tasksByDate[task.date].push(task);
   });
 
   const sortedDates = Object.keys(tasksByDate).sort();
