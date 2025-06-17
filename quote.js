@@ -1,10 +1,10 @@
 async function loadQuote() {
   try {
-    const response = await fetch('https://favqs.com/api/qotd');
+    const response = await fetch('/.netlify/functions/getQuote');
     const data = await response.json();
 
-    const quote = data.quote.body;
-    const author = data.quote.author;
+    const quote = data.content;
+    const author = data.author;
 
     document.getElementById('quote-text').textContent = `"${quote}"`;
     document.getElementById('quote-author').textContent = `– ${author}`;
