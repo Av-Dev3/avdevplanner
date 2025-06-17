@@ -23,7 +23,7 @@ tasks.forEach(task => {
   taskMap[task.date].push(task);
 });
 
-// Format date as "Month 16th, 2025"
+// Format date (e.g., June 16th, 2025)
 function formatDate(dateStr) {
   const dateObj = new Date(dateStr);
   const day = dateObj.getDate();
@@ -38,9 +38,20 @@ function formatDate(dateStr) {
   return `${month} ${day}${suffix}, ${year}`;
 }
 
-// Build day cards
+// Create ordered list of day objects, with today first
+const dayOrder = [];
 for (let day = 1; day <= daysInMonth; day++) {
   const date = new Date(year, month, day);
+  const isoDate = date.toISOString().split("T")[0];
+  if (isoDate === today.toISOString().split("T")[0]) {
+    dayOrder.unshift(date); // Today at the top
+  } else {
+    dayOrder.push(date);
+  }
+}
+
+// Create a card for each day
+dayOrder.forEach(date => {
   const isoDate = date.toISOString().split("T")[0];
 
   const dayCard = document.createElement('div');
@@ -51,7 +62,7 @@ for (let day = 1; day <= daysInMonth; day++) {
   dayCard.appendChild(heading);
 
   if (taskMap[isoDate]) {
-    // Make day clickable if it has tasks
+    // Make the card clickable if tasks exist
     dayCard.style.cursor = "pointer";
     dayCard.addEventListener('click', () => {
       localStorage.setItem('selectedDate', isoDate);
@@ -68,11 +79,11 @@ for (let day = 1; day <= daysInMonth; day++) {
       dayCard.appendChild(taskEl);
     });
   } else {
-    const empty = document.createElement('p');
-    empty.textContent = "No tasks";
-    empty.style.opacity = "0.5";
-    dayCard.appendChild(empty);
+    const noTask = document.createElement('p');
+    noTask.textContent = "No tasks";
+    noTask.style.opacity = "0.5";
+    dayCard.appendChild(noTask);
   }
 
   scheduleContainer.appendChild(dayCard);
-}
+});
