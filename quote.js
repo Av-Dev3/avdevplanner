@@ -1,13 +1,10 @@
 async function loadQuote() {
   try {
-    const proxyUrl = 'https://corsproxy.io/?';
-    const targetUrl = 'https://api.quotable.io/random?tags=inspirational';
-
-    const response = await fetch(proxyUrl + encodeURIComponent(targetUrl));
+    const response = await fetch('https://favqs.com/api/qotd');
     const data = await response.json();
 
-    const quote = data.content;
-    const author = data.author;
+    const quote = data.quote.body;
+    const author = data.quote.author;
 
     document.getElementById('quote-text').textContent = `"${quote}"`;
     document.getElementById('quote-author').textContent = `– ${author}`;
