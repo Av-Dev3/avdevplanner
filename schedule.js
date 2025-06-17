@@ -32,8 +32,7 @@ function formatDate(dateStr) {
 
 // Show today + next 29 days
 for (let i = 0; i < 30; i++) {
-  const date = new Date();
-  date.setDate(today.getDate() + i);
+  const date = new Date(today.getFullYear(), today.getMonth(), today.getDate() + i);
   const isoDate = date.toISOString().split("T")[0];
 
   const dayCard = document.createElement('div');
