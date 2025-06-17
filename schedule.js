@@ -1,11 +1,5 @@
 const scheduleContainer = document.getElementById('schedule-container');
 const today = new Date();
-const year = today.getFullYear();
-const month = today.getMonth(); // 0-indexed
-
-const monthStart = new Date(year, month, 1);
-const monthEnd = new Date(year, month + 1, 0);
-const daysInMonth = monthEnd.getDate();
 
 // Load tasks from localStorage
 let tasks = [];
@@ -23,35 +17,23 @@ tasks.forEach(task => {
   taskMap[task.date].push(task);
 });
 
-// Format date (e.g., June 16th, 2025)
+// Format readable date like June 16th, 2025
 function formatDate(dateStr) {
   const dateObj = new Date(dateStr);
   const day = dateObj.getDate();
   const month = dateObj.toLocaleString("default", { month: "long" });
   const year = dateObj.getFullYear();
-
   const suffix =
     day % 10 === 1 && day !== 11 ? "st" :
     day % 10 === 2 && day !== 12 ? "nd" :
     day % 10 === 3 && day !== 13 ? "rd" : "th";
-
   return `${month} ${day}${suffix}, ${year}`;
 }
 
-// Create ordered list of day objects, with today first
-const dayOrder = [];
-for (let day = 1; day <= daysInMonth; day++) {
-  const date = new Date(year, month, day);
-  const isoDate = date.toISOString().split("T")[0];
-  if (isoDate === today.toISOString().split("T")[0]) {
-    dayOrder.unshift(date); // Today at the top
-  } else {
-    dayOrder.push(date);
-  }
-}
-
-// Create a card for each day
-dayOrder.forEach(date => {
+// Show today + next 29 days
+for (let i = 0; i < 30; i++) {
+  const date = new Date();
+  date.setDate(today.getDate() + i);
   const isoDate = date.toISOString().split("T")[0];
 
   const dayCard = document.createElement('div');
@@ -62,7 +44,6 @@ dayOrder.forEach(date => {
   dayCard.appendChild(heading);
 
   if (taskMap[isoDate]) {
-    // Make the card clickable if tasks exist
     dayCard.style.cursor = "pointer";
     dayCard.addEventListener('click', () => {
       localStorage.setItem('selectedDate', isoDate);
@@ -86,4 +67,4 @@ dayOrder.forEach(date => {
   }
 
   scheduleContainer.appendChild(dayCard);
-});
+}
