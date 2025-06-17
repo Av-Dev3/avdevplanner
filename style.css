@@ -1,0 +1,259 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+
+
+.head {
+  background-color: #00ffff;
+  border: 2px solid #ff00ff;
+  padding: 5px;
+}
+
+
+
+ul {
+  display: flex;
+  gap: 6px;
+  list-style-type: none;
+  justify-content: center;
+  align-items: center;
+  padding-right: 5px;
+}
+
+
+h1 {
+  flex: 1;
+  color: #ff00ff;
+  font-weight: 900;
+  font-family: monospace;
+}
+
+li {
+  border: 2px solid #ff00ff;
+  padding: 6px 8px;
+}
+
+li:hover {
+  background-color: #ff00ff;
+  border: 2px solid #00ffff;
+  color: #00ffff;
+}
+
+li a {
+  text-decoration: none;
+  color: #ff00ff;
+  font-weight: 600;
+  font-family: monospace;
+  font-size: 0.9rem;
+}
+
+li a:hover {
+  color: #00ffff;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #00ffff;
+  width: 100%;
+  max-width: 250px;
+  margin: 0 auto;
+  border: 2px solid #ff00ff;
+  border-radius: 8px;
+  gap: 5px;
+  margin-top: 10px;
+}
+
+label {
+  color: #ff00ff;
+  font-weight: 600;
+}
+
+input {
+  width: 100%;
+  max-width: 200px;
+  border-radius: 5px;
+  border-color: #ff00ff;
+  color: #ff00ff;
+}
+
+
+button {
+  padding: 6px 6px;
+  margin-top: 6px;
+  margin-bottom: 6px;
+  border-color: #ff00ff;
+  border-radius: 5px;
+  background-color: #00ffff;
+  color: #ff00ff;
+  font-weight: 600;
+}
+
+button:hover {
+  background-color: #ff00ff;
+  border-color: #00ffff;
+  color: #00ffff;
+}
+
+#datetime-bar {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+#current-date {
+  font-size: 20px;
+  font-weight: 900;
+  font-family: monospace;
+}
+
+#current-time {
+  font-size: 20px;
+  font-weight: 900;
+  font-family: monospace;
+}
+
+#task-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding: 1rem;
+}
+
+.task-card {
+  margin-bottom: 5px;
+  background-color: #00ffff;
+  border: 2px solid #ff00ff;
+  box-shadow: 0 2px 6px #ff00ff;
+  border-radius: 6px;
+}
+
+.calendar-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-weight: bold;
+  padding: 10px 0;
+  background-color: #00ffff;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.calendar-day-label {
+  padding: 5px;
+  font-size: 14px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 10px;
+}
+
+.calendar-cell {
+  min-height: 100px;
+  max-height: 120px;
+  background-color: #00ffff;
+  border-radius: 8px;
+  padding: 8px;
+  box-shadow: 0 2px 5px #ff00ff;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+
+.calendar-cell::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
+.calendar-cell strong {
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.calendar-cell.empty {
+  background: transparent;
+  box-shadow: none;
+}
+
+.calendar-cell p {
+  margin: 2px 0 ;
+  font-size: 13px;
+}
+
+#task-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 1rem;
+}
+
+/* Each group (per day) stacks: heading then task grid */
+.task-date-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Date title */
+.task-date-heading {
+  font-size: 1.2rem;
+  font-weight: 800;
+  font-family: monospace;
+  color: #ff00ff;
+  background-color: #00ffff;
+  padding: 6px 10px;
+  border-left: 4px solid #ff00ff;
+  border-radius: 4px;
+}
+
+.task-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+#quote-box {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background-color: #00ffff;
+  border: 2px solid #ff00ff;
+  border-radius: 8px;
+  text-align: center;
+  font-family: 'Monospace';
+}
+
+#quote-text {
+  font-size: 1.2rem;
+  color: #ff00ff;
+  margin-bottom: 0.5rem;
+}
+
+#quote-author {
+  font-size: 1rem;
+  color: #ff00ff;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .calendar-header, 
+  .calendar-grid {
+    grid-template-columns: repeat(7, 1fr);
+    font-size: 12px;
+  }
+
+  .calendar-cell {
+    min-height: 80px;
+    padding: 6px;
+  }
+
+  .calendar-cell p {
+    font-size: 12px;
+  }
+}

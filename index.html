@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/style.css">
+  <title>Document</title>
+</head>
+<body>
+  <header class="head">
+    <nav>
+      <ul>
+        <h1>The Plan</h1>
+        <li><a href="/index.html">Home</a></li>
+        <li><a href="/tasks.html">Tasks</a></li>
+        <li><a href="/schedule.html">Schedule</a></li>
+      </ul>
+    </nav>
+  </header>
+<form id="task-form">
+  <label for="task-text">Task</label>
+  <input type="text" id="task-text" required>
+
+  <label for="task-date">Date</label>
+  <input type="date" id="task-date" required>
+
+  <label for="task-time">Time</label>
+  <input type="time" id="task-time" required>
+
+  <button type="submit">Add Task</button>
+</form>
+
+  <div id="quote-box">
+  <p id="quote-text">“Loading…“</p>
+  <p id="quote-author"></p>
+</div>
+
+  <script src="/script.js"></script>
+  <script src="/quote.js"></script>
+</body>
+</html>
