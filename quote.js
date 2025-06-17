@@ -1,9 +1,9 @@
 async function loadQuote() {
   try {
-    const response = await fetch('https://api.themotivate365.com/stoic-quote');
+    const response = await fetch('https://api.quotable.io/random');
     const data = await response.json();
 
-    const quote = data.quote;
+    const quote = data.content;
     const author = data.author;
 
     document.getElementById('quote-text').textContent = `"${quote}"`;
