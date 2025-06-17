@@ -30,26 +30,29 @@ if (form) {
 const container = document.getElementById('task-container');
 
 if (container) {
-  const rawData = localStorage.getItem('tasks');
-  let taskList = [];
+  function getTodayDateString() {
+    const now = new Date();
+    const offset = now.getTimezoneOffset() * 60000;
+    const localDate = new Date(now - offset);
+    return localDate.toISOString().split('T')[0];
+  }
 
-  try {
-    taskList = JSON.parse(rawData) || [];
-  } catch (err) {
-    console.error("Failed to parse tasks from localStorage", err);
-    taskList = [];
+  function getLocalDateString(dateStr) {
+    const local = new Date(dateStr + 'T00:00');
+    return local.toISOString().split('T')[0];
   }
 
   function formatTime(timeStr) {
-    const [hour, minute] = timeStr.split(":");
-    const h = parseInt(hour);
-    const ampm = h >= 12 ? "PM" : "AM";
-    const hour12 = h % 12 === 0 ? 12 : h % 12;
+    if (!timeStr) return '';
+    const [hourStr, minute] = timeStr.split(":");
+    const hour = parseInt(hourStr, 10);
+    const ampm = hour >= 12 ? "PM" : "AM";
+    const hour12 = hour % 12 === 0 ? 12 : hour % 12;
     return `${hour12}:${minute} ${ampm}`;
   }
 
   function formatDate(dateStr) {
-    const dateObj = new Date(dateStr + 'T00:00'); // Force to local midnight
+    const dateObj = new Date(dateStr + 'T00:00');
     const day = dateObj.getDate();
     const month = dateObj.toLocaleString("default", { month: "long" });
     const year = dateObj.getFullYear();
@@ -60,18 +63,6 @@ if (container) {
       day % 10 === 3 && day !== 13 ? "rd" : "th";
 
     return `${month} ${day}${suffix}, ${year}`;
-  }
-
-  function getLocalDateString(dateStr) {
-    const local = new Date(dateStr + 'T00:00');
-    return local.toISOString().split('T')[0];
-  }
-
-  function getTodayDateString() {
-    const now = new Date();
-    const offset = now.getTimezoneOffset() * 60000;
-    const localDate = new Date(now - offset);
-    return localDate.toISOString().split('T')[0];
   }
 
   function showDateTime() {
@@ -92,6 +83,20 @@ if (container) {
   if (document.getElementById('current-date')) {
     showDateTime();
     setInterval(showDateTime, 60000);
+  }
+
+  // Load + clean up past tasks
+  const todayStr = getTodayDateString();
+  let taskList = [];
+  try {
+    const raw = localStorage.getItem('tasks');
+    const parsed = JSON.parse(raw) || [];
+
+    taskList = parsed.filter(task => task.date >= todayStr);
+    localStorage.setItem('tasks', JSON.stringify(taskList));
+  } catch (err) {
+    console.error("Failed to parse tasks from localStorage", err);
+    taskList = [];
   }
 
   const tasksByDate = {};
