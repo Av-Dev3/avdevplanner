@@ -6,7 +6,6 @@ const month = today.getMonth(); // 0-indexed
 const monthStart = new Date(year, month, 1);
 const monthEnd = new Date(year, month + 1, 0);
 const daysInMonth = monthEnd.getDate();
-const startDay = monthStart.getDay(); // 0 = Sunday
 
 // Load tasks from localStorage
 let tasks = [];
@@ -24,46 +23,37 @@ tasks.forEach(task => {
   taskMap[task.date].push(task);
 });
 
-// Create weekday headers
-const weekdayHeader = document.createElement('div');
-weekdayHeader.className = 'calendar-header';
-const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+// Format date as "Month 16th, 2025"
+function formatDate(dateStr) {
+  const dateObj = new Date(dateStr);
+  const day = dateObj.getDate();
+  const month = dateObj.toLocaleString("default", { month: "long" });
+  const year = dateObj.getFullYear();
 
-weekdays.forEach(day => {
-  const dayEl = document.createElement('div');
-  dayEl.className = 'calendar-day-label';
-  dayEl.textContent = day;
-  weekdayHeader.appendChild(dayEl);
-});
-scheduleContainer.appendChild(weekdayHeader);
+  const suffix =
+    day % 10 === 1 && day !== 11 ? "st" :
+    day % 10 === 2 && day !== 12 ? "nd" :
+    day % 10 === 3 && day !== 13 ? "rd" : "th";
 
-// Create the main calendar grid
-const calendarGrid = document.createElement('div');
-calendarGrid.className = 'calendar-grid';
-
-// Add blank cells to align the first day
-for (let i = 0; i < startDay; i++) {
-  const blank = document.createElement('div');
-  blank.className = 'calendar-cell empty';
-  calendarGrid.appendChild(blank);
+  return `${month} ${day}${suffix}, ${year}`;
 }
 
-// Add day cells with tasks
+// Build day cards
 for (let day = 1; day <= daysInMonth; day++) {
-  const cell = document.createElement('div');
-  cell.className = 'calendar-cell';
-
   const date = new Date(year, month, day);
   const isoDate = date.toISOString().split("T")[0];
 
-  const title = document.createElement('strong');
-  title.textContent = day;
-  cell.appendChild(title);
+  const dayCard = document.createElement('div');
+  dayCard.className = 'day-card';
+
+  const heading = document.createElement('h2');
+  heading.textContent = formatDate(isoDate);
+  dayCard.appendChild(heading);
 
   if (taskMap[isoDate]) {
     // Make day clickable if it has tasks
-    cell.style.cursor = "pointer";
-    cell.addEventListener('click', () => {
+    dayCard.style.cursor = "pointer";
+    dayCard.addEventListener('click', () => {
       localStorage.setItem('selectedDate', isoDate);
       window.location.href = 'tasks.html';
     });
@@ -75,11 +65,14 @@ for (let day = 1; day <= daysInMonth; day++) {
         taskEl.style.textDecoration = "line-through";
         taskEl.style.opacity = "0.6";
       }
-      cell.appendChild(taskEl);
+      dayCard.appendChild(taskEl);
     });
+  } else {
+    const empty = document.createElement('p');
+    empty.textContent = "No tasks";
+    empty.style.opacity = "0.5";
+    dayCard.appendChild(empty);
   }
 
-  calendarGrid.appendChild(cell);
+  scheduleContainer.appendChild(dayCard);
 }
-
-scheduleContainer.appendChild(calendarGrid);
