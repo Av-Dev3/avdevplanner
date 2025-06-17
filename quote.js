@@ -1,13 +1,19 @@
 async function loadQuote() {
   try {
-    const res = await fetch('/.netlify/functions/getQuote');
-    const data = await res.json();
+    // Add cache buster to force fresh response
+    const response = await fetch(`/.netlify/functions/getQuote?cb=${Date.now()}`);
+    const data = await response.json();
 
-    document.getElementById('quote-text').textContent = `"${data.quote}"`;
-    document.getElementById('quote-author').textContent = `– ${data.author}`;
+    const quote = data.quote;
+    const author = data.author;
+
+    document.getElementById('quote-text').textContent = `"${quote}"`;
+    document.getElementById('quote-author').textContent = `– ${author}`;
   } catch (err) {
     console.error("Failed to load quote:", err);
+    document.getElementById('quote-text').textContent = "Stay strong. Keep going.";
+    document.getElementById('quote-author').textContent = "";
   }
 }
 
-loadQuote();
+loadQuote(); // Run once on page load
