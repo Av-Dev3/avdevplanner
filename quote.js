@@ -1,16 +1,12 @@
 async function loadQuote() {
   try {
-    const res = await fetch("https://quotes.rest/qod?category=inspire");
+    const res = await fetch('https://quoteslate.vercel.app/api/random');
     const data = await res.json();
-
-    const quote = data.contents.quotes[0].quote;
-    const author = data.contents.quotes[0].author;
-
-    document.getElementById('quote-text').textContent = `"${quote}"`;
-    document.getElementById('quote-author').textContent = `– ${author}`;
+    document.getElementById('quote-text').textContent = `"${data.quoteText}"`;
+    document.getElementById('quote-author').textContent = `– ${data.quoteAuthor}`;
   } catch (err) {
     console.error("Failed to load quote:", err);
-    document.getElementById('quote-text').textContent = "Stay focused. You're doing great.";
+    document.getElementById('quote-text').textContent = "Keep going.";
     document.getElementById('quote-author').textContent = "";
   }
 }
