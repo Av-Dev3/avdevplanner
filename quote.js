@@ -1,11 +1,19 @@
 async function loadQuote() {
   try {
-    const res = await fetch('https://programming-quotes-api.vercel.app/api/random');
-    const data = await res.json();
-    document.getElementById('quote-text').textContent = `"${data.en}"`;
-    document.getElementById('quote-author').textContent = `– ${data.author}`;
+    const proxyUrl = 'https://corsproxy.io/?';
+    const targetUrl = 'https://api.quotable.io/random?tags=inspirational';
+
+    const response = await fetch(proxyUrl + encodeURIComponent(targetUrl));
+    const data = await response.json();
+
+    const quote = data.content;
+    const author = data.author;
+
+    document.getElementById('quote-text').textContent = `"${quote}"`;
+    document.getElementById('quote-author').textContent = `– ${author}`;
   } catch (err) {
-    document.getElementById('quote-text').textContent = "Code and conquer.";
+    console.error("Failed to load quote:", err);
+    document.getElementById('quote-text').textContent = "Keep pushing forward.";
     document.getElementById('quote-author').textContent = "";
   }
 }
