@@ -1,9 +1,13 @@
 async function loadQuote() {
   try {
-    const response = await fetch('https://goquotes-api.herokuapp.com/api/v1/random?count=1');
-    const data = await response.json();
-    const quote = data.quotes[0].text;
-    const author = data.quotes[0].author;
+    const proxyUrl = 'https://api.allorigins.win/get?url=';
+    const targetUrl = encodeURIComponent('https://zenquotes.io/api/random');
+    const response = await fetch(`${proxyUrl}${targetUrl}`);
+    const result = await response.json();
+    const data = JSON.parse(result.contents);
+
+    const quote = data[0].q;
+    const author = data[0].a;
 
     document.getElementById('quote-text').textContent = `"${quote}"`;
     document.getElementById('quote-author').textContent = `– ${author}`;
@@ -13,4 +17,5 @@ async function loadQuote() {
     document.getElementById('quote-author').textContent = "";
   }
 }
+
 loadQuote();
