@@ -1,6 +1,6 @@
 async function loadQuote() {
   try {
-    const proxyUrl = 'https://api.allorigins.win/get?url=';
+    const proxyUrl = 'https://api.allorigins.win/get?disableCache=true&url=';
     const targetUrl = encodeURIComponent('https://zenquotes.io/api/random');
     const response = await fetch(`${proxyUrl}${targetUrl}`);
     const result = await response.json();
