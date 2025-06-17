@@ -1,10 +1,10 @@
 async function loadQuote() {
   try {
-    const response = await fetch('https://zenquotes.io/api/random');
+    const response = await fetch('https://api.quotable.io/random?tags=inspirational');
     const data = await response.json();
 
-    const quote = data[0].q;
-    const author = data[0].a;
+    const quote = data.content;
+    const author = data.author;
 
     document.getElementById('quote-text').textContent = `"${quote}"`;
     document.getElementById('quote-author').textContent = `– ${author}`;
