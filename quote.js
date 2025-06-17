@@ -1,9 +1,9 @@
 async function loadQuote() {
   try {
-    const response = await fetch('https://api.quotable.io/random?tags=inspirational');
+    const response = await fetch('https://api.themotivate365.com/stoic-quote');
     const data = await response.json();
 
-    const quote = data.content;
+    const quote = data.quote;
     const author = data.author;
 
     document.getElementById('quote-text').textContent = `"${quote}"`;
@@ -15,4 +15,4 @@ async function loadQuote() {
   }
 }
 
-loadQuote(); // Runs once on page load
+loadQuote();
