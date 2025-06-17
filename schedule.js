@@ -30,10 +30,20 @@ function formatDate(dateStr) {
   return `${month} ${day}${suffix}, ${year}`;
 }
 
+// Get local date string in YYYY-MM-DD format
+function getLocalDateString(date) {
+  const year = date.getFullYear();
+  const month = `${date.getMonth() + 1}`.padStart(2, '0');
+  const day = `${date.getDate()}`.padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 // Show today + next 29 days
 for (let i = 0; i < 30; i++) {
-  const date = new Date(today.getFullYear(), today.getMonth(), today.getDate() + i);
-  const isoDate = date.toISOString().split("T")[0];
+  const date = new Date();
+  date.setDate(today.getDate() + i);
+
+  const isoDate = getLocalDateString(date);
 
   const dayCard = document.createElement('div');
   dayCard.className = 'day-card';
