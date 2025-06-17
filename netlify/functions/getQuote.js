@@ -1,6 +1,7 @@
 export async function handler(event, context) {
   try {
-    const res = await fetch("https://zenquotes.io/api/random");
+    await new Promise(res => setTimeout(res, 300)); // small delay
+    const res = await fetch(`https://zenquotes.io/api/random?timestamp=${Date.now()}`);
     const data = await res.json();
 
     return {
