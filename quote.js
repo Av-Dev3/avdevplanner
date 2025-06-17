@@ -1,17 +1,12 @@
 async function loadQuote() {
   try {
-    const response = await fetch('/.netlify/functions/getQuote');
-    const data = await response.json();
+    const res = await fetch('/.netlify/functions/getQuote');
+    const data = await res.json();
 
-    const quote = data.content;
-    const author = data.author;
-
-    document.getElementById('quote-text').textContent = `"${quote}"`;
-    document.getElementById('quote-author').textContent = `– ${author}`;
+    document.getElementById('quote-text').textContent = `"${data.quote}"`;
+    document.getElementById('quote-author').textContent = `– ${data.author}`;
   } catch (err) {
     console.error("Failed to load quote:", err);
-    document.getElementById('quote-text').textContent = "Keep pushing forward.";
-    document.getElementById('quote-author').textContent = "";
   }
 }
 
