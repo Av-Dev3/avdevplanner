@@ -1,5 +1,4 @@
 const scheduleContainer = document.getElementById('schedule-container');
-const today = new Date();
 
 // Load tasks from localStorage
 let tasks = [];
@@ -17,9 +16,9 @@ tasks.forEach(task => {
   taskMap[task.date].push(task);
 });
 
-// Format readable date like June 16th, 2025
+// Format readable date like "June 17th, 2025"
 function formatDate(dateStr) {
-  const dateObj = new Date(dateStr);
+  const dateObj = new Date(dateStr + "T00:00:00");
   const day = dateObj.getDate();
   const month = dateObj.toLocaleString("default", { month: "long" });
   const year = dateObj.getFullYear();
@@ -30,7 +29,7 @@ function formatDate(dateStr) {
   return `${month} ${day}${suffix}, ${year}`;
 }
 
-// Get local date string in YYYY-MM-DD format
+// Get local ISO date string (YYYY-MM-DD) reliably
 function getLocalDateString(date) {
   const year = date.getFullYear();
   const month = `${date.getMonth() + 1}`.padStart(2, '0');
@@ -38,28 +37,29 @@ function getLocalDateString(date) {
   return `${year}-${month}-${day}`;
 }
 
-// Show today + next 29 days
+// Create 30 day cards starting from *today* (local)
 for (let i = 0; i < 30; i++) {
   const date = new Date();
-  date.setDate(today.getDate() + i);
+  date.setHours(0, 0, 0, 0); // Force local midnight
+  date.setDate(date.getDate() + i);
 
-  const isoDate = getLocalDateString(date);
+  const localDateStr = getLocalDateString(date);
 
   const dayCard = document.createElement('div');
   dayCard.className = 'day-card';
 
   const heading = document.createElement('h2');
-  heading.textContent = formatDate(isoDate);
+  heading.textContent = formatDate(localDateStr);
   dayCard.appendChild(heading);
 
-  if (taskMap[isoDate]) {
+  if (taskMap[localDateStr]) {
     dayCard.style.cursor = "pointer";
     dayCard.addEventListener('click', () => {
-      localStorage.setItem('selectedDate', isoDate);
+      localStorage.setItem('selectedDate', localDateStr);
       window.location.href = 'tasks.html';
     });
 
-    taskMap[isoDate].forEach(task => {
+    taskMap[localDateStr].forEach(task => {
       const taskEl = document.createElement('p');
       taskEl.textContent = `• ${task.text}`;
       if (task.completed) {
