@@ -92,6 +92,7 @@ if (container) {
     setInterval(showDateTime, 60000);
   }
 
+<<<<<<< HEAD
   const today = new Date().toISOString().split("T")[0];
 
   const futureTasks = taskList.filter(task => task.date >= today);
@@ -100,6 +101,11 @@ if (container) {
 
   const tasksByDate = {};
   futureTasks.forEach(task => {
+=======
+  // Group tasks by date
+  const tasksByDate = {};
+  taskList.forEach(task => {
+>>>>>>> 721ce42955acee6114f40600a13e312fde397ba3
     if (!tasksByDate[task.date]) {
       tasksByDate[task.date] = [];
     }
@@ -157,6 +163,7 @@ if (container) {
     groupDiv.appendChild(grid);
     container.appendChild(groupDiv);
   });
+<<<<<<< HEAD
 
   // Render Task History
   const historyContainer = document.getElementById('task-history');
@@ -203,3 +210,6 @@ if (container) {
     });
   }
 }
+=======
+}
+>>>>>>> 721ce42955acee6114f40600a13e312fde397ba3
