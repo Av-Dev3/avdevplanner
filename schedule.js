@@ -1,12 +1,4 @@
 const scheduleContainer = document.getElementById('schedule-container');
-const today = new Date();
-const year = today.getFullYear();
-const month = today.getMonth(); // 0-indexed
-
-const monthStart = new Date(year, month, 1);
-const monthEnd = new Date(year, month + 1, 0);
-const daysInMonth = monthEnd.getDate();
-const startDay = monthStart.getDay(); // 0 = Sunday
 
 // Load tasks from localStorage
 let tasks = [];
@@ -24,62 +16,64 @@ tasks.forEach(task => {
   taskMap[task.date].push(task);
 });
 
-// Create weekday headers
-const weekdayHeader = document.createElement('div');
-weekdayHeader.className = 'calendar-header';
-const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
-weekdays.forEach(day => {
-  const dayEl = document.createElement('div');
-  dayEl.className = 'calendar-day-label';
-  dayEl.textContent = day;
-  weekdayHeader.appendChild(dayEl);
-});
-scheduleContainer.appendChild(weekdayHeader);
-
-// Create the main calendar grid
-const calendarGrid = document.createElement('div');
-calendarGrid.className = 'calendar-grid';
-
-// Add blank cells to align the first day
-for (let i = 0; i < startDay; i++) {
-  const blank = document.createElement('div');
-  blank.className = 'calendar-cell empty';
-  calendarGrid.appendChild(blank);
+// Format readable date like "June 17th, 2025"
+function formatDate(dateStr) {
+  const dateObj = new Date(dateStr + "T00:00:00");
+  const day = dateObj.getDate();
+  const month = dateObj.toLocaleString("default", { month: "long" });
+  const year = dateObj.getFullYear();
+  const suffix =
+    day % 10 === 1 && day !== 11 ? "st" :
+    day % 10 === 2 && day !== 12 ? "nd" :
+    day % 10 === 3 && day !== 13 ? "rd" : "th";
+  return `${month} ${day}${suffix}, ${year}`;
 }
 
-// Add day cells with tasks
-for (let day = 1; day <= daysInMonth; day++) {
-  const cell = document.createElement('div');
-  cell.className = 'calendar-cell';
+// Get local ISO date string (YYYY-MM-DD) reliably
+function getLocalDateString(date) {
+  const year = date.getFullYear();
+  const month = `${date.getMonth() + 1}`.padStart(2, '0');
+  const day = `${date.getDate()}`.padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
 
-  const date = new Date(year, month, day);
-  const isoDate = date.toISOString().split("T")[0];
+// Create 30 day cards starting from *today* (local)
+for (let i = 0; i < 30; i++) {
+  const date = new Date();
+  date.setHours(0, 0, 0, 0); // Force local midnight
+  date.setDate(date.getDate() + i);
 
-  const title = document.createElement('strong');
-  title.textContent = day;
-  cell.appendChild(title);
+  const localDateStr = getLocalDateString(date);
 
-  if (taskMap[isoDate]) {
-    // Make day clickable if it has tasks
-    cell.style.cursor = "pointer";
-    cell.addEventListener('click', () => {
-      localStorage.setItem('selectedDate', isoDate);
+  const dayCard = document.createElement('div');
+  dayCard.className = 'day-card';
+
+  const heading = document.createElement('h2');
+  heading.textContent = formatDate(localDateStr);
+  dayCard.appendChild(heading);
+
+  if (taskMap[localDateStr]) {
+    dayCard.style.cursor = "pointer";
+    dayCard.addEventListener('click', () => {
+      localStorage.setItem('selectedDate', localDateStr);
       window.location.href = 'tasks.html';
     });
 
-    taskMap[isoDate].forEach(task => {
+    taskMap[localDateStr].forEach(task => {
       const taskEl = document.createElement('p');
       taskEl.textContent = `• ${task.text}`;
       if (task.completed) {
         taskEl.style.textDecoration = "line-through";
         taskEl.style.opacity = "0.6";
       }
-      cell.appendChild(taskEl);
+      dayCard.appendChild(taskEl);
     });
+  } else {
+    const noTask = document.createElement('p');
+    noTask.textContent = "No tasks";
+    noTask.style.opacity = "0.5";
+    dayCard.appendChild(noTask);
   }
 
-  calendarGrid.appendChild(cell);
+  scheduleContainer.appendChild(dayCard);
 }
-
-scheduleContainer.appendChild(calendarGrid);
