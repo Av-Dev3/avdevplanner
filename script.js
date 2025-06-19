@@ -1,6 +1,6 @@
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const supabase = createClient("https://hrlctpqyckkltfuagsxq.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhybGN0cHF5Y2trbHRmdWFnc3hxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAyODkwNDMsImV4cCI6MjA2NTg2NTA0M30.FCxdMd6vh8C_YEp-Mf67TNOR7mtxkVlJSSFxSc8Y78k");
+const supabase = createClient("https://hrlctpqyckkltfuagsxq.supabase.co", "YOUR_PUBLIC_ANON_KEY");
 
 const form = document.getElementById('task-form');
 
@@ -23,7 +23,8 @@ if (form) {
       date: taskDate,
       time: taskTime,
       notes: taskNotes,
-      completed: false
+      completed: false,
+      created_at: new Date().toISOString()
     }]);
 
     if (error) console.error('Insert error:', error);
@@ -149,7 +150,6 @@ if (container) {
       container.appendChild(groupDiv);
     });
 
-    // History
     const historyContainer = document.getElementById('task-history');
     if (historyContainer) {
       const historyByDate = {};
@@ -183,6 +183,7 @@ if (container) {
             ${task.notes ? `<p><strong>Notes:</strong> ${task.notes}</p>` : ""}
             <p><strong>Status:</strong> ${task.completed ? '✅ Done' : '⏳ Not done'}</p>
           `;
+
           grid.appendChild(taskDiv);
         });
 
