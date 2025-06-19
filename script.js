@@ -1,6 +1,6 @@
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
 
-const supabase = createClient("https://hrlctpqyckkltfuagsxq.supabase.co", "YOUR_PUBLIC_ANON_KEY");
+const supabase = createClient("https://hrlctpqyckkltfuagsxq.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhybGN0cHF5Y2trbHRmdWFnc3hxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTAyODkwNDMsImV4cCI6MjA2NTg2NTA0M30.FCxdMd6vh8C_YEp-Mf67TNOR7mtxkVlJSSFxSc8Y78k");
 
 const form = document.getElementById('task-form');
 
