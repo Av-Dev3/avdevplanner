@@ -191,6 +191,53 @@ button:hover {
   text-align: center;
 }
 
+#task-form.hidden {
+  display: none;
+}
+
+#toggle-task-wrapper {
+  display: block;
+  width: 100%;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+#toggle-task-form {
+  display: inline-block;
+  padding: 0.6rem 1.5rem;
+  font-size: 1rem;
+  background-color: #00ffff;
+  color: #ff00ff;
+  border: 2px solid #ff00ff;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+#toggle-task-form:hover {
+  background-color: #ff00ff;
+  color: #00ffff;
+}
+
+#today-tasks {
+  margin-top: 2rem;
+}
+
+#today-tasks h2 {
+  text-align: center;
+  color: #ff00ff;
+  font-family: monospace;
+}
+
+#today-tasks .task-card {
+  background: #00ffff;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  margin: 0 auto;
+  width: 100%;
+  max-width: 350px;
+}
 
 #task-history {
   margin-top: 20px;

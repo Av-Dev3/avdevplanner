@@ -224,3 +224,60 @@ if (container) {
 
   loadTasks();
 }
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const form = document.getElementById("task-form");
+  if (!form) return;
+
+  // Hide form with CSS class
+  form.classList.add("hidden");
+
+  // Create toggle button
+  const toggleBtn = document.createElement("button");
+  toggleBtn.textContent = "Create New Task";
+  toggleBtn.id = "toggle-task-form";
+  toggleBtn.style.margin = "1rem 0";
+  toggleBtn.addEventListener("click", () => {
+    form.classList.toggle("hidden");
+  });
+
+ const buttonWrapper = document.createElement("div");
+buttonWrapper.id = "toggle-task-wrapper";
+buttonWrapper.appendChild(toggleBtn);
+form.parentNode.insertBefore(buttonWrapper, form);
+
+
+
+  // Create Today’s Tasks section
+  const todayTasksDiv = document.createElement("div");
+  todayTasksDiv.id = "today-tasks";
+  todayTasksDiv.innerHTML = "<h2>Today's Tasks</h2>";
+  form.parentNode.insertBefore(todayTasksDiv, form.nextSibling);
+
+  // Load today’s tasks
+  const { data: tasks, error } = await supabase.from("tasks").select("*");
+
+  if (error) {
+    console.error("Failed to load today’s tasks:", error);
+    return;
+  }
+
+  const todayStr = new Date().toLocaleDateString("en-CA");
+  const todays = tasks.filter(t => t.date === todayStr);
+
+  if (todays.length === 0) {
+    todayTasksDiv.innerHTML += `<p>No tasks for today.</p>`;
+  } else {
+    todays.forEach(task => {
+      const taskEl = document.createElement("div");
+      taskEl.className = "task-card";
+      taskEl.innerHTML = `
+        <h3>${task.text}</h3>
+        <p><strong>Time:</strong> ${task.time || "N/A"}</p>
+        ${task.notes ? `<p><strong>Notes:</strong> ${task.notes}</p>` : ""}
+        <p><strong>Status:</strong> ${task.completed ? "✅ Done" : "⏳ Not done"}</p>
+      `;
+      todayTasksDiv.appendChild(taskEl);
+    });
+  }
+});
