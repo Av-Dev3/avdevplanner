@@ -238,6 +238,13 @@ button:hover {
   width: 100%;
   max-width: 350px;
 }
+#today-tasks p {
+  text-align: center;
+  font-family: monospace;
+  font-size: 1rem;
+  font-weight: 900;
+  text-decoration: underline;
+}
 
 #task-history {
   margin-top: 20px;
