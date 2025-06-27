@@ -3,10 +3,18 @@
   margin: 0;
 }
 
+body {
+  background: #18181b;
+  min-height: 100vh;
+  margin: 0;
+  font-family: system-ui, sans-serif;
+}
+
 
 .head {
-  background-color: #00ffff;
-  border: 2px solid #ff00ff;
+  box-shadow: 0 2px 6px #00ffff;
+  border: 2px solid #00ffff;
+  background-color: #1f1f24;
   padding: 5px;
 }
 
@@ -30,26 +38,24 @@ h1 {
 }
 
 li {
-  border: 2px solid #ff00ff;
   padding: 6px 8px;
 }
 
 li:hover {
-  background-color: #ff00ff;
-  border: 2px solid #00ffff;
-  color: #00ffff;
+  color: #ff00ff;
+  text-shadow: 0 0 6px #ff00ff, 0 0 12px #e219d155;
 }
 
 li a {
   text-decoration: none;
-  color: #ff00ff;
+  color: #e4e4e7;
   font-weight: 600;
   font-family: monospace;
   font-size: 0.9rem;
 }
 
 li a:hover {
-  color: #00ffff;
+  color: #ff00ff;
 }
 
 form {
@@ -57,18 +63,19 @@ form {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #00ffff;
-  width: 100%;
-  max-width: 350px;
-  margin: 0 auto;
+  background-color: #222226;
+  box-shadow: 0 2px 6px #ff00ff;
   border: 2px solid #ff00ff;
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto;
   border-radius: 8px;
   gap: 5px;
   margin-top: 10px;
 }
 
 label {
-  color: #ff00ff;
+  color: #f4f4f5;
   font-weight: 600;
 }
 
@@ -76,12 +83,11 @@ input {
   width: 100%;
   max-width: 200px;
   border-radius: 5px;
-  border-color: #ff00ff;
-  color: #ff00ff;
+  border-color: #18181b;
+  color: #000000;
 }
 
 #task-notes {
-  border: 2px solid #ff00ff;
   border-radius: 5px;
   width: 100%;
   max-width: 200px;
@@ -91,17 +97,18 @@ button {
   padding: 6px 6px;
   margin-top: 6px;
   margin-bottom: 6px;
-  border-color: #ff00ff;
+  border: 2px solid #00ffff;
   border-radius: 5px;
-  background-color: #00ffff;
-  color: #ff00ff;
+  background: transparent;
+  color: #e2e8f8;
   font-weight: 600;
 }
 
 button:hover {
-  background-color: #ff00ff;
+  background-color: #60a5fa20;
+  box-shadow: 0 0 8px #00ffff;
   border-color: #00ffff;
-  color: #00ffff;
+  color: #ffffff;
 }
 
 #datetime-bar {
@@ -129,10 +136,27 @@ button:hover {
   padding: 1rem;
 }
 
+.view-all-btn {
+  padding: 6px 6px;
+  border: 2px solid #00ffff;
+  border-radius: 5px;
+  background: transparent;
+  color: #e2e8f8;
+  font-weight: 600;
+  width: 150px;
+  margin: 0 auto;
+}
+
+.view-all-btn:hover {
+  background-color: #60a5fa20;
+  box-shadow: 0 0 8px #00ffff;
+  border-color: #00ffff;
+  color: #ffffff;
+}
 
 .task-card {
   margin-bottom: 5px;
-  background-color: #00ffff;
+  background-color: #1f1f24;
   border: 2px solid #ff00ff;
   box-shadow: 0 2px 6px #ff00ff;
   border-radius: 6px;
@@ -142,10 +166,15 @@ button:hover {
   overflow: hidden;
 }
 
+.task-card h3 {
+  color: #f4f4f5;
+}
+
 .task-card p {
   margin: 6px 0;
   line-height: 1.4;
-  white-space: pre-wrap; /* allows multi-line notes */
+  white-space: pre-wrap;
+  color: #e4e4e7;
 }
 
 #task-container {
@@ -167,10 +196,10 @@ button:hover {
   font-size: 1.2rem;
   font-weight: 800;
   font-family: monospace;
-  color: #ff00ff;
-  background-color: #00ffff;
+  color: #f4f4f5;
+  background-color: #1f1f24;
   padding: 6px 10px;
-  border-left: 4px solid #ff00ff;
+  border-left: 4px solid #00ffff;
   border-radius: 4px;
 }
 
@@ -183,12 +212,28 @@ button:hover {
 #schedule-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  gap: 5px;
+}
+
+#heading-schedule{
+  color: #f4f4f5;
+  text-align: center;
+  padding: 10px;
 }
 
 .day-card {
-  background-color: #00ffff;
-  border: 2px solid #ff00ff;
+  background-color: #18181b;
+ border: 2px solid #ff00ff;
+  box-shadow: 0 2px 6px #ff00ff;
   text-align: center;
+}
+
+.day-card h2 {
+  color: #f4f4f5;
+}
+
+.day-card p {
+  color: #e4e4e7;
 }
 
 #task-form.hidden {
