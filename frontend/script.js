@@ -18,7 +18,7 @@ if (form) {
       created_at: new Date().toISOString(),
     };
 
-    const res = await fetch("http://127.0.0.1:5000/tasks", {
+    const res = await fetch("https://avdevplanner.onrender.com/tasks", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newTask),
@@ -50,56 +50,24 @@ if (container) {
     const dayNum = dateObj.getDate();
     const monthName = dateObj.toLocaleString("default", { month: "long" });
     const yearNum = dateObj.getFullYear();
-    const suffix =
-      dayNum % 10 === 1 && dayNum !== 11
-        ? "st"
-        : dayNum % 10 === 2 && dayNum !== 12
-        ? "nd"
-        : dayNum % 10 === 3 && dayNum !== 13
-        ? "rd"
-        : "th";
+    const suffix = dayNum % 10 === 1 && dayNum !== 11 ? "st" :
+                   dayNum % 10 === 2 && dayNum !== 12 ? "nd" :
+                   dayNum % 10 === 3 && dayNum !== 13 ? "rd" : "th";
     return `${monthName} ${dayNum}${suffix}, ${yearNum}`;
   }
 
   async function loadTasks() {
-    const res = await fetch("http://127.0.0.1:5000/tasks");
+    const res = await fetch("https://avdevplanner.onrender.com/tasks");
     const tasks = await res.json();
     const today = new Date().toLocaleDateString("en-CA");
 
-    const selectedDate = localStorage.getItem("selectedDate");
-    const filterByDate = !!selectedDate;
-
-    const futureTasks = tasks
-      .filter((t) => {
-        if (filterByDate) return t.date === selectedDate;
-        return t.date >= today;
-      })
-      .map((t, i) => ({ ...t, index: i }));
-
+    const futureTasks = tasks.filter((t) => t.date >= today);
     const tasksByDate = {};
-    futureTasks.forEach((task) => {
+
+    futureTasks.forEach((task, index) => {
       if (!tasksByDate[task.date]) tasksByDate[task.date] = [];
-      tasksByDate[task.date].push(task);
+      tasksByDate[task.date].push({ ...task, index });
     });
-
-    // Clear container before rendering
-    container.innerHTML = "";
-
-    // Add "View All" button if a filter is active
-    if (filterByDate) {
-      const backBtn = document.createElement("button");
-      backBtn.className = "view-all-btn";
-      backBtn.textContent = "View All Tasks";
-  
-  
-
-      backBtn.addEventListener("click", () => {
-        localStorage.removeItem("selectedDate");
-        location.reload();
-      });
-
-      container.appendChild(backBtn);
-    }
 
     const sortedDates = Object.keys(tasksByDate).sort();
 
@@ -124,18 +92,14 @@ if (container) {
           <p><strong>Date:</strong> ${formatDate(task.date)}</p>
           <p><strong>Time:</strong> ${formatTime(task.time)}</p>
           ${task.notes ? `<p><strong>Notes:</strong> ${task.notes}</p>` : ""}
-          <p><strong>Status:</strong> ${
-            task.completed ? "✅ Done" : "⏳ Not done"
-          }</p>
+          <p><strong>Status:</strong> ${task.completed ? "✅ Done" : "⏳ Not done"}</p>
         `;
 
         const completeBtn = document.createElement("button");
-        completeBtn.textContent = task.completed
-          ? "Mark Incomplete"
-          : "Mark Complete";
+        completeBtn.textContent = task.completed ? "Mark Incomplete" : "Mark Complete";
         completeBtn.addEventListener("click", async () => {
-          await fetch(`http://127.0.0.1:5000/tasks/${task.index}/toggle`, {
-            method: "PATCH",
+          await fetch(`https://avdevplanner.onrender.com/tasks/${task.index}/toggle`, {
+            method: "PATCH"
           });
           location.reload();
         });
@@ -144,8 +108,8 @@ if (container) {
         const deleteBtn = document.createElement("button");
         deleteBtn.textContent = "Delete";
         deleteBtn.addEventListener("click", async () => {
-          await fetch(`http://127.0.0.1:5000/tasks/${task.index}`, {
-            method: "DELETE",
+          await fetch(`https://avdevplanner.onrender.com/tasks/${task.index}`, {
+            method: "DELETE"
           });
           location.reload();
         });
@@ -157,11 +121,6 @@ if (container) {
       groupDiv.appendChild(grid);
       container.appendChild(groupDiv);
     });
-
-    // Clear the selected date after loading if needed
-    if (filterByDate) {
-      localStorage.removeItem("selectedDate");
-    }
   }
 
   loadTasks();

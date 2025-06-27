@@ -19,7 +19,7 @@ function getLocalDateString(date) {
 }
 
 async function renderSchedule() {
-  const res = await fetch("http://127.0.0.1:5000/tasks");
+  const res = await fetch("https://avdevplanner.onrender.com/tasks");
   const tasks = await res.json();
 
   const taskMap = {};
