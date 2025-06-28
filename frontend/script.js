@@ -48,13 +48,14 @@ if (form) {
 // === DISPLAY TASKS ===
 if (container) {
   // Check for selectedDate and a flag that confirms we navigated from schedule
-  const selectedDate = localStorage.getItem("selectedDate");
   const cameFromSchedule = sessionStorage.getItem("cameFromSchedule");
+sessionStorage.removeItem("cameFromSchedule"); // Clear it FIRST
 
-  // Remove selectedDate if we didn’t come from schedule
-  if (!cameFromSchedule) {
-    localStorage.removeItem("selectedDate");
-  }
+const selectedDate = localStorage.getItem("selectedDate");
+if (!cameFromSchedule) {
+  localStorage.removeItem("selectedDate");
+}
+
   // Clear the session flag either way
   sessionStorage.removeItem("cameFromSchedule");
 
