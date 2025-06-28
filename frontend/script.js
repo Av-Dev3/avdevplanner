@@ -8,7 +8,7 @@ if (form) {
   const toggleBtn = document.createElement("button");
   toggleBtn.textContent = "Create New Task";
   toggleBtn.id = "toggle-task-form";
-  toggleBtn.style.display = "block"
+  toggleBtn.style.display = "block";
   toggleBtn.addEventListener("click", () => {
     form.style.display = form.style.display === "none" ? "flex" : "none";
   });
@@ -47,14 +47,14 @@ if (form) {
 
 // === DISPLAY TASKS ===
 if (container) {
-  // Clear selectedDate unless we’re coming from the schedule page
- const cameFromSchedule = document.referrer.includes("schedule.html");
-const selectedDate = localStorage.getItem("selectedDate");
+  const cameFromSchedule = document.referrer.includes("schedule.html");
 
-if (!cameFromSchedule && !selectedDate) {
-  localStorage.removeItem("selectedDate");
-}
+  // Only preserve selectedDate if came directly from schedule
+  if (!cameFromSchedule) {
+    localStorage.removeItem("selectedDate");
+  }
 
+  const selectedDate = localStorage.getItem("selectedDate");
 
   function formatTime(timeStr) {
     if (!timeStr) return "";
@@ -71,9 +71,10 @@ if (!cameFromSchedule && !selectedDate) {
     const dateObj = new Date(+year, +month - 1, +day);
     const dayNum = dateObj.getDate();
     const monthName = dateObj.toLocaleString("default", { month: "long" });
-    const suffix = dayNum % 10 === 1 && dayNum !== 11 ? "st" :
-                   dayNum % 10 === 2 && dayNum !== 12 ? "nd" :
-                   dayNum % 10 === 3 && dayNum !== 13 ? "rd" : "th";
+    const suffix =
+      dayNum % 10 === 1 && dayNum !== 11 ? "st" :
+      dayNum % 10 === 2 && dayNum !== 12 ? "nd" :
+      dayNum % 10 === 3 && dayNum !== 13 ? "rd" : "th";
     return `${monthName} ${dayNum}${suffix}, ${year}`;
   }
 
@@ -82,7 +83,6 @@ if (!cameFromSchedule && !selectedDate) {
     const tasks = await res.json();
     const today = new Date().toLocaleDateString("en-CA");
 
-    const selectedDate = localStorage.getItem("selectedDate");
     const filteredTasks = selectedDate
       ? tasks.filter((t) => t.date === selectedDate)
       : tasks.filter((t) => t.date >= today);
