@@ -47,14 +47,16 @@ if (form) {
 
 // === DISPLAY TASKS ===
 if (container) {
-  const cameFromSchedule = document.referrer.includes("schedule.html");
+  // Check for selectedDate and a flag that confirms we navigated from schedule
+  const selectedDate = localStorage.getItem("selectedDate");
+  const cameFromSchedule = sessionStorage.getItem("cameFromSchedule");
 
-  // Only preserve selectedDate if came directly from schedule
+  // Remove selectedDate if we didn’t come from schedule
   if (!cameFromSchedule) {
     localStorage.removeItem("selectedDate");
   }
-
-  const selectedDate = localStorage.getItem("selectedDate");
+  // Clear the session flag either way
+  sessionStorage.removeItem("cameFromSchedule");
 
   function formatTime(timeStr) {
     if (!timeStr) return "";
@@ -97,7 +99,7 @@ if (container) {
 
     const sortedDates = Object.keys(tasksByDate).sort();
 
-    // "View All Tasks" button if viewing from schedule
+    // Show "View All Tasks" button if a date was selected
     if (selectedDate) {
       const viewAllBtn = document.createElement("button");
       viewAllBtn.textContent = "View All Tasks";
