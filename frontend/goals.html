@@ -3,13 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
- 
-
   <link rel="stylesheet" href="style.css">
   <title>Document</title>
 </head>
 <body>
-  <header class="head">
+    <header class="head">
     <nav>
       <ul>
         <h1>The Plan</h1>
@@ -20,14 +18,17 @@
       </ul>
     </nav>
   </header>
-  <div id="datetime-bar">
-    <p id="current-date"></p>
-    <p id="current-time"></p>
-  </div>
-  <div id="task-container"></div>
-  <div id="task-history">
-  <h2 style="text-align: center; margin-top: 40px;">Task History</h2>
-</div>
-  <script  type="module" src="script.js"></script>
+  <form id="weekly-goal-form">
+  <label for="goal-title">Goal Title</label>
+  <input type="text" id="goal-title" required>
+
+  <label for="goal-notes">Notes (optional)</label>
+  <textarea id="goal-notes" rows="4" placeholder="Details, milestones, etc."></textarea>
+
+  <button type="submit">Add Weekly Goal</button>
+</form>
+
+<div id="weekly-goals-container"></div>
+<script src="goals.js"></script>
 </body>
 </html>

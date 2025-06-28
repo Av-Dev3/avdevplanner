@@ -1,6 +1,20 @@
 const form = document.getElementById("task-form");
+const container = document.getElementById("task-container");
 
+// === FORM TOGGLE ===
 if (form) {
+  form.style.display = "none";
+
+  const toggleBtn = document.createElement("button");
+  toggleBtn.textContent = "Create New Task";
+  toggleBtn.id = "toggle-task-form";
+  toggleBtn.style.display = "block"
+  toggleBtn.addEventListener("click", () => {
+    form.style.display = form.style.display === "none" ? "flex" : "none";
+  });
+
+  form.parentNode.insertBefore(toggleBtn, form);
+
   const textInput = document.getElementById("task-text");
   const dateInput = document.getElementById("task-date");
   const timeInput = document.getElementById("task-time");
@@ -31,9 +45,13 @@ if (form) {
   });
 }
 
-const container = document.getElementById("task-container");
-
+// === DISPLAY TASKS ===
 if (container) {
+  // Clear selectedDate unless we’re coming from the schedule page
+  if (document.referrer && !document.referrer.includes("schedule.html")) {
+    localStorage.removeItem("selectedDate");
+  }
+
   function formatTime(timeStr) {
     if (!timeStr) return "";
     const [hourStr, minuteStr] = timeStr.split(":");
@@ -49,11 +67,10 @@ if (container) {
     const dateObj = new Date(+year, +month - 1, +day);
     const dayNum = dateObj.getDate();
     const monthName = dateObj.toLocaleString("default", { month: "long" });
-    const yearNum = dateObj.getFullYear();
     const suffix = dayNum % 10 === 1 && dayNum !== 11 ? "st" :
                    dayNum % 10 === 2 && dayNum !== 12 ? "nd" :
                    dayNum % 10 === 3 && dayNum !== 13 ? "rd" : "th";
-    return `${monthName} ${dayNum}${suffix}, ${yearNum}`;
+    return `${monthName} ${dayNum}${suffix}, ${year}`;
   }
 
   async function loadTasks() {
@@ -61,15 +78,33 @@ if (container) {
     const tasks = await res.json();
     const today = new Date().toLocaleDateString("en-CA");
 
-    const futureTasks = tasks.filter((t) => t.date >= today);
-    const tasksByDate = {};
+    const selectedDate = localStorage.getItem("selectedDate");
+    const filteredTasks = selectedDate
+      ? tasks.filter((t) => t.date === selectedDate)
+      : tasks.filter((t) => t.date >= today);
 
-    futureTasks.forEach((task, index) => {
+    const tasksByDate = {};
+    filteredTasks.forEach((task, index) => {
       if (!tasksByDate[task.date]) tasksByDate[task.date] = [];
       tasksByDate[task.date].push({ ...task, index });
     });
 
+    container.innerHTML = "";
+
     const sortedDates = Object.keys(tasksByDate).sort();
+
+    // "View All Tasks" button if viewing from schedule
+    if (selectedDate) {
+      const viewAllBtn = document.createElement("button");
+      viewAllBtn.textContent = "View All Tasks";
+      viewAllBtn.id = "view-all-btn";
+      viewAllBtn.style.marginBottom = "1rem";
+      viewAllBtn.addEventListener("click", () => {
+        localStorage.removeItem("selectedDate");
+        location.reload();
+      });
+      container.appendChild(viewAllBtn);
+    }
 
     sortedDates.forEach((date) => {
       const groupDiv = document.createElement("div");

@@ -1,5 +1,8 @@
 const scheduleContainer = document.getElementById('schedule-container');
 
+// Clear selectedDate if coming directly to schedule
+localStorage.removeItem("selectedDate");
+
 function formatDate(dateStr) {
   const [year, month, day] = dateStr.split("-");
   const dateObj = new Date(+year, +month - 1, +day);

@@ -136,18 +136,18 @@ button:hover {
   padding: 1rem;
 }
 
-.view-all-btn {
+#view-all-btn {
   padding: 6px 6px;
   border: 2px solid #00ffff;
   border-radius: 5px;
   background: transparent;
   color: #e2e8f8;
   font-weight: 600;
-  width: 150px;
   margin: 0 auto;
+  
 }
 
-.view-all-btn:hover {
+#view-all-btn:hover {
   background-color: #60a5fa20;
   box-shadow: 0 0 8px #00ffff;
   border-color: #00ffff;
@@ -240,28 +240,26 @@ button:hover {
   display: none;
 }
 
-#toggle-task-wrapper {
-  display: block;
-  width: 100%;
-  text-align: center;
-  margin-top: 1rem;
-}
+
 
 #toggle-task-form {
-  display: inline-block;
   padding: 0.6rem 1.5rem;
   font-size: 1rem;
-  background-color: #00ffff;
-  color: #ff00ff;
-  border: 2px solid #ff00ff;
+  background-color: #1f1f24;
+  color: #f4f4f5;
+  border: 2px solid #00ffff;
   border-radius: 5px;
   cursor: pointer;
   transition: background 0.3s ease;
+  margin: 0 auto;
+  margin-top: 10px;
 }
 
 #toggle-task-form:hover {
-  background-color: #ff00ff;
-  color: #00ffff;
+  background-color: #60a5fa20;
+  box-shadow: 0 0 8px #00ffff;
+  border-color: #00ffff;
+  color: #ffffff;
 }
 
 #today-tasks {
@@ -298,6 +296,20 @@ button:hover {
 #task-history h2 {
   text-align: center;
 }
+
+#weekly-goals-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding: 1rem;
+}
+
+#goal-notes {
+   border-radius: 5px;
+  width: 100%;
+  max-width: 200px;
+}
+
 @media (max-width: 768px) {
 
   #schedule-container {
