@@ -2,8 +2,7 @@ const scheduleContainer = document.getElementById('schedule-container');
 
 // Clear selectedDate if coming directly to schedule
 localStorage.removeItem("selectedDate");
-sessionStorage.setItem("cameFromSchedule", "true"); // ✅ Add this line
-window.location.href = "tasks.html";
+
 
 function formatDate(dateStr) {
   const [year, month, day] = dateStr.split("-");
@@ -50,6 +49,7 @@ async function renderSchedule() {
       dayCard.style.cursor = "pointer";
       dayCard.addEventListener("click", () => {
         localStorage.setItem("selectedDate", localDateStr);
+        sessionStorage.setItem("cameFromSchedule", "true");
         window.location.href = "tasks.html";
       });
 
