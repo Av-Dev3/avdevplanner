@@ -48,9 +48,13 @@ if (form) {
 // === DISPLAY TASKS ===
 if (container) {
   // Clear selectedDate unless we’re coming from the schedule page
-  if (document.referrer && !document.referrer.includes("schedule.html")) {
-    localStorage.removeItem("selectedDate");
-  }
+ const cameFromSchedule = document.referrer.includes("schedule.html");
+const selectedDate = localStorage.getItem("selectedDate");
+
+if (!cameFromSchedule && !selectedDate) {
+  localStorage.removeItem("selectedDate");
+}
+
 
   function formatTime(timeStr) {
     if (!timeStr) return "";
