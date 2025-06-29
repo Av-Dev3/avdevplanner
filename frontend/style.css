@@ -315,7 +315,7 @@ h2 {
   text-align: center;
 }
 
-#log-task-container {
+#log-tasks-container {
    display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
