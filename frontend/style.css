@@ -322,6 +322,13 @@ h2 {
   padding: 1rem;
 }
 
+#log-goals-container {
+   display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding: 1rem;
+}
+
 @media (max-width: 768px) {
 
   #schedule-container {
