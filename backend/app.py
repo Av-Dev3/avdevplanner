@@ -14,6 +14,7 @@ CORS(app, resources={r"/*": {"origins": [
 
 TASK_FILE = 'tasks.json'
 GOAL_FILE = 'goals.json'
+LOG_FILE = 'logs.json'
 
 # === TASK HELPERS ===
 def load_tasks():
@@ -67,6 +68,42 @@ def add_task():
 @app.route('/tasks', methods=['GET'])
 def get_tasks():
     return jsonify(load_tasks())
+
+
+def load_logs():
+    if os.path.exists(LOG_FILE):
+        with open(LOG_FILE, 'r') as f:
+            return json.load(f)
+    return {}
+
+def save_logs(logs):
+    with open(LOG_FILE, 'w') as f:
+        json.dump(logs, f, indent=2)
+
+@app.route('/logs', methods=['GET'])
+def get_logs():
+    return jsonify(load_logs())
+
+@app.route('/logs', methods=['POST'])
+def add_log():
+    logs = load_logs()
+    data = request.json
+    date = data.get("date")
+    if not date:
+        return jsonify({"error": "Date is required"}), 400
+
+    entry = {
+        "title": data.get("title", ""),
+        "content": data.get("content", ""),
+        "timestamp": data.get("timestamp", "")
+    }
+
+    if date not in logs:
+        logs[date] = []
+    logs[date].append(entry)
+
+    save_logs(logs)
+    return jsonify({"message": "Log added"}), 201
 
 # === WEEKLY GOAL ROUTES ===
 @app.route('/goals', methods=['GET'])

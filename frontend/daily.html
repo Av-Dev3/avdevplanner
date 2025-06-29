@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <title>Document</title>
+</head>
+<body>
+    <header class="head">
+    <nav>
+      <ul>
+        <h1>The Plan</h1>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="goals.html">Goals</a></li>
+        <li><a href="tasks.html">Tasks</a></li>
+        <li><a href="schedule.html">Schedule</a></li>
+      </ul>
+    </nav>
+  </header>
+  <h2>Today's Tasks</h2>
+  <div id="log-tasks-container"></div>
+
+  <h2>Today's Goals</h2>
+  <div id="log-goals-container"></div>
+
+  <h2>Personal Log</h2>
+  <form id="daily-log-form">
+    <label for="log-title">Title</label>
+    <input type="text" name="" id="log-title" required>
+
+    <label for="log-content">Reflection</label>
+    <textarea name="" id="log-content" rows="6" required></textarea>
+
+    <button type="submit">Add Log</button>
+  </form>
+
+  <div id="daily-log-entries"></div>
+  <script src="daily.js"></script>
+</body>
+</html>
