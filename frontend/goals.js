@@ -40,7 +40,7 @@ if (form && container) {
       return;
     }
 
-    goals.forEach((goal) => {
+    goals.forEach((goal, index) => {
       const card = document.createElement("div");
       card.className = "task-card";
       card.innerHTML = `
@@ -56,7 +56,7 @@ if (form && container) {
         const confirmDelete = confirm("Delete this goal?");
         if (!confirmDelete) return;
 
-        await fetch(`https://avdevplanner.onrender.com/goals/${goal.id}`, {
+        await fetch(`https://avdevplanner.onrender.com/goals/${index}`, {
           method: "DELETE",
         });
         loadGoals();
@@ -71,7 +71,7 @@ if (form && container) {
         const newNotes = prompt("Edit notes:", goal.notes || "");
 
         if (newTitle !== null) {
-          await fetch(`https://avdevplanner.onrender.com/goals/${goal.id}`, {
+          await fetch(`https://avdevplanner.onrender.com/goals/${index}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
