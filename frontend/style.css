@@ -12,13 +12,17 @@ body {
 
 
 .head {
+  display: flex;
+  flex-direction: column;
   box-shadow: 0 2px 6px #00ffff;
   border: 2px solid #00ffff;
   background-color: #1f1f24;
   padding: 5px;
 }
 
-
+.nav-container {
+  display: flex;
+}
 
 ul {
   display: flex;
@@ -329,7 +333,129 @@ h2 {
   padding: 1rem;
 }
 
+.note-input-card {
+  background: #1f1f24;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 2rem;
+  border: 2px solid #ff00ff;
+  box-shadow: 0 2px 6px #ff00ff;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 0.5rem;
+}
+
+.note-input-card input,
+.note-input-card textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #00ffff;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+.note-input-card textarea {
+  min-height: 120px;
+  resize: vertical;
+  width: auto;
+}
+
+.note-input-card button {
+  align-self: flex-end;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  color: #e2e8f8;
+  border: 2px solid #00ffff;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+ 
+
+.note-input-card button:hover {
+  background-color: #60a5fa20;
+  box-shadow: 0 0 8px #00ffff;
+  border-color: #00ffff;
+  color: #ffffff;
+}
+
+
+/* Hamburger stays hidden by default */
+#hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 11;
+}
+
+#hamburger .bar {
+  width: 25px;
+  height: 3px;
+  background-color: #ff00ff;
+  transition: all 0.3s ease;
+}
+
+/* Animate to X */
+#hamburger.open .bar:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+#hamburger.open .bar:nth-child(2) {
+  opacity: 0;
+}
+#hamburger.open .bar:nth-child(3) {
+  transform: rotate(-45deg) translate(5px, -5px);
+}
+
 @media (max-width: 768px) {
+ .nav-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* keeps logo left, hamburger right */
+  padding: 0 1rem;
+  background-color: #1f1f24;
+  position: relative;
+}
+
+  #hamburger {
+    display: flex;
+    top: 15px;
+    right: 15px; /* 👈 This puts it on the right */
+  }
+
+  #main-nav {
+    flex-direction: column;
+    position: absolute;
+    top: 60px;
+    right: -250px; /* hidden off-screen */
+    background-color: #1f1f24;
+    padding: 0.5rem;
+    border-left: 2px solid #00ffff;
+    border-radius: 8px 0 0 8px;
+    width: 150px;
+    box-shadow: -2px 2px 8px #00ffff;
+    transition: right 0.3s ease-in-out;
+    z-index: 9;
+  }
+
+  #main-nav.show {
+    right: 0;
+  }
+
+  #main-nav li {
+    text-align: right;
+    margin: 10px 0;
+    padding: 0px 20px;
+  }
+
+  #main-nav h1 {
+    display: none;
+  }
+
 
   #schedule-container {
     display: grid;

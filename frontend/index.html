@@ -12,10 +12,18 @@
   <title>Document</title>
 </head>
 <body>
-  <header class="head">
+<header class="head">
+  <div class="nav-container">
+    <h1 class="logo">The Plan</h1>
+
+    <button id="hamburger" aria-label="Toggle menu">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </button>
+
     <nav>
-      <ul>
-        <h1>The Plan</h1>
+      <ul id="main-nav">
         <li><a href="index.html">Home</a></li>
         <li><a href="daily.html">Daily</a></li>
         <li><a href="goals.html">Goals</a></li>
@@ -23,7 +31,11 @@
         <li><a href="schedule.html">Schedule</a></li>
       </ul>
     </nav>
-  </header>
+  </div>
+</header>
+
+
+
 <form id="task-form">
 
   <label for="task-text">Task</label>
@@ -44,5 +56,6 @@
 
 
   <script type="module" src="script.js"></script>
+  <script src="nav.js"></script>
 </body>
 </html>
