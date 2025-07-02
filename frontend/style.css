@@ -34,7 +34,7 @@ ul {
 }
 
 
-h1 {
+.logo {
   flex: 1;
   color: #ff00ff;
   font-weight: 900;
@@ -456,6 +456,9 @@ h2 {
     display: none;
   }
 
+  .logo {
+    font-size: 1.3rem;
+  }
 
   #schedule-container {
     display: grid;
