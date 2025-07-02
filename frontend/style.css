@@ -4,12 +4,17 @@
 }
 
 body {
+  display: flex;
+  flex-direction: column;
   background: #18181b;
   min-height: 100vh;
   margin: 0;
   font-family: system-ui, sans-serif;
 }
 
+.page-content {
+  flex: 1;
+}
 
 .head {
   display: flex;
@@ -411,6 +416,19 @@ h2 {
   transform: rotate(-45deg) translate(5px, -5px);
 }
 
+.footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  border: 2px solid #00ffff;
+}
+
+.footer span {
+  color: #ff00ff;
+  font-size: 1.5rem;
+  font-family: monospace;
+}
+
 @media (max-width: 768px) {
  .nav-container {
   display: flex;
@@ -429,7 +447,7 @@ h2 {
 
   #main-nav {
     flex-direction: column;
-    position: absolute;
+    position: fixed;
     top: 60px;
     right: -250px; /* hidden off-screen */
     background-color: #1f1f24;
@@ -443,6 +461,10 @@ h2 {
   }
 
   #main-nav.show {
+    right: 0;
+  }
+
+  #main-nav.open {
     right: 0;
   }
 
