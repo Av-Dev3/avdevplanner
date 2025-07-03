@@ -1,9 +1,12 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const hamburger = document.getElementById("hamburger");
-  const navMenu = document.getElementById("main-nav");
+  const hamburger = document.querySelector(".hamburger");
+  const navMenu = document.querySelector(".main-nav");
 
-  hamburger.addEventListener("click", () => {
-    hamburger.classList.toggle("open");
-    navMenu.classList.toggle("show");
-  });
+  if (hamburger && navMenu) {
+    hamburger.addEventListener("click", () => {
+      hamburger.classList.toggle("open");
+      navMenu.classList.toggle("open");
+      document.body.style.overflowX = navMenu.classList.contains("open") ? "hidden" : "";
+    });
+  }
 });

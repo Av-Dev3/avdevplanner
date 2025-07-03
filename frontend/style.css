@@ -338,6 +338,11 @@ h2 {
   padding: 1rem;
 }
 
+#log-content {
+  max-width: 200px;
+  width: 100%;
+}
+
 .note-input-card {
   background: #1f1f24;
   border-radius: 8px;
@@ -388,7 +393,7 @@ h2 {
 
 
 /* Hamburger stays hidden by default */
-#hamburger {
+.hamburger {
   display: none;
   flex-direction: column;
   gap: 5px;
@@ -398,7 +403,7 @@ h2 {
   z-index: 11;
 }
 
-#hamburger .bar {
+.hamburger .bar {
   width: 25px;
   height: 3px;
   background-color: #ff00ff;
@@ -406,13 +411,13 @@ h2 {
 }
 
 /* Animate to X */
-#hamburger.open .bar:nth-child(1) {
+.hamburger.open .bar:nth-child(1) {
   transform: rotate(45deg) translate(5px, 5px);
 }
-#hamburger.open .bar:nth-child(2) {
+.hamburger.open .bar:nth-child(2) {
   opacity: 0;
 }
-#hamburger.open .bar:nth-child(3) {
+.hamburger.open .bar:nth-child(3) {
   transform: rotate(-45deg) translate(5px, -5px);
 }
 
@@ -427,6 +432,8 @@ h2 {
   color: #ff00ff;
   font-size: 1.5rem;
   font-family: monospace;
+  text-shadow: 0 2px 6px #ff00ff;
+  
 }
 
 @media (max-width: 768px) {
@@ -434,18 +441,18 @@ h2 {
   display: flex;
   align-items: center;
   justify-content: space-between; /* keeps logo left, hamburger right */
-  padding: 0 1rem;
+  padding: 0 0.2rem;
   background-color: #1f1f24;
   position: relative;
 }
 
-  #hamburger {
+  .hamburger {
     display: flex;
     top: 15px;
     right: 15px; /* 👈 This puts it on the right */
   }
 
-  #main-nav {
+  .main-nav {
     flex-direction: column;
     position: fixed;
     top: 60px;
@@ -460,21 +467,21 @@ h2 {
     z-index: 9;
   }
 
-  #main-nav.show {
+  .main-nav.show {
     right: 0;
   }
 
-  #main-nav.open {
+  .main-nav.open {
     right: 0;
   }
 
-  #main-nav li {
+  .main-nav li {
     text-align: right;
     margin: 10px 0;
     padding: 0px 20px;
   }
 
-  #main-nav h1 {
+  .main-nav h1 {
     display: none;
   }
 

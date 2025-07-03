@@ -7,18 +7,29 @@
   <title>Document</title>
 </head>
 <body>
-    <header class="head">
+  <div class="page-content">
+<header class="head">
+  <div class="nav-container">
+    <h1 class="logo">The Plan</h1>
+
+    <button class="hamburger" aria-label="Toggle menu">
+      <span class="bar"></span>
+      <span class="bar"></span>
+      <span class="bar"></span>
+    </button>
+
     <nav>
-      <ul>
-        <h1>The Plan</h1>
+      <ul class="main-nav">
         <li><a href="index.html">Home</a></li>
         <li><a href="daily.html">Daily</a></li>
         <li><a href="goals.html">Goals</a></li>
+        <li><a href="notes.html">Notes</a></li>
         <li><a href="tasks.html">Tasks</a></li>
         <li><a href="schedule.html">Schedule</a></li>
       </ul>
     </nav>
-  </header>
+  </div>
+</header>
   <h2>Today's Tasks</h2>
   <div id="log-tasks-container"></div>
 
@@ -36,7 +47,17 @@
     <button type="submit">Add Log</button>
   </form>
 
+
+
   <div id="daily-log-entries"></div>
+  </div>
+  <footer class="footer">
+    <span>Eat</span>
+    <span>Sleep</span>
+    <span>Code</span>
+    <span>Repeat</span>
+  </footer>
   <script src="daily.js"></script>
+  <script src="nav.js"></script>
 </body>
 </html>
