@@ -23,10 +23,39 @@ body {
   border: 2px solid #00ffff;
   background-color: #1f1f24;
   padding: 5px;
+  border-radius: 8px;
 }
 
 .nav-container {
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.nav-left, .nav-center, .nav-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.nav-left {
+  justify-content: flex-start;
+}
+
+.nav-center {
+  justify-content: center;
+}
+
+.nav-right {
+  justify-content: flex-end;
+}
+
+.nav-quote {
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 ul {
@@ -44,23 +73,29 @@ ul {
   color: #ff00ff;
   font-weight: 900;
   font-family: monospace;
-  animation: neonPulse 2.5s ease-in-out infinite;
+  white-space: nowrap;
+  margin-right: 10px;
+  
+  background: linear-gradient(270deg, #ff00ff, #00ffff, #ff00ff);
+  background-size: 600% 600%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: flowColors 20s ease infinite;
 }
 
-@keyframes neonPulse {
-  0%, 100% {
-    text-shadow: 
-    0 0 5px #ff00ff,
-    0 0 10px #ff00ff,
-    0 0 20px #ff00ff;
+@keyframes flowColors {
+  0% {
+    background-position: 100% 50%;
   }
   50% {
-    text-shadow:
-    0 0 10px #ff00ff,
-    0 0 20px #ff00ff,
-    0 0 40px #ff00ff;
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
   }
 }
+
+
 
 li {
   padding: 6px 8px;
@@ -456,6 +491,7 @@ h2 {
   justify-content: space-between;
   padding: 10px;
   border: 2px solid #00ffff;
+  border-radius: 8px;
 }
 
 .footer span {
