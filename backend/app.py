@@ -16,6 +16,7 @@ TASK_FILE = 'tasks.json'
 GOAL_FILE = 'goals.json'
 LOG_FILE = 'logs.json'
 NOTE_FILE = 'notes.json'
+FOCUS_FILE = 'focus.json'
 
 # === TASK HELPERS ===
 def load_tasks():
@@ -60,6 +61,17 @@ def load_notes():
 def save_notes(notes):
     with open(NOTE_FILE, 'w') as f:
         json.dump(notes, f, indent=2)
+
+# === FOCUS HELPERS ===
+def load_focus():
+    if os.path.exists(FOCUS_FILE):
+        with open(FOCUS_FILE, 'r') as f:
+            return json.load(f)
+    return {}
+
+def save_focus(focus_data):
+    with open(FOCUS_FILE, 'w') as f:
+        json.dump(focus_data, f, indent=2)
 
 # === TASK ROUTES ===
 @app.route('/tasks/<int:index>/toggle', methods=['PATCH'])
@@ -203,6 +215,32 @@ def delete_note(index):
         save_notes(notes)
         return jsonify({"message": "Note deleted"}), 200
     return jsonify({"error": "Note not found"}), 404
+
+# === DAILY FOCUS ROUTES ===
+@app.route('/focus', methods=['GET'])
+def get_focus():
+    date = request.args.get("date")
+    focus_data = load_focus()
+
+    if date:
+        focus_text = focus_data.get(date, "")
+        return jsonify({"focus": focus_text})
+
+    return jsonify(focus_data)
+
+@app.route('/focus', methods=['POST'])
+def save_focus_entry():
+    data = request.json
+    date = data.get("date")
+    focus = data.get("focus", "").strip()
+
+    if not date or not focus:
+        return jsonify({"error": "Date and focus are required"}), 400
+
+    focus_data = load_focus()
+    focus_data[date] = focus
+    save_focus(focus_data)
+    return jsonify({"message": "Focus saved"}), 201
 
 if __name__ == '__main__':
     app.run(debug=True)
