@@ -15,6 +15,7 @@ CORS(app, resources={r"/*": {"origins": [
 TASK_FILE = 'tasks.json'
 GOAL_FILE = 'goals.json'
 LOG_FILE = 'logs.json'
+NOTE_FILE = 'notes.json'
 
 # === TASK HELPERS ===
 def load_tasks():
@@ -48,6 +49,17 @@ def load_logs():
 def save_logs(logs):
     with open(LOG_FILE, 'w') as f:
         json.dump(logs, f, indent=2)
+
+# === NOTE HELPERS ===
+def load_notes():
+    if os.path.exists(NOTE_FILE):
+        with open(NOTE_FILE, 'r') as f:
+            return json.load(f)
+    return []
+
+def save_notes(notes):
+    with open(NOTE_FILE, 'w') as f:
+        json.dump(notes, f, indent=2)
 
 # === TASK ROUTES ===
 @app.route('/tasks/<int:index>/toggle', methods=['PATCH'])
@@ -149,6 +161,48 @@ def delete_goal(index):
         save_goals(goals)
         return jsonify({"message": "Goal deleted"}), 200
     return jsonify({"error": "Goal not found"}), 404
+
+# === NOTE ROUTES ===
+@app.route('/notes', methods=['GET'])
+def get_notes():
+    return jsonify(load_notes())
+
+@app.route('/notes', methods=['POST'])
+def add_note():
+    notes = load_notes()
+    data = request.json
+
+    new_note = {
+        "title": data.get("title", ""),
+        "content": data.get("content", ""),
+        "date": data.get("date", ""),
+        "pinned": data.get("pinned", False)
+    }
+
+    notes.append(new_note)
+    save_notes(notes)
+    return jsonify({"message": "Note added"}), 201
+
+@app.route('/notes/<int:index>', methods=['PUT'])
+def update_note(index):
+    notes = load_notes()
+    if 0 <= index < len(notes):
+        updated = request.json
+        notes[index]['title'] = updated.get('title', notes[index]['title'])
+        notes[index]['content'] = updated.get('content', notes[index]['content'])
+        notes[index]['pinned'] = updated.get('pinned', notes[index].get('pinned', False))
+        save_notes(notes)
+        return jsonify({"message": "Note updated"}), 200
+    return jsonify({"error": "Note not found"}), 404
+
+@app.route('/notes/<int:index>', methods=['DELETE'])
+def delete_note(index):
+    notes = load_notes()
+    if 0 <= index < len(notes):
+        notes.pop(index)
+        save_notes(notes)
+        return jsonify({"message": "Note deleted"}), 200
+    return jsonify({"error": "Note not found"}), 404
 
 if __name__ == '__main__':
     app.run(debug=True)

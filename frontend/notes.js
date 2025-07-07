@@ -13,7 +13,8 @@ form.addEventListener("submit", async (e) => {
     title: titleInput.value.trim(),
     content: contentInput.value.trim(),
     date: dateInput.value || new Date().toISOString().split("T")[0],
-    created_at: new Date().toISOString()
+    created_at: new Date().toISOString(),
+    pinned: false
   };
 
   const res = await fetch("https://avdevplanner.onrender.com/notes", {
@@ -50,12 +51,14 @@ async function loadNotes() {
         <p>${note.content}</p>
         <p><small>${note.date ? `Date: ${note.date}` : ""}</small></p>
         <p><small>Created: ${new Date(note.created_at).toLocaleString()}</small></p>
+        <button class="pin-note" data-index="${index}">${note.pinned ? "Unpin" : "Pin"}</button>
         <button class="delete-note" data-index="${index}">Delete</button>
       `;
 
       container.appendChild(card);
     });
 
+    // DELETE
     document.querySelectorAll(".delete-note").forEach((btn) => {
       btn.addEventListener("click", async (e) => {
         const index = e.target.getAttribute("data-index");
@@ -73,6 +76,33 @@ async function loadNotes() {
         }
       });
     });
+
+    // PIN / UNPIN
+    document.querySelectorAll(".pin-note").forEach((btn) => {
+      btn.addEventListener("click", async (e) => {
+        const index = e.target.getAttribute("data-index");
+
+        // Refetch the latest note data
+        const note = notes[index];
+        const updatedNote = {
+          ...note,
+          pinned: !note.pinned
+        };
+
+        const res = await fetch(`https://avdevplanner.onrender.com/notes/${index}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updatedNote)
+        });
+
+        if (res.ok) {
+          loadNotes();
+        } else {
+          console.error("Failed to update pin status");
+        }
+      });
+    });
+
   } catch (err) {
     container.innerHTML = "<p>Error loading notes.</p>";
     console.error(err);

@@ -70,13 +70,13 @@ ul {
 
 .logo {
   flex: 1;
-  color: #ff00ff;
+  color: rgb(255, 0, 255);
   font-weight: 900;
   font-family: monospace;
   white-space: nowrap;
   margin-right: 15px;
   
-  background: linear-gradient(270deg, #ff00ff, #00ffff, #ff00ff);
+  background: linear-gradient(270deg, #ff00ff, rgb(0, 255, 255), #ff00ff);
   background-size: 600% 600%;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
