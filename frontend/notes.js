@@ -1,35 +1,37 @@
-const form = document.getElementById("note-form");
 const titleInput = document.getElementById("note-title");
 const contentInput = document.getElementById("note-content");
 const dateInput = document.getElementById("note-date");
+const saveBtn = document.getElementById("save-note-btn");
 const container = document.getElementById("notes-container");
 
-loadNotes();
+if (saveBtn) {
+  saveBtn.addEventListener("click", async () => {
+    const newNote = {
+      title: titleInput.value.trim(),
+      content: contentInput.value.trim(),
+      date: dateInput.value || new Date().toISOString().split("T")[0],
+      created_at: new Date().toISOString(),
+      pinned: false
+    };
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
+    const res = await fetch("https://avdevplanner.onrender.com/notes", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newNote)
+    });
 
-  const newNote = {
-    title: titleInput.value.trim(),
-    content: contentInput.value.trim(),
-    date: dateInput.value || new Date().toISOString().split("T")[0],
-    created_at: new Date().toISOString(),
-    pinned: false
-  };
-
-  const res = await fetch("https://avdevplanner.onrender.com/notes", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(newNote)
+    if (res.ok) {
+      titleInput.value = "";
+      contentInput.value = "";
+      dateInput.value = "";
+      loadNotes();
+    } else {
+      console.error("Failed to save note:", await res.text());
+    }
   });
 
-  if (res.ok) {
-    form.reset();
-    loadNotes(); // reload after save
-  } else {
-    console.error("Failed to save note:", await res.text());
-  }
-});
+  loadNotes();
+}
 
 async function loadNotes() {
   container.innerHTML = "";
@@ -58,7 +60,6 @@ async function loadNotes() {
       container.appendChild(card);
     });
 
-    // DELETE
     document.querySelectorAll(".delete-note").forEach((btn) => {
       btn.addEventListener("click", async (e) => {
         const index = e.target.getAttribute("data-index");
@@ -77,12 +78,9 @@ async function loadNotes() {
       });
     });
 
-    // PIN / UNPIN
     document.querySelectorAll(".pin-note").forEach((btn) => {
       btn.addEventListener("click", async (e) => {
         const index = e.target.getAttribute("data-index");
-
-        // Refetch the latest note data
         const note = notes[index];
         const updatedNote = {
           ...note,
