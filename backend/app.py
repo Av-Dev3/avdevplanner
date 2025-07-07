@@ -12,7 +12,6 @@ CORS(app, resources={r"/*": {"origins": [
     "https://avdevplanner.netlify.app"
 ]}})
 
-# === FILE PATHS ===
 TASK_FILE = 'tasks.json'
 GOAL_FILE = 'goals.json'
 LOG_FILE = 'logs.json'
@@ -75,20 +74,8 @@ def save_focus(focus_data):
         json.dump(focus_data, f, indent=2)
 
 # === TASK ROUTES ===
-@app.route('/tasks', methods=['GET'])
-def get_tasks():
-    return jsonify(load_tasks())
-
-@app.route('/tasks', methods=['POST'])
-def add_task():
-    tasks = load_tasks()
-    new_task = request.json
-    tasks.append(new_task)
-    save_tasks(tasks)
-    return jsonify({"message": "Task added"}), 201
-
 @app.route('/tasks/<int:index>/toggle', methods=['PATCH'])
-def toggle_task(index):
+def toggle_tasks(index):
     tasks = load_tasks()
     if 0 <= index < len(tasks):
         tasks[index]['completed'] = not tasks[index].get('completed', False)
@@ -105,39 +92,19 @@ def delete_task(index):
         return jsonify({"message": "Task deleted"}), 200
     return jsonify({"error": "Task not found"}), 404
 
-# === GOAL ROUTES ===
-@app.route('/goals', methods=['GET'])
-def get_goals():
-    return jsonify(load_goals())
+@app.route('/tasks', methods=['POST'])
+def add_task():
+    tasks = load_tasks()
+    new_task = request.json
+    tasks.append(new_task)
+    save_tasks(tasks)
+    return jsonify({"message": "Task added"}), 201
 
-@app.route('/goals', methods=['POST'])
-def add_goal():
-    goals = load_goals()
-    goals.append(request.json)
-    save_goals(goals)
-    return jsonify({"message": "Goal added"}), 201
+@app.route('/tasks', methods=['GET'])
+def get_tasks():
+    return jsonify(load_tasks())
 
-@app.route('/goals/<int:index>', methods=['PUT'])
-def update_goal(index):
-    goals = load_goals()
-    if 0 <= index < len(goals):
-        updated = request.json
-        goals[index]['title'] = updated.get('title', goals[index]['title'])
-        goals[index]['notes'] = updated.get('notes', goals[index]['notes'])
-        save_goals(goals)
-        return jsonify({"message": "Goal updated"}), 200
-    return jsonify({"error": "Goal not found"}), 404
-
-@app.route('/goals/<int:index>', methods=['DELETE'])
-def delete_goal(index):
-    goals = load_goals()
-    if 0 <= index < len(goals):
-        goals.pop(index)
-        save_goals(goals)
-        return jsonify({"message": "Goal deleted"}), 200
-    return jsonify({"error": "Goal not found"}), 404
-
-# === LOG ROUTES ===
+# === DAILY LOG ROUTES ===
 @app.route('/logs', methods=['GET'])
 def get_logs():
     return jsonify(load_logs())
@@ -174,6 +141,39 @@ def delete_log(date, index):
         return jsonify({"message": "Log deleted"}), 200
     return jsonify({"error": "Log not found"}), 404
 
+# === WEEKLY GOAL ROUTES ===
+@app.route('/goals', methods=['GET'])
+def get_goals():
+    return jsonify(load_goals())
+
+@app.route('/goals', methods=['POST'])
+def add_goal():
+    goals = load_goals()
+    new_goal = request.json
+    goals.append(new_goal)
+    save_goals(goals)
+    return jsonify({"message": "Goal added"}), 201
+
+@app.route('/goals/<int:index>', methods=['PUT'])
+def update_goal(index):
+    goals = load_goals()
+    if 0 <= index < len(goals):
+        updated = request.json
+        goals[index]['title'] = updated.get('title', goals[index]['title'])
+        goals[index]['notes'] = updated.get('notes', goals[index]['notes'])
+        save_goals(goals)
+        return jsonify({"message": "Goal updated"}), 200
+    return jsonify({"error": "Goal not found"}), 404
+
+@app.route('/goals/<int:index>', methods=['DELETE'])
+def delete_goal(index):
+    goals = load_goals()
+    if 0 <= index < len(goals):
+        goals.pop(index)
+        save_goals(goals)
+        return jsonify({"message": "Goal deleted"}), 200
+    return jsonify({"error": "Goal not found"}), 404
+
 # === NOTE ROUTES ===
 @app.route('/notes', methods=['GET'])
 def get_notes():
@@ -183,13 +183,15 @@ def get_notes():
 def add_note():
     notes = load_notes()
     data = request.json
+
     new_note = {
         "title": data.get("title", ""),
         "content": data.get("content", ""),
         "date": data.get("date", ""),
-        "created_at": data.get("created_at", ""),
-        "pinned": data.get("pinned", False)
+        "pinned": data.get("pinned", False),
+        "created_at": data.get("created_at", "")
     }
+
     notes.append(new_note)
     save_notes(notes)
     return jsonify({"message": "Note added"}), 201
@@ -215,14 +217,14 @@ def delete_note(index):
         return jsonify({"message": "Note deleted"}), 200
     return jsonify({"error": "Note not found"}), 404
 
-# === FOCUS ROUTES ===
+# === DAILY FOCUS ROUTES ===
 @app.route('/focus', methods=['GET'])
 def get_focus():
-    date = request.args.get("date")
     focus_data = load_focus()
+    date = request.args.get("date")
     if date:
-        return jsonify({"focus": focus_data.get(date, "")})
-    return jsonify(focus_data)
+        return jsonify({"focus": focus_data.get(date, "")}), 200
+    return jsonify(focus_data), 200
 
 @app.route('/focus', methods=['POST'])
 def save_focus_entry():
@@ -238,6 +240,5 @@ def save_focus_entry():
     save_focus(focus_data)
     return jsonify({"message": "Focus saved"}), 201
 
-# === RUN APP ===
 if __name__ == '__main__':
     app.run(debug=True)
