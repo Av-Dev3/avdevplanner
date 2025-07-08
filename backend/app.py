@@ -14,7 +14,7 @@ CORS(app, resources={r"/*": {"origins": [
 ]}}, supports_credentials=True)
 
 # === Load API key from environment ===
-openai.api_key = os.environ.get("OPENAI_API_KEY")
+openai.api_key = os.getenv("OPENAI_API_KEY")
 
 # === FILES ===
 TASK_FILE = 'tasks.json'
