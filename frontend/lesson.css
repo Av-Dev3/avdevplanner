@@ -1,25 +1,61 @@
-
-
-#lesson-form input {
-  width: 100%;
-  max-width: 200px;
-  border-radius: 5px;
-  border-color: #18181b;
-  color: #000000;
-  padding: 10px;
-  margin: 2px;
-}
-
-#lesson-form textarea {
-  border-radius: 5px;
-  width: 100%;
-  max-width: 200px;
-  padding: 10px;
-  margin: 2px;
-}
-
-#lessons-container {
+/* Section Card Style */
+.weekly-lessons-section {
+  background-color: #1f1f1f;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  color: #e4e4e7;
   display: flex;
-  padding: 1rem;
-  margin: 0.5rem;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+/* Section Heading */
+.weekly-lessons-section h2 {
+  margin-top: 0;
+  font-size: 1.2rem;
+  color: #f0f0f0;
+}
+
+/* Form Styling */
+#lesson-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+#lesson-form input,
+#lesson-form textarea {
+  padding: 10px;
+  border: 1px solid #333;
+  border-radius: 8px;
+  background-color: #121212;
+  color: #e4e4e7;
+  font-size: 0.95rem;
+  resize: vertical;
+}
+
+/* Button Styling */
+#lesson-form button {
+  padding: 12px 16px;
+  background-color: #4c8eda;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#lesson-form button:hover {
+  background-color: #3b6fb3;
+}
+
+/* Saved Lessons Container */
+#lessons-container {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }

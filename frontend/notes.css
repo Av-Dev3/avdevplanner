@@ -1,0 +1,93 @@
+/* Section Heading */
+h2 {
+  text-align: center;
+  color: #e4e4e7;
+  margin: 20px 0 10px;
+  font-size: 1.2rem;
+}
+
+/* Note Input Card */
+.note-input-card {
+  background-color: #1f1f1f;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 500px;
+  margin: 0 auto 24px;
+}
+
+/* Inputs & Textarea */
+.note-input-card input,
+.note-input-card textarea {
+  background-color: #121212;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 10px;
+  color: #e4e4e7;
+  font-size: 0.95rem;
+  font-family: inherit;
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+}
+
+.note-input-card textarea {
+  min-height: 100px;
+}
+
+/* Button */
+.note-input-card button {
+  align-self: flex-end;
+  padding: 10px 16px;
+  background-color: #4c8eda;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.note-input-card button:hover {
+  background-color: #3b6fb3;
+}
+
+/* Notes Display Container */
+#notes-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+  padding: 0 1rem 2rem;
+}
+
+/* Individual Note Cards */
+.note-card {
+  background-color: #1f1f24;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+  color: #e4e4e7;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.note-card h3 {
+  font-size: 1rem;
+  color: #f4f4f5;
+  margin: 0;
+}
+
+.note-card time {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+.note-card p {
+  font-size: 0.9rem;
+  color: #d1d1d1;
+  margin: 0;
+}

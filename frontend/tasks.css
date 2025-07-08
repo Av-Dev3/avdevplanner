@@ -1,0 +1,133 @@
+/* Task Form Container */
+#task-form {
+  background-color: #1f1f1f;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 500px;
+  margin: 20px auto;
+}
+
+/* Form Labels */
+#task-form label {
+  color: #cfcfcf;
+  font-size: 0.9rem;
+}
+
+/* Inputs & Textarea */
+#task-form input,
+#task-form textarea {
+  background-color: #121212;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 10px;
+  color: #e4e4e7;
+  font-size: 0.95rem;
+  font-family: inherit;
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+}
+
+/* Button */
+#task-form button {
+  padding: 12px 16px;
+  background-color: #4c8eda;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#task-form button:hover {
+  background-color: #3b6fb3;
+}
+
+/* Date & Time Bar */
+#datetime-bar {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+#current-date,
+#current-time {
+  font-size: 1.1rem;
+  font-weight: 900;
+  font-family: monospace;
+  color: #f4f4f5;
+}
+
+/* Task Container */
+#task-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+/* Task Date Group (Each Day's Tasks) */
+.task-date-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Date Heading */
+.task-date-heading {
+  font-size: 1.1rem;
+  font-weight: 800;
+  font-family: monospace;
+  color: #f4f4f5;
+  background-color: #1f1f24;
+  padding: 6px 10px;
+  border-left: 4px solid #4c8eda;
+  border-radius: 4px;
+}
+
+/* Task Grid */
+.task-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+/* Individual Task Card */
+.task-card {
+  background-color: #1f1f24;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+  color: #e4e4e7;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.task-card h3 {
+  color: #f4f4f5;
+  font-size: 1rem;
+  margin: 0;
+}
+
+.task-card p {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.4;
+  color: #d1d1d1;
+}
+
+/* Task History Title */
+#task-history h2 {
+  color: #e4e4e7;
+  font-size: 1.2rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}

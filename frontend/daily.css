@@ -1,0 +1,103 @@
+/* ───────────────────────────────────────────
+   DAILY PAGE LAYOUT
+────────────────────────────────────────────*/
+#daily {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  padding: 24px;
+  color: #e4e4e7;
+}
+
+@media (max-width: 768px) {
+  #daily {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* section headings */
+#daily > h2 {
+  grid-column: 1 / -1;          /* force each heading full-width */
+  margin: 0 0 8px 0;
+  font-size: 1.2rem;
+  color: #f0f0f0;
+}
+
+/* containers for tasks, goals, logs */
+#log-tasks-container,
+#log-goals-container,
+#daily-log-entries {
+  background-color: #1f1f1f;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 120px;            /* keeps empty cards visible */
+}
+
+/* make tasks & goals sit side-by-side on desktop */
+#log-tasks-container { grid-column: 1; }
+#log-goals-container { grid-column: 2; }
+
+/* personal log form spans full width */
+#daily-log-form {
+  grid-column: 1 / -1;
+  background-color: #1f1f1f;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 8px;
+}
+
+/* form controls */
+#daily-log-form label {
+  font-size: 0.9rem;
+  color: #c3c3c3;
+}
+
+#daily-log-form input,
+#daily-log-form textarea {
+  padding: 10px;
+  border: 1px solid #333;
+  border-radius: 8px;
+  background-color: #121212;
+  color: #e4e4e7;
+  font-size: 0.95rem;
+  resize: vertical;
+}
+
+#daily-log-form button {
+  align-self: flex-start;
+  padding: 12px 16px;
+  background-color: #4c8eda;
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#daily-log-form button:hover {
+  background-color: #3b6fb3;
+}
+
+/* individual log entry cards (you’ll add these via JS) */
+.log-entry {
+  background-color: #262626;
+  border-radius: 10px;
+  padding: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.log-entry h3   { margin: 0;  font-size: 1rem; color: #f0f0f0; }
+.log-entry time { font-size: 0.8rem; color: #888; }
+.log-entry p    { margin: 0;  font-size: 0.92rem; color: #d4d4d4; }
