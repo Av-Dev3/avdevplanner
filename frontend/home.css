@@ -29,3 +29,10 @@
 #quote-section p {
   margin-top: 5px;
 }
+
+@media (max-width: 768px) {
+  #home {
+    display: flex;
+    flex-direction: column;
+  }
+}

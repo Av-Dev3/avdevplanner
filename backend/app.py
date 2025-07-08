@@ -260,18 +260,7 @@ def get_lessons():
 @app.route('/lessons', methods=['POST'])
 def add_lesson():
     lessons = load_lessons()
-    data = request.json
-
-    new_lesson = {
-        "title": data.get("title", ""),
-        "description": data.get("description", ""),
-        "category": data.get("category", ""),
-        "date": data.get("date", ""),
-        "priority": data.get("priority", ""),
-        "notes": data.get("notes", ""),
-        "completed": False
-    }
-
+    new_lesson = request.json
     lessons.append(new_lesson)
     save_lessons(lessons)
     return jsonify({"message": "Lesson added"}), 201

@@ -444,6 +444,8 @@ h2 {
 
 #notes-container {
   display: flex;
+  padding: 1rem;
+  margin: 0.5rem;
 }
 
 
