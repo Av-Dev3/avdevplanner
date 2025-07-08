@@ -1,8 +1,11 @@
 #home {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
   padding: 1rem;
   gap: 10px;
   width: 100%;
+  justify-content: center;
 }
 
 
