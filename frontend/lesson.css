@@ -17,3 +17,7 @@
   padding: 10px;
   margin: 2px;
 }
+
+#lessons-container {
+  display: flex;
+}

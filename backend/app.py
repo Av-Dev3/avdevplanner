@@ -10,8 +10,9 @@ CORS(app, resources={r"/*": {"origins": [
     "http://localhost:3000",
     "http://127.0.0.1:5000",
     "https://avdevplanner.netlify.app"
-]}})
+]}}, supports_credentials=True)
 
+# === FILES ===
 TASK_FILE = 'tasks.json'
 GOAL_FILE = 'goals.json'
 LOG_FILE = 'logs.json'
@@ -116,7 +117,7 @@ def add_task():
 def get_tasks():
     return jsonify(load_tasks())
 
-# === DAILY LOG ROUTES ===
+# === LOG ROUTES ===
 @app.route('/logs', methods=['GET'])
 def get_logs():
     return jsonify(load_logs())
@@ -153,7 +154,7 @@ def delete_log(date, index):
         return jsonify({"message": "Log deleted"}), 200
     return jsonify({"error": "Log not found"}), 404
 
-# === WEEKLY GOAL ROUTES ===
+# === GOAL ROUTES ===
 @app.route('/goals', methods=['GET'])
 def get_goals():
     return jsonify(load_goals())
@@ -229,7 +230,7 @@ def delete_note(index):
         return jsonify({"message": "Note deleted"}), 200
     return jsonify({"error": "Note not found"}), 404
 
-# === DAILY FOCUS ROUTES ===
+# === FOCUS ROUTES ===
 @app.route('/focus', methods=['GET'])
 def get_focus():
     focus_data = load_focus()
@@ -260,10 +261,31 @@ def get_lessons():
 @app.route('/lessons', methods=['POST'])
 def add_lesson():
     lessons = load_lessons()
-    new_lesson = request.json
+    data = request.json
+
+    new_lesson = {
+        "title": data.get("title", ""),
+        "description": data.get("description", ""),
+        "category": data.get("category", ""),
+        "date": data.get("date", ""),
+        "priority": data.get("priority", ""),
+        "notes": data.get("notes", ""),
+        "completed": False
+    }
+
     lessons.append(new_lesson)
     save_lessons(lessons)
     return jsonify({"message": "Lesson added"}), 201
+
+@app.route('/lessons/<int:index>', methods=['PUT'])
+def update_lesson(index):
+    lessons = load_lessons()
+    if 0 <= index < len(lessons):
+        updated = request.json
+        lessons[index]['completed'] = updated.get('completed', lessons[index].get('completed', False))
+        save_lessons(lessons)
+        return jsonify({"message": "Lesson updated"}), 200
+    return jsonify({"error": "Lesson not found"}), 404
 
 if __name__ == '__main__':
     app.run(debug=True)
