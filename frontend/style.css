@@ -472,19 +472,10 @@ h2 {
   transform: rotate(-45deg) translate(5px, -5px);
 }
 
-#quote-section {
-  color: #f4f4f5;
-  background-color: #1f1f24;
-   border: 2px solid #ff00ff;
-  box-shadow: 0 2px 6px #ff00ff;
-  text-align: center;
-  padding: 0.5rem;
-  margin: 1rem;
-}
 
-#quote-section p {
-  margin-top: 5px;
-}
+
+
+
 
 .footer {
   display: flex;
