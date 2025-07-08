@@ -17,6 +17,7 @@ GOAL_FILE = 'goals.json'
 LOG_FILE = 'logs.json'
 NOTE_FILE = 'notes.json'
 FOCUS_FILE = 'focus.json'
+LESSON_FILE = 'lessons.json'
 
 # === TASK HELPERS ===
 def load_tasks():
@@ -72,6 +73,17 @@ def load_focus():
 def save_focus(focus_data):
     with open(FOCUS_FILE, 'w') as f:
         json.dump(focus_data, f, indent=2)
+
+# === LESSON HELPERS ===
+def load_lessons():
+    if os.path.exists(LESSON_FILE):
+        with open(LESSON_FILE, 'r') as f:
+            return json.load(f)
+    return []
+
+def save_lessons(lessons):
+    with open(LESSON_FILE, 'w') as f:
+        json.dump(lessons, f, indent=2)
 
 # === TASK ROUTES ===
 @app.route('/tasks/<int:index>/toggle', methods=['PATCH'])
@@ -239,6 +251,30 @@ def save_focus_entry():
     focus_data[date] = focus
     save_focus(focus_data)
     return jsonify({"message": "Focus saved"}), 201
+
+# === LESSON ROUTES ===
+@app.route('/lessons', methods=['GET'])
+def get_lessons():
+    return jsonify(load_lessons())
+
+@app.route('/lessons', methods=['POST'])
+def add_lesson():
+    lessons = load_lessons()
+    data = request.json
+
+    new_lesson = {
+        "title": data.get("title", ""),
+        "description": data.get("description", ""),
+        "category": data.get("category", ""),
+        "date": data.get("date", ""),
+        "priority": data.get("priority", ""),
+        "notes": data.get("notes", ""),
+        "completed": False
+    }
+
+    lessons.append(new_lesson)
+    save_lessons(lessons)
+    return jsonify({"message": "Lesson added"}), 201
 
 if __name__ == '__main__':
     app.run(debug=True)

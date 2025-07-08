@@ -442,6 +442,10 @@ h2 {
   color: #ffffff;
 }
 
+#notes-container {
+  display: flex;
+}
+
 
 /* Hamburger stays hidden by default */
 .hamburger {

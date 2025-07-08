@@ -1,0 +1,19 @@
+
+
+#lesson-form input {
+  width: 100%;
+  max-width: 200px;
+  border-radius: 5px;
+  border-color: #18181b;
+  color: #000000;
+  padding: 10px;
+  margin: 2px;
+}
+
+#lesson-form textarea {
+  border-radius: 5px;
+  width: 100%;
+  max-width: 200px;
+  padding: 10px;
+  margin: 2px;
+}

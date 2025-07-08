@@ -4,10 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="lesson.css">
   <title>Document</title>
 </head>
 <body>
- <div class="page-content">
+  <div class="page-content">
 <header class="head">
   <div class="nav-container">
     <div class="nav-left">
@@ -37,27 +38,31 @@
     </nav>
   </div>
 </header>
-  <h2>Goals</h2>
-  <form id="weekly-goal-form">
-  <label for="goal-title">Goal Title</label>
-  <input type="text" id="goal-title" required>
 
-  <label for="goal-notes">Notes (optional)</label>
-  <textarea id="goal-notes" rows="4" placeholder="Details, milestones, etc."></textarea>
+  <section class="weekly-lessons-section">
+  <h2>Weekly Lessons</h2>
+  <form id="lesson-form">
+    <input type="text" id="lesson-title" placeholder="Lesson title" required />
+    <input type="text" id="lesson-category" placeholder="Category (e.g., Math, AI)" />
+    <input type="date" id="lesson-date" />
+    <input type="text" id="lesson-priority" placeholder="Priority (e.g., High, Medium, Low)" />
+    <textarea id="lesson-description" placeholder="Lesson description"></textarea>
+    <textarea id="lesson-notes" placeholder="Additional notes (optional)"></textarea>
+    <button type="submit">Save Lesson</button>
+  </form>
 
-  <button type="submit">Add Weekly Goal</button>
-</form>
+  <div id="lessons-container"></div>
+</section>
 
-<div id="weekly-goals-container"></div>
-</div>
 
-<footer class="footer">
+  </div>
+  <footer class="footer">
     <span>Eat</span>
     <span>Sleep</span>
     <span>Code</span>
     <span>Repeat</span>
   </footer>
-<script src="goals.js"></script>
 <script src="nav.js"></script>
+<script src="lesson.js"></script>
 </body>
 </html>
