@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 import json
 import os
+import openai
 from flask_cors import CORS
 
 app = Flask(__name__)
@@ -11,6 +12,9 @@ CORS(app, resources={r"/*": {"origins": [
     "http://127.0.0.1:5000",
     "https://avdevplanner.netlify.app"
 ]}}, supports_credentials=True)
+
+# === Load API key from environment ===
+openai.api_key = os.environ.get("OPENAI_API_KEY")
 
 # === FILES ===
 TASK_FILE = 'tasks.json'
@@ -286,6 +290,32 @@ def update_lesson(index):
         save_lessons(lessons)
         return jsonify({"message": "Lesson updated"}), 200
     return jsonify({"error": "Lesson not found"}), 404
+
+# === AI ROUTE ===
+@app.route('/ai', methods=['POST'])
+def ai_response():
+    data = request.json
+    prompt = data.get("prompt")
+
+    if not prompt:
+        return jsonify({"error": "Prompt required"}), 400
+
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": "You're a helpful productivity assistant for a planner app."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.7,
+            max_tokens=150
+        )
+        result = response.choices[0].message['content'].strip()
+        return jsonify({"response": result}), 200
+
+    except Exception as e:
+        print("OpenAI error:", e)
+        return jsonify({"error": "AI request failed"}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
