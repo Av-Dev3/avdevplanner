@@ -32,7 +32,8 @@ section h2, .quote-title {
 }
 
 /* INPUT STYLES */
-#daily-focus-input {
+#daily-focus-input,
+#ai-task-input {
   padding: 10px;
   border: 1px solid #333;
   border-radius: 8px;
@@ -43,9 +44,10 @@ section h2, .quote-title {
   box-sizing: border-box;
 }
 
-#save-focus-btn {
+/* BUTTON STYLES */
+#save-focus-btn,
+#ask-ai-btn {
   padding: 10px 14px;
-  margin-top: 8px;
   border: none;
   border-radius: 8px;
   background-color: #4c8eda;
@@ -55,7 +57,8 @@ section h2, .quote-title {
   transition: background-color 0.2s ease;
 }
 
-#save-focus-btn:hover {
+#save-focus-btn:hover,
+#ask-ai-btn:hover {
   background-color: #3b6fb3;
 }
 
@@ -73,24 +76,20 @@ section h2, .quote-title {
   color: #d1d1d1;
 }
 
-/* ASK AI BUTTON */
-#ask-ai-btn {
-  margin-top: 20px;
-  padding: 12px 16px;
-  background-color: #4c8eda;
-  border: none;
-  border-radius: 10px;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-#ask-ai-btn:hover {
-  background-color: #3b6fb3;
-}
-
+/* AI RESPONSE */
 #ai-result {
   font-size: 0.9rem;
   color: #c9c9c9;
+  margin-top: 8px;
+}
+#ai-input-group {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 10px;
+}
+
+/* Let input grow to fill available space */
+#ai-task-input {
+  flex: 1;
 }

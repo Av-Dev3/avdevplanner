@@ -14,7 +14,7 @@ async function callAI(prompt) {
     }
 
     const data = await response.json();
-    return data.response;
+    return data.message || data.response || "AI responded, but something was unexpected.";
   } catch (error) {
     console.error('AI error:', error);
     return "Sorry, I couldn't process that.";
@@ -24,14 +24,18 @@ async function callAI(prompt) {
 // === AI Button Logic ===
 document.addEventListener("DOMContentLoaded", () => {
   const aiButton = document.getElementById("ask-ai-btn");
+  const inputField = document.getElementById("ai-task-input");
   const resultBox = document.getElementById("ai-result");
 
-  if (aiButton && resultBox) {
+  if (aiButton && inputField && resultBox) {
     aiButton.addEventListener("click", async () => {
+      const prompt = inputField.value.trim();
+      if (!prompt) return;
+
       resultBox.textContent = "Thinking...";
-      const prompt = "What are 3 good goals I can set for this week?";
       const response = await callAI(prompt);
       resultBox.textContent = response;
+      inputField.value = "";
     });
   }
 });

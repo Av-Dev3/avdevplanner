@@ -21,6 +21,7 @@ LOG_FILE = 'logs.json'
 NOTE_FILE = 'notes.json'
 FOCUS_FILE = 'focus.json'
 LESSON_FILE = 'lessons.json'
+SCHEDULE_FILE = 'schedule.json'
 
 # === HELPERS ===
 def load_json(filename, default):
@@ -228,14 +229,66 @@ def ai_assistant():
         if not prompt:
             return jsonify({"error": "Prompt is required"}), 400
 
+        system_message = """
+You are a helpful productivity assistant.
+When the user provides a message, return a structured JSON object with these keys:
+- tasks: list of task objects (title, notes, date, completed)
+- goals: list of goal objects (title, notes, completed)
+- lessons: list of lesson objects (title, description, category, date, priority, notes, completed)
+- schedule: list of scheduled items (title, date, time, notes)
+
+Only include keys that apply. Use today's date only if no date is implied. Respond ONLY with valid JSON — no explanation.
+        """
+
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "You are a helpful planner assistant."},
+                {"role": "system", "content": system_message},
                 {"role": "user", "content": prompt}
             ]
         )
-        return jsonify({"response": response.choices[0].message.content}), 200
+
+        parsed = json.loads(response.choices[0].message.content.strip())
+
+        # === TASKS ===
+        tasks = load_json(TASK_FILE, [])
+        for task in parsed.get("tasks", []):
+            task["completed"] = task.get("completed", False)
+            tasks.append(task)
+        save_json(TASK_FILE, tasks)
+
+        # === GOALS ===
+        goals = load_json(GOAL_FILE, [])
+        for goal in parsed.get("goals", []):
+            goal["completed"] = goal.get("completed", False)
+            goals.append(goal)
+        save_json(GOAL_FILE, goals)
+
+        # === LESSONS ===
+        lessons = load_json(LESSON_FILE, [])
+        for lesson in parsed.get("lessons", []):
+            lesson["completed"] = lesson.get("completed", False)
+            lessons.append(lesson)
+        save_json(LESSON_FILE, lessons)
+
+        # === SCHEDULE ===
+        schedule = load_json(SCHEDULE_FILE, [])
+        for item in parsed.get("schedule", []):
+            schedule.append(item)
+        save_json(SCHEDULE_FILE, schedule)
+
+        # === Summary ===
+        summary = {
+            "tasks": len(parsed.get("tasks", [])),
+            "goals": len(parsed.get("goals", [])),
+            "lessons": len(parsed.get("lessons", [])),
+            "schedule": len(parsed.get("schedule", []))
+        }
+
+        return jsonify({
+            "message": f"✅ Added {summary['tasks']} task(s), {summary['goals']} goal(s), {summary['lessons']} lesson(s), {summary['schedule']} schedule item(s)."
+        }), 200
+
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
