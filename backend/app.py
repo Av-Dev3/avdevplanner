@@ -104,19 +104,33 @@ def get_logs():
 
 @app.route('/logs', methods=['POST'])
 def add_log():
-    logs = load_json(LOG_FILE, {})
-    data = request.json
-    date = data.get("date")
-    if not date:
-        return jsonify({"error": "Date is required"}), 400
-    entry = {
-        "title": data.get("title", ""),
-        "content": data.get("content", ""),
-        "timestamp": data.get("timestamp", "")
-    }
-    logs.setdefault(date, []).append(entry)
-    save_json(LOG_FILE, logs)
-    return jsonify({"message": "Log added"}), 201
+    try:
+        data = request.json
+        print("Incoming log data:", data)  # Debug
+
+        date = data.get("date")
+        if not date:
+            return jsonify({"error": "Date is required"}), 400
+
+        logs = load_json(LOG_FILE, {})
+
+        if not isinstance(logs, dict):
+            logs = {}
+
+        entry = {
+            "title": data.get("title", ""),
+            "content": data.get("content", ""),
+            "timestamp": data.get("timestamp", "")
+        }
+
+        logs.setdefault(date, []).append(entry)
+        save_json(LOG_FILE, logs)
+
+        return jsonify({"message": "Log added"}), 201
+
+    except Exception as e:
+        print("Log POST error:", str(e))
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/logs/<date>/<int:index>', methods=['DELETE'])
 def delete_log(date, index):
