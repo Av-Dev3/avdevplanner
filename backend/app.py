@@ -254,6 +254,7 @@ Only include keys that apply. Use today's date only if no date is implied. Respo
         )
 
         parsed = json.loads(response.choices[0].message.content.strip())
+        print("AI Parsed Output:", json.dumps(parsed, indent=2))  # Debug line
 
         # === TASKS ===
         tasks = load_json(TASK_FILE, [])
@@ -283,7 +284,6 @@ Only include keys that apply. Use today's date only if no date is implied. Respo
             schedule.append(item)
         save_json(SCHEDULE_FILE, schedule)
 
-        # === Summary ===
         summary = {
             "tasks": len(parsed.get("tasks", [])),
             "goals": len(parsed.get("goals", [])),
