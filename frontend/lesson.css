@@ -87,7 +87,6 @@
   margin: 0;
   font-size: 1rem;
   color: #f4f4f5;
-  font-family: monospace;
 }
 
 /* Meta text (Category, Date, Priority) */
@@ -118,7 +117,6 @@
   border: none;
   border-radius: 8px;
   color: #fff;
-  font-family: monospace;
   font-size: 0.85rem;
   cursor: pointer;
   transition: background-color 0.2s ease;
