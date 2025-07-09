@@ -27,7 +27,18 @@ async function loadTodayTasks() {
     todayTasks.forEach(task => {
       const el = document.createElement("div");
       el.className = "task-card";
-      el.innerHTML = `<h3>${task.text}</h3><p>${task.time}</p>`;
+
+      const formattedTime = task.time
+        ? new Date(`1970-01-01T${task.time}`).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
+        : "";
+
+      el.innerHTML = `
+        <h3>${task.text || task.title || "(Untitled Task)"}</h3>
+        <p><strong>Date:</strong> ${task.date || todayStr}</p>
+        ${formattedTime ? `<p><strong>Time:</strong> ${formattedTime}</p>` : ""}
+        ${task.notes ? `<p><strong>Notes:</strong> ${task.notes}</p>` : ""}
+      `;
+
       tasksContainer.appendChild(el);
     });
   } catch (err) {

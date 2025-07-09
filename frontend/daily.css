@@ -14,7 +14,7 @@
   }
 
   #log-tasks-container { grid-column: 1; }
-  #log-goals-container { grid-column: 2; }
+  #log-goals-container { grid-column: 1; }
   #daily-log-form { grid-column: 1 / -1; }
 }
 
