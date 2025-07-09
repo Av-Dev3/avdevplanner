@@ -259,6 +259,7 @@ Only include keys that apply. Use today's date only if no date is implied. Respo
         tasks = load_json(TASK_FILE, [])
         for task in parsed.get("tasks", []):
             task["completed"] = task.get("completed", False)
+            task["text"] = task.get("text", task.get("title", ""))
             tasks.append(task)
         save_json(TASK_FILE, tasks)
 
