@@ -1,23 +1,35 @@
-/* Task Form Container */
+/* ───────────────────────────────────────────
+   TASKS PAGE  —  MODERN DARK THEME
+────────────────────────────────────────────*/
+
+/* Page Heading (e.g., <h1>Tasks</h1>) */
+#tasks-heading,
+h1#tasks-heading {
+  text-align: center;
+  color: #e4e4e7;
+  margin: 20px 0 12px;
+  font-size: 1.4rem;
+  font-family: monospace;
+}
+
+/* ── Task-creation form ──────────────────── */
 #task-form {
   background-color: #1f1f1f;
   border-radius: 12px;
   padding: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
   max-width: 500px;
-  margin: 20px auto;
+  margin: 0 auto 24px;
 }
 
-/* Form Labels */
 #task-form label {
-  color: #cfcfcf;
   font-size: 0.9rem;
+  color: #c3c3c3;
 }
 
-/* Inputs & Textarea */
 #task-form input,
 #task-form textarea {
   background-color: #121212;
@@ -26,60 +38,78 @@
   padding: 10px;
   color: #e4e4e7;
   font-size: 0.95rem;
-  font-family: inherit;
   width: 100%;
   box-sizing: border-box;
   resize: vertical;
 }
 
-/* Button */
+#task-form textarea { min-height: 100px; }
+
 #task-form button {
-  padding: 12px 16px;
+  align-self: flex-start;
+  padding: 10px 16px;
   background-color: #4c8eda;
   border: none;
   border-radius: 10px;
-  color: white;
-  font-weight: bold;
+  color: #fff;
+  font-weight: 700;
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
+#task-form button:hover { background-color: #3b6fb3; }
 
-#task-form button:hover {
-  background-color: #3b6fb3;
+/* “Create New Task” toggle button  */
+#toggle-task-form {
+  display: block;
+  margin: 0 auto 16px;
+  padding: 10px 18px;
+  background-color: transparent;
+  border: 2px solid #4c8eda;
+  border-radius: 10px;
+  color: #e4e4e7;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  margin-top: 5px;
+}
+#toggle-task-form:hover {
+  background-color: #4c8eda20;
+  color: #fff;
 }
 
-/* Date & Time Bar */
-#datetime-bar {
-  display: flex;
-  gap: 20px;
-  justify-content: center;
-  margin: 20px 0;
+/* “View All Tasks” button (injected) */
+#view-all-btn {
+  padding: 8px 14px;
+  margin-bottom: 1rem;
+  background-color: transparent;
+  border: 2px solid #4c8eda;
+  border-radius: 10px;
+  color: #e4e4e7;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+#view-all-btn:hover {
+  background-color: #4c8eda20;
+  color: #fff;
 }
 
-#current-date,
-#current-time {
-  font-size: 1.1rem;
-  font-weight: 900;
-  font-family: monospace;
-  color: #f4f4f5;
-}
-
-/* Task Container */
+/* ── Tasks Display Area ─────────────────── */
 #task-container {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  padding: 1rem;
+  gap: 24px;
+  padding: 0 1rem 2rem;
 }
 
-/* Task Date Group (Each Day's Tasks) */
+/* Group wrapper for each date */
 .task-date-group {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 10px;
 }
 
-/* Date Heading */
+/* Date heading */
 .task-date-heading {
   font-size: 1.1rem;
   font-weight: 800;
@@ -91,18 +121,18 @@
   border-radius: 4px;
 }
 
-/* Task Grid */
+/* Grid of cards under each date */
 .task-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
 }
 
-/* Individual Task Card */
+/* Individual task card (injected) */
 .task-card {
-  background-color: #1f1f24;
+  background-color: #262626;
   border-radius: 10px;
-  padding: 16px;
+  padding: 16px 18px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.35);
   color: #e4e4e7;
   display: flex;
@@ -110,24 +140,27 @@
   gap: 8px;
 }
 
-.task-card h3 {
-  color: #f4f4f5;
-  font-size: 1rem;
-  margin: 0;
-}
+.task-card h3   { margin: 0; font-size: 1rem; color: #f4f4f5; }
+.task-card p    { margin: 0; font-size: 0.9rem; color: #d1d1d1; }
 
-.task-card p {
-  margin: 0;
-  font-size: 0.92rem;
-  line-height: 1.4;
-  color: #d1d1d1;
+/* Complete / Delete buttons inside card */
+.task-card button {
+  align-self: flex-start;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  background-color: #4c8eda;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: 4px;
 }
+.task-card button:hover { background-color: #3b6fb3; }
+.task-card button + button { margin-left: 8px; }
 
-/* Task History Title */
-#task-history h2 {
-  color: #e4e4e7;
-  font-size: 1.2rem;
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-  text-align: center;
+/* ── Responsive tweaks ───────────────────── */
+@media (max-width: 768px) {
+  #task-form, #toggle-task-form { max-width: 100%; }
+  .task-date-heading { font-size: 1rem; }
 }

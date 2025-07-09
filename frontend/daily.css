@@ -1,32 +1,47 @@
-/* ───────────────────────────────────────────
-   DAILY PAGE LAYOUT
-────────────────────────────────────────────*/
+/* DAILY PAGE LAYOUT */
 #daily {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  padding: 24px;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  padding: 16px;
   color: #e4e4e7;
 }
 
-@media (max-width: 768px) {
+/* Switch to 2-column on wider screens */
+@media (min-width: 768px) {
   #daily {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
   }
+
+  #log-tasks-container { grid-column: 1; }
+  #log-goals-container { grid-column: 2; }
+  #daily-log-form { grid-column: 1 / -1; }
 }
 
 /* section headings */
 #daily > h2 {
-  grid-column: 1 / -1;          /* force each heading full-width */
-  margin: 0 0 8px 0;
-  font-size: 1.2rem;
+  grid-column: 1 / -1;
+  margin: 0 0 6px 0;
+  font-size: 1.1rem;
   color: #f0f0f0;
 }
 
-/* containers for tasks, goals, logs */
+/* task & goal containers */
 #log-tasks-container,
 #log-goals-container,
 #daily-log-entries {
+  background-color: #1f1f1f;
+  border-radius: 12px;
+  padding: 14px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 100px;
+}
+
+/* personal log form */
+#daily-log-form {
   background-color: #1f1f1f;
   border-radius: 12px;
   padding: 16px;
@@ -34,27 +49,10 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  min-height: 120px;            /* keeps empty cards visible */
+  margin-top: 4px;
 }
 
-/* make tasks & goals sit side-by-side on desktop */
-#log-tasks-container { grid-column: 1; }
-#log-goals-container { grid-column: 2; }
-
-/* personal log form spans full width */
-#daily-log-form {
-  grid-column: 1 / -1;
-  background-color: #1f1f1f;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  margin-top: 8px;
-}
-
-/* form controls */
+/* form labels & controls */
 #daily-log-form label {
   font-size: 0.9rem;
   color: #c3c3c3;
@@ -69,11 +67,13 @@
   color: #e4e4e7;
   font-size: 0.95rem;
   resize: vertical;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 #daily-log-form button {
   align-self: flex-start;
-  padding: 12px 16px;
+  padding: 10px 14px;
   background-color: #4c8eda;
   border: none;
   border-radius: 10px;
@@ -87,8 +87,8 @@
   background-color: #3b6fb3;
 }
 
-/* individual log entry cards (you’ll add these via JS) */
-.log-entry {
+/* cards injected by JS */
+.task-card {
   background-color: #262626;
   border-radius: 10px;
   padding: 14px;
@@ -96,8 +96,22 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
+  color: #e4e4e7;
 }
 
-.log-entry h3   { margin: 0;  font-size: 1rem; color: #f0f0f0; }
-.log-entry time { font-size: 0.8rem; color: #888; }
-.log-entry p    { margin: 0;  font-size: 0.92rem; color: #d4d4d4; }
+.task-card h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: #f0f0f0;
+}
+
+.task-card p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #d4d4d4;
+}
+
+.task-card small {
+  font-size: 0.8rem;
+  color: #a1a1aa;
+}

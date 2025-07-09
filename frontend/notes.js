@@ -47,7 +47,7 @@ async function loadNotes() {
 
     notes.forEach((note, index) => {
       const card = document.createElement("div");
-      card.className = "task-card";
+      card.className = "note-card";
       card.innerHTML = `
         <h3>${note.title}</h3>
         <p>${note.content}</p>

@@ -40,6 +40,7 @@ section h2, .quote-title {
   color: #e4e4e7;
   font-size: 0.95rem;
   width: 100%;
+  box-sizing: border-box;
 }
 
 #save-focus-btn {

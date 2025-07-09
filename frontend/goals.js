@@ -42,7 +42,7 @@ if (form && container) {
 
     goals.forEach((goal, index) => {
       const card = document.createElement("div");
-      card.className = "task-card";
+      card.className = "goal-card";
       card.innerHTML = `
         <h3>${goal.title}</h3>
         ${goal.notes ? `<p><strong>Notes:</strong> ${goal.notes}</p>` : ""}

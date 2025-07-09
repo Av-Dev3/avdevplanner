@@ -50,7 +50,7 @@ async function loadLessons() {
 
     lessons.forEach((lesson, index) => {
       const card = document.createElement("div");
-      card.className = "task-card";
+      card.className = "lesson-card";
       card.innerHTML = `
         <h3>${lesson.title}</h3>
         <p><strong>Category:</strong> ${lesson.category}</p>
