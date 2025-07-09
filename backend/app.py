@@ -3,6 +3,7 @@ import json
 import os
 from flask_cors import CORS
 import openai
+from datetime import datetime
 
 # === INIT ===
 app = Flask(__name__)
@@ -254,13 +255,16 @@ Only include keys that apply. Use today's date only if no date is implied. Respo
         )
 
         parsed = json.loads(response.choices[0].message.content.strip())
-        print("AI Parsed Output:", json.dumps(parsed, indent=2))  # Debug line
+        print("AI Parsed Output:", json.dumps(parsed, indent=2))
+
+        today = datetime.utcnow().strftime('%Y-%m-%d')
 
         # === TASKS ===
         tasks = load_json(TASK_FILE, [])
         for task in parsed.get("tasks", []):
             task["completed"] = task.get("completed", False)
             task["text"] = task.get("text", task.get("title", ""))
+            task["date"] = task.get("date") or today
             tasks.append(task)
         save_json(TASK_FILE, tasks)
 
@@ -281,6 +285,7 @@ Only include keys that apply. Use today's date only if no date is implied. Respo
         # === SCHEDULE ===
         schedule = load_json(SCHEDULE_FILE, [])
         for item in parsed.get("schedule", []):
+            item["date"] = item.get("date") or today
             schedule.append(item)
         save_json(SCHEDULE_FILE, schedule)
 
