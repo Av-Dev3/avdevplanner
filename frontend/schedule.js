@@ -26,7 +26,7 @@ async function renderSchedule() {
     fetch("https://avdevplanner.onrender.com/tasks").then(res => res.json()),
     fetch("https://avdevplanner.onrender.com/goals").then(res => res.json()),
     fetch("https://avdevplanner.onrender.com/lessons").then(res => res.json()),
-    fetch("https://avdevplanner.onrender.com/schedule.json").then(res => res.json())
+    fetch("https://avdevplanner.onrender.com/schedule").then(res => res.json())
   ]);
 
   // === Group by date ===
