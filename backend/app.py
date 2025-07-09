@@ -15,14 +15,17 @@ CORS(app, resources={r"/*": {"origins": [
 
 client = openai.OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
+# === DISK PATH ===
+DATA_DIR = "/mnt/data"
+
 # === FILES ===
-TASK_FILE = 'tasks.json'
-GOAL_FILE = 'goals.json'
-LOG_FILE = 'logs.json'
-NOTE_FILE = 'notes.json'
-FOCUS_FILE = 'focus.json'
-LESSON_FILE = 'lessons.json'
-SCHEDULE_FILE = 'schedule.json'
+TASK_FILE = os.path.join(DATA_DIR, 'tasks.json')
+GOAL_FILE = os.path.join(DATA_DIR, 'goals.json')
+LOG_FILE = os.path.join(DATA_DIR, 'logs.json')
+NOTE_FILE = os.path.join(DATA_DIR, 'notes.json')
+FOCUS_FILE = os.path.join(DATA_DIR, 'focus.json')
+LESSON_FILE = os.path.join(DATA_DIR, 'lessons.json')
+SCHEDULE_FILE = os.path.join(DATA_DIR, 'schedule.json')
 
 # === HELPERS ===
 def load_json(filename, default):
