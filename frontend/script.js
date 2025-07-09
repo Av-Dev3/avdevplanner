@@ -47,38 +47,12 @@ if (form) {
 
 // === DISPLAY TASKS ===
 if (container) {
-  // Check for selectedDate and a flag that confirms we navigated from schedule
   const cameFromSchedule = sessionStorage.getItem("cameFromSchedule");
-sessionStorage.removeItem("cameFromSchedule"); // Clear it FIRST
+  sessionStorage.removeItem("cameFromSchedule"); // Clear it FIRST
 
-const selectedDate = localStorage.getItem("selectedDate");
-if (!cameFromSchedule) {
-  localStorage.removeItem("selectedDate");
-}
-
-  // Clear the session flag either way
-  sessionStorage.removeItem("cameFromSchedule");
-
-  function formatTime(timeStr) {
-    if (!timeStr) return "";
-    const [hourStr, minuteStr] = timeStr.split(":");
-    const hour = parseInt(hourStr, 10);
-    const minute = parseInt(minuteStr, 10);
-    const ampm = hour >= 12 ? "PM" : "AM";
-    const hour12 = hour % 12 === 0 ? 12 : hour % 12;
-    return `${hour12}:${minute.toString().padStart(2, "0")} ${ampm}`;
-  }
-
-  function formatDate(dateStr) {
-    const [year, month, day] = dateStr.split("-");
-    const dateObj = new Date(+year, +month - 1, +day);
-    const dayNum = dateObj.getDate();
-    const monthName = dateObj.toLocaleString("default", { month: "long" });
-    const suffix =
-      dayNum % 10 === 1 && dayNum !== 11 ? "st" :
-      dayNum % 10 === 2 && dayNum !== 12 ? "nd" :
-      dayNum % 10 === 3 && dayNum !== 13 ? "rd" : "th";
-    return `${monthName} ${dayNum}${suffix}, ${year}`;
+  const selectedDate = localStorage.getItem("selectedDate");
+  if (!cameFromSchedule) {
+    localStorage.removeItem("selectedDate");
   }
 
   async function loadTasks() {
@@ -92,15 +66,20 @@ if (!cameFromSchedule) {
 
     const tasksByDate = {};
     filteredTasks.forEach((task, index) => {
+      const normalizedTask = {
+        ...task,
+        index,
+        text: task.text || task.title || "(No Title)"
+      };
+
       if (!tasksByDate[task.date]) tasksByDate[task.date] = [];
-      tasksByDate[task.date].push({ ...task, index });
+      tasksByDate[task.date].push(normalizedTask);
     });
 
     container.innerHTML = "";
 
     const sortedDates = Object.keys(tasksByDate).sort();
 
-    // Show "View All Tasks" button if a date was selected
     if (selectedDate) {
       const viewAllBtn = document.createElement("button");
       viewAllBtn.textContent = "View All Tasks";
@@ -163,6 +142,28 @@ if (!cameFromSchedule) {
       groupDiv.appendChild(grid);
       container.appendChild(groupDiv);
     });
+  }
+
+  function formatTime(timeStr) {
+    if (!timeStr) return "";
+    const [hourStr, minuteStr] = timeStr.split(":");
+    const hour = parseInt(hourStr, 10);
+    const minute = parseInt(minuteStr, 10);
+    const ampm = hour >= 12 ? "PM" : "AM";
+    const hour12 = hour % 12 === 0 ? 12 : hour % 12;
+    return `${hour12}:${minute.toString().padStart(2, "0")} ${ampm}`;
+  }
+
+  function formatDate(dateStr) {
+    const [year, month, day] = dateStr.split("-");
+    const dateObj = new Date(+year, +month - 1, +day);
+    const dayNum = dateObj.getDate();
+    const monthName = dateObj.toLocaleString("default", { month: "long" });
+    const suffix =
+      dayNum % 10 === 1 && dayNum !== 11 ? "st" :
+      dayNum % 10 === 2 && dayNum !== 12 ? "nd" :
+      dayNum % 10 === 3 && dayNum !== 13 ? "rd" : "th";
+    return `${monthName} ${dayNum}${suffix}, ${year}`;
   }
 
   loadTasks();
