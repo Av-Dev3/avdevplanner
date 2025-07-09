@@ -220,6 +220,11 @@ def update_lesson(index):
         return jsonify({"message": "Lesson updated"}), 200
     return jsonify({"error": "Lesson not found"}), 404
 
+# === SCHEDULE ===
+@app.route('/schedule', methods=['GET'])
+def get_schedule():
+    return jsonify(load_json(SCHEDULE_FILE, []))
+
 # === AI ROUTE ===
 @app.route('/ai', methods=['POST'])
 def ai_assistant():
