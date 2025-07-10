@@ -10,7 +10,9 @@ app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": [
     "http://localhost:3000",
     "http://127.0.0.1:5000",
-    "https://avdevplanner.netlify.app"
+    "https://avdevplanner.netlify.app",
+    "https://localhost",               # ← this is the Android app's WebView origin
+    "capacitor://localhost"           # ← Capacitor native origin
 ]}}, supports_credentials=True)
 
 client = openai.OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
