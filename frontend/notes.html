@@ -38,15 +38,21 @@
     </nav>
   </div>
 </header>
+<!-- Navbar remains outside this -->
+<main id="notes-wrapper">
   <h2>My Notes</h2>
-    <div class="note-input-card">
-  <input type="text" id="note-title" placeholder="Note title" />
-  <input type="date" id="note-date" />
-  <textarea id="note-content" placeholder="Write your thoughts..."></textarea>
-  <button id="save-note-btn">Save Note</button>
-</div>
+  <button id="toggle-note-editor">Create New Note</button>
 
-<div id="notes-container"></div>
+  <div class="note-input-editor hidden">
+    <input type="text" id="note-title" placeholder="Title" />
+    <textarea id="note-content" placeholder="Write your note here..."></textarea>
+    <button id="save-note-btn">Save Note</button>
+  </div>
+
+  <div id="notes-by-date-container"></div>
+</main>
+
+
 </div>
 <footer class="footer">
     <span>Eat</span>

@@ -1,82 +1,161 @@
 /* ───────────────────────────────────────────
-   NOTES PAGE STYLING
+   NOTES PAGE – FULL EDITOR STYLE
 ────────────────────────────────────────────*/
 
-/* Page Heading */
-h2 {
-  text-align: center;
-  color: #e4e4e7;
-  margin: 20px 0 10px;
-  font-size: 1.2rem;
-}
-
-/* Note-input card */
-.note-input-card {
-  background-color: #1f1f1f;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+/* Outer wrapper to isolate styles from navbar */
+#notes-wrapper {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 3rem;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  max-width: 500px;
-  margin: 0 auto 24px;
 }
 
-.note-input-card input,
-.note-input-card textarea {
-  background-color: #121212;
-  border: 1px solid #333;
-  border-radius: 8px;
-  padding: 10px;
+/* Page Heading */
+#notes-wrapper h2 {
+  text-align: left;
   color: #e4e4e7;
-  font-size: 0.95rem;
-  width: 100%;
-  box-sizing: border-box;
-  resize: vertical;
+  margin: 0 0 1rem;
+  font-size: 1.4rem;
 }
 
-.note-input-card textarea { min-height: 100px; }
+/* Toggle editor button */
+#toggle-note-editor {
+  display: inline-block;
+  align-self: flex-start;
+  margin: 0 auto;
+  margin-bottom: 2rem;
+  padding: 12px 24px;
+  background-color: #292929;
+  color: #e4e4e7;
+  border: 1px solid #444;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
 
-.note-input-card button {
-  align-self: flex-end;
-  padding: 10px 16px;
-  background-color: #4c8eda;
+#toggle-note-editor:hover {
+  background-color: #333;
+  border-color: #555;
+}
+
+/* Editor container */
+.note-input-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 3rem;
+}
+
+/* Title input */
+.note-input-editor input[type="text"] {
+  font-size: 1.3rem;
+  font-weight: 600;
+  padding: 14px;
+  background-color: #1a1a1a;
   border: none;
   border-radius: 10px;
+  color: #f0f0f0;
+  border: 1px solid #333;
+}
+
+/* Big editor textarea */
+.note-input-editor textarea {
+  min-height: 400px;
+  width: 100%;
+  max-width: 100%;
+  font-size: 1rem;
+  line-height: 1.6;
+  padding: 20px;
+  background-color: #111;
+  color: #e4e4e7;
+  border: 1px solid #333;
+  border-radius: 12px;
+  resize: vertical;
+  font-family: 'Inter', sans-serif;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
+}
+
+/* Save button */
+.note-input-editor button {
+  align-self: flex-start;
+  padding: 12px 24px;
+  background-color: #4c8eda;
+  border: none;
+  border-radius: 8px;
   color: #fff;
-  font-weight: 700;
+  font-weight: bold;
+  font-size: 1rem;
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
 
-.note-input-card button:hover { background-color: #3b6fb3; }
-
-/* Notes grid */
-#notes-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 16px;
-  padding: 0 1rem 2rem;
+.note-input-editor button:hover {
+  background-color: #3b6fb3;
 }
 
-/* Individual note cards (now injected as .note-card) */
+/* Notes grouped by date */
+#notes-by-date-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+/* Each group of notes */
+.note-date-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Date heading */
+.note-date-group h3 {
+  font-size: 1rem;
+  color: #a1a1aa;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px solid #333;
+  padding-bottom: 4px;
+}
+
+/* Hidden class for toggling */
+.hidden {
+  display: none;
+}
+
+/* Note card display */
 .note-card {
   background-color: #1f1f24;
   border-radius: 10px;
-  padding: 16px 18px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+  padding: 18px 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
   color: #e4e4e7;
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.note-card h3   { margin: 0; font-size: 1rem;  color: #f4f4f5; }
-.note-card p    { margin: 0; font-size: 0.9rem; color: #d1d1d1; }
-.note-card small{ font-size: 0.8rem; color: #a1a1aa; }
+.note-card h4 {
+  margin: 0;
+  font-size: 1rem;
+  color: #f4f4f5;
+}
 
-/* Pin / Delete buttons inside each note */
+.note-card p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #d1d1d1;
+  line-height: 1.4;
+}
+
+.note-card small {
+  font-size: 0.8rem;
+  color: #a1a1aa;
+}
+
+/* Action buttons */
 .note-card button {
   align-self: flex-start;
   padding: 6px 12px;
@@ -89,8 +168,11 @@ h2 {
   transition: background-color 0.2s ease;
   margin-top: 4px;
 }
-.note-card button:hover { background-color: #3b6fb3; }
-.note-card button + button { margin-left: 8px; }
 
-/* Optional: dim completed/pinned styles
-   .note-card.pinned { border-left: 4px solid #4c8eda; } */
+.note-card button:hover {
+  background-color: #3b6fb3;
+}
+
+.note-card button + button {
+  margin-left: 8px;
+}
