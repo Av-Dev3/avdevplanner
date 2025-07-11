@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 import json
 import os
-from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 import openai
 from datetime import datetime
 
@@ -46,11 +46,20 @@ def get_tasks():
     return jsonify(load_json(TASK_FILE, []))
 
 @app.route('/tasks', methods=['POST'])
+@cross_origin()
 def add_task():
-    tasks = load_json(TASK_FILE, [])
-    tasks.append(request.json)
-    save_json(TASK_FILE, tasks)
-    return jsonify({"message": "Task added"}), 201
+    try:
+        data = request.json
+        if not data:
+            return jsonify({"error": "Missing JSON data"}), 400
+
+        tasks = load_json(TASK_FILE, [])
+        tasks.append(data)
+        save_json(TASK_FILE, tasks)
+
+        return jsonify({"message": "Task added"}), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/tasks/<int:index>', methods=['DELETE'])
 def delete_task(index):
@@ -294,7 +303,6 @@ Only include keys that apply. Use today's date only if no date is implied. Respo
             schedule.append(item)
         save_json(SCHEDULE_FILE, schedule)
 
-        # === Build natural response string
         parts = []
         if parsed.get("tasks"): parts.append(f"{len(parsed['tasks'])} task{'s' if len(parsed['tasks']) != 1 else ''}")
         if parsed.get("goals"): parts.append(f"{len(parsed['goals'])} goal{'s' if len(parsed['goals']) != 1 else ''}")
