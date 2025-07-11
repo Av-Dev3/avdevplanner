@@ -21,21 +21,44 @@ async function callAI(prompt) {
   }
 }
 
-// === AI Button Logic ===
+// === AI Chat Logic ===
 document.addEventListener("DOMContentLoaded", () => {
-  const aiButton = document.getElementById("ask-ai-btn");
+  const toggleChatBtn = document.getElementById("open-ai-chat");
+  const chatBox = document.getElementById("ai-chatbox");
+  const chatForm = document.getElementById("ai-chat-form");
   const inputField = document.getElementById("ai-task-input");
-  const resultBox = document.getElementById("ai-result");
+  const chatMessages = document.getElementById("ai-chat-messages");
 
-  if (aiButton && inputField && resultBox) {
-    aiButton.addEventListener("click", async () => {
-      const prompt = inputField.value.trim();
-      if (!prompt) return;
+  // Toggle chat visibility
+  toggleChatBtn.addEventListener("click", () => {
+    chatBox.classList.toggle("hidden");
+  });
 
-      resultBox.textContent = "Thinking...";
-      const response = await callAI(prompt);
-      resultBox.textContent = response;
-      inputField.value = "";
-    });
-  }
+  // Handle form submission
+  chatForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const prompt = inputField.value.trim();
+    if (!prompt) return;
+
+    // Add user's message to chat
+    const userBubble = document.createElement("div");
+    userBubble.textContent = prompt;
+    userBubble.className = "chat-bubble user";
+    chatMessages.appendChild(userBubble);
+
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    inputField.value = "";
+
+    // Show "thinking..." message
+    const thinkingBubble = document.createElement("div");
+    thinkingBubble.textContent = "Thinking...";
+    thinkingBubble.className = "chat-bubble ai";
+    chatMessages.appendChild(thinkingBubble);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    // Call AI and update response
+    const response = await callAI(prompt);
+    thinkingBubble.textContent = response;
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  });
 });

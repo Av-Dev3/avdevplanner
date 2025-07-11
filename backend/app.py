@@ -11,8 +11,8 @@ CORS(app, resources={r"/*": {"origins": [
     "http://localhost:3000",
     "http://127.0.0.1:5000",
     "https://avdevplanner.netlify.app",
-    "https://localhost",               # ← this is the Android app's WebView origin
-    "capacitor://localhost"           # ← Capacitor native origin
+    "https://localhost",
+    "capacitor://localhost"
 ]}}, supports_credentials=True)
 
 client = openai.OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
@@ -111,17 +111,11 @@ def get_logs():
 def add_log():
     try:
         data = request.json
-        print("Incoming log data:", data)  # Debug
-
         date = data.get("date")
         if not date:
             return jsonify({"error": "Date is required"}), 400
 
         logs = load_json(LOG_FILE, {})
-
-        if not isinstance(logs, dict):
-            logs = {}
-
         entry = {
             "title": data.get("title", ""),
             "content": data.get("content", ""),
@@ -130,11 +124,9 @@ def add_log():
 
         logs.setdefault(date, []).append(entry)
         save_json(LOG_FILE, logs)
-
         return jsonify({"message": "Log added"}), 201
 
     except Exception as e:
-        print("Log POST error:", str(e))
         return jsonify({"error": str(e)}), 500
 
 @app.route('/logs/<date>/<int:index>', methods=['DELETE'])
@@ -274,11 +266,8 @@ Only include keys that apply. Use today's date only if no date is implied. Respo
         )
 
         parsed = json.loads(response.choices[0].message.content.strip())
-        print("AI Parsed Output:", json.dumps(parsed, indent=2))
-
         today = datetime.utcnow().strftime('%Y-%m-%d')
 
-        # === TASKS ===
         tasks = load_json(TASK_FILE, [])
         for task in parsed.get("tasks", []):
             task["completed"] = task.get("completed", False)
@@ -287,37 +276,43 @@ Only include keys that apply. Use today's date only if no date is implied. Respo
             tasks.append(task)
         save_json(TASK_FILE, tasks)
 
-        # === GOALS ===
         goals = load_json(GOAL_FILE, [])
         for goal in parsed.get("goals", []):
             goal["completed"] = goal.get("completed", False)
             goals.append(goal)
         save_json(GOAL_FILE, goals)
 
-        # === LESSONS ===
         lessons = load_json(LESSON_FILE, [])
         for lesson in parsed.get("lessons", []):
             lesson["completed"] = lesson.get("completed", False)
             lessons.append(lesson)
         save_json(LESSON_FILE, lessons)
 
-        # === SCHEDULE ===
         schedule = load_json(SCHEDULE_FILE, [])
         for item in parsed.get("schedule", []):
             item["date"] = item.get("date") or today
             schedule.append(item)
         save_json(SCHEDULE_FILE, schedule)
 
-        summary = {
-            "tasks": len(parsed.get("tasks", [])),
-            "goals": len(parsed.get("goals", [])),
-            "lessons": len(parsed.get("lessons", [])),
-            "schedule": len(parsed.get("schedule", []))
-        }
+        # === Build natural response string
+        parts = []
+        if parsed.get("tasks"): parts.append(f"{len(parsed['tasks'])} task{'s' if len(parsed['tasks']) != 1 else ''}")
+        if parsed.get("goals"): parts.append(f"{len(parsed['goals'])} goal{'s' if len(parsed['goals']) != 1 else ''}")
+        if parsed.get("lessons"): parts.append(f"{len(parsed['lessons'])} lesson{'s' if len(parsed['lessons']) != 1 else ''}")
+        if parsed.get("schedule"): parts.append(f"{len(parsed['schedule'])} schedule item{'s' if len(parsed['schedule']) != 1 else ''}")
+
+        if parts:
+            message = f"All set! I added {', '.join(parts)} to your planner."
+        else:
+            message = "I didn't find anything to add. Try giving me a task, goal, or lesson to help you plan."
 
         return jsonify({
-            "message": f"✅ Added {summary['tasks']} task(s), {summary['goals']} goal(s), {summary['lessons']} lesson(s), {summary['schedule']} schedule item(s)."
-        }), 200
+            "response": message,
+            "tasks": parsed.get("tasks", []),
+            "goals": parsed.get("goals", []),
+            "lessons": parsed.get("lessons", []),
+            "schedule": parsed.get("schedule", [])
+        })
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
