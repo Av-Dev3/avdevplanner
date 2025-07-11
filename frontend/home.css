@@ -24,44 +24,6 @@ section {
   gap: 10px;
 }
 
-#stats-dashboard {
-  grid-column: 1 / -1;
-  background-color: #1f1f1f;
-  border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-  color: #e4e4e7;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-#stats-dashboard h2 {
-  margin-top: 0;
-  font-size: 1.3rem;
-  color: #f0f0f0;
-}
-
-#stats-overview,
-#streaks-overview {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-
-.stat-card {
-  background-color: #2c2c2c;
-  padding: 14px 18px;
-  border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-  font-size: 0.95rem;
-  color: #d4d4d4;
-  flex: 1;
-  min-width: 150px;
-  text-align: center;
-}
-
-
 /* HEADINGS */
 section h2, .quote-title {
   margin-top: 0;
@@ -107,20 +69,11 @@ section h2, .quote-title {
   gap: 10px;
 }
 
-#quote-section {
-  grid-column: 1/ -1;
-}
-
-.quote-title {
-  text-align: center;
-}
-
 /* QUOTE BOX */
 #quote-box {
   font-style: italic;
   font-size: 0.95rem;
   color: #d1d1d1;
-  text-align: center;
 }
 
 /* AI RESPONSE */
@@ -148,7 +101,7 @@ section h2, .quote-title {
 
 #ai-chatbox-wrapper {
   position: fixed;
-  bottom: 100px; /* moved up to avoid footer */
+  bottom: 20px;
   right: 20px;
   z-index: 9999;
 }
