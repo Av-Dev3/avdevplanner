@@ -1,5 +1,6 @@
 const tasksContainer = document.getElementById("log-tasks-container");
 const goalsContainer = document.getElementById("log-goals-container");
+const lessonsContainer = document.getElementById("log-lessons-container");
 const logForm = document.getElementById("daily-log-form");
 const logEntries = document.getElementById("daily-log-entries");
 
@@ -8,6 +9,7 @@ const todayStr = new Date().toLocaleDateString("en-CA");
 // Load data on page load
 loadTodayTasks();
 loadGoals();
+loadLessons();
 loadLogs();
 
 // === Load Today's Tasks ===
@@ -46,27 +48,63 @@ async function loadTodayTasks() {
   }
 }
 
-// === Load Weekly Goals ===
+// === Load Goals for Today ===
 async function loadGoals() {
   try {
     const res = await fetch("https://avdevplanner.onrender.com/goals");
     const goals = await res.json();
+    const todayGoals = goals.filter(goal => goal.date === todayStr);
 
     goalsContainer.innerHTML = "";
 
-    if (goals.length === 0) {
-      goalsContainer.innerHTML = "<p>No weekly goals yet.</p>";
+    if (todayGoals.length === 0) {
+      goalsContainer.innerHTML = "<p>No goals for today.</p>";
       return;
     }
 
-    goals.forEach(goal => {
+    todayGoals.forEach(goal => {
       const el = document.createElement("div");
       el.className = "task-card";
-      el.innerHTML = `<h3>${goal.title}</h3><p>${goal.notes || ""}</p>`;
+      el.innerHTML = `
+        <h3>${goal.title}</h3>
+        ${goal.notes ? `<p><strong>Notes:</strong> ${goal.notes}</p>` : ""}
+        <p><small>Date: ${goal.date}</small></p>
+      `;
       goalsContainer.appendChild(el);
     });
   } catch (err) {
     goalsContainer.innerHTML = "<p>Error loading goals.</p>";
+  }
+}
+
+// === Load Lessons for Today ===
+async function loadLessons() {
+  try {
+    const res = await fetch("https://avdevplanner.onrender.com/lessons");
+    const lessons = await res.json();
+    const todayLessons = lessons.filter(lesson => lesson.date === todayStr);
+
+    lessonsContainer.innerHTML = "";
+
+    if (todayLessons.length === 0) {
+      lessonsContainer.innerHTML = "<p>No lessons for today.</p>";
+      return;
+    }
+
+    todayLessons.forEach(lesson => {
+      const card = document.createElement("div");
+      card.className = "task-card";
+      card.innerHTML = `
+        <h3>${lesson.title}</h3>
+        <p><strong>Category:</strong> ${lesson.category || "N/A"}</p>
+        <p><strong>Priority:</strong> ${lesson.priority || "Normal"}</p>
+        <p>${lesson.description}</p>
+        ${lesson.notes ? `<p><em>${lesson.notes}</em></p>` : ""}
+      `;
+      lessonsContainer.appendChild(card);
+    });
+  } catch (err) {
+    lessonsContainer.innerHTML = "<p>Error loading lessons.</p>";
   }
 }
 
@@ -129,5 +167,54 @@ async function loadLogs() {
     });
   } catch (err) {
     logEntries.innerHTML = "<p>Error loading logs.</p>";
+  }
+}
+
+// === Time Tracker ===
+const saveTimeBtn = document.getElementById("save-time-btn");
+const timeInput = document.getElementById("time-spent");
+const savedTimeText = document.getElementById("saved-time-text");
+
+if (saveTimeBtn && timeInput && savedTimeText) {
+  // Load saved time on page load
+  loadTime();
+
+  saveTimeBtn.addEventListener("click", async () => {
+    const minutes = parseInt(timeInput.value);
+    if (isNaN(minutes) || minutes < 0) {
+      savedTimeText.textContent = "Please enter a valid number of minutes.";
+      return;
+    }
+
+    try {
+      const res = await fetch("https://avdevplanner.onrender.com/time", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ date: todayStr, minutes })
+      });
+
+      if (res.ok) {
+        savedTimeText.textContent = `Saved: ${minutes} minutes of focused work.`;
+        timeInput.value = "";
+      } else {
+        savedTimeText.textContent = "Error saving time.";
+      }
+    } catch (err) {
+      savedTimeText.textContent = "Failed to save time.";
+      console.error(err);
+    }
+  });
+
+  async function loadTime() {
+    try {
+      const res = await fetch(`https://avdevplanner.onrender.com/time`);
+      const timeData = await res.json();
+      const todayTime = timeData[todayStr];
+      if (todayTime) {
+        savedTimeText.textContent = `You logged ${todayTime} minutes of focused work today.`;
+      }
+    } catch (err) {
+      console.error("Error loading time data:", err);
+    }
   }
 }

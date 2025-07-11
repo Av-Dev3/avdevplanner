@@ -39,15 +39,19 @@
   </div>
 </header>
   <h2>Goals</h2>
-  <form id="weekly-goal-form">
+<form id="weekly-goal-form">
   <label for="goal-title">Goal Title</label>
   <input type="text" id="goal-title" required>
+
+  <label for="goal-date">Target Date</label>
+  <input type="date" id="goal-date" required>
 
   <label for="goal-notes">Notes (optional)</label>
   <textarea id="goal-notes" rows="4" placeholder="Details, milestones, etc."></textarea>
 
   <button type="submit">Add Weekly Goal</button>
 </form>
+
 
 <div id="weekly-goals-container"></div>
 </div>

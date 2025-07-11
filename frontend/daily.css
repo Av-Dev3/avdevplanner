@@ -3,32 +3,56 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: 20px;
-  padding: 16px;
+  padding: 20px;
   color: #e4e4e7;
 }
 
-/* Switch to 2-column on wider screens */
 @media (min-width: 768px) {
   #daily {
     grid-template-columns: 1fr 1fr;
+    align-items: start;
   }
+}
 
-  #log-tasks-container { grid-column: 1; }
-  #log-goals-container { grid-column: 1; }
-  #daily-log-form { grid-column: 1 / -1; }
+/* section wrappers for consistent layout */
+#log-tasks-section,
+#log-goals-section,
+#log-lessons-section,
+#daily-log-form-wrapper,
+#daily-log-entries-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* assign grid positions for 2-column layout */
+@media (min-width: 768px) {
+  #log-tasks-section {
+    grid-column: 1;
+  }
+  #log-goals-section {
+    grid-column: 1;
+  }
+  #log-lessons-section {
+    grid-column: 2;
+  }
+  #daily-log-form-wrapper,
+  #daily-log-entries-wrapper {
+    grid-column: 1 / -1;
+  }
 }
 
 /* section headings */
-#daily > h2 {
-  grid-column: 1 / -1;
-  margin: 0 0 6px 0;
-  font-size: 1.1rem;
+#daily h2 {
+  margin: 0;
+  font-size: 1.2rem;
   color: #f0f0f0;
 }
 
-/* task & goal containers */
+/* content containers */
 #log-tasks-container,
 #log-goals-container,
+#log-lessons-container,
 #daily-log-entries {
   background-color: #1f1f1f;
   border-radius: 12px;
@@ -52,7 +76,7 @@
   margin-top: 4px;
 }
 
-/* form labels & controls */
+/* form labels & inputs */
 #daily-log-form label {
   font-size: 0.9rem;
   color: #c3c3c3;
@@ -113,5 +137,64 @@
 
 .task-card small {
   font-size: 0.8rem;
+  color: #a1a1aa;
+}
+
+/* === TIME TRACKER SECTION === */
+#daily-time-tracker {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* This div holds the input + button, styled like your other containers */
+#daily-time-tracker > div {
+  background-color: #1f1f1f;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+
+#daily-time-tracker label {
+  font-size: 0.9rem;
+  color: #c3c3c3;
+}
+
+#daily-time-tracker input[type="number"] {
+  padding: 10px;
+  border: 1px solid #333;
+  border-radius: 8px;
+  background-color: #121212;
+  color: #e4e4e7;
+  font-size: 0.95rem;
+  width: 100%;
+  max-width: 200px;
+  box-sizing: border-box;
+}
+
+#daily-time-tracker button {
+  align-self: flex-start;
+  padding: 10px 14px;
+  background-color: #4c8eda;
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#daily-time-tracker button:hover {
+  background-color: #3b6fb3;
+}
+
+#saved-time-text {
+  font-size: 0.9rem;
   color: #a1a1aa;
 }

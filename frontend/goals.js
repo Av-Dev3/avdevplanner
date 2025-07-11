@@ -4,6 +4,7 @@ const container = document.getElementById("weekly-goals-container");
 if (form && container) {
   const titleInput = document.getElementById("goal-title");
   const notesInput = document.getElementById("goal-notes");
+  const dateInput = document.getElementById("goal-date");
 
   loadGoals();
 
@@ -13,6 +14,7 @@ if (form && container) {
     const newGoal = {
       title: titleInput.value.trim(),
       notes: notesInput.value.trim(),
+      date: dateInput.value, // Add selected date
       created_at: new Date().toISOString(),
     };
 
@@ -46,6 +48,7 @@ if (form && container) {
       card.innerHTML = `
         <h3>${goal.title}</h3>
         ${goal.notes ? `<p><strong>Notes:</strong> ${goal.notes}</p>` : ""}
+        ${goal.date ? `<p><strong>Target Date:</strong> ${goal.date}</p>` : ""}
         <p><small>Added: ${new Date(goal.created_at).toLocaleDateString()}</small></p>
       `;
 
@@ -69,6 +72,7 @@ if (form && container) {
       editBtn.addEventListener("click", async () => {
         const newTitle = prompt("Edit goal title:", goal.title);
         const newNotes = prompt("Edit notes:", goal.notes || "");
+        const newDate = prompt("Edit date (YYYY-MM-DD):", goal.date || "");
 
         if (newTitle !== null) {
           await fetch(`https://avdevplanner.onrender.com/goals/${index}`, {
@@ -78,6 +82,7 @@ if (form && container) {
               ...goal,
               title: newTitle.trim(),
               notes: newNotes.trim(),
+              date: newDate.trim(),
             }),
           });
           loadGoals();

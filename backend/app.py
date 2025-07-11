@@ -5,7 +5,6 @@ from flask_cors import CORS, cross_origin
 import openai
 from datetime import datetime
 
-# === INIT ===
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": [
     "http://localhost:3000",
@@ -17,10 +16,7 @@ CORS(app, resources={r"/*": {"origins": [
 
 client = openai.OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
-# === DISK PATH ===
 DATA_DIR = "/mnt/data"
-
-# === FILES ===
 TASK_FILE = os.path.join(DATA_DIR, 'tasks.json')
 GOAL_FILE = os.path.join(DATA_DIR, 'goals.json')
 LOG_FILE = os.path.join(DATA_DIR, 'logs.json')
@@ -28,8 +24,8 @@ NOTE_FILE = os.path.join(DATA_DIR, 'notes.json')
 FOCUS_FILE = os.path.join(DATA_DIR, 'focus.json')
 LESSON_FILE = os.path.join(DATA_DIR, 'lessons.json')
 SCHEDULE_FILE = os.path.join(DATA_DIR, 'schedule.json')
+TIME_FILE = os.path.join(DATA_DIR, 'time.json')  # NEW
 
-# === HELPERS ===
 def load_json(filename, default):
     if os.path.exists(filename):
         with open(filename, 'r') as f:
@@ -56,7 +52,6 @@ def add_task():
         tasks = load_json(TASK_FILE, [])
         tasks.append(data)
         save_json(TASK_FILE, tasks)
-
         return jsonify({"message": "Task added"}), 201
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -87,7 +82,9 @@ def get_goals():
 @app.route('/goals', methods=['POST'])
 def add_goal():
     goals = load_json(GOAL_FILE, [])
-    goals.append(request.json)
+    new_goal = request.json
+    new_goal["completed"] = new_goal.get("completed", False)
+    goals.append(new_goal)
     save_json(GOAL_FILE, goals)
     return jsonify({"message": "Goal added"}), 201
 
@@ -98,8 +95,19 @@ def update_goal(index):
         updated = request.json
         goals[index]['title'] = updated.get('title', goals[index]['title'])
         goals[index]['notes'] = updated.get('notes', goals[index]['notes'])
+        goals[index]['date'] = updated.get('date', goals[index].get('date'))
+        goals[index]['completed'] = updated.get('completed', goals[index].get('completed', False))
         save_json(GOAL_FILE, goals)
         return jsonify({"message": "Goal updated"}), 200
+    return jsonify({"error": "Goal not found"}), 404
+
+@app.route('/goals/<int:index>/toggle', methods=['PATCH'])
+def toggle_goal(index):
+    goals = load_json(GOAL_FILE, [])
+    if 0 <= index < len(goals):
+        goals[index]['completed'] = not goals[index].get('completed', False)
+        save_json(GOAL_FILE, goals)
+        return jsonify({"message": "Goal toggled"}), 200
     return jsonify({"error": "Goal not found"}), 404
 
 @app.route('/goals/<int:index>', methods=['DELETE'])
@@ -246,6 +254,26 @@ def update_lesson(index):
 def get_schedule():
     return jsonify(load_json(SCHEDULE_FILE, []))
 
+# === TIME TRACKER ===
+@app.route('/time', methods=['GET'])
+def get_time_data():
+    return jsonify(load_json(TIME_FILE, {}))
+
+@app.route('/time', methods=['POST'])
+def add_time_entry():
+    data = request.json
+    date = data.get("date")
+    minutes = data.get("minutes")
+
+    if not date or minutes is None:
+        return jsonify({"error": "Date and minutes are required"}), 400
+
+    time_data = load_json(TIME_FILE, {})
+    time_data[date] = time_data.get(date, 0) + minutes
+    save_json(TIME_FILE, time_data)
+
+    return jsonify({"message": "Time updated"}), 201
+
 # === AI ROUTE ===
 @app.route('/ai', methods=['POST'])
 def ai_assistant():
@@ -325,6 +353,5 @@ Only include keys that apply. Use today's date only if no date is implied. Respo
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# === RUN ===
 if __name__ == '__main__':
     app.run(debug=True)
