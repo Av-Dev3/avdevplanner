@@ -101,7 +101,7 @@ section h2, .quote-title {
 
 #ai-chatbox-wrapper {
   position: fixed;
-  bottom: 50px;
+  bottom: 55px;
   right: 20px;
   z-index: 9999;
 }
