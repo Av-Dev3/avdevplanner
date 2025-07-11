@@ -272,7 +272,6 @@ li a.active {
     align-items: center;
     justify-content: space-between;
     padding: 0 0.2rem;
-    background-color: #1f1f24;
     position: relative;
   }
 
@@ -285,7 +284,7 @@ li a.active {
   .main-nav {
     flex-direction: column;
     position: fixed;
-    top: 60px;
+    top: 45px;
     right: -250px;
     background-color: #1f1f1f;
     padding: 0.5rem;
