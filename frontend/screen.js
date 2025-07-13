@@ -1,16 +1,16 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const alreadyLoaded = sessionStorage.getItem("lifeOS_loaded");
+window.addEventListener('DOMContentLoaded', () => {
+  const splash = document.getElementById('splash-screen');
 
-  if (!alreadyLoaded) {
-    sessionStorage.setItem("lifeOS_loaded", "true");
-    const loader = document.getElementById("loading-screen");
-
-    // Automatically remove the loader after the animation
-    setTimeout(() => {
-      loader.style.display = "none";
-    }, 2600); // Matches the fadeOut delay + animation time
+  if (sessionStorage.getItem('splashShown')) {
+    splash.remove();
   } else {
-    const loader = document.getElementById("loading-screen");
-    if (loader) loader.style.display = "none";
+    sessionStorage.setItem('splashShown', 'true');
+
+    setTimeout(() => {
+      splash.classList.add('fade-out');
+
+      // Remove after fade-out duration (match this to your CSS)
+      setTimeout(() => splash.remove(), 2000);
+    }, 4000);
   }
 });
