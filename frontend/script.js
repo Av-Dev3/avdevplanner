@@ -30,6 +30,7 @@ if (form) {
       notes: notesInput.value.trim(),
       completed: false,
       created_at: new Date().toISOString(),
+      subtasks: []
     };
 
     const res = await fetch("https://avdevplanner.onrender.com/tasks", {
@@ -48,7 +49,7 @@ if (form) {
 // === DISPLAY TASKS ===
 if (container) {
   const cameFromSchedule = sessionStorage.getItem("cameFromSchedule");
-  sessionStorage.removeItem("cameFromSchedule"); // Clear it FIRST
+  sessionStorage.removeItem("cameFromSchedule");
 
   const selectedDate = localStorage.getItem("selectedDate");
   if (!cameFromSchedule) {
@@ -116,6 +117,46 @@ if (container) {
           <p><strong>Status:</strong> ${task.completed ? "✅ Done" : "⏳ Not done"}</p>
         `;
 
+        // === Subtasks Section ===
+        const subtaskList = document.createElement("ul");
+        subtaskList.className = "subtask-list";
+        if (Array.isArray(task.subtasks)) {
+          task.subtasks.forEach((sub, subIndex) => {
+            const li = document.createElement("li");
+            li.innerHTML = `
+              <label>
+                <input type="checkbox" ${sub.done ? "checked" : ""}>
+                ${sub.title}
+              </label>
+            `;
+            li.querySelector("input").addEventListener("change", async () => {
+              const updatedSubtasks = [...task.subtasks];
+              updatedSubtasks[subIndex].done = !updatedSubtasks[subIndex].done;
+              await updateTask(task.index, { ...task, subtasks: updatedSubtasks });
+              loadTasks();
+            });
+            subtaskList.appendChild(li);
+          });
+        }
+        taskDiv.appendChild(subtaskList);
+
+        // Add Subtask Form
+        const subForm = document.createElement("form");
+        subForm.className = "subtask-form";
+        subForm.innerHTML = `
+          <input type="text" placeholder="New subtask..." required>
+          <button type="submit">Add</button>
+        `;
+        subForm.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const input = subForm.querySelector("input");
+          const newSub = { title: input.value.trim(), done: false };
+          const updatedSubtasks = [...(task.subtasks || []), newSub];
+          await updateTask(task.index, { ...task, subtasks: updatedSubtasks });
+          loadTasks();
+        });
+        taskDiv.appendChild(subForm);
+
         const completeBtn = document.createElement("button");
         completeBtn.textContent = task.completed ? "Mark Incomplete" : "Mark Complete";
         completeBtn.addEventListener("click", async () => {
@@ -141,6 +182,14 @@ if (container) {
 
       groupDiv.appendChild(grid);
       container.appendChild(groupDiv);
+    });
+  }
+
+  async function updateTask(index, updatedTask) {
+    await fetch(`https://avdevplanner.onrender.com/tasks/${index}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedTask),
     });
   }
 
