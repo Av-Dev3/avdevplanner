@@ -7,7 +7,7 @@ window.addEventListener('DOMContentLoaded', () => {
     sessionStorage.setItem('splashShown', 'true');
 
     // Adjust to match your WebP animation duration
-    const animationDuration = 5000;
+    const animationDuration = 4000;
 
     setTimeout(() => {
       splash.classList.add('fade-out');
