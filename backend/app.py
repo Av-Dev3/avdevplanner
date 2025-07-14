@@ -418,7 +418,14 @@ def full_chat():
         )
 
         reply = response.choices[0].message.content.strip()
-        parsed = json.loads(reply) if reply.startswith("{") else {"response": reply}
+
+    try:
+        parsed = json.loads(reply)
+        parsed["response"] = parsed.get("response", "[Parsed tasks/goals/lessons/schedule]")
+    except json.JSONDecodeError:
+        parsed = {"response": reply}
+
+
 
         today = datetime.utcnow().strftime('%Y-%m-%d')
 
