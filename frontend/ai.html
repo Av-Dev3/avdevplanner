@@ -10,56 +10,60 @@
 <body>
    <div class="page-content">
     <header class="head">
-      <div class="nav-container">
-        <div class="nav-left">
-          <img class="logo" src="logo.png" alt="">
-        </div>
-        <div class="nav-center">
-          <h2 class="nav-quote">Get this shit done.</h2>
-        </div>
-        <div class="nav-right">
-          <button class="hamburger" aria-label="Toggle menu">
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
-          </button>
-        </div>
+  <div class="nav-container">
+    <div class="nav-left">
+      <img class="logo" src="logo.png" alt="">
+      <h2 class="nav-quote">Get this shit done.</h2>
+    </div>
 
-        <nav>
-  <ul class="main-nav">
-    <li><a href="index.html">Home</a></li>
-    <li><a href="lessons.html">Lessons</a></li>
+    <div class="nav-right">
+      <button class="hamburger" aria-label="Toggle menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
 
-    <li class="dropdown">
-      <a href="daily.html">Daily ▾</a>
-      <ul class="dropdown-menu">
-        <li><a href="daily.html">Daily</a></li>
-        <li><a href="weekly.html">Weekly</a></li>
-        
-      </ul>
-    </li>
+      <nav>
+        <ul class="main-nav">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="ai.html">AI</a></li>
+          <li><a href="lessons.html">Lessons</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle">Daily ▾</a>
+          </li>
+          <li><a href="goals.html">Goals</a></li>
+          <li><a href="notes.html">Notes</a></li>
+          <li><a href="tasks.html">Tasks</a></li>
+          <li><a href="schedule.html">Schedule</a></li>
+        </ul>
 
-    <li><a href="goals.html">Goals</a></li>
-    <li><a href="notes.html">Notes</a></li>
-    <li><a href="tasks.html">Tasks</a></li>
-    <li><a href="schedule.html">Schedule</a></li>
-  </ul>
-</nav>
-
-    </header>
+        <ul class="submenu-panel" id="submenu">
+          <li><a href="daily.html">Daily</a></li>
+          <li><a href="weekly.html">Weekly</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</header>
 
      <div id="ai-page">
-      <section id="ai-chat-section">
-        <h2>AI Assistant</h2>
-        <div id="ai-chat-container">
-          <div id="ai-chat-messages"></div>
-          <form id="ai-chat-form">
-            <input type="text" id="ai-chat-input" placeholder="Ask me anything..." required />
-            <button type="submit" id="ai-chat-submit">Send</button>
-          </form>
-        </div>
-      </section>
+  <section id="ai-chat-section">
+    <h2>AI Assistant</h2>
+    <div id="ai-chat-container">
+      <div id="ai-chat-messages"></div>
+
+      <form id="ai-chat-form">
+        <input type="text" id="ai-chat-input" placeholder="Ask me anything..." required />
+        
+        <!-- 🖼 Image Upload Input -->
+        <input type="file" id="ai-image-input" accept="image/*" />
+
+        <button type="submit" id="ai-chat-submit">Send</button>
+      </form>
     </div>
+  </section>
+</div>
+
   </div>
 
   <script src="ai_page.js"></script>

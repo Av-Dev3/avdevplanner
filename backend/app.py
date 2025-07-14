@@ -4,6 +4,9 @@ import os
 from flask_cors import CORS, cross_origin
 import openai
 from datetime import datetime
+import base64
+from werkzeug.utils import secure_filename
+
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": [
@@ -373,6 +376,83 @@ Only include keys that apply. Use today's date only if no date is implied. Respo
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+@app.route('/chat', methods=['POST'])
+def full_chat():
+    try:
+        prompt = request.form.get("prompt", "").strip()
+        image = request.files.get("image")
+        if not prompt and not image:
+            return jsonify({"error": "Prompt or image is required"}), 400
+
+        messages = [{"role": "system", "content": (
+            "You are a helpful assistant. Respond conversationally, like ChatGPT. "
+            "If the user gives a task, goal, lesson, or schedule item, return them in a JSON object "
+            "with the appropriate keys. Otherwise, just provide a thoughtful response.\n\n"
+            "Respond with a JSON object that has:\n"
+            "- response: (your reply to the user)\n"
+            "- tasks (optional): list of {title, notes, date, completed}\n"
+            "- goals (optional): list of {title, notes, completed}\n"
+            "- lessons (optional): list of {title, description, category, date, priority, notes, completed}\n"
+            "- schedule (optional): list of {title, date, time, notes}"
+        )}]
+
+        if image:
+            image_bytes = image.read()
+            base64_image = base64.b64encode(image_bytes).decode('utf-8')
+            messages.append({
+                "role": "user",
+                "content": [
+                    {"type": "text", "text": prompt or "Here's an image."},
+                    {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"}}
+                ]
+            })
+        else:
+            messages.append({"role": "user", "content": prompt})
+
+        response = client.chat.completions.create(
+            model="gpt-4-vision-preview" if image else "gpt-4",
+            messages=messages
+        )
+
+        reply = response.choices[0].message.content.strip()
+        parsed = json.loads(reply) if reply.startswith("{") else {"response": reply}
+
+        # Store structured items if included
+        today = datetime.utcnow().strftime('%Y-%m-%d')
+
+        for task in parsed.get("tasks", []):
+            task["completed"] = task.get("completed", False)
+            task["text"] = task.get("text", task.get("title", ""))
+            task["date"] = task.get("date") or today
+            all_tasks = load_json(TASK_FILE, [])
+            all_tasks.append(task)
+            save_json(TASK_FILE, all_tasks)
+
+        for goal in parsed.get("goals", []):
+            goal["completed"] = goal.get("completed", False)
+            all_goals = load_json(GOAL_FILE, [])
+            all_goals.append(goal)
+            save_json(GOAL_FILE, all_goals)
+
+        for lesson in parsed.get("lessons", []):
+            lesson["completed"] = lesson.get("completed", False)
+            all_lessons = load_json(LESSON_FILE, [])
+            all_lessons.append(lesson)
+            save_json(LESSON_FILE, all_lessons)
+
+        for sched in parsed.get("schedule", []):
+            sched["date"] = sched.get("date") or today
+            all_sched = load_json(SCHEDULE_FILE, [])
+            all_sched.append(sched)
+            save_json(SCHEDULE_FILE, all_sched)
+
+        return jsonify(parsed)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 # === REFLECTIONS ===
 @app.route('/reflections', methods=['GET'])
