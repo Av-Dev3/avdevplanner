@@ -8,8 +8,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const today = new Date();
   const sunday = new Date(today);
   sunday.setDate(today.getDate() - today.getDay());
+  sunday.setHours(0, 0, 0, 0);
   const saturday = new Date(sunday);
   saturday.setDate(sunday.getDate() + 6);
+  saturday.setHours(23, 59, 59, 999);
 
   const startDateStr = sunday.toISOString().split("T")[0];
   const endDateStr = saturday.toISOString().split("T")[0];
@@ -27,12 +29,14 @@ document.addEventListener("DOMContentLoaded", () => {
       const items = await res.json();
       const filtered = items.filter(item => {
         const d = new Date(item.date);
+        d.setHours(0, 0, 0, 0);
         return d >= new Date(start) && d <= new Date(end);
       });
 
       if (filtered.length === 0) {
         container.innerHTML = "<p>No items for this week.</p>";
       } else {
+        container.innerHTML = "";
         filtered.forEach(item => {
           const card = renderFn(item);
           container.appendChild(card);
@@ -89,8 +93,8 @@ document.addEventListener("DOMContentLoaded", () => {
   async function loadReflections(startDate) {
     const reflectionsKey = `reflection-${startDate}`;
     reflectionsContainer.innerHTML = `
-      <textarea id="reflection-text" placeholder="Write your weekly reflection..."></textarea>
-      <button id="save-reflection">Save Reflection</button>
+      <textarea id="reflection-text" placeholder="Write your weekly reflection..." style="width: 100%; height: 150px; border-radius: 8px; padding: 10px; background-color: #121212; color: #e4e4e7; border: 1px solid #333;"></textarea>
+      <button id="save-reflection" style="margin-top: 10px; padding: 10px 14px; border: none; border-radius: 8px; background-color: #4c8eda; color: white; font-weight: bold; cursor: pointer;">Save Reflection</button>
     `;
 
     const textarea = document.getElementById("reflection-text");
