@@ -51,14 +51,14 @@ def add_task():
 
         tasks = load_json(TASK_FILE, [])
         task = {
-        "title": data.get("title", ""),
-        "notes": data.get("notes", ""),
-        "date": data.get("date", ""),
-        "time": data.get("time", ""),
-        "completed": data.get("completed", False),
-        "subtasks": data.get("subtasks", [])
-    }
-    tasks.append(task)
+            "title": data.get("title", ""),
+            "notes": data.get("notes", ""),
+            "date": data.get("date", ""),
+            "time": data.get("time", ""),
+            "completed": data.get("completed", False),
+            "subtasks": data.get("subtasks", [])
+        }
+        tasks.append(task)
         save_json(TASK_FILE, tasks)
         return jsonify({"message": "Task added"}), 201
     except Exception as e:
