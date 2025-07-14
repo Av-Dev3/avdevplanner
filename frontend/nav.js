@@ -9,13 +9,17 @@ document.addEventListener("DOMContentLoaded", () => {
     navMenu.classList.toggle("open");
     document.body.style.overflowX = navMenu.classList.contains("open") ? "hidden" : "";
 
+    // Reset submenu when nav is closed
     if (!navMenu.classList.contains("open")) {
       submenu.classList.remove("open");
     }
   });
 
+  // Toggle submenu panel on mobile
   dropdownToggle.addEventListener("click", (e) => {
-    e.preventDefault();
-    submenu.classList.toggle("open");
+    if (window.innerWidth <= 768) {
+      e.preventDefault();
+      submenu.classList.toggle("open");
+    }
   });
 });

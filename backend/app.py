@@ -377,13 +377,14 @@ Only include keys that apply. Use today's date only if no date is implied. Respo
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-
 @app.route('/chat', methods=['POST'])
 def full_chat():
     try:
-        prompt = request.form.get("prompt", "").strip()
-        image = request.files.get("image")
-        if not prompt and not image:
+        data = request.get_json()
+        prompt = data.get("prompt", "").strip()
+        image_data = data.get("image")
+
+        if not prompt and not image_data:
             return jsonify({"error": "Prompt or image is required"}), 400
 
         messages = [{"role": "system", "content": (
@@ -398,9 +399,8 @@ def full_chat():
             "- schedule (optional): list of {title, date, time, notes}"
         )}]
 
-        if image:
-            image_bytes = image.read()
-            base64_image = base64.b64encode(image_bytes).decode('utf-8')
+        if image_data:
+            base64_image = image_data.get("data")
             messages.append({
                 "role": "user",
                 "content": [
@@ -411,15 +411,15 @@ def full_chat():
         else:
             messages.append({"role": "user", "content": prompt})
 
+        model = "gpt-4-vision-preview" if image_data else "gpt-4"
         response = client.chat.completions.create(
-            model="gpt-4-vision-preview" if image else "gpt-4",
+            model=model,
             messages=messages
         )
 
         reply = response.choices[0].message.content.strip()
         parsed = json.loads(reply) if reply.startswith("{") else {"response": reply}
 
-        # Store structured items if included
         today = datetime.utcnow().strftime('%Y-%m-%d')
 
         for task in parsed.get("tasks", []):
