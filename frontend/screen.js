@@ -6,11 +6,12 @@ window.addEventListener('DOMContentLoaded', () => {
   } else {
     sessionStorage.setItem('splashShown', 'true');
 
+    // Adjust to match your WebP animation duration
+    const animationDuration = 5000;
+
     setTimeout(() => {
       splash.classList.add('fade-out');
-
-      // Remove after fade-out duration (match this to your CSS)
       setTimeout(() => splash.remove(), 2000);
-    }, 4000);
+    }, animationDuration);
   }
 });

@@ -14,54 +14,50 @@
 
 <body>
 <div id="splash-screen">
-  <video autoplay muted playsinline id="splash-video" preload="auto">
-    <source src="screen.mp4" type="video/mp4" />
-  </video>
+  <img id="splash-img" src="splash.webp" alt="Splash animation" />
 </div>
 
 
 
-  <!-- Main Page Content -->
-  <div class="page-content">
-    <header class="head">
-      <div class="nav-container">
-        <div class="nav-left">
-          <img class="logo" src="logo.png" alt="">
-        </div>
-        <div class="nav-center">
-          <h2 class="nav-quote">Get this shit done.</h2>
-        </div>
-        <div class="nav-right">
-          <button class="hamburger" aria-label="Toggle menu">
-            <span class="bar"></span>
-            <span class="bar"></span>
-            <span class="bar"></span>
-          </button>
-        </div>
 
-        <nav>
-  <ul class="main-nav">
-    <li><a href="index.html">Home</a></li>
-    <li><a href="ai.html">AI</a></li>
-    <li><a href="lessons.html">Lessons</a></li>
+<div class="page-content">
+   <header class="head">
+  <div class="nav-container">
+    <div class="nav-left">
+      <img class="logo" src="logo.png" alt="">
+      <h2 class="nav-quote">Get this shit done.</h2>
+    </div>
 
-    <li class="dropdown">
-      <a href="daily.html">Daily ▾</a>
-      <ul class="dropdown-menu">
-        <li><a href="daily.html">Daily</a></li>
-        <li><a href="weekly.html">Weekly</a></li>
-        
-      </ul>
-    </li>
+    <div class="nav-right">
+      <button class="hamburger" aria-label="Toggle menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
 
-    <li><a href="goals.html">Goals</a></li>
-    <li><a href="notes.html">Notes</a></li>
-    <li><a href="tasks.html">Tasks</a></li>
-    <li><a href="schedule.html">Schedule</a></li>
-  </ul>
-</nav>
+      <nav>
+        <ul class="main-nav">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="ai.html">AI</a></li>
+          <li><a href="lessons.html">Lessons</a></li>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle">Daily ▾</a>
+          </li>
+          <li><a href="goals.html">Goals</a></li>
+          <li><a href="notes.html">Notes</a></li>
+          <li><a href="tasks.html">Tasks</a></li>
+          <li><a href="schedule.html">Schedule</a></li>
+        </ul>
 
-    </header>
+        <ul class="submenu-panel" id="submenu">
+          <li><a href="daily.html">Daily</a></li>
+          <li><a href="weekly.html">Weekly</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</header>
+
 
     <div id="home">
       <section id="daily-focus-section" class="daily-focus-section">
