@@ -58,6 +58,9 @@ if (form && container) {
         ${goal.completed ? `<p style="color:limegreen"><strong>✅ Completed</strong></p>` : ""}
       `;
 
+      const buttonGroup = document.createElement("div");
+      buttonGroup.className = "goal-button-group";
+
       // Mark Complete button
       if (!goal.completed) {
         const completeBtn = document.createElement("button");
@@ -70,7 +73,7 @@ if (form && container) {
           });
           loadGoals();
         });
-        card.appendChild(completeBtn);
+        buttonGroup.appendChild(completeBtn);
       }
 
       // Delete button
@@ -85,7 +88,7 @@ if (form && container) {
         });
         loadGoals();
       });
-      card.appendChild(deleteBtn);
+      buttonGroup.appendChild(deleteBtn);
 
       // Edit button
       const editBtn = document.createElement("button");
@@ -109,8 +112,9 @@ if (form && container) {
           loadGoals();
         }
       });
-      card.appendChild(editBtn);
+      buttonGroup.appendChild(editBtn);
 
+      card.appendChild(buttonGroup);
       container.appendChild(card);
     });
   }
