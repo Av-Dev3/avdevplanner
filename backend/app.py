@@ -41,6 +41,17 @@ def save_json(filename, data):
 def get_tasks():
     return jsonify(load_json(TASK_FILE, []))
 
+@app.route('/tasks/<int:index>', methods=['PUT'])
+def update_task(index):
+    tasks = load_json(TASK_FILE, [])
+    if 0 <= index < len(tasks):
+        updated = request.json
+        tasks[index].update(updated)
+        save_json(TASK_FILE, tasks)
+        return jsonify({"message": "Task updated"}), 200
+    return jsonify({"error": "Task not found"}), 404
+
+
 @app.route('/tasks', methods=['POST'])
 @cross_origin()
 def add_task():
