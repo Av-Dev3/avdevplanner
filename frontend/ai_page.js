@@ -27,8 +27,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await res.json();
 
       // Display AI's general reply
-      if (data.reply) {
-        addChatBubble(data.reply, "ai");
+      if (data.response) {
+        addChatBubble(data.response, "ai");
       }
 
       // === SAVE structured items ===
