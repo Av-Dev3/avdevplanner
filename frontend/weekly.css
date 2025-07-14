@@ -1,90 +1,77 @@
-/* MAIN WRAPPER FOR WEEKLY PAGE */
 #weekly-page {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 20px;
   padding: 20px;
+  color: #e4e4e7;
 }
 
-@media (max-width: 768px) {
+@media (min-width: 768px) {
   #weekly-page {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  #weekly-reflections-section {
+    grid-column: 1 / 0;
   }
 }
 
-/* SHARED SECTION STYLE */
-section {
+/* Shared heading style */
+#weekly-page h2 {
+  font-size: 1.2rem;
+  color: #f0f0f0;
+  margin: 0;
+  margin-bottom: 10px;
+}
+
+/* The styled boxes */
+.content-box {
   background-color: #1f1f1f;
   border-radius: 12px;
-  padding: 20px;
+  padding: 16px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-  color: #e4e4e7;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  min-height: 100px;
 }
 
-/* HEADINGS */
-section h2 {
-  margin-top: 0;
-  font-size: 1.2rem;
-  color: #f0f0f0;
-}
-
-/* WEEK RANGE */
-#week-range {
-  font-size: 1.5rem;
-  font-weight: bold;
-  text-align: center;
-  color: #f0f0f0;
-  grid-column: span 2;
-}
-
-/* CARD STYLES */
-.task-card,
-.goal-card,
-.lesson-card {
-  background-color: #2a2a2a;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-}
-
-.task-card h3,
-.goal-card h3,
-.lesson-card h3 {
-  margin: 0 0 8px 0;
-  font-size: 1.1rem;
-  color: #f8f8f8;
-}
-
-/* REFLECTIONS STYLES */
-#weekly-reflections textarea {
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-  resize: vertical;
-  min-height: 80px;
+/* Weekly Reflection specific */
+#reflection-textarea {
+  padding: 10px;
+  border-radius: 10px;
   background-color: #121212;
   color: #e4e4e7;
   border: 1px solid #333;
-  border-radius: 8px;
-  padding: 10px;
+  resize: vertical;
   font-size: 0.95rem;
 }
 
-#weekly-reflections button {
+#save-reflection {
+  align-self: flex-start;
   padding: 10px 14px;
-  border: none;
-  border-radius: 8px;
   background-color: #4c8eda;
-  color: white;
-  font-weight: bold;
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-weight: 700;
   cursor: pointer;
   transition: background-color 0.2s ease;
   margin-top: 10px;
 }
 
-#weekly-reflections button:hover {
+#save-reflection:hover {
   background-color: #3b6fb3;
+}
+
+#week-range {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #f0f0f0;
+  background-color: #1f1f1f;
+  padding: 14px 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  margin: 20px;
+  text-align: center;
 }

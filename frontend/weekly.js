@@ -1,14 +1,15 @@
 document.addEventListener("DOMContentLoaded", () => {
   const rangeEl = document.getElementById("week-range");
-  const taskContainer = document.getElementById("weekly-tasks");
-  const goalContainer = document.getElementById("weekly-goals");
-  const lessonContainer = document.getElementById("weekly-lessons");
-  const reflectionsContainer = document.getElementById("weekly-reflections");
+  const taskContainer = document.getElementById("weekly-tasks-container");
+  const goalContainer = document.getElementById("weekly-goals-container");
+  const lessonContainer = document.getElementById("weekly-lessons-container");
+  const reflectionsContainer = document.getElementById("weekly-reflections-section");
 
   const today = new Date();
   const sunday = new Date(today);
-  sunday.setDate(today.getDate() - today.getDay());
   sunday.setHours(0, 0, 0, 0);
+  sunday.setDate(today.getDate() - today.getDay());
+
   const saturday = new Date(sunday);
   saturday.setDate(sunday.getDate() + 6);
   saturday.setHours(23, 59, 59, 999);
@@ -29,14 +30,14 @@ document.addEventListener("DOMContentLoaded", () => {
       const items = await res.json();
       const filtered = items.filter(item => {
         const d = new Date(item.date);
-        d.setHours(0, 0, 0, 0);
         return d >= new Date(start) && d <= new Date(end);
       });
+
+      container.innerHTML = "";
 
       if (filtered.length === 0) {
         container.innerHTML = "<p>No items for this week.</p>";
       } else {
-        container.innerHTML = "";
         filtered.forEach(item => {
           const card = renderFn(item);
           container.appendChild(card);
@@ -87,17 +88,16 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function formatDate(d) {
-    return d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+    return d.toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric"
+    });
   }
 
   async function loadReflections(startDate) {
     const reflectionsKey = `reflection-${startDate}`;
-    reflectionsContainer.innerHTML = `
-      <textarea id="reflection-text" placeholder="Write your weekly reflection..." style="width: 100%; height: 150px; border-radius: 8px; padding: 10px; background-color: #121212; color: #e4e4e7; border: 1px solid #333;"></textarea>
-      <button id="save-reflection" style="margin-top: 10px; padding: 10px 14px; border: none; border-radius: 8px; background-color: #4c8eda; color: white; font-weight: bold; cursor: pointer;">Save Reflection</button>
-    `;
-
-    const textarea = document.getElementById("reflection-text");
+    const textarea = document.getElementById("reflection-textarea");
     const saved = localStorage.getItem(reflectionsKey);
     if (saved) textarea.value = saved;
 
