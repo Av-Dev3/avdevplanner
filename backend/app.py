@@ -24,7 +24,9 @@ NOTE_FILE = os.path.join(DATA_DIR, 'notes.json')
 FOCUS_FILE = os.path.join(DATA_DIR, 'focus.json')
 LESSON_FILE = os.path.join(DATA_DIR, 'lessons.json')
 SCHEDULE_FILE = os.path.join(DATA_DIR, 'schedule.json')
-TIME_FILE = os.path.join(DATA_DIR, 'time.json')  # NEW
+TIME_FILE = os.path.join(DATA_DIR, 'time.json')
+REFLECTIONS_FILE = os.path.join(DATA_DIR, 'reflections.json')
+  # NEW
 
 def load_json(filename, default):
     if os.path.exists(filename):
@@ -371,6 +373,28 @@ Only include keys that apply. Use today's date only if no date is implied. Respo
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+# === REFLECTIONS ===
+@app.route('/reflections', methods=['GET'])
+def get_reflections():
+    return jsonify(load_json(REFLECTIONS_FILE, {}))
+
+@app.route('/reflections', methods=['POST'])
+def save_reflections():
+    data = request.json
+    week = data.get("week")  # e.g., "2025-07-14"
+    if not week:
+        return jsonify({"error": "Week is required"}), 400
+
+    reflections = load_json(REFLECTIONS_FILE, {})
+    reflections[week] = {
+        "what_went_well": data.get("what_went_well", ""),
+        "what_to_improve": data.get("what_to_improve", "")
+    }
+
+    save_json(REFLECTIONS_FILE, reflections)
+    return jsonify({"message": "Reflection saved"}), 201
+
 
 if __name__ == '__main__':
     app.run(debug=True)

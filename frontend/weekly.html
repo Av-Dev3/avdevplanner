@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="weekly.css">
+  <title>Document</title>
+</head>
+<body>
+  <div class="page-content">
+    <header class="head">
+      <div class="nav-container">
+        <div class="nav-left">
+          <img class="logo" src="logo.png" alt="">
+        </div>
+        <div class="nav-center">
+          <h2 class="nav-quote">Get this shit done.</h2>
+        </div>
+        <div class="nav-right">
+          <button class="hamburger" aria-label="Toggle menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+          </button>
+        </div>
+
+        <nav>
+          <ul class="main-nav">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="lessons.html">Lessons</a></li>
+            <li><a href="daily.html">Daily</a></li>
+            <li><a href="goals.html">Goals</a></li>
+            <li><a href="notes.html">Notes</a></li>
+            <li><a href="tasks.html">Tasks</a></li>
+            <li><a href="schedule.html">Schedule</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+     <div id="week-range" class="week-range-bar"></div>
+<div id="weekly-page">
+    <section id="weekly-tasks" class="weekly-section">
+      <h2>This Week's Tasks</h2>
+      <div class="weekly-container" id="weekly-tasks-container"></div>
+    </section>
+
+    <section id="weekly-goals" class="weekly-section">
+      <h2>This Week's Goals</h2>
+      <div class="weekly-container" id="weekly-goals-container"></div>
+    </section>
+
+    <section id="weekly-lessons" class="weekly-section">
+      <h2>This Week's Lessons</h2>
+      <div class="weekly-container" id="weekly-lessons-container"></div>
+    </section>
+
+    <section id="weekly-reflections" class="weekly-section">
+      <h2>Weekly Reflection</h2>
+      <textarea id="reflection-textarea" rows="6" placeholder="What went well? What could improve?"></textarea>
+      <button id="save-reflection">Save Reflection</button>
+    </section>
+  </div>
+  </div>
+  </div>
+<footer class="footer">
+  <span id="eat">Eat</span>
+  <span id="sleep">Sleep</span>
+  <span id="code">Code</span>
+  <span id="repeat">Repeat</span>
+</footer>
+
+  <script src="nav.js"></script>
+  <script src="weekly.js"></script>
+</body>
+</html>
