@@ -14,8 +14,9 @@ if (form && container) {
     const newGoal = {
       title: titleInput.value.trim(),
       notes: notesInput.value.trim(),
-      date: dateInput.value, // Add selected date
+      date: dateInput.value,
       created_at: new Date().toISOString(),
+      completed: false
     };
 
     const res = await fetch("https://avdevplanner.onrender.com/goals", {
@@ -45,14 +46,34 @@ if (form && container) {
     goals.forEach((goal, index) => {
       const card = document.createElement("div");
       card.className = "goal-card";
+      if (goal.completed) {
+        card.classList.add("completed");
+      }
+
       card.innerHTML = `
         <h3>${goal.title}</h3>
         ${goal.notes ? `<p><strong>Notes:</strong> ${goal.notes}</p>` : ""}
         ${goal.date ? `<p><strong>Target Date:</strong> ${goal.date}</p>` : ""}
         <p><small>Added: ${new Date(goal.created_at).toLocaleDateString()}</small></p>
+        ${goal.completed ? `<p style="color:limegreen"><strong>✅ Completed</strong></p>` : ""}
       `;
 
-      // DELETE button
+      // Mark Complete button
+      if (!goal.completed) {
+        const completeBtn = document.createElement("button");
+        completeBtn.textContent = "Mark Complete";
+        completeBtn.addEventListener("click", async () => {
+          await fetch(`https://avdevplanner.onrender.com/goals/${index}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ...goal, completed: true }),
+          });
+          loadGoals();
+        });
+        card.appendChild(completeBtn);
+      }
+
+      // Delete button
       const deleteBtn = document.createElement("button");
       deleteBtn.textContent = "Delete";
       deleteBtn.addEventListener("click", async () => {
@@ -66,7 +87,7 @@ if (form && container) {
       });
       card.appendChild(deleteBtn);
 
-      // EDIT button
+      // Edit button
       const editBtn = document.createElement("button");
       editBtn.textContent = "Edit";
       editBtn.addEventListener("click", async () => {
