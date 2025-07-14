@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const res = await fetch("https://avdevplanner.onrender.com/ai", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: userText })
+        body: JSON.stringify({ prompt: userText })
       });
 
       if (!res.ok) {
