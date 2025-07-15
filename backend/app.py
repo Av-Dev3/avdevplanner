@@ -2,11 +2,10 @@ from flask import Flask, request, jsonify
 import json
 import os
 from flask_cors import CORS, cross_origin
-from openai import OpenAI
+import openai  # ✅ use the openai module directly
 from datetime import datetime
 import base64
 from werkzeug.utils import secure_filename
-
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": [
@@ -17,7 +16,8 @@ CORS(app, resources={r"/*": {"origins": [
     "capacitor://localhost"
 ]}}, supports_credentials=True)
 
-client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+openai.api_key = os.environ.get("OPENAI_API_KEY")  # ✅ correctly set the API key
+
 
 DATA_DIR = "/mnt/data"
 TASK_FILE = os.path.join(DATA_DIR, 'tasks.json')
@@ -415,13 +415,12 @@ def full_chat():
         else:
             messages.append({"role": "user", "content": prompt})
 
-        response = client.chat.completions.create(
-            model="gpt-4-1106-preview",
+        response = openai.ChatCompletion.create(
+             model="gpt-4-1106-preview",
             messages=messages,
             response_format="json"
+)
 
-
-        )
 
         reply = response.choices[0].message.content.strip()
         print("RAW GPT RESPONSE:", reply)
