@@ -47,31 +47,16 @@ if (form) {
 }
 
 // === DISPLAY TASKS ===
-if (container) {
-  const cameFromSchedule = sessionStorage.getItem("cameFromSchedule");
-  sessionStorage.removeItem("cameFromSchedule");
+task = {
+    "title": data.get("title", ""),
+    "text": data.get("text", data.get("title", "")),  # ✅ Add this line
+    "notes": data.get("notes", ""),
+    "date": data.get("date", ""),
+    "time": data.get("time", ""),
+    "completed": data.get("completed", False),
+    "subtasks": data.get("subtasks", [])
+}
 
-  const selectedDate = localStorage.getItem("selectedDate");
-  if (!cameFromSchedule) {
-    localStorage.removeItem("selectedDate");
-  }
-
-  async function loadTasks() {
-    const res = await fetch("https://avdevplanner.onrender.com/tasks");
-    const tasks = await res.json();
-    const today = new Date().toLocaleDateString("en-CA");
-
-    const filteredTasks = selectedDate
-      ? tasks.filter((t) => t.date === selectedDate)
-      : tasks.filter((t) => t.date >= today);
-
-    const tasksByDate = {};
-    filteredTasks.forEach((task, index) => {
-      const normalizedTask = {
-        ...task,
-        index,
-        text: task.text || task.title || "(No Title)"
-      };
 
       if (!tasksByDate[task.date]) tasksByDate[task.date] = [];
       tasksByDate[task.date].push(normalizedTask);

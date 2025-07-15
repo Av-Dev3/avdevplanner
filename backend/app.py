@@ -67,13 +67,15 @@ def add_task():
 
         tasks = load_json(TASK_FILE, [])
         task = {
-            "title": data.get("title", ""),
-            "notes": data.get("notes", ""),
-            "date": data.get("date", ""),
-            "time": data.get("time", ""),
-            "completed": data.get("completed", False),
-            "subtasks": data.get("subtasks", [])
-        }
+    "title": data.get("title", ""),
+    "text": data.get("text", data.get("title", "")),  # ✅ Add this line
+    "notes": data.get("notes", ""),
+    "date": data.get("date", ""),
+    "time": data.get("time", ""),
+    "completed": data.get("completed", False),
+    "subtasks": data.get("subtasks", [])
+}
+
         tasks.append(task)
         save_json(TASK_FILE, tasks)
         return jsonify({"message": "Task added"}), 201
@@ -428,7 +430,7 @@ def full_chat():
 
         for task in parsed.get("tasks", []):
             task["completed"] = task.get("completed", False)
-            task["text"] = task.get("text", task.get("title", ""))
+            task["text"] = task.get("text") or task.get("title", "")
             task["date"] = task.get("date") or today
             all_tasks = load_json(TASK_FILE, [])
             all_tasks.append(task)
