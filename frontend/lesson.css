@@ -60,15 +60,12 @@
   gap: 12px;
 }
 
-/* Lessons Grid (already created earlier) */
-/* #lessons-container { … }  <-- keep as is */
-
 /* Individual Lesson Card */
 .lesson-card {
   background-color: #1f1f24;
   border-radius: 10px;
   padding: 16px 18px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
   color: #e4e4e7;
   display: flex;
   flex-direction: column;
@@ -79,7 +76,7 @@
 
 .lesson-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 4px 12px rgba(76,142,218,0.35);
+  box-shadow: 0 4px 12px rgba(76, 142, 218, 0.35);
 }
 
 /* Title */
@@ -108,29 +105,12 @@
   font-size: 0.8rem;
 }
 
-/* Complete / Undo button */
-.complete-lesson {
-  align-self: flex-start;
-  margin-top: 4px;
-  padding: 6px 10px;
-  background-color: #4c8eda;
-  border: none;
-  border-radius: 8px;
-  color: #fff;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-.complete-lesson:hover {
-  background-color: #3b6fb3;
-}
-
 /* Optional: visual style for completed lessons */
 .lesson-card.completed {
   opacity: 0.6;
   text-decoration: line-through;
 }
+
 /* Group the lesson action buttons side by side */
 .lesson-button-group {
   display: flex;
@@ -138,41 +118,19 @@
   margin-top: 6px;
 }
 
-/* Style shared by all lesson action buttons */
+/* Uniform style for all buttons (complete, edit, delete) */
 .lesson-button-group button {
-  padding: 6px 12px;
+  padding: 6px 10px;
+  background-color: #4c8eda;
   border: none;
   border-radius: 8px;
+  color: #fff;
   font-size: 0.85rem;
-  cursor: pointer;
   font-weight: bold;
+  cursor: pointer;
   transition: background-color 0.2s ease;
 }
 
-/* Individual button colors */
-.lesson-button-group .complete-lesson {
-  background-color: #4c8eda;
-  color: white;
-}
-
-.lesson-button-group .complete-lesson:hover {
+.lesson-button-group button:hover {
   background-color: #3b6fb3;
-}
-
-.lesson-button-group .edit-lesson {
-  background-color: #1e90a0;
-  color: white;
-}
-
-.lesson-button-group .edit-lesson:hover {
-  background-color: #167688;
-}
-
-.lesson-button-group .delete-lesson {
-  background-color: #d24c4c;
-  color: white;
-}
-
-.lesson-button-group .delete-lesson:hover {
-  background-color: #b53c3c;
 }
