@@ -48,8 +48,7 @@ async function loadLessons() {
       return;
     }
 
-    lessons.forEach((lesson, index) => {
-      const lessonIndex = index; // fix closure issue
+    lessons.forEach((lesson) => {
       const card = document.createElement("div");
       card.className = "lesson-card";
 
@@ -76,7 +75,7 @@ async function loadLessons() {
 
       completeBtn.addEventListener("click", async () => {
         const updated = { ...lesson, completed: !lesson.completed };
-        const res = await fetch(`https://avdevplanner.onrender.com/lessons/${lessonIndex}`, {
+        const res = await fetch(`https://avdevplanner.onrender.com/lessons/${lesson.id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(updated)
@@ -105,7 +104,7 @@ async function loadLessons() {
             notes: newNotes.trim()
           };
 
-          const res = await fetch(`https://avdevplanner.onrender.com/lessons/${lessonIndex}`, {
+          const res = await fetch(`https://avdevplanner.onrender.com/lessons/${lesson.id}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(updatedLesson)
@@ -120,7 +119,7 @@ async function loadLessons() {
         const confirmDelete = confirm("Delete this lesson?");
         if (!confirmDelete) return;
 
-        const res = await fetch(`https://avdevplanner.onrender.com/lessons/${lessonIndex}`, {
+        const res = await fetch(`https://avdevplanner.onrender.com/lessons/${lesson.id}`, {
           method: "DELETE"
         });
 

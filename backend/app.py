@@ -4,6 +4,7 @@ import os
 from flask_cors import CORS, cross_origin
 import openai
 from datetime import datetime
+import uuid
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": [
@@ -244,11 +245,13 @@ def save_focus_entry():
 def get_lessons():
     return jsonify(load_json(LESSON_FILE, []))
 
+
 @app.route('/lessons', methods=['POST'])
 def add_lesson():
     lessons = load_json(LESSON_FILE, [])
     data = request.json
     lessons.append({
+        "id": str(uuid.uuid4()),
         "title": data.get("title", ""),
         "description": data.get("description", ""),
         "category": data.get("category", ""),
@@ -260,34 +263,34 @@ def add_lesson():
     save_json(LESSON_FILE, lessons)
     return jsonify({"message": "Lesson added"}), 201
 
-@app.route("/lessons/<int:index>", methods=["DELETE"])
-def delete_lesson(index):
-    try:
-        with open("lessons.json", "r") as f:
-            lessons = json.load(f)
 
-        if 0 <= index < len(lessons):
-            lessons.pop(index)
-            with open("lessons.json", "w") as f:
-                json.dump(lessons, f, indent=2)
-            return jsonify({"message": "Lesson deleted"}), 200
-        else:
-            return jsonify({"error": "Invalid index"}), 400
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-
-@app.route('/lessons/<int:index>', methods=['PUT'])
-def update_lesson(index):
+@app.route("/lessons/<string:lesson_id>", methods=["DELETE"])
+def delete_lesson(lesson_id):
     lessons = load_json(LESSON_FILE, [])
-    if 0 <= index < len(lessons):
-        updated = request.json
-        lessons[index]['completed'] = updated.get('completed', lessons[index].get('completed', False))
-        save_json(LESSON_FILE, lessons)
-        return jsonify({"message": "Lesson updated"}), 200
-    return jsonify({"error": "Lesson not found"}), 404
+    updated_lessons = [lesson for lesson in lessons if lesson.get("id") != lesson_id]
 
+    if len(updated_lessons) == len(lessons):
+        return jsonify({"error": "Lesson not found"}), 404
+
+    save_json(LESSON_FILE, updated_lessons)
+    return jsonify({"message": "Lesson deleted"}), 200
+
+
+@app.route('/lessons/<string:lesson_id>', methods=['PUT'])
+def update_lesson(lesson_id):
+    lessons = load_json(LESSON_FILE, [])
+    updated_data = request.json
+
+    for i, lesson in enumerate(lessons):
+        if lesson.get("id") == lesson_id:
+            lessons[i] = {
+                **lesson,
+                **updated_data  # allow full overwrite (e.g. title, notes, etc.)
+            }
+            save_json(LESSON_FILE, lessons)
+            return jsonify({"message": "Lesson updated"}), 200
+
+    return jsonify({"error": "Lesson not found"}), 404
 # === SCHEDULE ===
 @app.route('/schedule', methods=['GET'])
 def get_schedule():
