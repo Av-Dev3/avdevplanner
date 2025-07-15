@@ -14,30 +14,46 @@
 <header class="head">
   <div class="nav-container">
     <div class="nav-left">
-    <h1 class="logo">The Plan</h1>
-    </div>
-    <div class="nav-center">
-    <h2 class="nav-quote">Get this shit done.</h2>
-    </div>
-    <div class="nav-right">
-    <button class="hamburger" aria-label="Toggle menu">
-      <span class="bar"></span>
-      <span class="bar"></span>
-      <span class="bar"></span>
-    </button>
+      <img class="logo" src="logo.png" alt="">
+      <h2 class="nav-quote">Get this shit done.</h2>
     </div>
 
-    <nav>
-      <ul class="main-nav">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="lessons.html">Lessons</a></li>
-        <li><a href="daily.html">Daily</a></li>
-        <li><a href="goals.html">Goals</a></li>
-        <li><a href="notes.html">Notes</a></li>
-        <li><a href="tasks.html">Tasks</a></li>
-        <li><a href="schedule.html">Schedule</a></li>
-      </ul>
-    </nav>
+    <div class="nav-right">
+      <button class="hamburger" aria-label="Toggle menu">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+
+      <nav>
+        <ul class="main-nav">
+          <li><a href="index.html">Home</a></li>
+          
+          <li><a href="lessons.html">Lessons</a></li>
+
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle">Daily ▾</a>
+
+            <!-- Desktop dropdown menu -->
+            <ul class="dropdown-menu">
+              <li><a href="daily.html">Daily</a></li>
+              <li><a href="weekly.html">Weekly</a></li>
+            </ul>
+          </li>
+
+          <li><a href="goals.html">Goals</a></li>
+          <li><a href="notes.html">Notes</a></li>
+          <li><a href="tasks.html">Tasks</a></li>
+          <li><a href="schedule.html">Schedule</a></li>
+        </ul>
+
+        <!-- Mobile slide-in submenu -->
+        <ul class="submenu-panel" id="submenu">
+          <li><a href="daily.html">Daily</a></li>
+          <li><a href="weekly.html">Weekly</a></li>
+        </ul>
+      </nav>
+    </div>
   </div>
 </header>
 
