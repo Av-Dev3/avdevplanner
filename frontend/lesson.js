@@ -65,6 +65,8 @@ async function loadLessons() {
         <button class="complete-lesson" data-index="${index}">
           ${lesson.completed ? "Undo Complete" : "Mark Complete"}
         </button>
+        <button class="edit-lesson" data-index="${index}">Edit</button>
+        <button class="delete-lesson" data-index="${index}">Delete</button>
       `;
       container.appendChild(card);
     });
@@ -85,6 +87,62 @@ async function loadLessons() {
           loadLessons();
         } else {
           console.error("Failed to update lesson");
+        }
+      });
+    });
+
+    document.querySelectorAll(".edit-lesson").forEach((btn) => {
+      btn.addEventListener("click", async (e) => {
+        const index = e.target.getAttribute("data-index");
+        const lesson = lessons[index];
+
+        const newTitle = prompt("Edit title:", lesson.title);
+        const newDescription = prompt("Edit description:", lesson.description || "");
+        const newCategory = prompt("Edit category:", lesson.category || "");
+        const newDate = prompt("Edit date (YYYY-MM-DD or 'tomorrow'):", lesson.date || "");
+        const newPriority = prompt("Edit priority:", lesson.priority || "");
+        const newNotes = prompt("Edit notes:", lesson.notes || "");
+
+        if (newTitle !== null) {
+          const updatedLesson = {
+            ...lesson,
+            title: newTitle.trim(),
+            description: newDescription.trim(),
+            category: newCategory.trim(),
+            date: parseNaturalDate(newDate.trim()),
+            priority: newPriority.trim(),
+            notes: newNotes.trim()
+          };
+
+          const res = await fetch(`https://avdevplanner.onrender.com/lessons/${index}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(updatedLesson)
+          });
+
+          if (res.ok) {
+            loadLessons();
+          } else {
+            console.error("Failed to update lesson");
+          }
+        }
+      });
+    });
+
+    document.querySelectorAll(".delete-lesson").forEach((btn) => {
+      btn.addEventListener("click", async (e) => {
+        const index = e.target.getAttribute("data-index");
+        const confirmDelete = confirm("Delete this lesson?");
+        if (!confirmDelete) return;
+
+        const res = await fetch(`https://avdevplanner.onrender.com/lessons/${index}`, {
+          method: "DELETE"
+        });
+
+        if (res.ok) {
+          loadLessons();
+        } else {
+          console.error("Failed to delete lesson");
         }
       });
     });
