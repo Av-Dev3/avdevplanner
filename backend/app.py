@@ -260,6 +260,24 @@ def add_lesson():
     save_json(LESSON_FILE, lessons)
     return jsonify({"message": "Lesson added"}), 201
 
+@app.route("/lessons/<int:index>", methods=["DELETE"])
+def delete_lesson(index):
+    try:
+        with open("lessons.json", "r") as f:
+            lessons = json.load(f)
+
+        if 0 <= index < len(lessons):
+            lessons.pop(index)
+            with open("lessons.json", "w") as f:
+                json.dump(lessons, f, indent=2)
+            return jsonify({"message": "Lesson deleted"}), 200
+        else:
+            return jsonify({"error": "Invalid index"}), 400
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 @app.route('/lessons/<int:index>', methods=['PUT'])
 def update_lesson(index):
     lessons = load_json(LESSON_FILE, [])
