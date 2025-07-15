@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 import json
 import os
 from flask_cors import CORS, cross_origin
-import openai
+from openai import OpenAI
 from datetime import datetime
 import base64
 from werkzeug.utils import secure_filename
@@ -416,7 +416,7 @@ def full_chat():
         response = client.chat.completions.create(
             model="gpt-4-1106-preview",
             messages=messages,
-            response_format={"type": "json_object"}
+            response_format="json_object"
         )
 
         reply = response.choices[0].message.content.strip()
@@ -424,7 +424,6 @@ def full_chat():
         parsed = json.loads(reply)
 
         parsed["response"] = parsed.get("response", "[Parsed tasks/goals/lessons/schedule]")
-
         today = datetime.utcnow().strftime('%Y-%m-%d')
 
         for task in parsed.get("tasks", []):
@@ -457,6 +456,7 @@ def full_chat():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 
 

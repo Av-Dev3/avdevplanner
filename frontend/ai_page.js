@@ -47,8 +47,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const data = await res.json();
 
-      if (data.reply) {
-        addChatBubble(data.reply, "ai");
+      if (data.response) {
+        addChatBubble(data.response, "ai");
       } else {
         addChatBubble("🤖 I didn't understand that. Try again!", "ai");
       }
