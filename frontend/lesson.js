@@ -62,11 +62,13 @@ async function loadLessons() {
         <p>${lesson.description}</p>
         ${lesson.notes ? `<p><em>${lesson.notes}</em></p>` : ""}
         <p><small>Status: ${lesson.completed ? "✅ Completed" : "🕒 In Progress"}</small></p>
-        <button class="complete-lesson" data-index="${index}">
-          ${lesson.completed ? "Undo Complete" : "Mark Complete"}
-        </button>
-        <button class="edit-lesson" data-index="${index}">Edit</button>
-        <button class="delete-lesson" data-index="${index}">Delete</button>
+        <div class="lesson-button-group">
+          <button class="complete-lesson" data-index="${index}">
+            ${lesson.completed ? "Undo Complete" : "Mark Complete"}
+          </button>
+          <button class="edit-lesson" data-index="${index}">Edit</button>
+          <button class="delete-lesson" data-index="${index}">Delete</button>
+        </div>
       `;
       container.appendChild(card);
     });

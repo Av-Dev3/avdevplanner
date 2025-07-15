@@ -131,3 +131,48 @@
   opacity: 0.6;
   text-decoration: line-through;
 }
+/* Group the lesson action buttons side by side */
+.lesson-button-group {
+  display: flex;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+/* Style shared by all lesson action buttons */
+.lesson-button-group button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+
+/* Individual button colors */
+.lesson-button-group .complete-lesson {
+  background-color: #4c8eda;
+  color: white;
+}
+
+.lesson-button-group .complete-lesson:hover {
+  background-color: #3b6fb3;
+}
+
+.lesson-button-group .edit-lesson {
+  background-color: #1e90a0;
+  color: white;
+}
+
+.lesson-button-group .edit-lesson:hover {
+  background-color: #167688;
+}
+
+.lesson-button-group .delete-lesson {
+  background-color: #d24c4c;
+  color: white;
+}
+
+.lesson-button-group .delete-lesson:hover {
+  background-color: #b53c3c;
+}
