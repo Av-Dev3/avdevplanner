@@ -1,6 +1,30 @@
 const form = document.getElementById("task-form");
 const container = document.getElementById("task-container");
 
+// === Helper: Convert natural dates ===
+function parseNaturalDate(dateStr) {
+  if (!dateStr) return null;
+
+  const lowered = dateStr.toLowerCase();
+  const today = new Date();
+
+  if (lowered === "today") {
+    return today.toISOString().split("T")[0];
+  }
+
+  if (lowered === "tomorrow") {
+    today.setDate(today.getDate() + 1);
+    return today.toISOString().split("T")[0];
+  }
+
+  const parsed = new Date(dateStr);
+  if (!isNaN(parsed.getTime())) {
+    return parsed.toISOString().split("T")[0];
+  }
+
+  return null;
+}
+
 // === FORM TOGGLE ===
 if (form) {
   form.style.display = "none";
@@ -61,19 +85,23 @@ if (container) {
     const tasks = await res.json();
     const today = new Date().toLocaleDateString("en-CA");
 
+    const sanitizedTasks = tasks.map((t) => ({
+      ...t,
+      date: parseNaturalDate(t.date)
+    }));
+
     const filteredTasks = selectedDate
-      ? tasks.filter((t) => t.date === selectedDate)
-      : tasks.filter((t) => t.date >= today);
+      ? sanitizedTasks.filter((t) => t.date === selectedDate)
+      : sanitizedTasks.filter((t) => t.date >= today);
 
     const tasksByDate = {};
     filteredTasks.forEach((task) => {
-  const actualIndex = tasks.findIndex(t => t.text === task.text && t.date === task.date && t.time === task.time);
-  const normalizedTask = {
-    ...task,
-    index: actualIndex,
-    text: task.text || task.title || "(No Title)"
-  };
-
+      const actualIndex = tasks.findIndex(t => t.text === task.text && parseNaturalDate(t.date) === task.date && t.time === task.time);
+      const normalizedTask = {
+        ...task,
+        index: actualIndex,
+        text: task.text || task.title || "(No Title)"
+      };
 
       if (!tasksByDate[task.date]) tasksByDate[task.date] = [];
       tasksByDate[task.date].push(normalizedTask);
@@ -206,14 +234,20 @@ if (container) {
   }
 
   function formatDate(dateStr) {
+    if (!dateStr || dateStr.includes("NaN") || dateStr.length !== 10) return "(Invalid Date)";
+    
     const [year, month, day] = dateStr.split("-");
     const dateObj = new Date(+year, +month - 1, +day);
+
+    if (isNaN(dateObj.getTime())) return "(Invalid Date)";
+
     const dayNum = dateObj.getDate();
     const monthName = dateObj.toLocaleString("default", { month: "long" });
     const suffix =
       dayNum % 10 === 1 && dayNum !== 11 ? "st" :
       dayNum % 10 === 2 && dayNum !== 12 ? "nd" :
       dayNum % 10 === 3 && dayNum !== 13 ? "rd" : "th";
+
     return `${monthName} ${dayNum}${suffix}, ${year}`;
   }
 

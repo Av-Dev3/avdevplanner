@@ -276,7 +276,7 @@ li a.active {
   position: fixed;
   top: 60px;
   right: -250px;
-  width: 250px;
+  width: 150px;
   background-color: #1f1f1f;
   padding: 0.5rem;
   border-radius: 12px 0 0 12px;
@@ -295,7 +295,7 @@ li a.active {
 
 .submenu-panel {
   position: fixed;
-  top: 250px;
+  top: 200px;
   right: -500px;
   width: 150px;
   background-color: #2a2a2a;
@@ -310,7 +310,7 @@ li a.active {
 }
 
 .submenu-panel.open {
-  right: 250px;
+  right: 120px;
 }
 
 
