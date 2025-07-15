@@ -50,8 +50,11 @@ if (form && container) {
         card.classList.add("completed");
       }
 
-      const displayDate = formatPrettyDate(parseNaturalDate(goal.date));
-      const addedDate = formatPrettyDate(parseNaturalDate(goal.created_at?.split("T")[0]));
+      const parsedGoalDate = parseNaturalDate((goal.date || "").trim());
+      const parsedCreatedAt = parseNaturalDate((goal.created_at || "").split("T")[0]);
+
+      const displayDate = parsedGoalDate ? formatPrettyDate(parsedGoalDate) : "(No Date Set)";
+      const addedDate = parsedCreatedAt ? formatPrettyDate(parsedCreatedAt) : "(Unknown)";
 
       card.innerHTML = `
         <h3>${goal.title}</h3>
@@ -64,7 +67,6 @@ if (form && container) {
       const buttonGroup = document.createElement("div");
       buttonGroup.className = "goal-button-group";
 
-      // Mark Complete button
       if (!goal.completed) {
         const completeBtn = document.createElement("button");
         completeBtn.textContent = "Mark Complete";
@@ -79,7 +81,6 @@ if (form && container) {
         buttonGroup.appendChild(completeBtn);
       }
 
-      // Delete button
       const deleteBtn = document.createElement("button");
       deleteBtn.textContent = "Delete";
       deleteBtn.addEventListener("click", async () => {
@@ -93,7 +94,6 @@ if (form && container) {
       });
       buttonGroup.appendChild(deleteBtn);
 
-      // Edit button
       const editBtn = document.createElement("button");
       editBtn.textContent = "Edit";
       editBtn.addEventListener("click", async () => {
@@ -149,7 +149,10 @@ function parseNaturalDate(dateStr) {
 }
 
 function formatPrettyDate(dateStr) {
-  if (!dateStr || dateStr.length !== 10) return "(Invalid Date)";
+  if (!dateStr || typeof dateStr !== "string" || dateStr.length !== 10 || dateStr.includes("NaN")) {
+    return "(Invalid Date)";
+  }
+
   const [year, month, day] = dateStr.split("-");
   const dateObj = new Date(+year, +month - 1, +day);
 
