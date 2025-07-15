@@ -387,22 +387,19 @@ def full_chat():
         if not prompt and not image_data:
             return jsonify({"error": "Prompt or image is required"}), 400
 
-        messages = [{"role": "system", "content": (
-            "You are a helpful assistant. Always respond with a valid JSON object only. Never include anything outside the JSON. "
-"Your JSON must contain:\n"
-"- response: your reply to the user (string)\n"
-"- tasks (optional): list of {title, notes, date, completed}\n"
-"- goals (optional): list of {title, notes, completed}\n"
-"- lessons (optional): list of {title, description, category, date, priority, notes, completed}\n"
-"- schedule (optional): list of {title, date, time, notes}\n\n"
-"Only include keys that apply. Use today's date if no date is mentioned. Do not include explanations or messages outside the JSON."
-
-            "- response: (your reply to the user)\n"
-            "- tasks (optional): list of {title, notes, date, completed}\n"
-            "- goals (optional): list of {title, notes, completed}\n"
-            "- lessons (optional): list of {title, description, category, date, priority, notes, completed}\n"
-            "- schedule (optional): list of {title, date, time, notes}"
-        )}]
+        messages = [{
+            "role": "system",
+            "content": (
+                "You are a helpful assistant. Respond ONLY with a valid JSON object.\n"
+                "Your JSON must include:\n"
+                "- response: your message to the user\n"
+                "- tasks (optional): list of {title, notes, date, completed}\n"
+                "- goals (optional): list of {title, notes, completed}\n"
+                "- lessons (optional): list of {title, description, category, date, priority, notes, completed}\n"
+                "- schedule (optional): list of {title, date, time, notes}\n"
+                "Only include keys that apply. Use today's date if none is given. Do not include anything outside the JSON."
+            )
+        }]
 
         if image_data:
             base64_image = image_data.get("data")
@@ -425,12 +422,22 @@ def full_chat():
         reply = response.choices[0].message.content.strip()
         print("RAW GPT RESPONSE:", reply)
 
-
+        # === Improved JSON parsing logic ===
         try:
             parsed = json.loads(reply)
-            parsed["response"] = parsed.get("response", "[Parsed tasks/goals/lessons/schedule]")
         except json.JSONDecodeError:
-            parsed = {"response": reply}
+            # Try to extract JSON block from inside markdown/code fences
+            import re
+            match = re.search(r"\{.*\}", reply, re.DOTALL)
+            if match:
+                try:
+                    parsed = json.loads(match.group())
+                except:
+                    parsed = {"response": reply}
+            else:
+                parsed = {"response": reply}
+
+        parsed["response"] = parsed.get("response", "[Parsed tasks/goals/lessons/schedule]")
 
         today = datetime.utcnow().strftime('%Y-%m-%d')
 
