@@ -16,7 +16,7 @@ form.addEventListener("submit", async (e) => {
     title: titleInput.value.trim(),
     description: descriptionInput.value.trim(),
     category: categoryInput.value.trim(),
-    date: dateInput.value,
+    date: parseNaturalDate(dateInput.value),
     priority: priorityInput.value.trim(),
     notes: notesInput.value.trim(),
     completed: false
@@ -51,10 +51,13 @@ async function loadLessons() {
     lessons.forEach((lesson, index) => {
       const card = document.createElement("div");
       card.className = "lesson-card";
+
+      const displayDate = formatPrettyDate(parseNaturalDate(lesson.date));
+
       card.innerHTML = `
         <h3>${lesson.title}</h3>
         <p><strong>Category:</strong> ${lesson.category}</p>
-        <p><strong>Date:</strong> ${lesson.date || "No date set"}</p>
+        <p><strong>Date:</strong> ${displayDate || "No date set"}</p>
         <p><strong>Priority:</strong> ${lesson.priority}</p>
         <p>${lesson.description}</p>
         ${lesson.notes ? `<p><em>${lesson.notes}</em></p>` : ""}
@@ -90,4 +93,42 @@ async function loadLessons() {
     container.innerHTML = "<p>Error loading lessons.</p>";
     console.error(err);
   }
+}
+
+// === Helpers ===
+
+function parseNaturalDate(dateStr) {
+  if (!dateStr) return null;
+
+  const lowered = dateStr.toLowerCase();
+  const today = new Date();
+
+  if (lowered === "today") {
+    return today.toISOString().split("T")[0];
+  }
+
+  if (lowered === "tomorrow") {
+    today.setDate(today.getDate() + 1);
+    return today.toISOString().split("T")[0];
+  }
+
+  const parsed = new Date(dateStr);
+  if (!isNaN(parsed.getTime())) {
+    return parsed.toISOString().split("T")[0];
+  }
+
+  return null;
+}
+
+function formatPrettyDate(dateStr) {
+  if (!dateStr || dateStr.length !== 10) return "(Invalid Date)";
+  const [year, month, day] = dateStr.split("-");
+  const dateObj = new Date(+year, +month - 1, +day);
+
+  if (isNaN(dateObj.getTime())) return "(Invalid Date)";
+
+  const dayNum = dateObj.getDate();
+  const monthName = dateObj.toLocaleString("default", { month: "long" });
+
+  return `${monthName} ${dayNum}`;
 }

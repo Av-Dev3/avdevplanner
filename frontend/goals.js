@@ -14,7 +14,7 @@ if (form && container) {
     const newGoal = {
       title: titleInput.value.trim(),
       notes: notesInput.value.trim(),
-      date: dateInput.value,
+      date: parseNaturalDate(dateInput.value),
       created_at: new Date().toISOString(),
       completed: false
     };
@@ -50,11 +50,14 @@ if (form && container) {
         card.classList.add("completed");
       }
 
+      const displayDate = formatPrettyDate(parseNaturalDate(goal.date));
+      const addedDate = formatPrettyDate(parseNaturalDate(goal.created_at?.split("T")[0]));
+
       card.innerHTML = `
         <h3>${goal.title}</h3>
         ${goal.notes ? `<p><strong>Notes:</strong> ${goal.notes}</p>` : ""}
-        ${goal.date ? `<p><strong>Target Date:</strong> ${goal.date}</p>` : ""}
-        <p><small>Added: ${new Date(goal.created_at).toLocaleDateString()}</small></p>
+        ${displayDate ? `<p><strong>Target Date:</strong> ${displayDate}</p>` : ""}
+        <p><small>Added: ${addedDate}</small></p>
         ${goal.completed ? `<p style="color:limegreen"><strong>✅ Completed</strong></p>` : ""}
       `;
 
@@ -96,7 +99,7 @@ if (form && container) {
       editBtn.addEventListener("click", async () => {
         const newTitle = prompt("Edit goal title:", goal.title);
         const newNotes = prompt("Edit notes:", goal.notes || "");
-        const newDate = prompt("Edit date (YYYY-MM-DD):", goal.date || "");
+        const newDate = prompt("Edit date (YYYY-MM-DD or 'tomorrow'):", goal.date || "");
 
         if (newTitle !== null) {
           await fetch(`https://avdevplanner.onrender.com/goals/${index}`, {
@@ -106,7 +109,7 @@ if (form && container) {
               ...goal,
               title: newTitle.trim(),
               notes: newNotes.trim(),
-              date: newDate.trim(),
+              date: parseNaturalDate(newDate.trim())
             }),
           });
           loadGoals();
@@ -118,4 +121,42 @@ if (form && container) {
       container.appendChild(card);
     });
   }
+}
+
+// === Helpers ===
+
+function parseNaturalDate(dateStr) {
+  if (!dateStr) return null;
+
+  const lowered = dateStr.toLowerCase();
+  const today = new Date();
+
+  if (lowered === "today") {
+    return today.toISOString().split("T")[0];
+  }
+
+  if (lowered === "tomorrow") {
+    today.setDate(today.getDate() + 1);
+    return today.toISOString().split("T")[0];
+  }
+
+  const parsed = new Date(dateStr);
+  if (!isNaN(parsed.getTime())) {
+    return parsed.toISOString().split("T")[0];
+  }
+
+  return null;
+}
+
+function formatPrettyDate(dateStr) {
+  if (!dateStr || dateStr.length !== 10) return "(Invalid Date)";
+  const [year, month, day] = dateStr.split("-");
+  const dateObj = new Date(+year, +month - 1, +day);
+
+  if (isNaN(dateObj.getTime())) return "(Invalid Date)";
+
+  const dayNum = dateObj.getDate();
+  const monthName = dateObj.toLocaleString("default", { month: "long" });
+
+  return `${monthName} ${dayNum}`;
 }
