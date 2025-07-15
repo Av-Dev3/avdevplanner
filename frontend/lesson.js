@@ -49,6 +49,7 @@ async function loadLessons() {
     }
 
     lessons.forEach((lesson, index) => {
+      const lessonIndex = index; // fix closure issue
       const card = document.createElement("div");
       card.className = "lesson-card";
 
@@ -63,20 +64,19 @@ async function loadLessons() {
         ${lesson.notes ? `<p><em>${lesson.notes}</em></p>` : ""}
         <p><small>Status: ${lesson.completed ? "✅ Completed" : "🕒 In Progress"}</small></p>
         <div class="lesson-button-group">
-          <button class="complete-lesson"> ${lesson.completed ? "Undo Complete" : "Mark Complete"} </button>
+          <button class="complete-lesson">${lesson.completed ? "Undo Complete" : "Mark Complete"}</button>
           <button class="edit-lesson">Edit</button>
           <button class="delete-lesson">Delete</button>
         </div>
       `;
 
-      // === Attach Event Listeners Directly ===
       const completeBtn = card.querySelector(".complete-lesson");
       const editBtn = card.querySelector(".edit-lesson");
       const deleteBtn = card.querySelector(".delete-lesson");
 
       completeBtn.addEventListener("click", async () => {
         const updated = { ...lesson, completed: !lesson.completed };
-        const res = await fetch(`https://avdevplanner.onrender.com/lessons/${index}`, {
+        const res = await fetch(`https://avdevplanner.onrender.com/lessons/${lessonIndex}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(updated)
@@ -105,7 +105,7 @@ async function loadLessons() {
             notes: newNotes.trim()
           };
 
-          const res = await fetch(`https://avdevplanner.onrender.com/lessons/${index}`, {
+          const res = await fetch(`https://avdevplanner.onrender.com/lessons/${lessonIndex}`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(updatedLesson)
@@ -120,7 +120,7 @@ async function loadLessons() {
         const confirmDelete = confirm("Delete this lesson?");
         if (!confirmDelete) return;
 
-        const res = await fetch(`https://avdevplanner.onrender.com/lessons/${index}`, {
+        const res = await fetch(`https://avdevplanner.onrender.com/lessons/${lessonIndex}`, {
           method: "DELETE"
         });
 
