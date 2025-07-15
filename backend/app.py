@@ -17,7 +17,7 @@ CORS(app, resources={r"/*": {"origins": [
     "capacitor://localhost"
 ]}}, supports_credentials=True)
 
-client = openai.OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 DATA_DIR = "/mnt/data"
 TASK_FILE = os.path.join(DATA_DIR, 'tasks.json')
