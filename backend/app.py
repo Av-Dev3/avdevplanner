@@ -388,10 +388,15 @@ def full_chat():
             return jsonify({"error": "Prompt or image is required"}), 400
 
         messages = [{"role": "system", "content": (
-            "You are a helpful assistant. Respond conversationally, like ChatGPT. "
-            "If the user gives a task, goal, lesson, or schedule item, return them in a JSON object "
-            "with the appropriate keys. Otherwise, just provide a thoughtful response.\n\n"
-            "Respond with a JSON object that has:\n"
+            "You are a helpful assistant. Always respond with a valid JSON object only. Never include anything outside the JSON. "
+"Your JSON must contain:\n"
+"- response: your reply to the user (string)\n"
+"- tasks (optional): list of {title, notes, date, completed}\n"
+"- goals (optional): list of {title, notes, completed}\n"
+"- lessons (optional): list of {title, description, category, date, priority, notes, completed}\n"
+"- schedule (optional): list of {title, date, time, notes}\n\n"
+"Only include keys that apply. Use today's date if no date is mentioned. Do not include explanations or messages outside the JSON."
+
             "- response: (your reply to the user)\n"
             "- tasks (optional): list of {title, notes, date, completed}\n"
             "- goals (optional): list of {title, notes, completed}\n"
