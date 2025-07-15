@@ -63,41 +63,30 @@ async function loadLessons() {
         ${lesson.notes ? `<p><em>${lesson.notes}</em></p>` : ""}
         <p><small>Status: ${lesson.completed ? "✅ Completed" : "🕒 In Progress"}</small></p>
         <div class="lesson-button-group">
-          <button class="complete-lesson" data-index="${index}">
-            ${lesson.completed ? "Undo Complete" : "Mark Complete"}
-          </button>
-          <button class="edit-lesson" data-index="${index}">Edit</button>
-          <button class="delete-lesson" data-index="${index}">Delete</button>
+          <button class="complete-lesson"> ${lesson.completed ? "Undo Complete" : "Mark Complete"} </button>
+          <button class="edit-lesson">Edit</button>
+          <button class="delete-lesson">Delete</button>
         </div>
       `;
-      container.appendChild(card);
-    });
 
-    document.querySelectorAll(".complete-lesson").forEach((btn) => {
-      btn.addEventListener("click", async (e) => {
-        const index = e.target.getAttribute("data-index");
-        const lesson = lessons[index];
+      // === Attach Event Listeners Directly ===
+      const completeBtn = card.querySelector(".complete-lesson");
+      const editBtn = card.querySelector(".edit-lesson");
+      const deleteBtn = card.querySelector(".delete-lesson");
+
+      completeBtn.addEventListener("click", async () => {
         const updated = { ...lesson, completed: !lesson.completed };
-
         const res = await fetch(`https://avdevplanner.onrender.com/lessons/${index}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(updated)
         });
 
-        if (res.ok) {
-          loadLessons();
-        } else {
-          console.error("Failed to update lesson");
-        }
+        if (res.ok) loadLessons();
+        else console.error("Failed to update lesson");
       });
-    });
 
-    document.querySelectorAll(".edit-lesson").forEach((btn) => {
-      btn.addEventListener("click", async (e) => {
-        const index = e.target.getAttribute("data-index");
-        const lesson = lessons[index];
-
+      editBtn.addEventListener("click", async () => {
         const newTitle = prompt("Edit title:", lesson.title);
         const newDescription = prompt("Edit description:", lesson.description || "");
         const newCategory = prompt("Edit category:", lesson.category || "");
@@ -122,18 +111,12 @@ async function loadLessons() {
             body: JSON.stringify(updatedLesson)
           });
 
-          if (res.ok) {
-            loadLessons();
-          } else {
-            console.error("Failed to update lesson");
-          }
+          if (res.ok) loadLessons();
+          else console.error("Failed to update lesson");
         }
       });
-    });
 
-    document.querySelectorAll(".delete-lesson").forEach((btn) => {
-      btn.addEventListener("click", async (e) => {
-        const index = e.target.getAttribute("data-index");
+      deleteBtn.addEventListener("click", async () => {
         const confirmDelete = confirm("Delete this lesson?");
         if (!confirmDelete) return;
 
@@ -141,12 +124,11 @@ async function loadLessons() {
           method: "DELETE"
         });
 
-        if (res.ok) {
-          loadLessons();
-        } else {
-          console.error("Failed to delete lesson");
-        }
+        if (res.ok) loadLessons();
+        else console.error("Failed to delete lesson");
       });
+
+      container.appendChild(card);
     });
 
   } catch (err) {
