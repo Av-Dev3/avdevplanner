@@ -413,29 +413,15 @@ def full_chat():
         else:
             messages.append({"role": "user", "content": prompt})
 
-        model = "gpt-4-vision-preview" if image_data else "gpt-4"
         response = client.chat.completions.create(
-            model=model,
-            messages=messages
+            model="gpt-4-1106-preview",
+            messages=messages,
+            response_format={"type": "json_object"}
         )
 
         reply = response.choices[0].message.content.strip()
         print("RAW GPT RESPONSE:", reply)
-
-        # === Improved JSON parsing logic ===
-        try:
-            parsed = json.loads(reply)
-        except json.JSONDecodeError:
-            # Try to extract JSON block from inside markdown/code fences
-            import re
-            match = re.search(r"\{.*\}", reply, re.DOTALL)
-            if match:
-                try:
-                    parsed = json.loads(match.group())
-                except:
-                    parsed = {"response": reply}
-            else:
-                parsed = {"response": reply}
+        parsed = json.loads(reply)
 
         parsed["response"] = parsed.get("response", "[Parsed tasks/goals/lessons/schedule]")
 
@@ -471,6 +457,7 @@ def full_chat():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 
 # === REFLECTIONS ===
