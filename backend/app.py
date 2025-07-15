@@ -2,10 +2,8 @@ from flask import Flask, request, jsonify
 import json
 import os
 from flask_cors import CORS, cross_origin
-import openai  # ✅ use the openai module directly
+import openai
 from datetime import datetime
-import base64
-from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": [
@@ -16,8 +14,7 @@ CORS(app, resources={r"/*": {"origins": [
     "capacitor://localhost"
 ]}}, supports_credentials=True)
 
-openai.api_key = os.environ.get("OPENAI_API_KEY")  # ✅ correctly set the API key
-
+client = openai.OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 DATA_DIR = "/mnt/data"
 TASK_FILE = os.path.join(DATA_DIR, 'tasks.json')
@@ -67,15 +64,13 @@ def add_task():
 
         tasks = load_json(TASK_FILE, [])
         task = {
-    "title": data.get("title", ""),
-    "text": data.get("text", data.get("title", "")),  # ✅ Add this line
-    "notes": data.get("notes", ""),
-    "date": data.get("date", ""),
-    "time": data.get("time", ""),
-    "completed": data.get("completed", False),
-    "subtasks": data.get("subtasks", [])
-}
-
+            "title": data.get("title", ""),
+            "notes": data.get("notes", ""),
+            "date": data.get("date", ""),
+            "time": data.get("time", ""),
+            "completed": data.get("completed", False),
+            "subtasks": data.get("subtasks", [])
+        }
         tasks.append(task)
         save_json(TASK_FILE, tasks)
         return jsonify({"message": "Task added"}), 201
@@ -378,90 +373,6 @@ Only include keys that apply. Use today's date only if no date is implied. Respo
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
-@app.route('/chat', methods=['POST'])
-def full_chat():
-    try:
-        data = request.get_json()
-        prompt = data.get("prompt", "").strip()
-        image_data = data.get("image")
-
-        if not prompt and not image_data:
-            return jsonify({"error": "Prompt or image is required"}), 400
-
-        messages = [{
-            "role": "system",
-            "content": (
-                "You are a helpful assistant. Respond ONLY with a valid JSON object.\n"
-                "Your JSON must include:\n"
-                "- response: your message to the user\n"
-                "- tasks (optional): list of {title, notes, date, completed}\n"
-                "- goals (optional): list of {title, notes, completed}\n"
-                "- lessons (optional): list of {title, description, category, date, priority, notes, completed}\n"
-                "- schedule (optional): list of {title, date, time, notes}\n"
-                "Only include keys that apply. Use today's date if none is given. Do not include anything outside the JSON."
-            )
-        }]
-
-        if image_data:
-            base64_image = image_data.get("data")
-            messages.append({
-                "role": "user",
-                "content": [
-                    {"type": "text", "text": prompt or "Here's an image."},
-                    {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"}}
-                ]
-            })
-        else:
-            messages.append({"role": "user", "content": prompt})
-
-        response = openai.ChatCompletion.create(
-             model="gpt-4-1106-preview",
-            messages=messages,
-            response_format="json"
-)
-
-
-        reply = response.choices[0].message.content.strip()
-        print("RAW GPT RESPONSE:", reply)
-        parsed = json.loads(reply)
-
-        parsed["response"] = parsed.get("response", "[Parsed tasks/goals/lessons/schedule]")
-        today = datetime.utcnow().strftime('%Y-%m-%d')
-
-        for task in parsed.get("tasks", []):
-            task["completed"] = task.get("completed", False)
-            task["text"] = task.get("text") or task.get("title", "")
-            task["date"] = task.get("date") or today
-            all_tasks = load_json(TASK_FILE, [])
-            all_tasks.append(task)
-            save_json(TASK_FILE, all_tasks)
-
-        for goal in parsed.get("goals", []):
-            goal["completed"] = goal.get("completed", False)
-            all_goals = load_json(GOAL_FILE, [])
-            all_goals.append(goal)
-            save_json(GOAL_FILE, all_goals)
-
-        for lesson in parsed.get("lessons", []):
-            lesson["completed"] = lesson.get("completed", False)
-            all_lessons = load_json(LESSON_FILE, [])
-            all_lessons.append(lesson)
-            save_json(LESSON_FILE, all_lessons)
-
-        for sched in parsed.get("schedule", []):
-            sched["date"] = sched.get("date") or today
-            all_sched = load_json(SCHEDULE_FILE, [])
-            all_sched.append(sched)
-            save_json(SCHEDULE_FILE, all_sched)
-
-        return jsonify(parsed)
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-
-
 
 # === REFLECTIONS ===
 @app.route('/reflections', methods=['GET'])
