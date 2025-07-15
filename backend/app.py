@@ -423,6 +423,8 @@ def full_chat():
         )
 
         reply = response.choices[0].message.content.strip()
+        print("RAW GPT RESPONSE:", reply)
+
 
         try:
             parsed = json.loads(reply)
