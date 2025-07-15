@@ -418,7 +418,9 @@ def full_chat():
         response = client.chat.completions.create(
             model="gpt-4-1106-preview",
             messages=messages,
-            response_format="json_object"
+            response_format="json"
+
+
         )
 
         reply = response.choices[0].message.content.strip()
