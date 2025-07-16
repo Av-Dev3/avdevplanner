@@ -291,6 +291,19 @@ def update_lesson(lesson_id):
             return jsonify({"message": "Lesson updated"}), 200
 
     return jsonify({"error": "Lesson not found"}), 404
+
+@app.route('/lessons/delete-all', methods=['POST'])
+def delete_lessons_file():
+    try:
+        if os.path.exists(LESSON_FILE):
+            os.remove(LESSON_FILE)
+            return jsonify({"message": "lessons.json deleted"}), 200
+        else:
+            return jsonify({"message": "lessons.json not found"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 # === SCHEDULE ===
 @app.route('/schedule', methods=['GET'])
 def get_schedule():
