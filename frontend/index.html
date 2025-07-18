@@ -1,74 +1,76 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="Cache-Control" content="no-store" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
+  <title>OBIZU</title>
+
+  <!-- Styles -->
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="home.css" />
-  <link rel="stylesheet" href="animations.css">
-  <title>Document</title>
+  <link rel="stylesheet" href="animations.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    .drawer-visible {
+      opacity: 1 !important;
+      scale: 1 !important;
+    }
+  </style>
 </head>
 
-<body>
-<div id="splash-screen">
-  <img id="splash-img" src="splash.webp" alt="Splash animation" />
-</div>
+<body class="bg-zinc-900 text-white">
 
+  <!-- Splash Screen -->
+  <div id="splash-screen">
+    <img id="splash-img" src="splash.webp" alt="Splash animation" />
+  </div>
 
+  <div class="page-content">
+    <!-- Header -->
+    <header class="head">
+      <div class="nav-container">
+        <div class="nav-left">
+          <img class="logo" src="logo.png" alt="Logo">
+          <h2 class="nav-quote">Get this shit done.</h2>
+        </div>
 
+        <div class="nav-right">
+          <button class="hamburger" aria-label="Toggle menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+          </button>
 
-<div class="page-content">
- <header class="head">
-  <div class="nav-container">
-    <div class="nav-left">
-      <img class="logo" src="logo.png" alt="">
-      <h2 class="nav-quote">Get this shit done.</h2>
-    </div>
-
-    <div class="nav-right">
-      <button class="hamburger" aria-label="Toggle menu">
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-      </button>
-
-      <nav>
-        <ul class="main-nav">
-          <li><a href="index.html">Home</a></li>
-          
-          <li><a href="lessons.html">Lessons</a></li>
-
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle">Daily ▾</a>
-
-            <!-- Desktop dropdown menu -->
-            <ul class="dropdown-menu">
+          <nav>
+            <ul class="main-nav">
+              <li><a href="index.html">Home</a></li>
+              <li><a href="lessons.html">Lessons</a></li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle">Daily ▾</a>
+                <ul class="dropdown-menu">
+                  <li><a href="daily.html">Daily</a></li>
+                  <li><a href="weekly.html">Weekly</a></li>
+                </ul>
+              </li>
+              <li><a href="goals.html">Goals</a></li>
+              <li><a href="notes.html">Notes</a></li>
+              <li><a href="tasks.html">Tasks</a></li>
+              <li><a href="schedule.html">Schedule</a></li>
+            </ul>
+            <ul class="submenu-panel" id="submenu">
               <li><a href="daily.html">Daily</a></li>
               <li><a href="weekly.html">Weekly</a></li>
             </ul>
-          </li>
+          </nav>
+        </div>
+      </div>
+    </header>
 
-          <li><a href="goals.html">Goals</a></li>
-          <li><a href="notes.html">Notes</a></li>
-          <li><a href="tasks.html">Tasks</a></li>
-          <li><a href="schedule.html">Schedule</a></li>
-        </ul>
-
-        <!-- Mobile slide-in submenu -->
-        <ul class="submenu-panel" id="submenu">
-          <li><a href="daily.html">Daily</a></li>
-          <li><a href="weekly.html">Weekly</a></li>
-        </ul>
-      </nav>
-    </div>
-  </div>
-</header>
-
-
-
+    <!-- Main Content -->
     <div id="home">
       <section id="daily-focus-section" class="daily-focus-section">
         <h2>Daily Focus</h2>
@@ -102,73 +104,144 @@
         <p id="quote-box" class="quote-text"></p>
       </section>
 
-      <!-- Floating AI Chat -->
-      <div id="ai-chatbox-wrapper" class="hidden">
-        <button id="open-ai-chat">&#128172;</button>
+     
 
-        <div id="ai-chatbox" class="hidden">
-          <div id="ai-chat-messages"></div>
-          <form id="ai-chat-form">
-            <input type="text" id="ai-task-input" placeholder="Describe a task and let AI add it..." />
-            <button type="submit" id="ask-ai-btn">Add</button>
-          </form>
-        </div>
-      </div>
+  <!-- Footer -->
+  <footer class="footer">
+    <span id="eat">Eat</span>
+    <span id="sleep">Sleep</span>
+    <span id="code">Code</span>
+    <span id="repeat">Repeat</span>
+  </footer>
+
+
+  <!-- Drawer & Bottom Nav Components -->
+  <div class="fixed top-4 right-4 z-50">
+    
+  </div>
+
+<div id="drawer" class="fixed bottom-[120px] left-1/2 transform -translate-x-[45%] opacity-0 scale-95 transition-all duration-300 w-40 bg-gray-800 text-white p-3 rounded-xl shadow-lg z-50">
+    <div class="flex flex-col space-y-3">
+      <button id="addTaskBtn" class="bg-[#b91c1c] text-white p-3 rounded-lg text-sm">+ Add Task</button>
+      <button id="addGoalBtn" class="bg-[#b91c1c] text-white p-3 rounded-lg text-sm">+ Add Goal</button>
+      <button id="addLessonBtn" class="bg-[#b91c1c] text-white p-3 rounded-lg text-sm">+ Add Lesson</button>
+       <button id="openAiPopup" class="bg-[#7c3aed] text-white p-3 rounded-lg text-sm">Ask AI</button>
     </div>
   </div>
 
-
-
-<footer class="footer">
-  <span id="eat">Eat</span>
-  <span id="sleep">Sleep</span>
-  <span id="code">Code</span>
-  <span id="repeat">Repeat</span>
-</footer>
-
-<div id="fork-fly"></div>
-
-
-<div id="z-animation">
-  <span class="z">Z</span>
-  <span class="z">Z</span>
-  <span class="z">Z</span>
-</div>
-
-<div id="code-editor-popup" class="hidden">
-  <div class="code-editor-header">
-    <span id="close-editor">×</span>
+ <div id="taskPopup" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white dark:bg-gray-800 p-6 rounded-xl text-black dark:text-white w-full max-w-md">
+    <h2 class="text-lg font-semibold mb-4">Add New Task</h2>
+    <form id="task-form" class="flex flex-col space-y-4">
+      <input type="text" id="task-text" placeholder="Task title" required class="p-2 rounded bg-gray-200 dark:bg-gray-700 dark:text-white">
+      <input type="date" id="task-date" class="p-2 rounded bg-gray-200 dark:bg-gray-700 dark:text-white">
+      <input type="time" id="task-time" class="p-2 rounded bg-gray-200 dark:bg-gray-700 dark:text-white">
+      <textarea id="task-notes" placeholder="Notes..." rows="3" class="p-2 rounded bg-gray-200 dark:bg-gray-700 dark:text-white"></textarea>
+      <button type="submit" class="bg-[#b91c1c] text-white py-2 px-4 rounded hover:bg-red-700">Save Task</button>
+    </form>
   </div>
-
-  <div class="code-editor-tabs">
-    <button class="tab-button active" data-tab="html">HTML</button>
-    <button class="tab-button" data-tab="css">CSS</button>
-    <button class="tab-button" data-tab="js">JS</button>
-    <button class="tab-button" data-tab="output">Output</button>
-  </div>
-
-  <div class="code-editor-body">
-    <textarea id="tab-html" class="editor-tab active" placeholder="HTML goes here..."></textarea>
-    <textarea id="tab-css" class="editor-tab" placeholder="CSS goes here..."></textarea>
-    <textarea id="tab-js" class="editor-tab" placeholder="JavaScript goes here..."></textarea>
-    <iframe id="tab-output" class="editor-tab"></iframe>
-  </div>
-
-  <button id="run-code">Run</button>
 </div>
 
 
+  <!-- Inside your existing HTML, replace the goalPopup section with this -->
+<div id="goalPopup" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white dark:bg-gray-800 p-6 rounded-xl text-black dark:text-white w-[90%] max-w-md">
+    <h2 class="text-lg font-semibold mb-4">Add Weekly Goal</h2>
+    <form id="weekly-goal-form">
+      <label for="goal-title" class="block text-sm font-medium mb-1">Goal Title</label>
+      <input type="text" id="goal-title" required class="w-full p-2 rounded mb-4 bg-gray-100 dark:bg-gray-700 dark:text-white">
+
+      <label for="goal-date" class="block text-sm font-medium mb-1">Target Date</label>
+      <input type="date" id="goal-date" required class="w-full p-2 rounded mb-4 bg-gray-100 dark:bg-gray-700 dark:text-white">
+
+      <label for="goal-notes" class="block text-sm font-medium mb-1">Notes (optional)</label>
+      <textarea id="goal-notes" rows="4" placeholder="Details, milestones, etc." class="w-full p-2 rounded mb-4 bg-gray-100 dark:bg-gray-700 dark:text-white"></textarea>
+
+      <button type="submit" class="bg-[#b91c1c] text-white px-4 py-2 rounded hover:bg-red-700 w-full">Add Weekly Goal</button>
+    </form>
+  </div>
+</div>
+
+
+  <div id="lessonPopup" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white dark:bg-gray-800 p-6 rounded-xl text-black dark:text-white w-full max-w-lg">
+    <h2 class="text-lg font-semibold mb-4">Add Weekly Lesson</h2>
+    <form id="lesson-form">
+      <label for="lesson-title">Lesson Title</label>
+      <input type="text" id="lesson-title" required class="w-full mb-2 px-3 py-2 rounded" />
+
+      <label for="lesson-category">Category</label>
+      <input type="text" id="lesson-category" class="w-full mb-2 px-3 py-2 rounded" />
+
+      <label for="lesson-date">Date</label>
+      <input type="date" id="lesson-date" class="w-full mb-2 px-3 py-2 rounded" />
+
+      <label for="lesson-priority">Priority</label>
+      <input type="text" id="lesson-priority" placeholder="High, Medium, Low" class="w-full mb-2 px-3 py-2 rounded" />
+
+      <label for="lesson-description">Description</label>
+      <textarea id="lesson-description" class="w-full mb-2 px-3 py-2 rounded" placeholder="Lesson description..."></textarea>
+
+      <label for="lesson-notes">Notes (optional)</label>
+      <textarea id="lesson-notes" class="w-full mb-4 px-3 py-2 rounded" placeholder="Additional notes..."></textarea>
+
+      <button type="submit" class="bg-[#b91c1c] text-white px-4 py-2 rounded">Save Lesson</button>
+    </form>
+  </div>
+</div>
+
+<div id="aiPopup" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white dark:bg-gray-800 p-4 rounded-xl text-black dark:text-white w-[90%] max-w-lg">
+      <h2 class="text-lg font-semibold mb-2">Chat with AI</h2>
+      <div id="ai-chat-messages" class="h-60 overflow-y-auto bg-gray-100 dark:bg-gray-700 text-black dark:text-white p-2 mb-2 rounded"></div>
+      <form id="ai-chat-form" class="flex gap-2">
+        <input type="text" id="ai-task-input" placeholder="Ask anything..." class="flex-1 p-2 rounded" required />
+        <button type="submit" id="ask-ai-btn" class="bg-[#7c3aed] text-white px-3 py-2 rounded">Send</button>
+      </form>
+    </div>
+  </div>
+
+ <nav id="bottomNav" style="background-color: #1a1a1a;" class="fixed bottom-0 left-0 w-full text-white rounded-t-2xl flex items-center justify-between px-6 py-4 shadow-inner z-40 transition-colors duration-300">
+  <a href="index.html" class="flex flex-col items-center text-sm hover:text-[#b91c1c]">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7m-9 2v8m4-8v8m5 0h2a2 2 0 002-2v-5a2 2 0 00-2-2h-3.28" />
+    </svg>
+    Home
+  </a>
+
+  <a href="schedule.html" class="flex flex-col items-center text-sm hover:text-[#b91c1c]">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 10h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+    </svg>
+    Calendar
+  </a>
+
+  <button id="fab" class="bg-[#b91c1c] w-14 h-14 rounded-full text-white flex items-center justify-center shadow-xl transform -translate-y-8 hover:scale-105 transition z-50">+</button>
+
+  <a href="daily.html" class="flex flex-col items-center text-sm hover:text-[#b91c1c]">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+    Daily
+  </a>
+
+  <a href="weekly.html" class="flex flex-col items-center text-sm hover:text-[#b91c1c]">
+    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18M3 17h18" />
+    </svg>
+    Weekly
+  </a>
+</nav>
 
 
 
-<script src="script.js" defer></script>
-<script src="nav.js" defer></script>
-<script src="quotes.js" defer></script>
-<script src="home.js" defer></script>
-<script src="ai.js" defer></script>
-<script src="screen.js" defer></script>
-<script src="animate.js" defer></script>
-
-
+  <!-- Scripts -->
+  <script src="script.js"></script>
+  <script src="nav.js"></script>
+  <script src="quotes.js"></script>
+  <script src="home.js"></script>
+  <script src="ai.js"></script>
+  <script src="screen.js"></script>
+  <script src="animate.js"></script>
 </body>
 </html>

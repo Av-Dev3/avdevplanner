@@ -124,4 +124,89 @@ document.addEventListener("DOMContentLoaded", () => {
 
     return streak;
   }
+
+  // === Submit Task Form ===
+  const taskForm = document.getElementById("task-form");
+  if (taskForm) {
+    taskForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const task = {
+        text: document.getElementById("task-text").value,
+        date: document.getElementById("task-date").value,
+        time: document.getElementById("task-time").value,
+        notes: document.getElementById("task-notes").value
+      };
+
+      const res = await fetch("https://avdevplanner.onrender.com/tasks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(task)
+      });
+
+      if (res.ok) {
+        alert("Task added!");
+        taskForm.reset();
+        document.getElementById("taskPopup").classList.add("hidden");
+      } else {
+        alert("Error adding task.");
+      }
+    });
+  }
+
+  // === Submit Goal Form ===
+  const goalForm = document.getElementById("weekly-goal-form");
+  if (goalForm) {
+    goalForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const goal = {
+        title: document.getElementById("goal-title").value,
+        date: document.getElementById("goal-date").value,
+        notes: document.getElementById("goal-notes").value
+      };
+
+      const res = await fetch("https://avdevplanner.onrender.com/goals", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(goal)
+      });
+
+      if (res.ok) {
+        alert("Goal added!");
+        goalForm.reset();
+        document.getElementById("goalPopup").classList.add("hidden");
+      } else {
+        alert("Error adding goal.");
+      }
+    });
+  }
+
+  // === Submit Lesson Form ===
+  const lessonForm = document.getElementById("lesson-form");
+  if (lessonForm) {
+    lessonForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const lesson = {
+        title: document.getElementById("lesson-title").value,
+        description: document.getElementById("lesson-description").value,
+        category: document.getElementById("lesson-category").value,
+        date: document.getElementById("lesson-date").value,
+        priority: document.getElementById("lesson-priority").value,
+        notes: document.getElementById("lesson-notes").value
+      };
+
+      const res = await fetch("https://avdevplanner.onrender.com/lessons", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(lesson)
+      });
+
+      if (res.ok) {
+        alert("Lesson added!");
+        lessonForm.reset();
+        document.getElementById("lessonPopup").classList.add("hidden");
+      } else {
+        alert("Error adding lesson.");
+      }
+    });
+  }
 });

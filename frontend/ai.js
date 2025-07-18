@@ -21,44 +21,47 @@ async function callAI(prompt) {
   }
 }
 
-// === AI Chat Logic ===
+// === AI Chat Logic (Popup Version) ===
 document.addEventListener("DOMContentLoaded", () => {
-  const toggleChatBtn = document.getElementById("open-ai-chat");
-  const chatBox = document.getElementById("ai-chatbox");
+  const openAiBtn = document.getElementById("openAiPopup");
+  const aiPopup = document.getElementById("aiPopup");
   const chatForm = document.getElementById("ai-chat-form");
   const inputField = document.getElementById("ai-task-input");
   const chatMessages = document.getElementById("ai-chat-messages");
 
-  // Toggle chat visibility
-  toggleChatBtn.addEventListener("click", () => {
-    chatBox.classList.toggle("hidden");
-  });
-
-  // Handle form submission
+  // Form submission handler
   chatForm.addEventListener("submit", async (e) => {
     e.preventDefault();
     const prompt = inputField.value.trim();
     if (!prompt) return;
 
-    // Add user's message to chat
+    // Add user message
     const userBubble = document.createElement("div");
     userBubble.textContent = prompt;
-    userBubble.className = "chat-bubble user";
+    userBubble.className = "chat-bubble user bg-[#b91c1c] text-white p-2 mb-2 rounded";
     chatMessages.appendChild(userBubble);
 
     chatMessages.scrollTop = chatMessages.scrollHeight;
     inputField.value = "";
 
-    // Show "thinking..." message
+    // Show thinking bubble
     const thinkingBubble = document.createElement("div");
     thinkingBubble.textContent = "Thinking...";
-    thinkingBubble.className = "chat-bubble ai";
+    thinkingBubble.className = "chat-bubble ai bg-gray-300 dark:bg-gray-700 text-black dark:text-white p-2 mb-2 rounded";
     chatMessages.appendChild(thinkingBubble);
+
     chatMessages.scrollTop = chatMessages.scrollHeight;
 
-    // Call AI and update response
+    // Get AI response
     const response = await callAI(prompt);
     thinkingBubble.textContent = response;
     chatMessages.scrollTop = chatMessages.scrollHeight;
+  });
+
+  // Dismiss popup if background clicked
+  aiPopup.addEventListener("click", (e) => {
+    if (e.target === aiPopup) {
+      aiPopup.classList.add("hidden");
+    }
   });
 });
