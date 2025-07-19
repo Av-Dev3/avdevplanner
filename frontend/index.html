@@ -118,7 +118,7 @@
   </div>
 </div>
 
-
+    </div>
 
   <!-- Footer -->
   <footer class="footer">
@@ -127,7 +127,36 @@
     <span id="code">Code</span>
     <span id="repeat">Repeat</span>
   </footer>
+<div id="fork-fly"></div>
 
+
+<div id="z-animation">
+  <span class="z">Z</span>
+  <span class="z">Z</span>
+  <span class="z">Z</span>
+</div>
+
+<div id="code-editor-popup" class="hidden">
+  <div class="code-editor-header">
+    <span id="close-editor">×</span>
+  </div>
+
+  <div class="code-editor-tabs">
+    <button class="tab-button active" data-tab="html">HTML</button>
+    <button class="tab-button" data-tab="css">CSS</button>
+    <button class="tab-button" data-tab="js">JS</button>
+    <button class="tab-button" data-tab="output">Output</button>
+  </div>
+
+  <div class="code-editor-body">
+    <textarea id="tab-html" class="editor-tab active" placeholder="HTML goes here..."></textarea>
+    <textarea id="tab-css" class="editor-tab" placeholder="CSS goes here..."></textarea>
+    <textarea id="tab-js" class="editor-tab" placeholder="JavaScript goes here..."></textarea>
+    <iframe id="tab-output" class="editor-tab"></iframe>
+  </div>
+
+  <button id="run-code">Run</button>
+</div>
 
   <!-- Drawer & Bottom Nav Components -->
   <div class="fixed top-4 right-4 z-50">
