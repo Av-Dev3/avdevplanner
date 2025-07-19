@@ -104,7 +104,20 @@
         <p id="quote-box" class="quote-text"></p>
       </section>
 
-     
+      <!-- Floating AI Chat (hidden on mobile, visible on desktop) -->
+<div id="ai-chatbox-wrapper" class="hidden md:block !md:block">
+  <button id="open-ai-chat">&#128172;</button>
+
+  <div id="ai-chatbox" class="hidden">
+    <div id="ai-chat-messages"></div>
+    <form id="ai-chat-form">
+      <input type="text" id="ai-task-input" placeholder="Describe a task and let AI add it..." />
+      <button type="submit" id="ask-ai-btn">Add</button>
+    </form>
+  </div>
+</div>
+
+
 
   <!-- Footer -->
   <footer class="footer">
@@ -142,8 +155,6 @@
   </div>
 </div>
 
-
-  <!-- Inside your existing HTML, replace the goalPopup section with this -->
 <div id="goalPopup" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
   <div class="bg-white dark:bg-gray-800 p-6 rounded-xl text-black dark:text-white w-[90%] max-w-md">
     <h2 class="text-lg font-semibold mb-4">Add Weekly Goal</h2>
@@ -162,33 +173,33 @@
   </div>
 </div>
 
-
-  <div id="lessonPopup" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-  <div class="bg-white dark:bg-gray-800 p-6 rounded-xl text-black dark:text-white w-full max-w-lg">
-    <h2 class="text-lg font-semibold mb-4">Add Weekly Lesson</h2>
+<div id="lessonPopup" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+  <div class="bg-white dark:bg-gray-800 p-4 rounded-xl text-black dark:text-white w-[85%] max-w-sm max-h-[80vh] overflow-y-auto">
+    <h2 class="text-md font-semibold mb-3">Add Weekly Lesson</h2>
     <form id="lesson-form">
-      <label for="lesson-title">Lesson Title</label>
-      <input type="text" id="lesson-title" required class="w-full mb-2 px-3 py-2 rounded" />
+      <label for="lesson-title" class="block text-xs font-medium mb-1">Lesson Title</label>
+      <input type="text" id="lesson-title" required class="w-full p-1 rounded mb-2 bg-gray-100 dark:bg-gray-700 dark:text-white" />
 
-      <label for="lesson-category">Category</label>
-      <input type="text" id="lesson-category" class="w-full mb-2 px-3 py-2 rounded" />
+      <label for="lesson-category" class="block text-xs font-medium mb-1">Category</label>
+      <input type="text" id="lesson-category" class="w-full p-1 rounded mb-2 bg-gray-100 dark:bg-gray-700 dark:text-white" />
 
-      <label for="lesson-date">Date</label>
-      <input type="date" id="lesson-date" class="w-full mb-2 px-3 py-2 rounded" />
+      <label for="lesson-date" class="block text-xs font-medium mb-1">Date</label>
+      <input type="date" id="lesson-date" class="w-full p-1 rounded mb-2 bg-gray-100 dark:bg-gray-700 dark:text-white" />
 
-      <label for="lesson-priority">Priority</label>
-      <input type="text" id="lesson-priority" placeholder="High, Medium, Low" class="w-full mb-2 px-3 py-2 rounded" />
+      <label for="lesson-priority" class="block text-xs font-medium mb-1">Priority</label>
+      <input type="text" id="lesson-priority" placeholder="High, Medium, Low" class="w-full p-1 rounded mb-2 bg-gray-100 dark:bg-gray-700 dark:text-white" />
 
-      <label for="lesson-description">Description</label>
-      <textarea id="lesson-description" class="w-full mb-2 px-3 py-2 rounded" placeholder="Lesson description..."></textarea>
+      <label for="lesson-description" class="block text-xs font-medium mb-1">Description</label>
+      <textarea id="lesson-description" class="w-full p-1 rounded mb-2 bg-gray-100 dark:bg-gray-700 dark:text-white" placeholder="Lesson description..."></textarea>
 
-      <label for="lesson-notes">Notes (optional)</label>
-      <textarea id="lesson-notes" class="w-full mb-4 px-3 py-2 rounded" placeholder="Additional notes..."></textarea>
+      <label for="lesson-notes" class="block text-xs font-medium mb-1">Notes (optional)</label>
+      <textarea id="lesson-notes" class="w-full p-1 rounded mb-3 bg-gray-100 dark:bg-gray-700 dark:text-white" placeholder="Additional notes..."></textarea>
 
-      <button type="submit" class="bg-[#b91c1c] text-white px-4 py-2 rounded">Save Lesson</button>
+      <button type="submit" class="bg-[#b91c1c] text-white px-3 py-2 rounded hover:bg-red-700 w-full text-sm">Save Lesson</button>
     </form>
   </div>
 </div>
+
 
 <div id="aiPopup" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
     <div class="bg-white dark:bg-gray-800 p-4 rounded-xl text-black dark:text-white w-[90%] max-w-lg">
@@ -201,37 +212,40 @@
     </div>
   </div>
 
- <nav id="bottomNav" style="background-color: #1a1a1a;" class="fixed bottom-0 left-0 w-full text-white rounded-t-2xl flex items-center justify-between px-6 py-4 shadow-inner z-40 transition-colors duration-300">
-  <a href="index.html" class="flex flex-col items-center text-sm hover:text-[#b91c1c]">
-    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7m-9 2v8m4-8v8m5 0h2a2 2 0 002-2v-5a2 2 0 00-2-2h-3.28" />
-    </svg>
-    Home
-  </a>
+ <!-- Show only on mobile -->
+<div class="block md:hidden">
+  <nav id="bottomNav" style="background-color: #1a1a1a;" class="fixed bottom-0 left-0 w-full text-white rounded-t-2xl flex items-center justify-between px-6 py-4 shadow-inner z-40 transition-colors duration-300">
+    <a href="index.html" class="flex flex-col items-center text-sm hover:text-[#b91c1c]">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7m-9 2v8m4-8v8m5 0h2a2 2 0 002-2v-5a2 2 0 00-2-2h-3.28" />
+      </svg>
+      Home
+    </a>
 
-  <a href="schedule.html" class="flex flex-col items-center text-sm hover:text-[#b91c1c]">
-    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 10h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-    </svg>
-    Calendar
-  </a>
+    <a href="schedule.html" class="flex flex-col items-center text-sm hover:text-[#b91c1c]">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 10h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+      </svg>
+      Calendar
+    </a>
 
-  <button id="fab" class="bg-[#b91c1c] w-14 h-14 rounded-full text-white flex items-center justify-center shadow-xl transform -translate-y-8 hover:scale-105 transition z-50">+</button>
+    <button id="fab" class="bg-[#b91c1c] w-14 h-14 rounded-full text-white flex items-center justify-center shadow-xl transform -translate-y-8 hover:scale-105 transition z-50">+</button>
 
-  <a href="daily.html" class="flex flex-col items-center text-sm hover:text-[#b91c1c]">
-    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-    </svg>
-    Daily
-  </a>
+    <a href="daily.html" class="flex flex-col items-center text-sm hover:text-[#b91c1c]">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+      Daily
+    </a>
 
-  <a href="weekly.html" class="flex flex-col items-center text-sm hover:text-[#b91c1c]">
-    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18M3 17h18" />
-    </svg>
-    Weekly
-  </a>
-</nav>
+    <a href="weekly.html" class="flex flex-col items-center text-sm hover:text-[#b91c1c]">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18M3 17h18" />
+      </svg>
+      Weekly
+    </a>
+  </nav>
+</div>
 
 
 
