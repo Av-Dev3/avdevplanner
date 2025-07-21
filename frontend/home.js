@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function createFullCard(title, notes, date, time) {
     const div = document.createElement("div");
     div.className =
-      "snap-center shrink-0 w-full bg-[#121212] rounded-lg p-4 shadow-inner text-sm";
+      "snap-center shrink-0 w-full min-w-full bg-[#121212] rounded-lg p-4 shadow-inner text-sm";
     div.innerHTML = `
       <h3 class="font-semibold mb-1">${title}</h3>
       ${notes ? `<p class="mb-1">${notes}</p>` : ""}
@@ -35,23 +35,17 @@ document.addEventListener("DOMContentLoaded", () => {
   function setupSwipeContainer(container) {
     container.classList.add(
       "flex",
-      "overflow-x-scroll",
+      "overflow-x-auto",
       "snap-x",
       "snap-mandatory",
       "scroll-smooth"
     );
-    container.style.scrollbarWidth = "none"; // Firefox
-    container.style.msOverflowStyle = "none"; // IE
+    container.style.scrollbarWidth = "none";
+    container.style.msOverflowStyle = "none";
     container.style.overflowY = "hidden";
     container.style.webkitOverflowScrolling = "touch";
     container.classList.add("no-scrollbar");
     container.style.overscrollBehaviorX = "contain";
-
-    // Visually hide scrollbar in WebKit
-    container.style.scrollbarWidth = "none";
-    container.style.overflow = "hidden auto";
-    container.style.setProperty("scrollbar-width", "none");
-    container.style.setProperty("overflow-y", "hidden");
   }
 
   // === Load Pinned Notes ===

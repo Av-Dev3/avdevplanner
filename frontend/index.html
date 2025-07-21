@@ -76,18 +76,21 @@
   <!-- ✅ TRUE 2x2 Grid on ALL screen sizes -->
   <div class="grid grid-cols-2 gap-5">
 
+  
     <!-- Tasks -->
     <section class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-4 shadow-lg flex flex-col gap-3">
       <h2 class="text-sm sm:text-base text-[#f0f0f0]">Tasks</h2>
-      <div id="tasks-container" class="flex overflow-x-auto gap-3 scroll-smooth">
-        <!-- <div class="min-w-[180px] bg-[#121212] rounded-lg p-3 shadow-inner">Task 1</div> -->
+      <div id="tasks-container"
+        class="flex overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar w-full">
+        <!-- task cards -->
       </div>
     </section>
 
     <!-- Lessons -->
     <section class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-4 shadow-lg flex flex-col gap-3">
       <h2 class="text-sm sm:text-base text-[#f0f0f0]">Lessons</h2>
-      <div id="lessons-container" class="flex overflow-x-auto gap-3 scroll-smooth">
+      <div id="lessons-container"
+        class="flex overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar w-full">
         <!-- lesson cards -->
       </div>
     </section>
@@ -95,7 +98,8 @@
     <!-- Goals -->
     <section class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-4 shadow-lg flex flex-col gap-3">
       <h2 class="text-sm sm:text-base text-[#f0f0f0]">Goals</h2>
-      <div id="goals-container" class="flex overflow-x-auto gap-3 scroll-smooth">
+      <div id="goals-container"
+        class="flex overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar w-full">
         <!-- goal cards -->
       </div>
     </section>
@@ -103,8 +107,9 @@
     <!-- Pinned Notes -->
     <section class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-4 shadow-lg flex flex-col gap-3">
       <h2 class="text-sm sm:text-base text-[#f0f0f0]">Pinned Notes</h2>
-      <div id="pinned-notes-container" class="flex overflow-x-auto gap-3 scroll-smooth">
-        <!-- note cards -->
+      <div id="pinned-notes-container"
+        class="flex overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar w-full">
+        <!-- pinned note cards -->
       </div>
     </section>
 
@@ -146,7 +151,6 @@
   </section>
 
 </div>
-
 
       <!-- Floating AI Chat (hidden on mobile, visible on desktop) -->
 <div id="ai-chatbox-wrapper" class="hidden md:block">
