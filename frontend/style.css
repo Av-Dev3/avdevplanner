@@ -217,6 +217,7 @@ li a.active {
 
 .drawer-visible {
   opacity: 1 !important;
+  pointer-events: auto !important;
 }
 
 

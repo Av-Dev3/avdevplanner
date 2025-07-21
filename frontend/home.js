@@ -21,8 +21,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // === Utility: Swipe card style ===
   function createFullCard(title, notes, date, time) {
     const div = document.createElement("div");
-    div.className =
-      "snap-center shrink-0 w-full min-w-full bg-[#121212] rounded-lg p-4 shadow-inner text-sm";
+    div.className = "snap-center shrink-0 w-full sm:w-[240px] bg-[#121212] rounded-lg p-4 shadow-inner text-sm";
+
     div.innerHTML = `
       <h3 class="font-semibold mb-1">${title}</h3>
       ${notes ? `<p class="mb-1">${notes}</p>` : ""}
