@@ -225,7 +225,7 @@ document.addEventListener("DOMContentLoaded", () => {
     taskForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       const task = {
-        text: document.getElementById("task-text").value,
+        title: document.getElementById("task-text").value,
         date: document.getElementById("task-date").value,
         time: document.getElementById("task-time").value,
         notes: document.getElementById("task-notes").value,
