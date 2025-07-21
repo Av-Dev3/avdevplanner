@@ -7,12 +7,49 @@ const logEntries = document.getElementById("daily-log-entries");
 
 const todayStr = new Date().toLocaleDateString("en-CA");
 
+// === Setup Swipe Behavior (like homepage) ===
+function setupSwipeContainer(container) {
+  container.classList.add(
+    "flex",
+    "overflow-x-auto",
+    "snap-x",
+    "snap-mandatory",
+    "scroll-smooth",
+    "no-scrollbar",
+    "gap-3"
+  );
+  container.style.scrollbarWidth = "none";
+  container.style.msOverflowStyle = "none";
+  container.style.overflowY = "hidden";
+  container.style.webkitOverflowScrolling = "touch";
+
+  if (window.innerWidth >= 768) {
+    container.classList.remove(
+      "flex",
+      "overflow-x-auto",
+      "snap-x",
+      "snap-mandatory",
+      "scroll-smooth"
+    );
+    container.style.overflow = "visible";
+    container.style.display = "grid";
+    container.style.gridTemplateColumns = "repeat(auto-fit, minmax(200px, 1fr))";
+    container.style.gap = "1rem";
+  }
+}
+
 // Load data on page load
 loadTodayTasks();
 loadGoals();
 loadLessons();
 loadNotes();
 loadLogs();
+
+setupSwipeContainer(tasksContainer);
+setupSwipeContainer(goalsContainer);
+setupSwipeContainer(lessonsContainer);
+setupSwipeContainer(notesContainer);
+setupSwipeContainer(logEntries);
 
 // === Load Today's Tasks ===
 async function loadTodayTasks() {
@@ -30,7 +67,7 @@ async function loadTodayTasks() {
 
     todayTasks.forEach(task => {
       const el = document.createElement("div");
-      el.className = "task-card min-w-[250px] snap-start bg-[#2b2b2b] text-white p-4 rounded-xl shadow";
+      el.className = "min-w-[250px] snap-start bg-[#2b2b2b] text-white p-4 rounded-xl shadow";
 
       const formattedTime = task.time
         ? new Date(`1970-01-01T${task.time}`).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
@@ -66,7 +103,7 @@ async function loadGoals() {
 
     todayGoals.forEach(goal => {
       const el = document.createElement("div");
-      el.className = "task-card min-w-[250px] snap-start bg-[#2b2b2b] text-white p-4 rounded-xl shadow";
+      el.className = "min-w-[250px] snap-start bg-[#2b2b2b] text-white p-4 rounded-xl shadow";
       el.innerHTML = `
         <h3>${goal.title}</h3>
         ${goal.notes ? `<p><strong>Notes:</strong> ${goal.notes}</p>` : ""}
@@ -95,7 +132,7 @@ async function loadLessons() {
 
     todayLessons.forEach(lesson => {
       const card = document.createElement("div");
-      card.className = "task-card min-w-[250px] snap-start bg-[#2b2b2b] text-white p-4 rounded-xl shadow";
+      card.className = "min-w-[250px] snap-start bg-[#2b2b2b] text-white p-4 rounded-xl shadow";
       card.innerHTML = `
         <h3>${lesson.title}</h3>
         <p><strong>Category:</strong> ${lesson.category || "N/A"}</p>
@@ -126,7 +163,7 @@ async function loadNotes() {
 
     todayNotes.forEach(note => {
       const card = document.createElement("div");
-      card.className = "task-card min-w-[250px] snap-start bg-[#2b2b2b] text-white p-4 rounded-xl shadow";
+      card.className = "min-w-[250px] snap-start bg-[#2b2b2b] text-white p-4 rounded-xl shadow";
       card.innerHTML = `
         <h3>${note.title || "(Untitled Note)"}</h3>
         <p>${note.content || ""}</p>
@@ -188,7 +225,7 @@ async function loadLogs() {
 
     todayLogs.forEach(log => {
       const card = document.createElement("div");
-      card.className = "task-card min-w-[250px] snap-start bg-[#2b2b2b] text-white p-4 rounded-xl shadow";
+      card.className = "min-w-[250px] snap-start bg-[#2b2b2b] text-white p-4 rounded-xl shadow";
       card.innerHTML = `
         <h3>${log.title || "(Untitled Log)"}</h3>
         <p>${log.content}</p>
@@ -207,7 +244,6 @@ const timeInput = document.getElementById("time-spent");
 const savedTimeText = document.getElementById("saved-time-text");
 
 if (saveTimeBtn && timeInput && savedTimeText) {
-  // Load saved time on page load
   loadTime();
 
   saveTimeBtn.addEventListener("click", async () => {
