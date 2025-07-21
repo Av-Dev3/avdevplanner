@@ -1,6 +1,7 @@
 const tasksContainer = document.getElementById("log-tasks-container");
 const goalsContainer = document.getElementById("log-goals-container");
 const lessonsContainer = document.getElementById("log-lessons-container");
+const notesContainer = document.getElementById("log-notes-container");
 const logForm = document.getElementById("daily-log-form");
 const logEntries = document.getElementById("daily-log-entries");
 
@@ -10,6 +11,7 @@ const todayStr = new Date().toLocaleDateString("en-CA");
 loadTodayTasks();
 loadGoals();
 loadLessons();
+loadNotes();
 loadLogs();
 
 // === Load Today's Tasks ===
@@ -28,7 +30,7 @@ async function loadTodayTasks() {
 
     todayTasks.forEach(task => {
       const el = document.createElement("div");
-      el.className = "task-card";
+      el.className = "task-card min-w-[250px] snap-start bg-[#2b2b2b] text-white p-4 rounded-xl shadow";
 
       const formattedTime = task.time
         ? new Date(`1970-01-01T${task.time}`).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
@@ -64,7 +66,7 @@ async function loadGoals() {
 
     todayGoals.forEach(goal => {
       const el = document.createElement("div");
-      el.className = "task-card";
+      el.className = "task-card min-w-[250px] snap-start bg-[#2b2b2b] text-white p-4 rounded-xl shadow";
       el.innerHTML = `
         <h3>${goal.title}</h3>
         ${goal.notes ? `<p><strong>Notes:</strong> ${goal.notes}</p>` : ""}
@@ -93,7 +95,7 @@ async function loadLessons() {
 
     todayLessons.forEach(lesson => {
       const card = document.createElement("div");
-      card.className = "task-card";
+      card.className = "task-card min-w-[250px] snap-start bg-[#2b2b2b] text-white p-4 rounded-xl shadow";
       card.innerHTML = `
         <h3>${lesson.title}</h3>
         <p><strong>Category:</strong> ${lesson.category || "N/A"}</p>
@@ -105,6 +107,35 @@ async function loadLessons() {
     });
   } catch (err) {
     lessonsContainer.innerHTML = "<p>Error loading lessons.</p>";
+  }
+}
+
+// === Load Notes for Today ===
+async function loadNotes() {
+  try {
+    const res = await fetch("https://avdevplanner.onrender.com/notes");
+    const notes = await res.json();
+    const todayNotes = notes.filter(note => note.date === todayStr);
+
+    notesContainer.innerHTML = "";
+
+    if (todayNotes.length === 0) {
+      notesContainer.innerHTML = "<p>No notes for today.</p>";
+      return;
+    }
+
+    todayNotes.forEach(note => {
+      const card = document.createElement("div");
+      card.className = "task-card min-w-[250px] snap-start bg-[#2b2b2b] text-white p-4 rounded-xl shadow";
+      card.innerHTML = `
+        <h3>${note.title || "(Untitled Note)"}</h3>
+        <p>${note.content || ""}</p>
+        <p><small>${note.date}</small></p>
+      `;
+      notesContainer.appendChild(card);
+    });
+  } catch (err) {
+    notesContainer.innerHTML = "<p>Error loading notes.</p>";
   }
 }
 
@@ -157,7 +188,7 @@ async function loadLogs() {
 
     todayLogs.forEach(log => {
       const card = document.createElement("div");
-      card.className = "task-card";
+      card.className = "task-card min-w-[250px] snap-start bg-[#2b2b2b] text-white p-4 rounded-xl shadow";
       card.innerHTML = `
         <h3>${log.title || "(Untitled Log)"}</h3>
         <p>${log.content}</p>
