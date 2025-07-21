@@ -38,7 +38,37 @@ function setupSwipeContainer(container) {
   }
 }
 
-// Load data on page load
+// === Card Builder (matches homepage card style) ===
+function createFullCard(title, notes, date, time) {
+  const div = document.createElement("div");
+  div.className =
+    "snap-center shrink-0 w-full sm:w-[240px] bg-[#121212] rounded-lg p-4 shadow-inner text-sm";
+
+  const timeDisplay = time
+    ? `<p><small>Time: ${formatTime(time)}</small></p>`
+    : "";
+  const dateDisplay = date
+    ? `<p><small>Date: ${date}</small></p>`
+    : "";
+
+  div.innerHTML = `
+    <h3 class="font-semibold mb-1">${title}</h3>
+    ${notes ? `<p class="mb-1">${notes}</p>` : ""}
+    ${timeDisplay}
+    ${dateDisplay}
+  `;
+  return div;
+}
+
+function formatTime(timeStr) {
+  const [h, m] = timeStr.split(":");
+  const hour = parseInt(h);
+  const suffix = hour >= 12 ? "PM" : "AM";
+  const adjusted = hour % 12 === 0 ? 12 : hour % 12;
+  return `${adjusted}:${m} ${suffix}`;
+}
+
+// === Load Everything ===
 loadTodayTasks();
 loadGoals();
 loadLessons();
@@ -51,13 +81,12 @@ setupSwipeContainer(lessonsContainer);
 setupSwipeContainer(notesContainer);
 setupSwipeContainer(logEntries);
 
-// === Load Today's Tasks ===
+// === Load Tasks ===
 async function loadTodayTasks() {
   try {
     const res = await fetch("https://avdevplanner.onrender.com/tasks");
     const tasks = await res.json();
-    const todayTasks = tasks.filter(task => task.date === todayStr);
-
+    const todayTasks = tasks.filter((t) => t.date === todayStr);
     tasksContainer.innerHTML = "";
 
     if (todayTasks.length === 0) {
@@ -65,35 +94,26 @@ async function loadTodayTasks() {
       return;
     }
 
-    todayTasks.forEach(task => {
-      const el = document.createElement("div");
-      el.className = "min-w-[250px] snap-start bg-[#2b2b2b] text-white p-4 rounded-xl shadow";
-
-      const formattedTime = task.time
-        ? new Date(`1970-01-01T${task.time}`).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
-        : "";
-
-      el.innerHTML = `
-        <h3>${task.text || task.title || "(Untitled Task)"}</h3>
-        <p><strong>Date:</strong> ${task.date || todayStr}</p>
-        ${formattedTime ? `<p><strong>Time:</strong> ${formattedTime}</p>` : ""}
-        ${task.notes ? `<p><strong>Notes:</strong> ${task.notes}</p>` : ""}
-      `;
-
-      tasksContainer.appendChild(el);
+    todayTasks.forEach((task) => {
+      const card = createFullCard(
+        task.text || task.title || "Untitled Task",
+        task.notes,
+        task.date,
+        task.time
+      );
+      tasksContainer.appendChild(card);
     });
-  } catch (err) {
+  } catch {
     tasksContainer.innerHTML = "<p>Error loading tasks.</p>";
   }
 }
 
-// === Load Goals for Today ===
+// === Load Goals ===
 async function loadGoals() {
   try {
     const res = await fetch("https://avdevplanner.onrender.com/goals");
     const goals = await res.json();
-    const todayGoals = goals.filter(goal => goal.date === todayStr);
-
+    const todayGoals = goals.filter((g) => g.date === todayStr);
     goalsContainer.innerHTML = "";
 
     if (todayGoals.length === 0) {
@@ -101,28 +121,21 @@ async function loadGoals() {
       return;
     }
 
-    todayGoals.forEach(goal => {
-      const el = document.createElement("div");
-      el.className = "min-w-[250px] snap-start bg-[#2b2b2b] text-white p-4 rounded-xl shadow";
-      el.innerHTML = `
-        <h3>${goal.title}</h3>
-        ${goal.notes ? `<p><strong>Notes:</strong> ${goal.notes}</p>` : ""}
-        <p><small>Date: ${goal.date}</small></p>
-      `;
-      goalsContainer.appendChild(el);
+    todayGoals.forEach((goal) => {
+      const card = createFullCard(goal.title, goal.notes, goal.date);
+      goalsContainer.appendChild(card);
     });
-  } catch (err) {
+  } catch {
     goalsContainer.innerHTML = "<p>Error loading goals.</p>";
   }
 }
 
-// === Load Lessons for Today ===
+// === Load Lessons ===
 async function loadLessons() {
   try {
     const res = await fetch("https://avdevplanner.onrender.com/lessons");
     const lessons = await res.json();
-    const todayLessons = lessons.filter(lesson => lesson.date === todayStr);
-
+    const todayLessons = lessons.filter((l) => l.date === todayStr);
     lessonsContainer.innerHTML = "";
 
     if (todayLessons.length === 0) {
@@ -130,30 +143,28 @@ async function loadLessons() {
       return;
     }
 
-    todayLessons.forEach(lesson => {
-      const card = document.createElement("div");
-      card.className = "min-w-[250px] snap-start bg-[#2b2b2b] text-white p-4 rounded-xl shadow";
-      card.innerHTML = `
-        <h3>${lesson.title}</h3>
-        <p><strong>Category:</strong> ${lesson.category || "N/A"}</p>
-        <p><strong>Priority:</strong> ${lesson.priority || "Normal"}</p>
-        <p>${lesson.description}</p>
-        ${lesson.notes ? `<p><em>${lesson.notes}</em></p>` : ""}
-      `;
+    todayLessons.forEach((lesson) => {
+      const content = `${lesson.description || ""}${
+        lesson.notes ? ` (${lesson.notes})` : ""
+      }`;
+      const card = createFullCard(
+        lesson.title,
+        `Category: ${lesson.category || "N/A"} | Priority: ${lesson.priority || "Normal"} | ${content}`,
+        lesson.date
+      );
       lessonsContainer.appendChild(card);
     });
-  } catch (err) {
+  } catch {
     lessonsContainer.innerHTML = "<p>Error loading lessons.</p>";
   }
 }
 
-// === Load Notes for Today ===
+// === Load Notes ===
 async function loadNotes() {
   try {
     const res = await fetch("https://avdevplanner.onrender.com/notes");
     const notes = await res.json();
-    const todayNotes = notes.filter(note => note.date === todayStr);
-
+    const todayNotes = notes.filter((n) => n.date === todayStr);
     notesContainer.innerHTML = "";
 
     if (todayNotes.length === 0) {
@@ -161,26 +172,19 @@ async function loadNotes() {
       return;
     }
 
-    todayNotes.forEach(note => {
-      const card = document.createElement("div");
-      card.className = "min-w-[250px] snap-start bg-[#2b2b2b] text-white p-4 rounded-xl shadow";
-      card.innerHTML = `
-        <h3>${note.title || "(Untitled Note)"}</h3>
-        <p>${note.content || ""}</p>
-        <p><small>${note.date}</small></p>
-      `;
+    todayNotes.forEach((note) => {
+      const card = createFullCard(note.title, note.content, note.date);
       notesContainer.appendChild(card);
     });
-  } catch (err) {
+  } catch {
     notesContainer.innerHTML = "<p>Error loading notes.</p>";
   }
 }
 
-// === Personal Daily Log ===
+// === Log Form ===
 if (logForm) {
   logForm.addEventListener("submit", async (e) => {
     e.preventDefault();
-
     const title = document.getElementById("log-title").value.trim();
     const content = document.getElementById("log-content").value.trim();
 
@@ -188,14 +192,14 @@ if (logForm) {
       date: todayStr,
       title,
       content,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     try {
       const res = await fetch("https://avdevplanner.onrender.com/logs", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(log)
+        body: JSON.stringify(log),
       });
 
       if (res.ok) {
@@ -210,12 +214,12 @@ if (logForm) {
   });
 }
 
+// === Load Logs ===
 async function loadLogs() {
   try {
     const res = await fetch("https://avdevplanner.onrender.com/logs");
     const logs = await res.json();
     const todayLogs = logs[todayStr] || [];
-
     logEntries.innerHTML = "";
 
     if (todayLogs.length === 0) {
@@ -223,17 +227,15 @@ async function loadLogs() {
       return;
     }
 
-    todayLogs.forEach(log => {
-      const card = document.createElement("div");
-      card.className = "min-w-[250px] snap-start bg-[#2b2b2b] text-white p-4 rounded-xl shadow";
-      card.innerHTML = `
-        <h3>${log.title || "(Untitled Log)"}</h3>
-        <p>${log.content}</p>
-        <p><small>${new Date(log.timestamp).toLocaleString()}</small></p>
-      `;
+    todayLogs.forEach((log) => {
+      const card = createFullCard(
+        log.title,
+        log.content,
+        new Date(log.timestamp).toLocaleDateString()
+      );
       logEntries.appendChild(card);
     });
-  } catch (err) {
+  } catch {
     logEntries.innerHTML = "<p>Error loading logs.</p>";
   }
 }
@@ -257,7 +259,7 @@ if (saveTimeBtn && timeInput && savedTimeText) {
       const res = await fetch("https://avdevplanner.onrender.com/time", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ date: todayStr, minutes })
+        body: JSON.stringify({ date: todayStr, minutes }),
       });
 
       if (res.ok) {
@@ -274,9 +276,9 @@ if (saveTimeBtn && timeInput && savedTimeText) {
 
   async function loadTime() {
     try {
-      const res = await fetch(`https://avdevplanner.onrender.com/time`);
-      const timeData = await res.json();
-      const todayTime = timeData[todayStr];
+      const res = await fetch("https://avdevplanner.onrender.com/time");
+      const data = await res.json();
+      const todayTime = data[todayStr];
       if (todayTime) {
         savedTimeText.textContent = `You logged ${todayTime} minutes of focused work today.`;
       }
