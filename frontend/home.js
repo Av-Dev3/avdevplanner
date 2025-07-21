@@ -18,18 +18,44 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const today = new Date().toISOString().split("T")[0];
 
-  // === Utility: Swipe card style ===
   function createFullCard(title, notes, date, time) {
     const div = document.createElement("div");
-    div.className = "snap-center shrink-0 w-full sm:w-[240px] bg-[#121212] rounded-lg p-4 shadow-inner text-sm";
+    div.className =
+      "snap-center shrink-0 w-full sm:w-[240px] bg-[#121212] rounded-lg p-4 shadow-inner text-sm";
+
+    const formattedDate = date ? formatDateReadable(date) : "";
+    const formattedTime = time ? formatTime12Hour(time) : "";
 
     div.innerHTML = `
       <h3 class="font-semibold mb-1">${title}</h3>
       ${notes ? `<p class="mb-1">${notes}</p>` : ""}
-      ${time ? `<p><small>Time: ${time}</small></p>` : ""}
-      ${date ? `<p><small>Date: ${date}</small></p>` : ""}
+      ${formattedTime ? `<p><small>Time: ${formattedTime}</small></p>` : ""}
+      ${formattedDate ? `<p><small>Date: ${formattedDate}</small></p>` : ""}
     `;
     return div;
+  }
+
+  function formatDateReadable(dateStr) {
+    const date = new Date(dateStr);
+    const options = { month: "long", day: "numeric" };
+    const day = date.getDate();
+    const suffix =
+      day % 10 === 1 && day !== 11
+        ? "st"
+        : day % 10 === 2 && day !== 12
+        ? "nd"
+        : day % 10 === 3 && day !== 13
+        ? "rd"
+        : "th";
+    return `${date.toLocaleDateString("en-US", options)}${suffix}`;
+  }
+
+  function formatTime12Hour(timeStr) {
+    const [hour, minute] = timeStr.split(":");
+    const h = parseInt(hour);
+    const suffix = h >= 12 ? "PM" : "AM";
+    const adjustedHour = h % 12 === 0 ? 12 : h % 12;
+    return `${adjustedHour}:${minute} ${suffix}`;
   }
 
   function setupSwipeContainer(container) {
@@ -38,17 +64,25 @@ document.addEventListener("DOMContentLoaded", () => {
       "overflow-x-auto",
       "snap-x",
       "snap-mandatory",
-      "scroll-smooth"
+      "scroll-smooth",
+      "no-scrollbar",
+      "gap-3"
     );
     container.style.scrollbarWidth = "none";
     container.style.msOverflowStyle = "none";
     container.style.overflowY = "hidden";
     container.style.webkitOverflowScrolling = "touch";
-    container.classList.add("no-scrollbar");
-    container.style.overscrollBehaviorX = "contain";
+
+    // Desktop fallback: use grid layout if screen is wide enough
+    if (window.innerWidth >= 768) {
+      container.classList.remove("flex", "overflow-x-auto", "snap-x", "snap-mandatory", "scroll-smooth");
+      container.style.overflow = "visible";
+      container.style.display = "grid";
+      container.style.gridTemplateColumns = "repeat(auto-fit, minmax(200px, 1fr))";
+      container.style.gap = "1rem";
+    }
   }
 
-  // === Load Pinned Notes ===
   setupSwipeContainer(pinnedContainer);
   fetch("https://avdevplanner.onrender.com/notes")
     .then((res) => res.json())
@@ -58,7 +92,6 @@ document.addEventListener("DOMContentLoaded", () => {
         pinnedContainer.innerHTML = "<p>No pinned notes yet.</p>";
         return;
       }
-
       pinned.forEach((note) => {
         const card = createFullCard(
           note.title,
@@ -73,7 +106,6 @@ document.addEventListener("DOMContentLoaded", () => {
       pinnedContainer.innerHTML = "<p>Error loading pinned notes.</p>";
     });
 
-  // === Load Daily Focus ===
   fetch(`https://avdevplanner.onrender.com/focus?date=${today}`)
     .then((res) => {
       if (!res.ok) throw new Error("No focus found");
@@ -89,7 +121,6 @@ document.addEventListener("DOMContentLoaded", () => {
       savedFocusText.textContent = "No focus saved yet.";
     });
 
-  // === Save Focus ===
   saveBtn.addEventListener("click", async () => {
     const focus = focusInput.value.trim();
     if (!focus) return alert("Please enter a focus.");
@@ -110,7 +141,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // === Load Tasks, Goals, Lessons, Stats, and Streaks ===
   Promise.all([
     fetch("https://avdevplanner.onrender.com/tasks").then((res) => res.json()),
     fetch("https://avdevplanner.onrender.com/goals").then((res) => res.json()),
@@ -216,7 +246,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // === Submit Goal Form ===
   const goalForm = document.getElementById("weekly-goal-form");
   if (goalForm) {
     goalForm.addEventListener("submit", async (e) => {
@@ -243,7 +272,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // === Submit Lesson Form ===
   const lessonForm = document.getElementById("lesson-form");
   if (lessonForm) {
     lessonForm.addEventListener("submit", async (e) => {
