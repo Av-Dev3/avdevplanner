@@ -57,31 +57,67 @@
   </div>
 </header>
 
-     <div id="week-range" class="week-range-bar"></div>
-<div id="weekly-page">
-  <section id="weekly-tasks-section">
-    <h2>This Week's Tasks</h2>
-    <div id="weekly-tasks-container" class="content-box"></div>
-  </section>
+   <div id="weekly" class="flex flex-col gap-5 p-5">
+  <div id="week-range" class="text-center text-lg font-semibold text-white mb-4"></div>
 
-  <section id="weekly-goals-section">
-    <h2>This Week's Goals</h2>
-    <div id="weekly-goals-container" class="content-box"></div>
-  </section>
+  <!-- Days of the week (Sunday to Saturday) -->
+  <div id="weekly-days" class="flex flex-col gap-4">
+    <!-- JS will insert each day's expandable section here -->
+  </div>
 
-  <section id="weekly-lessons-section">
-    <h2>This Week's Lessons</h2>
-    <div id="weekly-lessons-container" class="content-box"></div>
-  </section>
-
-  <section id="weekly-reflections-section">
-    <h2>Weekly Reflection</h2>
-    <div class="content-box">
-      <textarea id="reflection-textarea" rows="6" placeholder="What went well? What could improve?"></textarea>
-      <button id="save-reflection">Save Reflection</button>
+  <!-- Weekly Reflection -->
+  <section class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-4 shadow-lg flex flex-col gap-4">
+    <h2 class="text-sm sm:text-base text-[#f0f0f0]">Weekly Reflection</h2>
+    <div class="flex flex-col gap-3">
+      <textarea id="reflection-textarea" rows="6"
+        class="bg-[#2b2b2b] text-white p-2 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-purple-600"
+        placeholder="What went well? What could improve?"></textarea>
+      <button id="save-reflection"
+        class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition">Save Reflection</button>
     </div>
   </section>
 </div>
+
+<!-- Template for each day (JS will clone and populate this) -->
+<template id="day-template">
+  <section class="day-section bg-[#1f1f1f] rounded-xl shadow-lg overflow-hidden">
+    <button class="w-full text-left text-white px-4 py-3 text-base sm:text-lg font-medium bg-[#2b2b2b] hover:bg-[#333] transition day-toggle"></button>
+    <div class="day-content hidden flex flex-col gap-4 p-4">
+
+      <!-- 1x2 Grid: Tasks + Goals -->
+      <div class="grid grid-cols-2 gap-4">
+        <!-- Tasks -->
+        <section class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-3 shadow-lg flex flex-col gap-2">
+          <h3 class="text-sm sm:text-base text-[#f0f0f0]">Tasks</h3>
+          <div class="task-container w-full flex overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar gap-3
+                      sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible sm:snap-none">
+            <!-- Cards added by JS -->
+          </div>
+        </section>
+
+        <!-- Goals -->
+        <section class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-3 shadow-lg flex flex-col gap-2">
+          <h3 class="text-sm sm:text-base text-[#f0f0f0]">Goals</h3>
+          <div class="goal-container w-full flex overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar gap-3
+                      sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible sm:snap-none">
+            <!-- Cards added by JS -->
+          </div>
+        </section>
+      </div>
+
+      <!-- Lessons -->
+      <section class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-3 shadow-lg flex flex-col gap-2">
+        <h3 class="text-sm sm:text-base text-[#f0f0f0]">Lessons</h3>
+        <div class="lesson-container w-full flex overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar gap-3
+                    sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible sm:snap-none">
+          <!-- Cards added by JS -->
+        </div>
+      </section>
+
+    </div>
+  </section>
+</template>
+
 
 
   </div>
