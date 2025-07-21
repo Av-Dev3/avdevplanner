@@ -48,7 +48,7 @@ if (form) {
     e.preventDefault();
 
     const newTask = {
-      text: textInput.value.trim(),
+      title: textInput.value.trim(),
       date: dateInput.value,
       time: timeInput.value,
       notes: notesInput.value.trim(),
