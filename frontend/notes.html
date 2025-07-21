@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="notes.css">
+      <script src="https://cdn.tailwindcss.com"></script>
+
   <title>Document</title>
 </head>
 <body>
@@ -76,6 +78,53 @@
     <span>Code</span>
     <span>Repeat</span>
   </footer>
+
+   <!-- Site Links Drawer -->
+<div id="siteLinksDrawer" class="fixed bottom-[120px] left-1/2 transform -translate-x-[45%] opacity-0 scale-95 transition-all duration-300 w-40 bg-[#1a1a1a] text-white p-3 rounded-xl shadow-lg z-50">
+  <div class="flex flex-col space-y-3 text-sm">
+    <a href="index.html" class="hover:text-[#b91c1c]">Home</a>
+    <a href="schedule.html" class="hover:text-[#b91c1c]">Schedule</a>
+    <a href="daily.html" class="hover:text-[#b91c1c]">Daily</a>
+    <a href="weekly.html" class="hover:text-[#b91c1c]">Weekly</a>
+    <a href="goals.html" class="hover:text-[#b91c1c]">Goals</a>
+    <a href="tasks.html" class="hover:text-[#b91c1c]">Tasks</a>
+    <a href="lessons.html" class="hover:text-[#b91c1c]">Lessons</a>
+    <a href="notes.html" class="hover:text-[#b91c1c]">Notes</a>
+  </div>
+</div>
+
+
+  <!-- Bottom Nav (mobile only) -->
+  <div class="block md:hidden">
+    <nav id="bottomNav" style="background-color: #1a1a1a;" class="fixed bottom-0 left-0 w-full text-white rounded-t-2xl flex items-center justify-between px-6 py-4 shadow-inner z-40 transition-colors duration-300">
+      <a href="index.html" class="flex flex-col items-center text-sm hover:text-[#b91c1c]">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7m-9 2v8m4-8v8m5 0h2a2 2 0 002-2v-5a2 2 0 00-2-2h-3.28" />
+        </svg>
+        Home
+      </a>
+      <a href="schedule.html" class="flex flex-col items-center text-sm hover:text-[#b91c1c]">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 10h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+        Calendar
+      </a>
+      <button id="fab" class="bg-[#b91c1c] w-14 h-14 rounded-full text-white flex items-center justify-center shadow-xl transform -translate-y-8 hover:scale-105 transition z-50">+</button>
+      <a href="daily.html" class="flex flex-col items-center text-sm hover:text-[#b91c1c]">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        Daily
+      </a>
+      <a href="weekly.html" class="flex flex-col items-center text-sm hover:text-[#b91c1c]">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18M3 17h18" />
+        </svg>
+        Weekly
+      </a>
+    </nav>
+  </div>
+
 <script src="notes.js"></script>
 <script src="nav.js"></script>
 </body>

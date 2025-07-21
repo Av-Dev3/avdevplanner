@@ -215,6 +215,9 @@ li a.active {
     display: none;
   }
 
+.drawer-visible {
+  opacity: 1 !important;
+}
 
 
   .nav-container {
@@ -235,14 +238,14 @@ li a.active {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 0.8rem;
+    font-size: 1rem;
   }
 
   .nav-right {
     gap: 5px;
   }
 
-  
+ 
 
  .main-nav {
   position: fixed;

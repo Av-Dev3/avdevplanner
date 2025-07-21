@@ -71,39 +71,82 @@
       </div>
     </header>
 
-    <!-- Main Content -->
-    <div id="home">
-      <section id="daily-focus-section" class="daily-focus-section">
-        <h2>Daily Focus</h2>
-        <input type="text" id="daily-focus-input" placeholder="What's your main focus today?" />
-        <button id="save-focus-btn">Save</button>
-        <p id="saved-focus-text"></p>
-      </section>
+   <div id="home" class="flex flex-col gap-5 p-5">
 
-      <section id="pinned-notes-home">
-        <h2>Pinned Notes</h2>
-        <div id="pinned-notes-container"></div>
-      </section>
+  <!-- ✅ TRUE 2x2 Grid on ALL screen sizes -->
+  <div class="grid grid-cols-2 gap-5">
 
-      <section id="stats-dashboard">
-        <h2>Stats & Streaks</h2>
-        <div id="stats-overview">
-          <div class="stat-card" id="tasks-completed">Tasks Completed: 0</div>
-          <div class="stat-card" id="goals-completed">Goals Completed: 0</div>
-          <div class="stat-card" id="lessons-completed">Lessons Completed: 0</div>
-        </div>
+    <!-- Tasks -->
+    <section class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-4 shadow-lg flex flex-col gap-3">
+      <h2 class="text-sm sm:text-base text-[#f0f0f0]">Tasks</h2>
+      <div id="tasks-container" class="flex overflow-x-auto gap-3 scroll-smooth">
+        <!-- <div class="min-w-[180px] bg-[#121212] rounded-lg p-3 shadow-inner">Task 1</div> -->
+      </div>
+    </section>
 
-        <div id="streaks-overview">
-          <div class="stat-card" id="task-streak">Task Streak: 0 days</div>
-          <div class="stat-card" id="goal-streak">Goal Streak: 0 days</div>
-          <div class="stat-card" id="lesson-streak">Lesson Streak: 0 days</div>
-        </div>
-      </section>
+    <!-- Lessons -->
+    <section class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-4 shadow-lg flex flex-col gap-3">
+      <h2 class="text-sm sm:text-base text-[#f0f0f0]">Lessons</h2>
+      <div id="lessons-container" class="flex overflow-x-auto gap-3 scroll-smooth">
+        <!-- lesson cards -->
+      </div>
+    </section>
 
-      <section id="quote-section">
-        <h2 class="quote-title">💬 Daily Motivation</h2>
-        <p id="quote-box" class="quote-text"></p>
-      </section>
+    <!-- Goals -->
+    <section class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-4 shadow-lg flex flex-col gap-3">
+      <h2 class="text-sm sm:text-base text-[#f0f0f0]">Goals</h2>
+      <div id="goals-container" class="flex overflow-x-auto gap-3 scroll-smooth">
+        <!-- goal cards -->
+      </div>
+    </section>
+
+    <!-- Pinned Notes -->
+    <section class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-4 shadow-lg flex flex-col gap-3">
+      <h2 class="text-sm sm:text-base text-[#f0f0f0]">Pinned Notes</h2>
+      <div id="pinned-notes-container" class="flex overflow-x-auto gap-3 scroll-smooth">
+        <!-- note cards -->
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Daily Focus -->
+  <section class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-5 shadow-lg flex flex-col gap-4">
+    <h2 class="text-lg text-[#f0f0f0]">Daily Focus</h2>
+    <input type="text" id="daily-focus-input" placeholder="What's your main focus today?"
+      class="w-full p-2.5 rounded-lg bg-[#121212] border border-[#333] text-sm text-[#e4e4e7]" />
+    <button id="save-focus-btn"
+      class="w-fit px-4 py-2 bg-[#4c8eda] text-white font-bold rounded-lg hover:bg-[#3b6fb3] transition-colors">
+      Save
+    </button>
+    <p id="saved-focus-text"></p>
+  </section>
+
+  <!-- Stats & Streaks -->
+  <section class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-5 shadow-lg flex flex-col gap-4">
+    <h2 class="text-lg text-[#f0f0f0]">Stats & Streaks</h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div class="bg-[#121212] rounded-lg p-4 text-sm shadow-inner" id="tasks-completed">Tasks Completed: 0</div>
+      <div class="bg-[#121212] rounded-lg p-4 text-sm shadow-inner" id="goals-completed">Goals Completed: 0</div>
+      <div class="bg-[#121212] rounded-lg p-4 text-sm shadow-inner" id="lessons-completed">Lessons Completed: 0</div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div class="bg-[#121212] rounded-lg p-4 text-sm shadow-inner" id="task-streak">Task Streak: 0 days</div>
+      <div class="bg-[#121212] rounded-lg p-4 text-sm shadow-inner" id="goal-streak">Goal Streak: 0 days</div>
+      <div class="bg-[#121212] rounded-lg p-4 text-sm shadow-inner" id="lesson-streak">Lesson Streak: 0 days</div>
+    </div>
+  </section>
+
+  <!-- Daily Motivation -->
+  <section class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-5 shadow-lg flex flex-col gap-3">
+    <h2 class="text-lg text-[#f0f0f0] quote-title">💬 Daily Motivation</h2>
+    <p id="quote-box" class="italic text-sm text-[#d1d1d1]"></p>
+  </section>
+
+</div>
+
 
       <!-- Floating AI Chat (hidden on mobile, visible on desktop) -->
 <div id="ai-chatbox-wrapper" class="hidden md:block">
@@ -241,6 +284,21 @@
       </form>
     </div>
   </div>
+
+  <!-- Site Links Drawer -->
+<div id="siteLinksDrawer" class="fixed bottom-[120px] left-1/2 transform -translate-x-[45%] opacity-0 scale-95 transition-all duration-300 w-40 bg-[#1a1a1a] text-white p-3 rounded-xl shadow-lg z-50">
+  <div class="flex flex-col space-y-3 text-sm">
+    <a href="index.html" class="hover:text-[#b91c1c]">Home</a>
+    <a href="schedule.html" class="hover:text-[#b91c1c]">Schedule</a>
+    <a href="daily.html" class="hover:text-[#b91c1c]">Daily</a>
+    <a href="weekly.html" class="hover:text-[#b91c1c]">Weekly</a>
+    <a href="goals.html" class="hover:text-[#b91c1c]">Goals</a>
+    <a href="tasks.html" class="hover:text-[#b91c1c]">Tasks</a>
+    <a href="lessons.html" class="hover:text-[#b91c1c]">Lessons</a>
+    <a href="notes.html" class="hover:text-[#b91c1c]">Notes</a>
+  </div>
+</div>
+
 
  <!-- Show only on mobile -->
 <div class="block md:hidden">

@@ -12,6 +12,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const goalStreakEl = document.getElementById("goal-streak");
   const lessonStreakEl = document.getElementById("lesson-streak");
 
+  const taskContainer = document.getElementById("tasks-container");
+  const goalContainer = document.getElementById("goals-container");
+  const lessonContainer = document.getElementById("lessons-container");
+
   const today = new Date().toISOString().split("T")[0];
 
   // === Load Pinned Notes ===
@@ -27,10 +31,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
       pinned.forEach(note => {
         const card = document.createElement("div");
-        card.className = "task-card";
+        card.className = "min-w-[180px] bg-[#121212] rounded-lg p-4 shadow-inner text-sm";
         card.innerHTML = `
-          <h3>${note.title}</h3>
-          <p>${note.content}</p>
+          <h3 class="font-semibold mb-1">${note.title}</h3>
+          <p class="mb-1">${note.content}</p>
           <p><small>${note.date ? `Date: ${note.date}` : ""}</small></p>
           <p><small>Created: ${new Date(note.created_at).toLocaleString()}</small></p>
         `;
@@ -77,12 +81,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // === Load Stats & Streaks ===
+  // === Load Tasks, Goals, Lessons, Stats, and Streaks ===
   Promise.all([
     fetch("https://avdevplanner.onrender.com/tasks").then(res => res.json()),
     fetch("https://avdevplanner.onrender.com/goals").then(res => res.json()),
     fetch("https://avdevplanner.onrender.com/lessons").then(res => res.json())
   ]).then(([tasks, goals, lessons]) => {
+    // === Stats & Streaks ===
     const completedTasks = tasks.filter(t => t.completed);
     const completedGoals = goals.filter(g => g.completed);
     const completedLessons = lessons.filter(l => l.completed);
@@ -98,6 +103,36 @@ document.addEventListener("DOMContentLoaded", () => {
     taskStreakEl.textContent = `Task Streak: ${taskStreak} day${taskStreak !== 1 ? "s" : ""}`;
     goalStreakEl.textContent = `Goal Streak: ${goalStreak} day${goalStreak !== 1 ? "s" : ""}`;
     lessonStreakEl.textContent = `Lesson Streak: ${lessonStreak} day${lessonStreak !== 1 ? "s" : ""}`;
+
+    // === Filter by Today ===
+    const todayTasks = tasks.filter(t => t.date === today);
+    const todayGoals = goals.filter(g => g.date === today);
+    const todayLessons = lessons.filter(l => l.date === today);
+
+    // === Render Cards ===
+    const createCard = (title, notes, date, time) => {
+      const div = document.createElement("div");
+      div.className = "min-w-[180px] bg-[#121212] rounded-lg p-4 shadow-inner text-sm";
+      div.innerHTML = `
+        <h3 class="font-semibold mb-1">${title}</h3>
+        ${notes ? `<p class="mb-1">${notes}</p>` : ""}
+        ${time ? `<p><small>Time: ${time}</small></p>` : ""}
+        ${date ? `<p><small>Date: ${date}</small></p>` : ""}
+      `;
+      return div;
+    };
+
+    todayTasks.forEach(task => {
+      taskContainer.appendChild(createCard(task.text, task.notes, task.date, task.time));
+    });
+
+    todayGoals.forEach(goal => {
+      goalContainer.appendChild(createCard(goal.title, goal.notes, goal.date));
+    });
+
+    todayLessons.forEach(lesson => {
+      lessonContainer.appendChild(createCard(lesson.title, lesson.description || lesson.notes, lesson.date));
+    });
   });
 
   function calculateStreak(datesArray) {
