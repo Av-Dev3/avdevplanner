@@ -1,129 +1,184 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const weekRangeEl = document.getElementById("week-range");
-  const weeklyDaysContainer = document.getElementById("weekly-days");
+  const weekRange = document.getElementById("week-range");
+  const daysContainer = document.getElementById("weekly-days");
+  const reflectionTextarea = document.getElementById("reflection-textarea");
+  const saveReflectionBtn = document.getElementById("save-reflection");
 
   const today = new Date();
   const sunday = new Date(today);
-  sunday.setHours(0, 0, 0, 0);
-  sunday.setDate(today.getDate() - today.getDay());
+  sunday.setDate(today.getDate() - sunday.getDay());
 
-  const saturday = new Date(sunday);
-  saturday.setDate(sunday.getDate() + 6);
-  saturday.setHours(23, 59, 59, 999);
+  const weekDates = Array.from({ length: 7 }, (_, i) => {
+    const date = new Date(sunday);
+    date.setDate(sunday.getDate() + i);
+    return date;
+  });
 
-  weekRangeEl.textContent = `Week of ${formatDate(sunday)} – ${formatDate(saturday)}`;
+  // === Format & Display Week Range ===
+  const start = formatDate(weekDates[0]);
+  const end = formatDate(weekDates[6]);
+  weekRange.textContent = `Week of ${start} – ${end}`;
 
-  // Generate each day (Sun–Sat)
-  for (let i = 0; i < 7; i++) {
-    const current = new Date(sunday);
-    current.setDate(sunday.getDate() + i);
-    const dateStr = current.toISOString().split("T")[0];
-
-    const template = document.getElementById("day-template");
-    const clone = template.content.cloneNode(true);
-
-    const toggleBtn = clone.querySelector(".day-toggle");
-    toggleBtn.textContent = `${formatWeekday(current)}, ${formatDate(current)}`;
-
-    const dayContent = clone.querySelector(".day-content");
-    toggleBtn.addEventListener("click", () => {
-      dayContent.classList.toggle("hidden");
+  // === Build Days ===
+  weekDates.forEach((date) => {
+    const formatted = date.toLocaleDateString("en-US", {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
     });
+    const isoDate = date.toISOString().split("T")[0];
+    createDaySection(formatted, isoDate);
+  });
 
-    const taskContainer = clone.querySelector(".task-container");
-    const goalContainer = clone.querySelector(".goal-container");
-    const lessonContainer = clone.querySelector(".lesson-container");
+  // === Swipe Setup Function ===
+  function setupSwipeContainer(container) {
+    container.classList.add(
+      "flex",
+      "overflow-x-auto",
+      "snap-x",
+      "snap-mandatory",
+      "scroll-smooth",
+      "no-scrollbar",
+      "gap-3"
+    );
+    container.style.scrollbarWidth = "none";
+    container.style.msOverflowStyle = "none";
+    container.style.overflowY = "hidden";
+    container.style.webkitOverflowScrolling = "touch";
 
-    loadItems("tasks", dateStr, taskContainer, renderTaskCard);
-    loadItems("goals", dateStr, goalContainer, renderGoalCard);
-    loadItems("lessons", dateStr, lessonContainer, renderLessonCard);
-
-    weeklyDaysContainer.appendChild(clone);
-  }
-
-  // Load weekly reflection from localStorage
-  loadReflections(sunday.toISOString().split("T")[0]);
-
-  async function loadItems(type, dateStr, container, renderFn) {
-    try {
-      const res = await fetch(`https://avdevplanner.onrender.com/${type}`);
-      const items = await res.json();
-
-      const filtered = items.filter(item => item.date === dateStr);
-      container.innerHTML = "";
-
-      if (filtered.length === 0) {
-        container.innerHTML = "<p class='text-sm text-gray-400'>No items.</p>";
-      } else {
-        filtered.forEach(item => {
-          const card = renderFn(item);
-          container.appendChild(card);
-        });
-      }
-    } catch (err) {
-      console.error(`Error loading ${type}:`, err);
+    if (window.innerWidth >= 768) {
+      container.classList.remove(
+        "flex",
+        "overflow-x-auto",
+        "snap-x",
+        "snap-mandatory",
+        "scroll-smooth"
+      );
+      container.style.overflow = "visible";
+      container.style.display = "grid";
+      container.style.gridTemplateColumns = "repeat(auto-fit, minmax(200px, 1fr))";
+      container.style.gap = "1rem";
     }
   }
 
-  function renderTaskCard(task) {
-    const card = document.createElement("div");
-    card.className = "min-w-[250px] bg-[#2b2b2b] p-4 rounded-lg shadow text-white snap-start";
-    card.innerHTML = `
-      <h3 class="font-semibold">${task.text || task.title}</h3>
-      <p class="text-sm">Date: ${task.date}</p>
-      <p class="text-sm">Time: ${task.time || "–"}</p>
-      <p class="text-sm">Status: ${task.completed ? "✅" : "⏳"}</p>
-      ${task.notes ? `<p class="text-sm">Notes: ${task.notes}</p>` : ""}
+  // === Card Builder (Matches Homepage) ===
+  function createFullCard(title, notes, date, time) {
+    const div = document.createElement("div");
+    div.className =
+      "snap-center shrink-0 w-full sm:w-[240px] bg-[#2b2b2b] rounded-lg p-4 shadow-inner text-sm";
+
+    const timeDisplay = time
+      ? `<p><small>Time: ${formatTime(time)}</small></p>`
+      : "";
+    const dateDisplay = date
+      ? `<p><small>Date: ${date}</small></p>`
+      : "";
+
+    div.innerHTML = `
+      <h3 class="font-semibold mb-1">${title}</h3>
+      ${notes ? `<p class="mb-1">${notes}</p>` : ""}
+      ${timeDisplay}
+      ${dateDisplay}
     `;
-    return card;
+    return div;
   }
 
-  function renderGoalCard(goal) {
-    const card = document.createElement("div");
-    card.className = "min-w-[250px] bg-[#2b2b2b] p-4 rounded-lg shadow text-white snap-start";
-    card.innerHTML = `
-      <h3 class="font-semibold">${goal.title}</h3>
-      <p class="text-sm">Date: ${goal.date || "–"}</p>
-      <p class="text-sm">Status: ${goal.completed ? "✅" : "⏳"}</p>
-      ${goal.notes ? `<p class="text-sm">Notes: ${goal.notes}</p>` : ""}
-    `;
-    return card;
-  }
-
-  function renderLessonCard(lesson) {
-    const card = document.createElement("div");
-    card.className = "min-w-[250px] bg-[#2b2b2b] p-4 rounded-lg shadow text-white snap-start";
-    card.innerHTML = `
-      <h3 class="font-semibold">${lesson.title}</h3>
-      <p class="text-sm">Category: ${lesson.category}</p>
-      <p class="text-sm">Priority: ${lesson.priority}</p>
-      <p class="text-sm">Date: ${lesson.date}</p>
-      <p class="text-sm">Status: ${lesson.completed ? "✅" : "⏳"}</p>
-      ${lesson.notes ? `<p class="text-sm">Notes: ${lesson.notes}</p>` : ""}
-    `;
-    return card;
+  function formatTime(timeStr) {
+    const [h, m] = timeStr.split(":");
+    const hour = parseInt(h);
+    const suffix = hour >= 12 ? "PM" : "AM";
+    const adjusted = hour % 12 === 0 ? 12 : hour % 12;
+    return `${adjusted}:${m} ${suffix}`;
   }
 
   function formatDate(d) {
     return d.toLocaleDateString("en-US", {
       month: "long",
-      day: "numeric"
+      day: "numeric",
+      year: "numeric"
     });
   }
 
-  function formatWeekday(d) {
-    return d.toLocaleDateString("en-US", { weekday: "long" });
-  }
+  // === Create Day Section ===
+  async function createDaySection(dayLabel, isoDate) {
+    const template = document.getElementById("day-template");
+    const clone = template.content.cloneNode(true);
+    const toggle = clone.querySelector(".day-toggle");
+    const content = clone.querySelector(".day-content");
+    const taskContainer = clone.querySelector(".task-container");
+    const goalContainer = clone.querySelector(".goal-container");
+    const lessonContainer = clone.querySelector(".lesson-container");
 
-  function loadReflections(startDate) {
-    const key = `reflection-${startDate}`;
-    const textarea = document.getElementById("reflection-textarea");
-    const saved = localStorage.getItem(key);
-    if (saved) textarea.value = saved;
-
-    document.getElementById("save-reflection").addEventListener("click", () => {
-      localStorage.setItem(key, textarea.value.trim());
-      alert("Reflection saved!");
+    toggle.textContent = dayLabel;
+    toggle.addEventListener("click", () => {
+      content.classList.toggle("hidden");
     });
+
+    daysContainer.appendChild(clone);
+
+    try {
+      const [tasksRes, goalsRes, lessonsRes] = await Promise.all([
+        fetch("https://avdevplanner.onrender.com/tasks"),
+        fetch("https://avdevplanner.onrender.com/goals"),
+        fetch("https://avdevplanner.onrender.com/lessons"),
+      ]);
+
+      const tasks = await tasksRes.json();
+      const goals = await goalsRes.json();
+      const lessons = await lessonsRes.json();
+
+      const todayTasks = tasks.filter((t) => t.date === isoDate);
+      const todayGoals = goals.filter((g) => g.date === isoDate);
+      const todayLessons = lessons.filter((l) => l.date === isoDate);
+
+      if (todayTasks.length === 0) {
+        taskContainer.innerHTML = "<p>No tasks.</p>";
+      } else {
+        todayTasks.forEach((t) => {
+          const card = createFullCard(t.text || t.title, t.notes, t.date, t.time);
+          taskContainer.appendChild(card);
+        });
+      }
+
+      if (todayGoals.length === 0) {
+        goalContainer.innerHTML = "<p>No goals.</p>";
+      } else {
+        todayGoals.forEach((g) => {
+          const card = createFullCard(g.title, g.notes, g.date);
+          goalContainer.appendChild(card);
+        });
+      }
+
+      if (todayLessons.length === 0) {
+        lessonContainer.innerHTML = "<p>No lessons.</p>";
+      } else {
+        todayLessons.forEach((l) => {
+          const content = `${l.description || ""}${l.notes ? ` (${l.notes})` : ""}`;
+          const card = createFullCard(
+            l.title,
+            `Category: ${l.category || "N/A"} | Priority: ${l.priority || "Normal"} | ${content}`,
+            l.date
+          );
+          lessonContainer.appendChild(card);
+        });
+      }
+
+      setupSwipeContainer(taskContainer);
+      setupSwipeContainer(goalContainer);
+      setupSwipeContainer(lessonContainer);
+    } catch (err) {
+      console.error("Error loading items:", err);
+    }
   }
+
+  // === Weekly Reflection ===
+  const reflectionKey = `weekly-reflection-${start}`;
+  const saved = localStorage.getItem(reflectionKey);
+  if (saved) reflectionTextarea.value = saved;
+
+  saveReflectionBtn.addEventListener("click", () => {
+    const val = reflectionTextarea.value.trim();
+    localStorage.setItem(reflectionKey, val);
+    alert("Reflection saved!");
+  });
 });
