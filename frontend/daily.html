@@ -57,11 +57,11 @@
 </header>
  <div id="daily" class="flex flex-col gap-5 p-5">
 
-  <!-- 🔲 2x2 GRID for Today's Core Sections -->
+  <!-- ✅ TRUE 2x2 Grid on ALL screen sizes -->
   <div class="grid grid-cols-2 gap-5">
 
-    <!-- Tasks -->
-    <section id="log-tasks-section" class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-4 shadow-lg flex flex-col gap-3">
+    <!-- Today’s Tasks -->
+    <section class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-4 shadow-lg flex flex-col gap-3">
       <h2 class="text-sm sm:text-base text-[#f0f0f0]">Today’s Tasks</h2>
       <div id="log-tasks-container"
         class="w-full flex overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar gap-3 
@@ -70,9 +70,9 @@
       </div>
     </section>
 
-    <!-- Lessons -->
-    <section id="log-lessons-section" class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-4 shadow-lg flex flex-col gap-3">
-      <h2 class="text-sm sm:text-base text-[#f0f0f0]">Lessons for Today</h2>
+    <!-- Today’s Lessons -->
+    <section class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-4 shadow-lg flex flex-col gap-3">
+      <h2 class="text-sm sm:text-base text-[#f0f0f0]">Today’s Lessons</h2>
       <div id="log-lessons-container"
         class="w-full flex overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar gap-3 
                sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible sm:snap-none">
@@ -80,8 +80,8 @@
       </div>
     </section>
 
-    <!-- Goals -->
-    <section id="log-goals-section" class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-4 shadow-lg flex flex-col gap-3">
+    <!-- Today’s Goals -->
+    <section class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-4 shadow-lg flex flex-col gap-3">
       <h2 class="text-sm sm:text-base text-[#f0f0f0]">Today’s Goals</h2>
       <div id="log-goals-container"
         class="w-full flex overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar gap-3 
@@ -90,8 +90,8 @@
       </div>
     </section>
 
-    <!-- Notes -->
-    <section id="log-notes-section" class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-4 shadow-lg flex flex-col gap-3">
+    <!-- Today’s Notes -->
+    <section class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-4 shadow-lg flex flex-col gap-3">
       <h2 class="text-sm sm:text-base text-[#f0f0f0]">Today’s Notes</h2>
       <div id="log-notes-container"
         class="w-full flex overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar gap-3 
@@ -102,8 +102,10 @@
 
   </div>
 
-  <!-- ⏱ Time Tracker -->
-  <section id="daily-time-tracker" class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-4 shadow-lg flex flex-col gap-4">
+  <!-- 🔽 BELOW THE GRID -->
+
+  <!-- Time Tracker -->
+  <section class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-4 shadow-lg flex flex-col gap-4">
     <h2 class="text-sm sm:text-base text-[#f0f0f0]">Time Tracker</h2>
     <div class="flex flex-col gap-3">
       <label for="time-spent" class="text-sm">Time spent on focused work (in minutes):</label>
@@ -115,8 +117,8 @@
     <p id="saved-time-text" class="text-sm text-green-400"></p>
   </section>
 
-  <!-- 📝 Personal Log Form -->
-  <section id="daily-log-form-wrapper" class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-4 shadow-lg flex flex-col gap-4">
+  <!-- Personal Log Form -->
+  <section class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-4 shadow-lg flex flex-col gap-4">
     <h2 class="text-sm sm:text-base text-[#f0f0f0]">Personal Log</h2>
     <form id="daily-log-form" class="flex flex-col gap-3">
       <label for="log-title" class="text-sm">Title</label>
@@ -132,8 +134,8 @@
     </form>
   </section>
 
-  <!-- 📚 Today’s Log Entries -->
-  <section id="daily-log-entries-wrapper" class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-4 shadow-lg flex flex-col gap-3">
+  <!-- Today’s Log Entries -->
+  <section class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-4 shadow-lg flex flex-col gap-3">
     <h2 class="text-sm sm:text-base text-[#f0f0f0]">Today’s Log</h2>
     <div id="daily-log-entries"
          class="w-full flex overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar gap-3 
