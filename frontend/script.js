@@ -97,11 +97,12 @@ if (container) {
     const tasksByDate = {};
     filteredTasks.forEach((task) => {
       const actualIndex = tasks.findIndex(t => t.text === task.text && parseNaturalDate(t.date) === task.date && t.time === task.time);
-      const normalizedTask = {
-        ...task,
-        index: actualIndex,
-        text: task.text || task.title || "(No Title)"
-      };
+     const normalizedTask = {
+  ...task,
+  index: actualIndex,
+  text: task.text?.trim() || task.title?.trim() || "(No Title)"
+};
+
 
       if (!tasksByDate[task.date]) tasksByDate[task.date] = [];
       tasksByDate[task.date].push(normalizedTask);

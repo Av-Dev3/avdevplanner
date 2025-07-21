@@ -174,11 +174,12 @@ document.addEventListener("DOMContentLoaded", () => {
     const todayGoals = goals.filter((g) => g.date === today);
     const todayLessons = lessons.filter((l) => l.date === today);
 
-    todayTasks.forEach((task) =>
-      taskContainer.appendChild(
-        createFullCard(task.text, task.notes, task.date, task.time)
-      )
-    );
+   todayTasks.forEach((task) =>
+  taskContainer.appendChild(
+    createFullCard(task.text || task.title || "Untitled Task", task.notes, task.date, task.time)
+  )
+);
+
     todayGoals.forEach((goal) =>
       goalContainer.appendChild(
         createFullCard(goal.title, goal.notes, goal.date)
