@@ -1,104 +1,129 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const weekRange = document.getElementById("week-range");
-  const daysContainer = document.getElementById("weekly-days");
-  const template = document.getElementById("day-template");
+  const weekRangeEl = document.getElementById("week-range");
+  const weeklyDaysContainer = document.getElementById("weekly-days");
+
   const today = new Date();
-
   const sunday = new Date(today);
-  sunday.setDate(sunday.getDate() - sunday.getDay());
+  sunday.setHours(0, 0, 0, 0);
+  sunday.setDate(today.getDate() - today.getDay());
 
-  const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const saturday = new Date(sunday);
+  saturday.setDate(sunday.getDate() + 6);
+  saturday.setHours(23, 59, 59, 999);
 
-  const formatDate = (d) =>
-    d.toLocaleDateString("en-US", { month: "long", day: "numeric" });
+  weekRangeEl.textContent = `Week of ${formatDate(sunday)} – ${formatDate(saturday)}`;
 
-  const getISO = (d) => d.toISOString().split("T")[0];
-
-  const end = new Date(sunday);
-  end.setDate(end.getDate() + 6);
-  weekRange.textContent = `Week of ${formatDate(sunday)} – ${formatDate(end)}`;
-
-  let expanded = null;
-
+  // Generate each day (Sun–Sat)
   for (let i = 0; i < 7; i++) {
-    const date = new Date(sunday);
-    date.setDate(date.getDate() + i);
-    const dateStr = getISO(date);
-    const dayName = dayNames[date.getDay()];
-    const fullDate = `${dayName}, ${formatDate(date)}`;
+    const current = new Date(sunday);
+    current.setDate(sunday.getDate() + i);
+    const dateStr = current.toISOString().split("T")[0];
 
+    const template = document.getElementById("day-template");
     const clone = template.content.cloneNode(true);
-    const section = clone.querySelector(".day-section");
-    const button = clone.querySelector(".day-toggle");
-    const content = clone.querySelector(".day-content");
+
+    const toggleBtn = clone.querySelector(".day-toggle");
+    toggleBtn.textContent = `${formatWeekday(current)}, ${formatDate(current)}`;
+
+    const dayContent = clone.querySelector(".day-content");
+    toggleBtn.addEventListener("click", () => {
+      dayContent.classList.toggle("hidden");
+    });
+
     const taskContainer = clone.querySelector(".task-container");
     const goalContainer = clone.querySelector(".goal-container");
     const lessonContainer = clone.querySelector(".lesson-container");
 
-    button.textContent = fullDate;
+    loadItems("tasks", dateStr, taskContainer, renderTaskCard);
+    loadItems("goals", dateStr, goalContainer, renderGoalCard);
+    loadItems("lessons", dateStr, lessonContainer, renderLessonCard);
 
-    button.addEventListener("click", () => {
-      if (expanded && expanded !== content) {
-        expanded.classList.add("hidden");
-      }
-      content.classList.toggle("hidden");
-      expanded = content.classList.contains("hidden") ? null : content;
-    });
-
-    loadData("tasks", dateStr, taskContainer, renderCard);
-    loadData("goals", dateStr, goalContainer, renderCard);
-    loadData("lessons", dateStr, lessonContainer, renderCard);
-
-    daysContainer.appendChild(clone);
+    weeklyDaysContainer.appendChild(clone);
   }
 
-  // Render all card types the same
-  function renderCard(item) {
-    const div = document.createElement("div");
-    div.className = "bg-[#2b2b2b] text-white p-3 rounded-lg shadow flex-shrink-0 snap-start";
-    div.style.minWidth = "250px";
+  // Load weekly reflection from localStorage
+  loadReflections(sunday.toISOString().split("T")[0]);
 
-    div.innerHTML = `
-      <h3 class="text-base font-semibold">${item.title || item.text}</h3>
-      ${item.date ? `<p class="text-sm"><strong>Date:</strong> ${item.date}</p>` : ""}
-      ${item.time ? `<p class="text-sm"><strong>Time:</strong> ${item.time}</p>` : ""}
-      ${item.notes ? `<p class="text-sm"><strong>Notes:</strong> ${item.notes}</p>` : ""}
-      ${typeof item.completed !== "undefined"
-        ? `<p class="text-sm"><strong>Status:</strong> ${item.completed ? "✅" : "⏳"}</p>`
-        : ""}
-      ${item.category ? `<p class="text-sm"><strong>Category:</strong> ${item.category}</p>` : ""}
-      ${item.priority ? `<p class="text-sm"><strong>Priority:</strong> ${item.priority}</p>` : ""}
-    `;
-
-    return div;
-  }
-
-  async function loadData(type, dateStr, container, renderFn) {
+  async function loadItems(type, dateStr, container, renderFn) {
     try {
       const res = await fetch(`https://avdevplanner.onrender.com/${type}`);
       const items = await res.json();
-      const filtered = items.filter((item) => item.date === dateStr);
 
+      const filtered = items.filter(item => item.date === dateStr);
       container.innerHTML = "";
+
       if (filtered.length === 0) {
         container.innerHTML = "<p class='text-sm text-gray-400'>No items.</p>";
       } else {
-        filtered.forEach((item) => container.appendChild(renderFn(item)));
+        filtered.forEach(item => {
+          const card = renderFn(item);
+          container.appendChild(card);
+        });
       }
     } catch (err) {
-      console.error(`Failed to load ${type} for ${dateStr}:`, err);
+      console.error(`Error loading ${type}:`, err);
     }
   }
 
-  // === Weekly Reflection ===
-  const textarea = document.getElementById("reflection-textarea");
-  const saveBtn = document.getElementById("save-reflection");
-  const key = `reflection-${getISO(sunday)}`;
+  function renderTaskCard(task) {
+    const card = document.createElement("div");
+    card.className = "min-w-[250px] bg-[#2b2b2b] p-4 rounded-lg shadow text-white snap-start";
+    card.innerHTML = `
+      <h3 class="font-semibold">${task.text || task.title}</h3>
+      <p class="text-sm">Date: ${task.date}</p>
+      <p class="text-sm">Time: ${task.time || "–"}</p>
+      <p class="text-sm">Status: ${task.completed ? "✅" : "⏳"}</p>
+      ${task.notes ? `<p class="text-sm">Notes: ${task.notes}</p>` : ""}
+    `;
+    return card;
+  }
 
-  textarea.value = localStorage.getItem(key) || "";
+  function renderGoalCard(goal) {
+    const card = document.createElement("div");
+    card.className = "min-w-[250px] bg-[#2b2b2b] p-4 rounded-lg shadow text-white snap-start";
+    card.innerHTML = `
+      <h3 class="font-semibold">${goal.title}</h3>
+      <p class="text-sm">Date: ${goal.date || "–"}</p>
+      <p class="text-sm">Status: ${goal.completed ? "✅" : "⏳"}</p>
+      ${goal.notes ? `<p class="text-sm">Notes: ${goal.notes}</p>` : ""}
+    `;
+    return card;
+  }
 
-  saveBtn.addEventListener("click", () => {
-    localStorage.setItem(key, textarea.value.trim());
-    alert("Reflection saved!");
-  });
+  function renderLessonCard(lesson) {
+    const card = document.createElement("div");
+    card.className = "min-w-[250px] bg-[#2b2b2b] p-4 rounded-lg shadow text-white snap-start";
+    card.innerHTML = `
+      <h3 class="font-semibold">${lesson.title}</h3>
+      <p class="text-sm">Category: ${lesson.category}</p>
+      <p class="text-sm">Priority: ${lesson.priority}</p>
+      <p class="text-sm">Date: ${lesson.date}</p>
+      <p class="text-sm">Status: ${lesson.completed ? "✅" : "⏳"}</p>
+      ${lesson.notes ? `<p class="text-sm">Notes: ${lesson.notes}</p>` : ""}
+    `;
+    return card;
+  }
+
+  function formatDate(d) {
+    return d.toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric"
+    });
+  }
+
+  function formatWeekday(d) {
+    return d.toLocaleDateString("en-US", { weekday: "long" });
+  }
+
+  function loadReflections(startDate) {
+    const key = `reflection-${startDate}`;
+    const textarea = document.getElementById("reflection-textarea");
+    const saved = localStorage.getItem(key);
+    if (saved) textarea.value = saved;
+
+    document.getElementById("save-reflection").addEventListener("click", () => {
+      localStorage.setItem(key, textarea.value.trim());
+      alert("Reflection saved!");
+    });
+  }
 });
