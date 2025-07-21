@@ -18,7 +18,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const today = new Date().toISOString().split("T")[0];
 
+  // === Utility: Carousel-style full-width card ===
+  function createFullCard(title, notes, date, time) {
+    const div = document.createElement("div");
+    div.className = "snap-center shrink-0 w-full bg-[#121212] rounded-lg p-4 shadow-inner text-sm";
+    div.innerHTML = `
+      <h3 class="font-semibold mb-1">${title}</h3>
+      ${notes ? `<p class="mb-1">${notes}</p>` : ""}
+      ${time ? `<p><small>Time: ${time}</small></p>` : ""}
+      ${date ? `<p><small>Date: ${date}</small></p>` : ""}
+    `;
+    return div;
+  }
+
   // === Load Pinned Notes ===
+  pinnedContainer.classList.add("flex", "overflow-x-auto", "snap-x", "snap-mandatory", "scroll-smooth");
   fetch("https://avdevplanner.onrender.com/notes")
     .then(res => res.json())
     .then(notes => {
@@ -30,14 +44,11 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       pinned.forEach(note => {
-        const card = document.createElement("div");
-        card.className = "min-w-[180px] bg-[#121212] rounded-lg p-4 shadow-inner text-sm";
-        card.innerHTML = `
-          <h3 class="font-semibold mb-1">${note.title}</h3>
-          <p class="mb-1">${note.content}</p>
-          <p><small>${note.date ? `Date: ${note.date}` : ""}</small></p>
-          <p><small>Created: ${new Date(note.created_at).toLocaleString()}</small></p>
-        `;
+        const card = createFullCard(
+          note.title,
+          note.content,
+          note.date || new Date(note.created_at).toLocaleDateString()
+        );
         pinnedContainer.appendChild(card);
       });
     })
@@ -109,29 +120,22 @@ document.addEventListener("DOMContentLoaded", () => {
     const todayGoals = goals.filter(g => g.date === today);
     const todayLessons = lessons.filter(l => l.date === today);
 
-    // === Render Cards ===
-    const createCard = (title, notes, date, time) => {
-      const div = document.createElement("div");
-      div.className = "min-w-[180px] bg-[#121212] rounded-lg p-4 shadow-inner text-sm";
-      div.innerHTML = `
-        <h3 class="font-semibold mb-1">${title}</h3>
-        ${notes ? `<p class="mb-1">${notes}</p>` : ""}
-        ${time ? `<p><small>Time: ${time}</small></p>` : ""}
-        ${date ? `<p><small>Date: ${date}</small></p>` : ""}
-      `;
-      return div;
-    };
+    // === Apply scroll-snap layout to all containers ===
+    [taskContainer, goalContainer, lessonContainer].forEach(container => {
+      container.classList.add("flex", "overflow-x-auto", "snap-x", "snap-mandatory", "scroll-smooth");
+    });
 
+    // === Render Cards ===
     todayTasks.forEach(task => {
-      taskContainer.appendChild(createCard(task.text, task.notes, task.date, task.time));
+      taskContainer.appendChild(createFullCard(task.text, task.notes, task.date, task.time));
     });
 
     todayGoals.forEach(goal => {
-      goalContainer.appendChild(createCard(goal.title, goal.notes, goal.date));
+      goalContainer.appendChild(createFullCard(goal.title, goal.notes, goal.date));
     });
 
     todayLessons.forEach(lesson => {
-      lessonContainer.appendChild(createCard(lesson.title, lesson.description || lesson.notes, lesson.date));
+      lessonContainer.appendChild(createFullCard(lesson.title, lesson.description || lesson.notes, lesson.date));
     });
   });
 
