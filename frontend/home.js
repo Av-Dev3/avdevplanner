@@ -186,6 +186,10 @@ const todayPretty = getVegasTodayPretty();
       res.json()
     ),
   ]).then(([tasks, goals, lessons]) => {
+    tasks.forEach(t => t.date = formatPrettyDate(t.date));
+  goals.forEach(g => g.date = formatPrettyDate(g.date));
+  lessons.forEach(l => l.date = formatPrettyDate(l.date));
+
     const completedTasks = tasks.filter((t) => t.completed);
     const completedGoals = goals.filter((g) => g.completed);
     const completedLessons = lessons.filter((l) => l.completed);
