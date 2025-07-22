@@ -16,7 +16,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const goalContainer = document.getElementById("goals-container");
   const lessonContainer = document.getElementById("lessons-container");
 
-  const today = new Date().toISOString().split("T")[0];
+const todayPretty = new Date().toLocaleDateString("en-US", {
+  year: "numeric",
+  month: "long",
+  day: "numeric"
+});
+
 
   function createFullCard(title, notes, date, time) {
   const div = document.createElement("div");
@@ -158,9 +163,10 @@ document.addEventListener("DOMContentLoaded", () => {
     setupSwipeContainer(goalContainer);
     setupSwipeContainer(lessonContainer);
 
-    const todayTasks = tasks.filter((t) => t.date === today);
-    const todayGoals = goals.filter((g) => g.date === today);
-    const todayLessons = lessons.filter((l) => l.date === today);
+    const todayTasks = tasks.filter((t) => t.prettyDate === todayPretty);
+const todayGoals = goals.filter((g) => g.prettyDate === todayPretty);
+const todayLessons = lessons.filter((l) => l.prettyDate === todayPretty);
+
 
    todayTasks.forEach((task) =>
   taskContainer.appendChild(
