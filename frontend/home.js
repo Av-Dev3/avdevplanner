@@ -51,12 +51,16 @@ function parseNaturalDate(dateStr) {
     return today;
   }
 
-  // If ISO or datetime string, convert it
-  const parsed = new Date(dateStr);
-  if (!isNaN(parsed.getTime())) return parsed;
+  // Parse string as if it's local Vegas date
+  if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+    const [y, m, d] = dateStr.split("-").map(Number);
+    return new Date(y, m - 1, d); // no timezone shift
+  }
 
-  return null;
+  const parsed = new Date(dateStr);
+  return !isNaN(parsed.getTime()) ? parsed : null;
 }
+
 
 
 

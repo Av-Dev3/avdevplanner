@@ -73,13 +73,20 @@ def get_tasks():
                 print("Date parse error:", e)
 
         # Safe time parsing
-        time_str = task.get("time", "")
-        time_obj = None
-        if time_str:
-            try:
-                time_obj = parse_datetime_safe(time_str)
-            except Exception as e:
-                print("Time parse error:", e)
+        # Safe time parsing
+# Safe time parsing
+            time_str = task.get("time", "")
+            time_obj = None
+            if time_str:
+                try:
+                # Expecting HH:MM format
+                    h, m = map(int, time_str.split(":"))
+                    now_vegas = datetime.now(ZoneInfo("America/Los_Angeles"))
+                    time_obj = now_vegas.replace(hour=h, minute=m, second=0, microsecond=0)
+                except Exception as e:
+                    print("Time parse error:", e)
+
+
 
         if date_obj:
             if date_obj.tzinfo is None:
