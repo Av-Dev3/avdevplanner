@@ -55,27 +55,37 @@ def parse_datetime_safe(date_str):
         return parser.parse(date_str)
     except:
         return None
-
 # === TASKS ===
 @app.route('/tasks', methods=['GET'])
 def get_tasks():
     tasks = load_json(TASK_FILE, [])
     for task in tasks:
+        # Safe date parsing
         date_str = task.get("date", "")
-        if "T" in date_str:
-            date_obj = parse_datetime_safe(date_str)
-        else:
-            date_obj = datetime.strptime(date_str, "%Y-%m-%d").replace(tzinfo=ZoneInfo("America/Los_Angeles"))
+        date_obj = None
+        if date_str:
+            try:
+                if "T" in date_str:
+                    date_obj = parse_datetime_safe(date_str)
+                else:
+                    date_obj = datetime.strptime(date_str, "%Y-%m-%d").replace(tzinfo=ZoneInfo("America/Los_Angeles"))
+            except Exception as e:
+                print("Date parse error:", e)
 
-        time_obj = parse_datetime_safe(task.get("time", ""))
+        # Safe time parsing
+        time_str = task.get("time", "")
+        time_obj = None
+        if time_str:
+            try:
+                time_obj = parse_datetime_safe(time_str)
+            except Exception as e:
+                print("Time parse error:", e)
 
         if date_obj:
-            # Properly localize to Vegas timezone
             if date_obj.tzinfo is None:
                 date_obj = date_obj.replace(tzinfo=ZoneInfo("America/Los_Angeles"))
             else:
                 date_obj = date_obj.astimezone(ZoneInfo("America/Los_Angeles"))
-
             task["prettyDate"] = format_pretty_date(date_obj)
 
         if time_obj:
@@ -83,7 +93,6 @@ def get_tasks():
                 time_obj = time_obj.replace(tzinfo=ZoneInfo("America/Los_Angeles"))
             else:
                 time_obj = time_obj.astimezone(ZoneInfo("America/Los_Angeles"))
-
             task["prettyTime"] = format_pretty_time(time_obj)
 
     return jsonify(tasks)
