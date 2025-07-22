@@ -35,20 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return div;
   }
 
-  function formatDateReadable(dateStr) {
-    const date = new Date(dateStr);
-    const options = { month: "long", day: "numeric" };
-    const day = date.getDate();
-    const suffix =
-      day % 10 === 1 && day !== 11
-        ? "st"
-        : day % 10 === 2 && day !== 12
-        ? "nd"
-        : day % 10 === 3 && day !== 13
-        ? "rd"
-        : "th";
-    return `${date.toLocaleDateString("en-US", options)}${suffix}`;
-  }
+
 
   function formatTime12Hour(timeStr) {
     const [hour, minute] = timeStr.split(":");
@@ -176,22 +163,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
    todayTasks.forEach((task) =>
   taskContainer.appendChild(
-    createFullCard(task.text || task.title || "Untitled Task", task.notes, task.date, task.time)
+createFullCard(task.text || task.title || "Untitled Task", task.notes, task.prettyDate, task.prettyTime)
   )
 );
 
     todayGoals.forEach((goal) =>
       goalContainer.appendChild(
-        createFullCard(goal.title, goal.notes, goal.date)
+createFullCard(goal.title, goal.notes, goal.prettyDate)
       )
     );
     todayLessons.forEach((lesson) =>
       lessonContainer.appendChild(
-        createFullCard(
-          lesson.title,
-          lesson.description || lesson.notes,
-          lesson.date
-        )
+        createFullCard(lesson.title, lesson.description || lesson.notes, lesson.prettyDate)
+
       )
     );
   });

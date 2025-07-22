@@ -3,9 +3,10 @@ import json
 import os
 from flask_cors import CORS, cross_origin
 import openai
-from datetime import datetime, time
-from zoneinfo import ZoneInfo
+from datetime import datetime
 import uuid
+import pytz  # Added for timezone support
+from dateutil import parser  # For parsing ISO strings safely
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": [
@@ -29,8 +30,7 @@ SCHEDULE_FILE = os.path.join(DATA_DIR, 'schedule.json')
 TIME_FILE = os.path.join(DATA_DIR, 'time.json')
 REFLECTIONS_FILE = os.path.join(DATA_DIR, 'reflections.json')
 
-LV_TZ = ZoneInfo("America/Los_Angeles")
-
+# === UTILITIES ===
 def load_json(filename, default):
     if os.path.exists(filename):
         with open(filename, 'r') as f:
@@ -41,30 +41,37 @@ def save_json(filename, data):
     with open(filename, 'w') as f:
         json.dump(data, f, indent=2)
 
-def format_pretty_date(date_str):
-    try:
-        date = datetime.strptime(date_str, "%Y-%m-%d").replace(tzinfo=ZoneInfo("UTC")).astimezone(LV_TZ)
-        day = date.day
-        suffix = "th" if 11 <= day <= 13 else {1:"st", 2:"nd", 3:"rd"}.get(day % 10, "th")
-        return date.strftime(f"%B {day}{suffix}, %Y")
-    except:
-        return date_str
+def get_vegas_time():
+    return datetime.now(pytz.timezone("America/Los_Angeles"))
 
-def format_pretty_time(time_str):
+def format_pretty_date(dt_obj):
+    return dt_obj.strftime("%B %-d, %Y").replace(" 0", " ")
+
+def format_pretty_time(dt_obj):
+    return dt_obj.strftime("%-I:%M %p").lower()
+
+def parse_datetime_safe(date_str):
     try:
-        t = datetime.strptime(time_str, "%H:%M").time()
-        return datetime.combine(datetime.today(), t).strftime("%-I:%M %p")
+        return parser.parse(date_str)
     except:
-        return time_str
+        return None
 
 # === TASKS ===
 @app.route('/tasks', methods=['GET'])
 def get_tasks():
     tasks = load_json(TASK_FILE, [])
     for task in tasks:
-        task["prettyDate"] = format_pretty_date(task.get("date", ""))
-        if "time" in task and task["time"]:
-            task["prettyTime"] = format_pretty_time(task["time"])
+        date_obj = parse_datetime_safe(task.get("date", ""))
+        time_obj = parse_datetime_safe(task.get("time", ""))
+
+        if date_obj:
+            vegas_time = date_obj.astimezone(pytz.timezone("America/Los_Angeles"))
+            task["prettyDate"] = format_pretty_date(vegas_time)
+
+        if time_obj:
+            vegas_time = time_obj.astimezone(pytz.timezone("America/Los_Angeles"))
+            task["prettyTime"] = format_pretty_time(vegas_time)
+
     return jsonify(tasks)
 
 @app.route('/tasks/<int:index>', methods=['PUT'])
@@ -123,7 +130,10 @@ def toggle_task(index):
 def get_goals():
     goals = load_json(GOAL_FILE, [])
     for goal in goals:
-        goal["prettyDate"] = format_pretty_date(goal.get("date", ""))
+        date_obj = parse_datetime_safe(goal.get("date", ""))
+        if date_obj:
+            vegas_time = date_obj.astimezone(pytz.timezone("America/Los_Angeles"))
+            goal["prettyDate"] = format_pretty_date(vegas_time)
     return jsonify(goals)
 
 @app.route('/goals', methods=['POST'])
@@ -166,75 +176,122 @@ def delete_goal(index):
         return jsonify({"message": "Goal deleted"}), 200
     return jsonify({"error": "Goal not found"}), 404
 
-# === LESSONS ===
-@app.route('/lessons', methods=['GET'])
-def get_lessons():
-    lessons = load_json(LESSON_FILE, [])
-    for lesson in lessons:
-        lesson["prettyDate"] = format_pretty_date(lesson.get("date", ""))
-    return jsonify(lessons)
+# === LOGS ===
+@app.route('/logs', methods=['GET'])
+def get_logs():
+    return jsonify(load_json(LOG_FILE, {}))
 
-@app.route('/lessons', methods=['POST'])
-def add_lesson():
-    lessons = load_json(LESSON_FILE, [])
+@app.route('/logs', methods=['POST'])
+def add_log():
+    try:
+        data = request.json
+        date = data.get("date")
+        if not date:
+            return jsonify({"error": "Date is required"}), 400
+
+        logs = load_json(LOG_FILE, {})
+        entry = {
+            "title": data.get("title", ""),
+            "content": data.get("content", ""),
+            "timestamp": data.get("timestamp", "")
+        }
+
+        logs.setdefault(date, []).append(entry)
+        save_json(LOG_FILE, logs)
+        return jsonify({"message": "Log added"}), 201
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/logs/<date>/<int:index>', methods=['DELETE'])
+def delete_log(date, index):
+    logs = load_json(LOG_FILE, {})
+    if date in logs and 0 <= index < len(logs[date]):
+        logs[date].pop(index)
+        if not logs[date]:
+            del logs[date]
+        save_json(LOG_FILE, logs)
+        return jsonify({"message": "Log deleted"}), 200
+    return jsonify({"error": "Log not found"}), 404
+
+# === NOTES ===
+@app.route('/notes', methods=['GET'])
+def get_notes():
+    from pytz import timezone
+    vegas = timezone("America/Los_Angeles")
+    notes = load_json(NOTE_FILE, [])
+    for note in notes:
+        raw_date = note.get("date") or note.get("created_at")
+        try:
+            dt = datetime.strptime(raw_date, "%Y-%m-%d")
+            local_dt = vegas.localize(dt)
+            note["prettyDate"] = local_dt.strftime("%B %-d, %Y")
+            note["prettyTime"] = local_dt.strftime("%-I:%M %p")
+        except:
+            note["prettyDate"] = raw_date
+            note["prettyTime"] = ""
+    return jsonify(notes)
+
+@app.route('/notes', methods=['POST'])
+def add_note():
+    notes = load_json(NOTE_FILE, [])
     data = request.json
-    lessons.append({
-        "id": str(uuid.uuid4()),
+    notes.append({
         "title": data.get("title", ""),
-        "description": data.get("description", ""),
-        "category": data.get("category", ""),
+        "content": data.get("content", ""),
         "date": data.get("date", ""),
-        "priority": data.get("priority", ""),
-        "notes": data.get("notes", ""),
-        "completed": False
+        "pinned": data.get("pinned", False),
+        "created_at": data.get("created_at", "")
     })
-    save_json(LESSON_FILE, lessons)
-    return jsonify({"message": "Lesson added"}), 201
+    save_json(NOTE_FILE, notes)
+    return jsonify({"message": "Note added"}), 201
 
-@app.route("/lessons/<string:lesson_id>", methods=["DELETE"])
-def delete_lesson(lesson_id):
-    lessons = load_json(LESSON_FILE, [])
-    updated_lessons = [lesson for lesson in lessons if lesson.get("id") != lesson_id]
-    if len(updated_lessons) == len(lessons):
-        return jsonify({"error": "Lesson not found"}), 404
-    save_json(LESSON_FILE, updated_lessons)
-    return jsonify({"message": "Lesson deleted"}), 200
+@app.route('/notes/<int:index>', methods=['PUT'])
+def update_note(index):
+    notes = load_json(NOTE_FILE, [])
+    if 0 <= index < len(notes):
+        updated = request.json
+        notes[index]['title'] = updated.get('title', notes[index]['title'])
+        notes[index]['content'] = updated.get('content', notes[index]['content'])
+        notes[index]['pinned'] = updated.get('pinned', notes[index].get('pinned', False))
+        save_json(NOTE_FILE, notes)
+        return jsonify({"message": "Note updated"}), 200
+    return jsonify({"error": "Note not found"}), 404
 
-@app.route('/lessons/<string:lesson_id>', methods=['PUT'])
-def update_lesson(lesson_id):
-    lessons = load_json(LESSON_FILE, [])
-    updated_data = request.json
-    for i, lesson in enumerate(lessons):
-        if lesson.get("id") == lesson_id:
-            lessons[i] = {**lesson, **updated_data}
-            save_json(LESSON_FILE, lessons)
-            return jsonify({"message": "Lesson updated"}), 200
-    return jsonify({"error": "Lesson not found"}), 404
+@app.route('/notes/<int:index>', methods=['DELETE'])
+def delete_note(index):
+    notes = load_json(NOTE_FILE, [])
+    if 0 <= index < len(notes):
+        notes.pop(index)
+        save_json(NOTE_FILE, notes)
+        return jsonify({"message": "Note deleted"}), 200
+    return jsonify({"error": "Note not found"}), 404
 
-# === SCHEDULE ===
-@app.route('/schedule', methods=['GET'])
-def get_schedule():
-    return jsonify(load_json(SCHEDULE_FILE, []))
+# === REFLECTIONS ===
+@app.route('/reflections', methods=['GET'])
+def get_reflections():
+    return jsonify(load_json(REFLECTIONS_FILE, {}))
 
-# === TIME TRACKER ===
-@app.route('/time', methods=['GET'])
-def get_time_data():
-    return jsonify(load_json(TIME_FILE, {}))
-
-@app.route('/time', methods=['POST'])
-def add_time_entry():
+@app.route('/reflections', methods=['POST'])
+def save_reflections():
     data = request.json
-    date = data.get("date")
-    minutes = data.get("minutes")
+    week = data.get("week")  # e.g., "2025-07-14"
+    if not week:
+        return jsonify({"error": "Week is required"}), 400
 
-    if not date or minutes is None:
-        return jsonify({"error": "Date and minutes are required"}), 400
+    reflections = load_json(REFLECTIONS_FILE, {})
+    reflections[week] = {
+        "what_went_well": data.get("what_went_well", ""),
+        "what_to_improve": data.get("what_to_improve", "")
+    }
 
-    time_data = load_json(TIME_FILE, {})
-    time_data[date] = time_data.get(date, 0) + minutes
-    save_json(TIME_FILE, time_data)
+    save_json(REFLECTIONS_FILE, reflections)
+    return jsonify({"message": "Reflection saved"}), 201
 
-    return jsonify({"message": "Time updated"}), 201
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
 
 # === AI ROUTE ===
 @app.route('/ai', methods=['POST'])
@@ -265,7 +322,11 @@ Only include keys that apply. Use today's date only if no date is implied. Respo
         )
 
         parsed = json.loads(response.choices[0].message.content.strip())
-        today = datetime.now(ZoneInfo("America/Los_Angeles")).strftime('%Y-%m-%d')
+
+        # Use Las Vegas time for "today"
+        from pytz import timezone
+        vegas = timezone("America/Los_Angeles")
+        today = datetime.now(vegas).strftime('%Y-%m-%d')
 
         tasks = load_json(TASK_FILE, [])
         for task in parsed.get("tasks", []):
@@ -315,26 +376,51 @@ Only include keys that apply. Use today's date only if no date is implied. Respo
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# === REFLECTIONS ===
-@app.route('/reflections', methods=['GET'])
-def get_reflections():
-    return jsonify(load_json(REFLECTIONS_FILE, {}))
+# === LESSONS ===
+@app.route('/lessons', methods=['GET'])
+def get_lessons():
+    return jsonify(load_json(LESSON_FILE, []))
 
-@app.route('/reflections', methods=['POST'])
-def save_reflections():
+@app.route('/lessons', methods=['POST'])
+def add_lesson():
+    lessons = load_json(LESSON_FILE, [])
     data = request.json
-    week = data.get("week")
-    if not week:
-        return jsonify({"error": "Week is required"}), 400
+    lessons.append({
+        "id": str(uuid.uuid4()),
+        "title": data.get("title", ""),
+        "description": data.get("description", ""),
+        "category": data.get("category", ""),
+        "date": data.get("date", ""),
+        "priority": data.get("priority", ""),
+        "notes": data.get("notes", ""),
+        "completed": False
+    })
+    save_json(LESSON_FILE, lessons)
+    return jsonify({"message": "Lesson added"}), 201
 
-    reflections = load_json(REFLECTIONS_FILE, {})
-    reflections[week] = {
-        "what_went_well": data.get("what_went_well", ""),
-        "what_to_improve": data.get("what_to_improve", "")
-    }
+@app.route("/lessons/<string:lesson_id>", methods=["DELETE"])
+def delete_lesson(lesson_id):
+    lessons = load_json(LESSON_FILE, [])
+    updated_lessons = [lesson for lesson in lessons if lesson.get("id") != lesson_id]
 
-    save_json(REFLECTIONS_FILE, reflections)
-    return jsonify({"message": "Reflection saved"}), 201
+    if len(updated_lessons) == len(lessons):
+        return jsonify({"error": "Lesson not found"}), 404
 
-if __name__ == '__main__':
-    app.run(debug=True)
+    save_json(LESSON_FILE, updated_lessons)
+    return jsonify({"message": "Lesson deleted"}), 200
+
+@app.route('/lessons/<string:lesson_id>', methods=['PUT'])
+def update_lesson(lesson_id):
+    lessons = load_json(LESSON_FILE, [])
+    updated_data = request.json
+
+    for i, lesson in enumerate(lessons):
+        if lesson.get("id") == lesson_id:
+            lessons[i] = {
+                **lesson,
+                **updated_data
+            }
+            save_json(LESSON_FILE, lessons)
+            return jsonify({"message": "Lesson updated"}), 200
+
+    return jsonify({"error": "Lesson not found"}), 404
