@@ -60,17 +60,35 @@ const todayPretty = getVegasTodayPretty();
     return `${adjustedHour}:${minute} ${suffix}`;
   }
 
+  function parseNaturalDate(dateStr) {
+  if (!dateStr) return null;
+
+  const lowered = dateStr.toLowerCase();
+  const today = new Date();
+
+  if (lowered === "today") return today;
+
+  if (lowered === "tomorrow") {
+    today.setDate(today.getDate() + 1);
+    return today;
+  }
+
+  const parsed = new Date(dateStr);
+  if (!isNaN(parsed.getTime())) return parsed;
+
+  return null;
+}
+
+
  function formatPrettyDate(dateStr) {
-  if (!dateStr) return "";
+  const dateObj = parseNaturalDate(dateStr);
+  if (!dateObj) return "Invalid Date";
 
-  const date = new Date(dateStr);
-  if (isNaN(date)) return "Invalid Date";
-
-  return date.toLocaleDateString("en-US", {
+  return dateObj.toLocaleDateString("en-US", {
     timeZone: "America/Los_Angeles",
     year: "numeric",
     month: "long",
-    day: "numeric",
+    day: "numeric"
   });
 }
 
