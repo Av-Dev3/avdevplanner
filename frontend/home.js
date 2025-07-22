@@ -53,18 +53,17 @@ const todayPretty = new Date().toLocaleDateString("en-US", { // for frontend mat
     return `${adjustedHour}:${minute} ${suffix}`;
   }
 
-  function formatPrettyDate(dateStr) {
+ function formatPrettyDate(dateStr) {
   if (!dateStr) return "";
 
-  const vegasTime = new Date(dateStr).toLocaleString("en-US", {
+  return new Date(dateStr).toLocaleString("en-US", {
     timeZone: "America/Los_Angeles",
     year: "numeric",
     month: "long",
     day: "numeric"
   });
-
-  return vegasTime;
 }
+
 
 
 
