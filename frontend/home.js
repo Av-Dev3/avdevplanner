@@ -27,6 +27,26 @@ function getVegasTodayPretty() {
 
 const today = new Date().toISOString().split("T")[0]; // keep for backend use
 const todayPretty = getVegasTodayPretty();
+const vegasFormatter = new Intl.DateTimeFormat("en-US", {
+  timeZone: "America/Los_Angeles",
+  year: "numeric",
+  month: "long",
+  day: "numeric"
+});
+
+function parseNaturalDate(dateStr) {
+  if (!dateStr) return null;
+  const low = dateStr.toLowerCase();
+  const d = new Date();
+  if (low === "today") return d;
+  if (low === "tomorrow") {
+    d.setDate(d.getDate() + 1);
+    return d;
+  }
+  const parsed = new Date(dateStr);
+  return isNaN(parsed) ? null : parsed;
+}
+
 
 
 
@@ -206,9 +226,30 @@ function isSameDayInVegas(dateStr, targetDate = new Date()) {
     ),
   ]).then(([tasks, goals, lessons]) => {
     // Don't mutate the original date — keep raw ISO for filtering
-tasks.forEach(t => t.prettyDate = formatPrettyDate(t.date));
-goals.forEach(g => g.prettyDate = formatPrettyDate(g.date));
-lessons.forEach(l => l.prettyDate = formatPrettyDate(l.date));
+ tasks.forEach(t => {
+    const d = parseNaturalDate(t.date);
+    t._vegasDateStr = d ? vegasFormatter.format(d) : null;
+  });
+
+  goals.forEach(g => {
+    const d = parseNaturalDate(g.date);
+    g._vegasDateStr = d ? vegasFormatter.format(d) : null;
+  });
+
+  lessons.forEach(l => {
+    const d = parseNaturalDate(l.date);
+    l._vegasDateStr = d ? vegasFormatter.format(d) : null;
+  });
+
+  // ✅ Now get today's pretty Vegas date string
+  const todayPretty = vegasFormatter.format(new Date());
+
+  console.log("Today's Pretty Date:", todayPretty);
+  console.log("All Task Vegas Dates:", tasks.map(t => t._vegasDateStr));
+
+  const todayTasks = tasks.filter(t => t._vegasDateStr === todayPretty);
+  const todayGoals = goals.filter(g => g._vegasDateStr === todayPretty);
+  const todayLessons = lessons.filter(l => l._vegasDateStr === todayPretty);
 
 
     const completedTasks = tasks.filter((t) => t.completed);
@@ -238,9 +279,6 @@ console.log("All Task Dates:", tasks.map(t => t.date));
 console.log("All Task Dates (Pretty):", tasks.map(t => formatPrettyDate(t.date)));
 
 
-const todayTasks = tasks.filter((t) => isSameDayInVegas(t.date));
-const todayGoals = goals.filter((g) => isSameDayInVegas(g.date));
-const todayLessons = lessons.filter((l) => isSameDayInVegas(l.date));
 
 
    todayTasks.forEach((task) =>
@@ -248,22 +286,33 @@ const todayLessons = lessons.filter((l) => isSameDayInVegas(l.date));
 createFullCard(
   task.text || task.title || "Untitled Task",
   task.notes,
-  formatPrettyDate(task.date),
+  task._vegasDateStr, // ✅ shows the correct Vegas date
   formatTime12Hour(task.time || "")
 )
+
   )
 );
 
-    todayGoals.forEach((goal) =>
-      goalContainer.appendChild(
-createFullCard(goal.title, goal.notes, formatPrettyDate(goal.date)))
-    );
-    todayLessons.forEach((lesson) =>
-      lessonContainer.appendChild(
-createFullCard(lesson.title, lesson.description || lesson.notes, formatPrettyDate(lesson.date))
+   todayGoals.forEach((goal) =>
+  goalContainer.appendChild(
+    createFullCard(
+      goal.title,
+      goal.notes,
+      goal._vegasDateStr // ✅ properly formatted Vegas date
+    )
+  )
+);
 
-      )
-    );
+todayLessons.forEach((lesson) =>
+  lessonContainer.appendChild(
+    createFullCard(
+      lesson.title,
+      lesson.description || lesson.notes,
+      lesson._vegasDateStr // ✅ properly formatted Vegas date
+    )
+  )
+);
+
   });
 
   function calculateStreak(datesArray) {
