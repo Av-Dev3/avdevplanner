@@ -17,11 +17,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const lessonContainer = document.getElementById("lessons-container");
 
 const today = new Date().toISOString().split("T")[0];  // for backend
-const todayPretty = new Date().toLocaleDateString("en-US", { // for frontend match
+const todayPretty = new Date().toLocaleDateString("en-US", {
+  timeZone: "America/Los_Angeles",
   year: "numeric",
   month: "long",
   day: "numeric"
 });
+
 
 
 
