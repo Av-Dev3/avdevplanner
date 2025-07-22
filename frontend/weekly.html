@@ -65,18 +65,34 @@
     <!-- JS will insert each day's expandable section here -->
   </div>
 
-  <!-- Weekly Reflection -->
-  <section class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-4 shadow-lg flex flex-col gap-4">
-    <h2 class="text-sm sm:text-base text-[#f0f0f0]">Weekly Reflection</h2>
-    <div class="flex flex-col gap-3">
-      <textarea id="reflection-textarea" rows="6"
-        class="bg-[#2b2b2b] text-white p-2 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-purple-600"
-        placeholder="What went well? What could improve?"></textarea>
-      <button id="save-reflection"
-        class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition">Save Reflection</button>
-    </div>
-  </section>
-</div>
+<!-- Weekly Reflection Form -->
+<section class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-4 shadow-lg flex flex-col gap-4">
+  <h2 class="text-sm sm:text-base text-[#f0f0f0]">Weekly Reflection</h2>
+
+  <label for="what-went-well" class="text-sm">What went well this week?</label>
+  <textarea id="what-went-well" rows="4"
+            class="bg-[#2b2b2b] text-white p-2 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-purple-600"
+            placeholder="Write about what went well this week..."></textarea>
+
+  <label for="what-to-improve" class="text-sm">What could be improved?</label>
+  <textarea id="what-to-improve" rows="4"
+            class="bg-[#2b2b2b] text-white p-2 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-purple-600"
+            placeholder="Write about what you want to improve..."></textarea>
+
+  <button id="save-reflection"
+          class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition">
+    Save Reflection
+  </button>
+</section>
+
+<!-- 🔽 SAVED REFLECTIONS LIST -->
+<section class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-4 shadow-lg flex flex-col gap-4 mt-6">
+  <h2 class="text-sm sm:text-base text-[#f0f0f0]">Past Reflections</h2>
+  <div id="weekly-reflection-entries" class="flex flex-col gap-3">
+    <!-- Reflections will load here -->
+  </div>
+</section>
+
 
 <!-- Template for each day (JS will clone and populate this) -->
 <template id="day-template">

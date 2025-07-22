@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const daysContainer = document.getElementById("weekly-days");
   const reflectionTextarea = document.getElementById("reflection-textarea");
   const saveReflectionBtn = document.getElementById("save-reflection");
+  const reflectionsContainer = document.getElementById("weekly-reflection-entries");
 
   const today = new Date();
   const sunday = new Date(today);
@@ -14,12 +15,12 @@ document.addEventListener("DOMContentLoaded", () => {
     return date;
   });
 
-  // === Format & Display Week Range ===
   const start = formatDate(weekDates[0]);
   const end = formatDate(weekDates[6]);
+  const weekId = weekDates[0].toISOString().split("T")[0];
+
   weekRange.textContent = `Week of ${start} – ${end}`;
 
-  // === Build Days ===
   weekDates.forEach((date) => {
     const formatted = date.toLocaleDateString("en-US", {
       weekday: "long",
@@ -30,16 +31,18 @@ document.addEventListener("DOMContentLoaded", () => {
     createDaySection(formatted, isoDate);
   });
 
-  // === Swipe Setup Function ===
+  function formatDate(d) {
+    return d.toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+  }
+
   function setupSwipeContainer(container) {
     container.classList.add(
-      "flex",
-      "overflow-x-auto",
-      "snap-x",
-      "snap-mandatory",
-      "scroll-smooth",
-      "no-scrollbar",
-      "gap-3"
+      "flex", "overflow-x-auto", "snap-x", "snap-mandatory",
+      "scroll-smooth", "no-scrollbar", "gap-3"
     );
     container.style.scrollbarWidth = "none";
     container.style.msOverflowStyle = "none";
@@ -48,11 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (window.innerWidth >= 768) {
       container.classList.remove(
-        "flex",
-        "overflow-x-auto",
-        "snap-x",
-        "snap-mandatory",
-        "scroll-smooth"
+        "flex", "overflow-x-auto", "snap-x", "snap-mandatory", "scroll-smooth"
       );
       container.style.overflow = "visible";
       container.style.display = "grid";
@@ -61,18 +60,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // === Card Builder (Matches Homepage) ===
   function createFullCard(title, notes, date, time) {
     const div = document.createElement("div");
-    div.className =
-      "snap-center shrink-0 w-full sm:w-[240px] bg-[#2b2b2b] rounded-lg p-4 shadow-inner text-sm";
+    div.className = "snap-center shrink-0 w-full sm:w-[240px] bg-[#2b2b2b] rounded-lg p-4 shadow-inner text-sm";
 
-    const timeDisplay = time
-      ? `<p><small>Time: ${formatTime(time)}</small></p>`
-      : "";
-    const dateDisplay = date
-      ? `<p><small>Date: ${date}</small></p>`
-      : "";
+    const timeDisplay = time ? `<p><small>Time: ${formatTime(time)}</small></p>` : "";
+    const dateDisplay = date ? `<p><small>Date: ${date}</small></p>` : "";
 
     div.innerHTML = `
       <h3 class="font-semibold mb-1">${title}</h3>
@@ -91,15 +84,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return `${adjusted}:${m} ${suffix}`;
   }
 
-  function formatDate(d) {
-    return d.toLocaleDateString("en-US", {
-      month: "long",
-      day: "numeric",
-      year: "numeric"
-    });
-  }
-
-  // === Create Day Section ===
   async function createDaySection(dayLabel, isoDate) {
     const template = document.getElementById("day-template");
     const clone = template.content.cloneNode(true);
@@ -171,14 +155,56 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // === Weekly Reflection ===
-  const reflectionKey = `weekly-reflection-${start}`;
-  const saved = localStorage.getItem(reflectionKey);
-  if (saved) reflectionTextarea.value = saved;
+  async function loadReflections() {
+    try {
+      const res = await fetch("https://avdevplanner.onrender.com/reflections");
+      const reflections = await res.json();
 
-  saveReflectionBtn.addEventListener("click", () => {
-    const val = reflectionTextarea.value.trim();
-    localStorage.setItem(reflectionKey, val);
-    alert("Reflection saved!");
+      reflectionsContainer.innerHTML = "";
+
+      Object.entries(reflections).forEach(([week, data]) => {
+        const div = document.createElement("div");
+        div.className = "bg-[#2b2b2b] text-white p-4 rounded-md shadow-md text-sm flex flex-col gap-2";
+        div.innerHTML = `
+          <h3 class="font-semibold text-base">Week of ${week}</h3>
+          <p><strong>What went well:</strong> ${data.what_went_well || "—"}</p>
+          <p><strong>What to improve:</strong> ${data.what_to_improve || "—"}</p>
+        `;
+        reflectionsContainer.appendChild(div);
+      });
+    } catch (err) {
+      console.error("Failed to load reflections:", err);
+      reflectionsContainer.innerHTML = "<p class='text-red-400'>Error loading reflections.</p>";
+    }
+  }
+
+  saveReflectionBtn.addEventListener("click", async () => {
+    const content = reflectionTextarea.value.trim();
+    const [what_went_well, what_to_improve] = content.split("///");
+
+    if (!what_went_well && !what_to_improve) return;
+
+    try {
+      const res = await fetch("https://avdevplanner.onrender.com/reflections", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          week: weekId,
+          what_went_well: what_went_well || "",
+          what_to_improve: what_to_improve || "",
+        }),
+      });
+
+      if (res.ok) {
+        reflectionTextarea.value = "";
+        await loadReflections();
+      } else {
+        alert("Error saving reflection.");
+      }
+    } catch (err) {
+      console.error("Save failed:", err);
+    }
   });
+
+  loadReflections();
 });
