@@ -19,21 +19,22 @@ document.addEventListener("DOMContentLoaded", () => {
   const today = new Date().toISOString().split("T")[0];
 
   function createFullCard(title, notes, date, time) {
-    const div = document.createElement("div");
-    div.className =
-      "snap-center shrink-0 w-full sm:w-[240px] bg-[#2b2b2b] rounded-lg p-4 shadow-inner text-sm";
+  const div = document.createElement("div");
+  div.className =
+    "snap-center shrink-0 w-full sm:w-[240px] bg-[#2b2b2b] rounded-lg p-4 shadow-inner text-sm";
 
-    const formattedDate = date ? formatDateReadable(date) : "";
-    const formattedTime = time ? formatTime12Hour(time) : "";
+  const formattedDate = date || "";
+  const formattedTime = time || "";
 
-    div.innerHTML = `
-      <h3 class="font-semibold mb-1">${title}</h3>
-      ${notes ? `<p class="mb-1">${notes}</p>` : ""}
-      ${formattedTime ? `<p><small>Time: ${formattedTime}</small></p>` : ""}
-      ${formattedDate ? `<p><small>Date: ${formattedDate}</small></p>` : ""}
-    `;
-    return div;
-  }
+  div.innerHTML = `
+    <h3 class="font-semibold mb-1">${title}</h3>
+    ${notes ? `<p class="mb-1">${notes}</p>` : ""}
+    ${formattedTime ? `<p><small>Time: ${formattedTime}</small></p>` : ""}
+    ${formattedDate ? `<p><small>Date: ${formattedDate}</small></p>` : ""}
+  `;
+  return div;
+}
+
 
 
 

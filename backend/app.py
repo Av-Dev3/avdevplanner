@@ -379,7 +379,13 @@ Only include keys that apply. Use today's date only if no date is implied. Respo
 # === LESSONS ===
 @app.route('/lessons', methods=['GET'])
 def get_lessons():
-    return jsonify(load_json(LESSON_FILE, []))
+    lessons = load_json(LESSON_FILE, [])
+    for lesson in lessons:
+        date_obj = parse_datetime_safe(lesson.get("date", ""))
+        if date_obj:
+            vegas_time = date_obj.astimezone(pytz.timezone("America/Los_Angeles"))
+            lesson["prettyDate"] = format_pretty_date(vegas_time)
+    return jsonify(lessons)
 
 @app.route('/lessons', methods=['POST'])
 def add_lesson():
