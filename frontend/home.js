@@ -175,6 +175,11 @@ const todayPretty = new Date().toLocaleDateString("en-US", { // for frontend mat
     setupSwipeContainer(goalContainer);
     setupSwipeContainer(lessonContainer);
 
+console.log("Today's Pretty Date:", todayPretty);
+console.log("All Task Dates:", tasks.map(t => t.date));
+console.log("All Task Dates (Pretty):", tasks.map(t => formatPrettyDate(t.date)));
+
+
     const todayTasks = tasks.filter((t) => formatPrettyDate(t.date) === todayPretty);
 const todayGoals = goals.filter((g) => formatPrettyDate(g.date) === todayPretty);
 const todayLessons = lessons.filter((l) => formatPrettyDate(l.date) === todayPretty);
