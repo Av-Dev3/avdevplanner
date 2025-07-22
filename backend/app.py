@@ -4,8 +4,8 @@ import os
 from flask_cors import CORS, cross_origin
 import openai
 from datetime import datetime
+from zoneinfo import ZoneInfo
 import uuid
-import pytz  # Added for timezone support
 from dateutil import parser  # For parsing ISO strings safely
 
 app = Flask(__name__)
@@ -42,7 +42,7 @@ def save_json(filename, data):
         json.dump(data, f, indent=2)
 
 def get_vegas_time():
-    return datetime.now(pytz.timezone("America/Los_Angeles"))
+    return datetime.now(ZoneInfo("America/Los_Angeles"))
 
 def format_pretty_date(dt_obj):
     return dt_obj.strftime("%B %-d, %Y").replace(" 0", " ")
@@ -65,11 +65,11 @@ def get_tasks():
         time_obj = parse_datetime_safe(task.get("time", ""))
 
         if date_obj:
-            vegas_time = date_obj.astimezone(pytz.timezone("America/Los_Angeles"))
+            vegas_time = date_obj.astimezone(ZoneInfo("America/Los_Angeles"))
             task["prettyDate"] = format_pretty_date(vegas_time)
 
         if time_obj:
-            vegas_time = time_obj.astimezone(pytz.timezone("America/Los_Angeles"))
+            vegas_time = time_obj.astimezone(ZoneInfo("America/Los_Angeles"))
             task["prettyTime"] = format_pretty_time(vegas_time)
 
     return jsonify(tasks)
@@ -132,7 +132,7 @@ def get_goals():
     for goal in goals:
         date_obj = parse_datetime_safe(goal.get("date", ""))
         if date_obj:
-            vegas_time = date_obj.astimezone(pytz.timezone("America/Los_Angeles"))
+            vegas_time = date_obj.astimezone(ZoneInfo("America/Los_Angeles"))
             goal["prettyDate"] = format_pretty_date(vegas_time)
     return jsonify(goals)
 
@@ -217,16 +217,14 @@ def delete_log(date, index):
 # === NOTES ===
 @app.route('/notes', methods=['GET'])
 def get_notes():
-    from pytz import timezone
-    vegas = timezone("America/Los_Angeles")
     notes = load_json(NOTE_FILE, [])
     for note in notes:
         raw_date = note.get("date") or note.get("created_at")
         try:
             dt = datetime.strptime(raw_date, "%Y-%m-%d")
-            local_dt = vegas.localize(dt)
-            note["prettyDate"] = local_dt.strftime("%B %-d, %Y")
-            note["prettyTime"] = local_dt.strftime("%-I:%M %p")
+            vegas_time = dt.replace(tzinfo=ZoneInfo("America/Los_Angeles"))
+            note["prettyDate"] = vegas_time.strftime("%B %-d, %Y")
+            note["prettyTime"] = vegas_time.strftime("%-I:%M %p")
         except:
             note["prettyDate"] = raw_date
             note["prettyTime"] = ""
@@ -288,11 +286,6 @@ def save_reflections():
     save_json(REFLECTIONS_FILE, reflections)
     return jsonify({"message": "Reflection saved"}), 201
 
-
-if __name__ == '__main__':
-    app.run(debug=True)
-
-
 # === AI ROUTE ===
 @app.route('/ai', methods=['POST'])
 def ai_assistant():
@@ -323,9 +316,7 @@ Only include keys that apply. Use today's date only if no date is implied. Respo
 
         parsed = json.loads(response.choices[0].message.content.strip())
 
-        # Use Las Vegas time for "today"
-        from pytz import timezone
-        vegas = timezone("America/Los_Angeles")
+        vegas = ZoneInfo("America/Los_Angeles")
         today = datetime.now(vegas).strftime('%Y-%m-%d')
 
         tasks = load_json(TASK_FILE, [])
@@ -383,7 +374,7 @@ def get_lessons():
     for lesson in lessons:
         date_obj = parse_datetime_safe(lesson.get("date", ""))
         if date_obj:
-            vegas_time = date_obj.astimezone(pytz.timezone("America/Los_Angeles"))
+            vegas_time = date_obj.astimezone(ZoneInfo("America/Los_Angeles"))
             lesson["prettyDate"] = format_pretty_date(vegas_time)
     return jsonify(lessons)
 
