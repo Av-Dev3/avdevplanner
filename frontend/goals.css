@@ -47,7 +47,7 @@ h2 {
 /* Submit Button */
 #weekly-goal-form button {
   padding: 12px 16px;
-  background-color: #4c8eda;
+  background-color: #8E24AA;
   border: none;
   border-radius: 10px;
   color: white;
@@ -57,7 +57,7 @@ h2 {
 }
 
 #weekly-goal-form button:hover {
-  background-color: #3b6fb3;
+  background-color: #7B1FA2;
 }
 
 /* Saved Goals Grid Container */
@@ -104,7 +104,7 @@ h2 {
   padding: 6px 12px;
   margin-top: 6px;
   font-size: 0.8rem;
-  background-color: #4c8eda;
+  background-color: #8E24AA;
   border: none;
   border-radius: 8px;
   color: #fff;
@@ -113,7 +113,7 @@ h2 {
 }
 
 .goal-card button:hover {
-  background-color: #3b6fb3;
+  background-color: #7B1FA2;
 }
 
 .goal-card button + button {

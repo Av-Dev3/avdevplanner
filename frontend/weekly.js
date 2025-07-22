@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const whatWentWellInput = document.getElementById("what-went-well");
   const whatToImproveInput = document.getElementById("what-to-improve");
   const saveReflectionBtn = document.getElementById("save-reflection");
-  const reflectionsContainer = document.getElementById("saved-reflections");
+  const reflectionsContainer = document.getElementById("weekly-reflection-entries");
 
   const today = new Date();
   const sunday = new Date(today);
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const end = formatDate(weekDates[6]);
   const weekId = weekDates[0].toISOString().split("T")[0];
 
-  weekRange.textContent = `Week of ${start} – ${end}`;
+  if (weekRange) weekRange.textContent = `Week of ${start} – ${end}`;
 
   weekDates.forEach((date) => {
     const formatted = date.toLocaleDateString("en-US", {
@@ -195,9 +195,9 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  saveReflectionBtn.addEventListener("click", async () => {
-    const whatWentWell = whatWentWellInput.value.trim();
-    const whatToImprove = whatToImproveInput.value.trim();
+  saveReflectionBtn?.addEventListener("click", async () => {
+    const whatWentWell = whatWentWellInput?.value.trim();
+    const whatToImprove = whatToImproveInput?.value.trim();
 
     if (!whatWentWell && !whatToImprove) return;
 
