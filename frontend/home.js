@@ -60,24 +60,29 @@ const todayPretty = getVegasTodayPretty();
     return `${adjustedHour}:${minute} ${suffix}`;
   }
 
-  function parseNaturalDate(dateStr) {
+function parseNaturalDate(dateStr) {
   if (!dateStr) return null;
 
   const lowered = dateStr.toLowerCase();
-  const today = new Date();
+  const now = new Date();
 
-  if (lowered === "today") return today;
-
+  if (lowered === "today") return now;
   if (lowered === "tomorrow") {
-    today.setDate(today.getDate() + 1);
-    return today;
+    now.setDate(now.getDate() + 1);
+    return now;
   }
 
   const parsed = new Date(dateStr);
-  if (!isNaN(parsed.getTime())) return parsed;
+  if (!isNaN(parsed.getTime())) {
+    // Convert to Vegas timezone manually
+    const utc = parsed.getTime() + parsed.getTimezoneOffset() * 60000;
+    const vegasOffset = -7 * 60; // Vegas is UTC-7 in summer
+    return new Date(utc + vegasOffset * 60000);
+  }
 
   return null;
 }
+
 
 
  function formatPrettyDate(dateStr) {
@@ -92,7 +97,20 @@ const todayPretty = getVegasTodayPretty();
   });
 }
 
+function isSameDayInVegas(dateStr, targetDate = new Date()) {
+  const parsed = parseNaturalDate(dateStr);
+  if (!parsed) return false;
 
+  const vegasToday = new Date(targetDate.toLocaleString("en-US", {
+    timeZone: "America/Los_Angeles"
+  }));
+
+  return (
+    parsed.getFullYear() === vegasToday.getFullYear() &&
+    parsed.getMonth() === vegasToday.getMonth() &&
+    parsed.getDate() === vegasToday.getDate()
+  );
+}
 
 
 
@@ -219,13 +237,9 @@ console.log("All Task Dates:", tasks.map(t => t.date));
 console.log("All Task Dates (Pretty):", tasks.map(t => formatPrettyDate(t.date)));
 
 
-   const todayTasks = tasks.filter(
-  (t) => t.prettyDate === todayPretty
-);
-
-
-const todayGoals = goals.filter((g) => g.prettyDate === todayPretty);
-const todayLessons = lessons.filter((l) => l.prettyDate === todayPretty);
+const todayTasks = tasks.filter((t) => isSameDayInVegas(t.date));
+const todayGoals = goals.filter((g) => isSameDayInVegas(g.date));
+const todayLessons = lessons.filter((l) => isSameDayInVegas(l.date));
 
 
    todayTasks.forEach((task) =>
