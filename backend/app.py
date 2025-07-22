@@ -65,12 +65,21 @@ def get_tasks():
         time_obj = parse_datetime_safe(task.get("time", ""))
 
         if date_obj:
-            vegas_time = date_obj.astimezone(ZoneInfo("America/Los_Angeles"))
-            task["prettyDate"] = format_pretty_date(vegas_time)
+            # Properly localize to Vegas timezone
+            if date_obj.tzinfo is None:
+                date_obj = date_obj.replace(tzinfo=ZoneInfo("America/Los_Angeles"))
+            else:
+                date_obj = date_obj.astimezone(ZoneInfo("America/Los_Angeles"))
+
+            task["prettyDate"] = format_pretty_date(date_obj)
 
         if time_obj:
-            vegas_time = time_obj.astimezone(ZoneInfo("America/Los_Angeles"))
-            task["prettyTime"] = format_pretty_time(vegas_time)
+            if time_obj.tzinfo is None:
+                time_obj = time_obj.replace(tzinfo=ZoneInfo("America/Los_Angeles"))
+            else:
+                time_obj = time_obj.astimezone(ZoneInfo("America/Los_Angeles"))
+
+            task["prettyTime"] = format_pretty_time(time_obj)
 
     return jsonify(tasks)
 
@@ -124,6 +133,7 @@ def toggle_task(index):
         save_json(TASK_FILE, tasks)
         return jsonify({"message": "Task toggled"}), 200
     return jsonify({"error": "Task not found"}), 404
+
 
 # === GOALS ===
 @app.route('/goals', methods=['GET'])
