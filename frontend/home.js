@@ -55,12 +55,17 @@ const todayPretty = new Date().toLocaleDateString("en-US", { // for frontend mat
 
   function formatPrettyDate(dateStr) {
   if (!dateStr) return "";
-  return new Date(dateStr).toLocaleDateString("en-US", {
+
+  const vegasTime = new Date(dateStr).toLocaleString("en-US", {
+    timeZone: "America/Los_Angeles",
     year: "numeric",
     month: "long",
     day: "numeric"
   });
+
+  return vegasTime;
 }
+
 
 
   function setupSwipeContainer(container) {
