@@ -3,7 +3,8 @@ import json
 import os
 from flask_cors import CORS, cross_origin
 import openai
-from datetime import datetime
+from datetime import datetime, time
+from zoneinfo import ZoneInfo
 import uuid
 
 app = Flask(__name__)
@@ -27,7 +28,8 @@ LESSON_FILE = os.path.join(DATA_DIR, 'lessons.json')
 SCHEDULE_FILE = os.path.join(DATA_DIR, 'schedule.json')
 TIME_FILE = os.path.join(DATA_DIR, 'time.json')
 REFLECTIONS_FILE = os.path.join(DATA_DIR, 'reflections.json')
-  # NEW
+
+LV_TZ = ZoneInfo("America/Los_Angeles")
 
 def load_json(filename, default):
     if os.path.exists(filename):
@@ -39,10 +41,31 @@ def save_json(filename, data):
     with open(filename, 'w') as f:
         json.dump(data, f, indent=2)
 
+def format_pretty_date(date_str):
+    try:
+        date = datetime.strptime(date_str, "%Y-%m-%d").replace(tzinfo=ZoneInfo("UTC")).astimezone(LV_TZ)
+        day = date.day
+        suffix = "th" if 11 <= day <= 13 else {1:"st", 2:"nd", 3:"rd"}.get(day % 10, "th")
+        return date.strftime(f"%B {day}{suffix}, %Y")
+    except:
+        return date_str
+
+def format_pretty_time(time_str):
+    try:
+        t = datetime.strptime(time_str, "%H:%M").time()
+        return datetime.combine(datetime.today(), t).strftime("%-I:%M %p")
+    except:
+        return time_str
+
 # === TASKS ===
 @app.route('/tasks', methods=['GET'])
 def get_tasks():
-    return jsonify(load_json(TASK_FILE, []))
+    tasks = load_json(TASK_FILE, [])
+    for task in tasks:
+        task["prettyDate"] = format_pretty_date(task.get("date", ""))
+        if "time" in task and task["time"]:
+            task["prettyTime"] = format_pretty_time(task["time"])
+    return jsonify(tasks)
 
 @app.route('/tasks/<int:index>', methods=['PUT'])
 def update_task(index):
@@ -53,7 +76,6 @@ def update_task(index):
         save_json(TASK_FILE, tasks)
         return jsonify({"message": "Task updated"}), 200
     return jsonify({"error": "Task not found"}), 404
-
 
 @app.route('/tasks', methods=['POST'])
 @cross_origin()
@@ -99,7 +121,10 @@ def toggle_task(index):
 # === GOALS ===
 @app.route('/goals', methods=['GET'])
 def get_goals():
-    return jsonify(load_json(GOAL_FILE, []))
+    goals = load_json(GOAL_FILE, [])
+    for goal in goals:
+        goal["prettyDate"] = format_pretty_date(goal.get("date", ""))
+    return jsonify(goals)
 
 @app.route('/goals', methods=['POST'])
 def add_goal():
@@ -141,110 +166,13 @@ def delete_goal(index):
         return jsonify({"message": "Goal deleted"}), 200
     return jsonify({"error": "Goal not found"}), 404
 
-# === LOGS ===
-@app.route('/logs', methods=['GET'])
-def get_logs():
-    return jsonify(load_json(LOG_FILE, {}))
-
-@app.route('/logs', methods=['POST'])
-def add_log():
-    try:
-        data = request.json
-        date = data.get("date")
-        if not date:
-            return jsonify({"error": "Date is required"}), 400
-
-        logs = load_json(LOG_FILE, {})
-        entry = {
-            "title": data.get("title", ""),
-            "content": data.get("content", ""),
-            "timestamp": data.get("timestamp", "")
-        }
-
-        logs.setdefault(date, []).append(entry)
-        save_json(LOG_FILE, logs)
-        return jsonify({"message": "Log added"}), 201
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-@app.route('/logs/<date>/<int:index>', methods=['DELETE'])
-def delete_log(date, index):
-    logs = load_json(LOG_FILE, {})
-    if date in logs and 0 <= index < len(logs[date]):
-        logs[date].pop(index)
-        if not logs[date]:
-            del logs[date]
-        save_json(LOG_FILE, logs)
-        return jsonify({"message": "Log deleted"}), 200
-    return jsonify({"error": "Log not found"}), 404
-
-# === NOTES ===
-@app.route('/notes', methods=['GET'])
-def get_notes():
-    return jsonify(load_json(NOTE_FILE, []))
-
-@app.route('/notes', methods=['POST'])
-def add_note():
-    notes = load_json(NOTE_FILE, [])
-    data = request.json
-    notes.append({
-        "title": data.get("title", ""),
-        "content": data.get("content", ""),
-        "date": data.get("date", ""),
-        "pinned": data.get("pinned", False),
-        "created_at": data.get("created_at", "")
-    })
-    save_json(NOTE_FILE, notes)
-    return jsonify({"message": "Note added"}), 201
-
-@app.route('/notes/<int:index>', methods=['PUT'])
-def update_note(index):
-    notes = load_json(NOTE_FILE, [])
-    if 0 <= index < len(notes):
-        updated = request.json
-        notes[index]['title'] = updated.get('title', notes[index]['title'])
-        notes[index]['content'] = updated.get('content', notes[index]['content'])
-        notes[index]['pinned'] = updated.get('pinned', notes[index].get('pinned', False))
-        save_json(NOTE_FILE, notes)
-        return jsonify({"message": "Note updated"}), 200
-    return jsonify({"error": "Note not found"}), 404
-
-@app.route('/notes/<int:index>', methods=['DELETE'])
-def delete_note(index):
-    notes = load_json(NOTE_FILE, [])
-    if 0 <= index < len(notes):
-        notes.pop(index)
-        save_json(NOTE_FILE, notes)
-        return jsonify({"message": "Note deleted"}), 200
-    return jsonify({"error": "Note not found"}), 404
-
-# === FOCUS ===
-@app.route('/focus', methods=['GET'])
-def get_focus():
-    focus_data = load_json(FOCUS_FILE, {})
-    date = request.args.get("date")
-    if date:
-        return jsonify({"focus": focus_data.get(date, "")}), 200
-    return jsonify(focus_data), 200
-
-@app.route('/focus', methods=['POST'])
-def save_focus_entry():
-    data = request.json
-    date = data.get("date")
-    focus = data.get("focus", "").strip()
-    if not date or not focus:
-        return jsonify({"error": "Date and focus are required"}), 400
-    focus_data = load_json(FOCUS_FILE, {})
-    focus_data[date] = focus
-    save_json(FOCUS_FILE, focus_data)
-    return jsonify({"message": "Focus saved"}), 201
-
 # === LESSONS ===
 @app.route('/lessons', methods=['GET'])
 def get_lessons():
-    return jsonify(load_json(LESSON_FILE, []))
-
+    lessons = load_json(LESSON_FILE, [])
+    for lesson in lessons:
+        lesson["prettyDate"] = format_pretty_date(lesson.get("date", ""))
+    return jsonify(lessons)
 
 @app.route('/lessons', methods=['POST'])
 def add_lesson():
@@ -263,36 +191,25 @@ def add_lesson():
     save_json(LESSON_FILE, lessons)
     return jsonify({"message": "Lesson added"}), 201
 
-
 @app.route("/lessons/<string:lesson_id>", methods=["DELETE"])
 def delete_lesson(lesson_id):
     lessons = load_json(LESSON_FILE, [])
     updated_lessons = [lesson for lesson in lessons if lesson.get("id") != lesson_id]
-
     if len(updated_lessons) == len(lessons):
         return jsonify({"error": "Lesson not found"}), 404
-
     save_json(LESSON_FILE, updated_lessons)
     return jsonify({"message": "Lesson deleted"}), 200
-
 
 @app.route('/lessons/<string:lesson_id>', methods=['PUT'])
 def update_lesson(lesson_id):
     lessons = load_json(LESSON_FILE, [])
     updated_data = request.json
-
     for i, lesson in enumerate(lessons):
         if lesson.get("id") == lesson_id:
-            lessons[i] = {
-                **lesson,
-                **updated_data  # allow full overwrite (e.g. title, notes, etc.)
-            }
+            lessons[i] = {**lesson, **updated_data}
             save_json(LESSON_FILE, lessons)
             return jsonify({"message": "Lesson updated"}), 200
-
     return jsonify({"error": "Lesson not found"}), 404
-
-
 
 # === SCHEDULE ===
 @app.route('/schedule', methods=['GET'])
@@ -348,7 +265,7 @@ Only include keys that apply. Use today's date only if no date is implied. Respo
         )
 
         parsed = json.loads(response.choices[0].message.content.strip())
-        today = datetime.utcnow().strftime('%Y-%m-%d')
+        today = datetime.now(ZoneInfo("America/Los_Angeles")).strftime('%Y-%m-%d')
 
         tasks = load_json(TASK_FILE, [])
         for task in parsed.get("tasks", []):
@@ -406,7 +323,7 @@ def get_reflections():
 @app.route('/reflections', methods=['POST'])
 def save_reflections():
     data = request.json
-    week = data.get("week")  # e.g., "2025-07-14"
+    week = data.get("week")
     if not week:
         return jsonify({"error": "Week is required"}), 400
 
@@ -418,7 +335,6 @@ def save_reflections():
 
     save_json(REFLECTIONS_FILE, reflections)
     return jsonify({"message": "Reflection saved"}), 201
-
 
 if __name__ == '__main__':
     app.run(debug=True)
