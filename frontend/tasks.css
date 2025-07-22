@@ -48,7 +48,7 @@ h1#tasks-heading {
 #task-form button {
   align-self: flex-start;
   padding: 10px 16px;
-  background-color: #4c8eda;
+  background-color: #8E24AA;
   border: none;
   border-radius: 10px;
   color: #fff;
@@ -56,7 +56,7 @@ h1#tasks-heading {
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
-#task-form button:hover { background-color: #3b6fb3; }
+#task-form button:hover { background-color: #7B1FA2; }
 
 /* “Create New Task” toggle button  */
 #toggle-task-form {
@@ -64,7 +64,7 @@ h1#tasks-heading {
   margin: 0 auto 16px;
   padding: 10px 18px;
   background-color: transparent;
-  border: 2px solid #4c8eda;
+  border: 2px solid #8E24AA;
   border-radius: 10px;
   color: #e4e4e7;
   font-weight: 700;
@@ -82,7 +82,7 @@ h1#tasks-heading {
   padding: 8px 14px;
   margin-bottom: 1rem;
   background-color: transparent;
-  border: 2px solid #4c8eda;
+  border: 2px solid #8E24AA;
   border-radius: 10px;
   color: #e4e4e7;
   font-weight: 700;
@@ -148,7 +148,7 @@ h1#tasks-heading {
   align-self: flex-start;
   padding: 6px 12px;
   font-size: 0.8rem;
-  background-color: #4c8eda;
+  background-color: #8E24AA;
   border: none;
   border-radius: 8px;
   color: #fff;
@@ -156,7 +156,7 @@ h1#tasks-heading {
   transition: background-color 0.2s ease;
   margin-top: 4px;
 }
-.task-card button:hover { background-color: #3b6fb3; }
+.task-card button:hover { background-color: #7B1FA2; }
 .task-card button + button { margin-left: 8px; }
 
 .subtask-list {
@@ -187,7 +187,7 @@ h1#tasks-heading {
 
 .subtask-form button {
   padding: 6px 12px;
-  background-color: #3b82f6;
+  background-color: #8E24AA;
   border: none;
   border-radius: 6px;
   color: white;
@@ -195,7 +195,7 @@ h1#tasks-heading {
 }
 
 .subtask-form button:hover {
-  background-color: #2563eb;
+  background-color: #7B1FA2;
 }
 
 

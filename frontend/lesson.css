@@ -39,7 +39,7 @@
 /* Button Styling */
 #lesson-form button {
   padding: 12px 16px;
-  background-color: #4c8eda;
+  background-color: #8E24AA;
   border: none;
   border-radius: 10px;
   color: white;
@@ -49,7 +49,7 @@
 }
 
 #lesson-form button:hover {
-  background-color: #3b6fb3;
+  background-color: #7B1FA2;
 }
 
 /* Saved Lessons Container */
@@ -121,7 +121,7 @@
 /* Uniform style for all buttons (complete, edit, delete) */
 .lesson-button-group button {
   padding: 6px 10px;
-  background-color: #4c8eda;
+  background-color: #8E24AA;
   border: none;
   border-radius: 8px;
   color: #fff;
@@ -132,5 +132,5 @@
 }
 
 .lesson-button-group button:hover {
-  background-color: #3b6fb3;
+  background-color: #7B1FA2;
 }

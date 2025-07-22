@@ -136,7 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const goals = await goalsRes.json();
       const lessons = await lessonsRes.json();
 
-      // Only filter exact match by ISO date string
+      // Filter tasks/goals/lessons by exact date string match
       const todayTasks = tasks.filter((t) => t.date === isoDate);
       const todayGoals = goals.filter((g) => g.date === isoDate);
       const todayLessons = lessons.filter((l) => l.date === isoDate);
