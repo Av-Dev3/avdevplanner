@@ -16,11 +16,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const goalContainer = document.getElementById("goals-container");
   const lessonContainer = document.getElementById("lessons-container");
 
-const todayPretty = new Date().toLocaleDateString("en-US", {
+const today = new Date().toISOString().split("T")[0];  // for backend
+const todayPretty = new Date().toLocaleDateString("en-US", { // for frontend match
   year: "numeric",
   month: "long",
   day: "numeric"
 });
+
 
 
   function createFullCard(title, notes, date, time) {
