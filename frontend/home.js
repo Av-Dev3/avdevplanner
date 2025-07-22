@@ -64,38 +64,39 @@ function parseNaturalDate(dateStr) {
   if (!dateStr) return null;
 
   const lowered = dateStr.toLowerCase();
-  const now = new Date();
+  const today = new Date();
 
-  if (lowered === "today") return now;
+  if (lowered === "today") return today;
+
   if (lowered === "tomorrow") {
-    now.setDate(now.getDate() + 1);
-    return now;
+    today.setDate(today.getDate() + 1);
+    return today;
   }
 
+  // If ISO or datetime string, convert it
   const parsed = new Date(dateStr);
-  if (!isNaN(parsed.getTime())) {
-    // Convert to Vegas timezone manually
-    const utc = parsed.getTime() + parsed.getTimezoneOffset() * 60000;
-    const vegasOffset = -7 * 60; // Vegas is UTC-7 in summer
-    return new Date(utc + vegasOffset * 60000);
-  }
+  if (!isNaN(parsed.getTime())) return parsed;
 
   return null;
 }
 
 
 
- function formatPrettyDate(dateStr) {
+function formatPrettyDate(dateStr) {
   const dateObj = parseNaturalDate(dateStr);
   if (!dateObj) return "Invalid Date";
 
-  return dateObj.toLocaleDateString("en-US", {
-    timeZone: "America/Los_Angeles",
+  const vegasDate = new Date(dateObj.toLocaleString("en-US", {
+    timeZone: "America/Los_Angeles"
+  }));
+
+  return vegasDate.toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric"
   });
 }
+
 
 function isSameDayInVegas(dateStr, targetDate = new Date()) {
   const parsed = parseNaturalDate(dateStr);
