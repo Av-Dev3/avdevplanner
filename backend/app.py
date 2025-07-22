@@ -61,7 +61,12 @@ def parse_datetime_safe(date_str):
 def get_tasks():
     tasks = load_json(TASK_FILE, [])
     for task in tasks:
-        date_obj = parse_datetime_safe(task.get("date", ""))
+        date_str = task.get("date", "")
+        if "T" in date_str:
+            date_obj = parse_datetime_safe(date_str)
+        else:
+            date_obj = datetime.strptime(date_str, "%Y-%m-%d").replace(tzinfo=ZoneInfo("America/Los_Angeles"))
+
         time_obj = parse_datetime_safe(task.get("time", ""))
 
         if date_obj:
