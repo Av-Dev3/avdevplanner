@@ -70,17 +70,35 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // Format date for card display as July 21, 2025
+  function formatCardDate(dateStr) {
+    if (!dateStr) return "";
+    const d = new Date(dateStr);
+    return d.toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+  }
+
+  // Convert 24h time to 12h AM/PM
+  function formatTime(timeStr) {
+    if (!timeStr) return "";
+    const [h, m] = timeStr.split(":");
+    let hour = parseInt(h, 10);
+    const suffix = hour >= 12 ? "PM" : "AM";
+    hour = hour % 12;
+    if (hour === 0) hour = 12;
+    return `${hour}:${m} ${suffix}`;
+  }
+
   function createFullCard(title, notes, date, time) {
     const div = document.createElement("div");
     div.className =
       "snap-center shrink-0 w-full sm:w-[240px] bg-[#2b2b2b] rounded-lg p-4 shadow-inner text-sm";
 
-    const timeDisplay = time
-      ? `<p><small>Time: ${formatTime(time)}</small></p>`
-      : "";
-    const dateDisplay = date
-      ? `<p><small>Date: ${date}</small></p>`
-      : "";
+    const timeDisplay = time ? `<p><small>Time: ${formatTime(time)}</small></p>` : "";
+    const dateDisplay = date ? `<p><small>Date: ${formatCardDate(date)}</small></p>` : "";
 
     div.innerHTML = `
       <h3 class="font-semibold mb-1">${title}</h3>
@@ -89,14 +107,6 @@ document.addEventListener("DOMContentLoaded", () => {
       ${dateDisplay}
     `;
     return div;
-  }
-
-  function formatTime(timeStr) {
-    const [h, m] = timeStr.split(":");
-    const hour = parseInt(h);
-    const suffix = hour >= 12 ? "PM" : "AM";
-    const adjusted = hour % 12 === 0 ? 12 : hour % 12;
-    return `${adjusted}:${m} ${suffix}`;
   }
 
   async function createDaySection(dayLabel, isoDate) {
@@ -126,6 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const goals = await goalsRes.json();
       const lessons = await lessonsRes.json();
 
+      // Only filter exact match by ISO date string
       const todayTasks = tasks.filter((t) => t.date === isoDate);
       const todayGoals = goals.filter((g) => g.date === isoDate);
       const todayLessons = lessons.filter((l) => l.date === isoDate);
@@ -182,7 +193,7 @@ document.addEventListener("DOMContentLoaded", () => {
         div.className =
           "bg-[#2b2b2b] text-white p-4 rounded-md shadow-md text-sm flex flex-col gap-2";
         div.innerHTML = `
-          <h3 class="font-semibold text-base">Week of ${week}</h3>
+          <h3 class="font-semibold text-base">Week of ${formatCardDate(week)}</h3>
           <p><strong>What went well:</strong> ${data.what_went_well || "—"}</p>
           <p><strong>What to improve:</strong> ${data.what_to_improve || "—"}</p>
         `;
