@@ -16,13 +16,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const goalContainer = document.getElementById("goals-container");
   const lessonContainer = document.getElementById("lessons-container");
 
-const today = new Date().toISOString().split("T")[0];  // for backend
-const todayPretty = new Date().toLocaleDateString("en-US", {
-  timeZone: "America/Los_Angeles",
-  year: "numeric",
-  month: "long",
-  day: "numeric"
-});
+function getVegasTodayPretty() {
+  return new Date().toLocaleDateString("en-US", {
+    timeZone: "America/Los_Angeles",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
+const today = new Date().toISOString().split("T")[0]; // keep for backend use
+const todayPretty = getVegasTodayPretty();
+
 
 
 
@@ -58,13 +63,17 @@ const todayPretty = new Date().toLocaleDateString("en-US", {
  function formatPrettyDate(dateStr) {
   if (!dateStr) return "";
 
-  return new Date(dateStr).toLocaleString("en-US", {
+  const date = new Date(dateStr);
+  if (isNaN(date)) return "Invalid Date";
+
+  return date.toLocaleDateString("en-US", {
     timeZone: "America/Los_Angeles",
     year: "numeric",
     month: "long",
-    day: "numeric"
+    day: "numeric",
   });
 }
+
 
 
 
@@ -186,9 +195,16 @@ console.log("All Task Dates:", tasks.map(t => t.date));
 console.log("All Task Dates (Pretty):", tasks.map(t => formatPrettyDate(t.date)));
 
 
-    const todayTasks = tasks.filter((t) => formatPrettyDate(t.date) === todayPretty);
-const todayGoals = goals.filter((g) => formatPrettyDate(g.date) === todayPretty);
-const todayLessons = lessons.filter((l) => formatPrettyDate(l.date) === todayPretty);
+    const todayTasks = tasks.filter(
+  (t) => formatPrettyDate(t.date) === todayPretty
+);
+const todayGoals = goals.filter(
+  (g) => formatPrettyDate(g.date) === todayPretty
+);
+const todayLessons = lessons.filter(
+  (l) => formatPrettyDate(l.date) === todayPretty
+);
+
 
 
    todayTasks.forEach((task) =>
