@@ -186,9 +186,11 @@ const todayPretty = getVegasTodayPretty();
       res.json()
     ),
   ]).then(([tasks, goals, lessons]) => {
-    tasks.forEach(t => t.date = formatPrettyDate(t.date));
-  goals.forEach(g => g.date = formatPrettyDate(g.date));
-  lessons.forEach(l => l.date = formatPrettyDate(l.date));
+    // Don't mutate the original date — keep raw ISO for filtering
+tasks.forEach(t => t.prettyDate = formatPrettyDate(t.date));
+goals.forEach(g => g.prettyDate = formatPrettyDate(g.date));
+lessons.forEach(l => l.prettyDate = formatPrettyDate(l.date));
+
 
     const completedTasks = tasks.filter((t) => t.completed);
     const completedGoals = goals.filter((g) => g.completed);
@@ -217,16 +219,13 @@ console.log("All Task Dates:", tasks.map(t => t.date));
 console.log("All Task Dates (Pretty):", tasks.map(t => formatPrettyDate(t.date)));
 
 
-    const todayTasks = tasks.filter(
-  (t) => formatPrettyDate(t.date) === todayPretty
-);
-const todayGoals = goals.filter(
-  (g) => formatPrettyDate(g.date) === todayPretty
-);
-const todayLessons = lessons.filter(
-  (l) => formatPrettyDate(l.date) === todayPretty
+   const todayTasks = tasks.filter(
+  (t) => t.prettyDate === todayPretty
 );
 
+
+const todayGoals = goals.filter((g) => g.prettyDate === todayPretty);
+const todayLessons = lessons.filter((l) => l.prettyDate === todayPretty);
 
 
    todayTasks.forEach((task) =>
