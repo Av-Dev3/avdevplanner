@@ -175,25 +175,29 @@ const todayPretty = new Date().toLocaleDateString("en-US", { // for frontend mat
     setupSwipeContainer(goalContainer);
     setupSwipeContainer(lessonContainer);
 
-    const todayTasks = tasks.filter((t) => t.prettyDate === todayPretty);
-const todayGoals = goals.filter((g) => g.prettyDate === todayPretty);
-const todayLessons = lessons.filter((l) => l.prettyDate === todayPretty);
+    const todayTasks = tasks.filter((t) => formatPrettyDate(t.date) === todayPretty);
+const todayGoals = goals.filter((g) => formatPrettyDate(g.date) === todayPretty);
+const todayLessons = lessons.filter((l) => formatPrettyDate(l.date) === todayPretty);
 
 
    todayTasks.forEach((task) =>
   taskContainer.appendChild(
-createFullCard(task.text || task.title || "Untitled Task", task.notes, task.prettyDate, task.prettyTime)
+createFullCard(
+  task.text || task.title || "Untitled Task",
+  task.notes,
+  formatPrettyDate(task.date),
+  formatTime12Hour(task.time || "")
+)
   )
 );
 
     todayGoals.forEach((goal) =>
       goalContainer.appendChild(
-createFullCard(goal.title, goal.notes, goal.prettyDate)
-      )
+createFullCard(goal.title, goal.notes, formatPrettyDate(goal.date)))
     );
     todayLessons.forEach((lesson) =>
       lessonContainer.appendChild(
-        createFullCard(lesson.title, lesson.description || lesson.notes, lesson.prettyDate)
+createFullCard(lesson.title, lesson.description || lesson.notes, formatPrettyDate(lesson.date))
 
       )
     );
