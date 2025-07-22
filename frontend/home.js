@@ -53,6 +53,16 @@ const todayPretty = new Date().toLocaleDateString("en-US", { // for frontend mat
     return `${adjustedHour}:${minute} ${suffix}`;
   }
 
+  function formatPrettyDate(dateStr) {
+  if (!dateStr) return "";
+  return new Date(dateStr).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+  });
+}
+
+
   function setupSwipeContainer(container) {
     container.classList.add(
       "flex",
