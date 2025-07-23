@@ -2,9 +2,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const scheduleContainer = document.getElementById("schedule-container");
   const dayTemplate = document.getElementById("day-expand-template");
 
-  const today = new Date();
-  const todayStr = today.toLocaleDateString("en-CA");
-
   function formatTime(timeStr) {
     const [h, m] = timeStr.split(":");
     const hour = parseInt(h);
@@ -97,17 +94,20 @@ document.addEventListener("DOMContentLoaded", () => {
       fetch("https://avdevplanner.onrender.com/notes").then((res) => res.json()),
     ]);
 
+    const today = new Date();
+
     for (let i = 0; i < 30; i++) {
-      const date = new Date();
+      const date = new Date(today);
       date.setDate(today.getDate() + i);
-      const isoDate = date.toLocaleDateString("en-CA"); // ✅ Correct local ISO
+      const dayStr = date.toLocaleDateString("en-CA");
+      const prettyHeader = formatHeaderDate(dayStr);
 
       const dayCard = document.createElement("div");
       dayCard.className =
         "bg-[#1f1f1f] rounded-xl shadow-md p-4 cursor-pointer transition hover:bg-[#2a2a2a]";
       const heading = document.createElement("h2");
       heading.className = "text-base font-semibold mb-2 text-white";
-      heading.textContent = formatHeaderDate(isoDate);
+      heading.textContent = prettyHeader;
       dayCard.appendChild(heading);
 
       const expandSection = dayTemplate.content.cloneNode(true);
@@ -123,7 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
           await populateDayContent(
             expandWrapper,
-            isoDate,
+            dayStr,
             tasks,
             goals,
             lessons,
@@ -139,7 +139,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  async function populateDayContent(wrapper, isoDate, tasks, goals, lessons, notes) {
+  async function populateDayContent(wrapper, dayStr, tasks, goals, lessons, notes) {
     const taskC = wrapper.querySelector(".task-container");
     const goalC = wrapper.querySelector(".goal-container");
     const lessonC = wrapper.querySelector(".lesson-container");
@@ -150,10 +150,10 @@ document.addEventListener("DOMContentLoaded", () => {
     lessonC.innerHTML = "";
     noteC.innerHTML = "";
 
-    const dayTasks = tasks.filter((t) => t.date === isoDate);
-    const dayGoals = goals.filter((g) => g.date === isoDate);
-    const dayLessons = lessons.filter((l) => l.date === isoDate);
-    const dayNotes = notes.filter((n) => n.date === isoDate);
+    const dayTasks = tasks.filter((t) => t.date === dayStr);
+    const dayGoals = goals.filter((g) => g.date === dayStr);
+    const dayLessons = lessons.filter((l) => l.date === dayStr);
+    const dayNotes = notes.filter((n) => n.date === dayStr);
 
     if (dayTasks.length) {
       dayTasks.forEach((t) => {
