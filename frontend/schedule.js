@@ -100,7 +100,7 @@ document.addEventListener("DOMContentLoaded", () => {
     for (let i = 0; i < 30; i++) {
       const date = new Date();
       date.setDate(today.getDate() + i);
-      const isoDate = date.toLocaleDateString("en-CA"); // ✅ Proper local ISO date
+      const isoDate = date.toLocaleDateString("en-CA"); // ✅ Correct local ISO
 
       const dayCard = document.createElement("div");
       dayCard.className =
@@ -150,13 +150,13 @@ document.addEventListener("DOMContentLoaded", () => {
     lessonC.innerHTML = "";
     noteC.innerHTML = "";
 
-    const todayTasks = tasks.filter((t) => t.date === isoDate);
-    const todayGoals = goals.filter((g) => g.date === isoDate);
-    const todayLessons = lessons.filter((l) => l.date === isoDate);
-    const todayNotes = notes.filter((n) => n.date === isoDate);
+    const dayTasks = tasks.filter((t) => t.date === isoDate);
+    const dayGoals = goals.filter((g) => g.date === isoDate);
+    const dayLessons = lessons.filter((l) => l.date === isoDate);
+    const dayNotes = notes.filter((n) => n.date === isoDate);
 
-    if (todayTasks.length) {
-      todayTasks.forEach((t) => {
+    if (dayTasks.length) {
+      dayTasks.forEach((t) => {
         const card = createFullCard(
           t.text || t.title,
           t.notes,
@@ -169,8 +169,8 @@ document.addEventListener("DOMContentLoaded", () => {
       taskC.innerHTML = "<p class='text-gray-400'>No tasks.</p>";
     }
 
-    if (todayGoals.length) {
-      todayGoals.forEach((g) => {
+    if (dayGoals.length) {
+      dayGoals.forEach((g) => {
         const card = createFullCard(g.title, g.notes, g.prettyDate);
         goalC.appendChild(card);
       });
@@ -178,8 +178,8 @@ document.addEventListener("DOMContentLoaded", () => {
       goalC.innerHTML = "<p class='text-gray-400'>No goals.</p>";
     }
 
-    if (todayLessons.length) {
-      todayLessons.forEach((l) => {
+    if (dayLessons.length) {
+      dayLessons.forEach((l) => {
         const content = `${l.description || ""}${l.notes ? ` (${l.notes})` : ""}`;
         const card = createFullCard(
           l.title,
@@ -192,8 +192,8 @@ document.addEventListener("DOMContentLoaded", () => {
       lessonC.innerHTML = "<p class='text-gray-400'>No lessons.</p>";
     }
 
-    if (todayNotes.length) {
-      todayNotes.forEach((n) => {
+    if (dayNotes.length) {
+      dayNotes.forEach((n) => {
         const card = createFullCard(n.title, n.content, n.prettyDate);
         noteC.appendChild(card);
       });
