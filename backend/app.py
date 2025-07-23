@@ -534,3 +534,7 @@ def update_lesson(lesson_id):
             return jsonify({"message": "Lesson updated"}), 200
 
     return jsonify({"error": "Lesson not found"}), 404
+
+@app.route('/schedule', methods=['GET'])
+def get_schedule():
+    return jsonify(load_json(SCHEDULE_FILE, []))
