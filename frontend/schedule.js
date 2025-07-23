@@ -18,7 +18,26 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function getISODate(date) {
-    return date.toLocaleDateString("en-CA"); // yyyy-mm-dd
+    return date.toLocaleDateString("en-CA");
+  }
+
+  function formatCardDate(dateStr) {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+  }
+
+  function formatTime(timeStr) {
+    if (!timeStr) return "";
+    const [h, m] = timeStr.split(":");
+    let hour = parseInt(h, 10);
+    const suffix = hour >= 12 ? "PM" : "AM";
+    hour = hour % 12;
+    if (hour === 0) hour = 12;
+    return `${hour}:${m} ${suffix}`;
   }
 
   function setupSwipeContainer(container) {
@@ -49,25 +68,6 @@ document.addEventListener("DOMContentLoaded", () => {
       container.style.gridTemplateColumns = "repeat(auto-fit, minmax(200px, 1fr))";
       container.style.gap = "1rem";
     }
-  }
-
-  function formatTime(timeStr) {
-    if (!timeStr) return "";
-    const [h, m] = timeStr.split(":");
-    let hour = parseInt(h, 10);
-    const suffix = hour >= 12 ? "PM" : "AM";
-    hour = hour % 12;
-    if (hour === 0) hour = 12;
-    return `${hour}:${m} ${suffix}`;
-  }
-
-  function formatCardDate(dateStr) {
-    const d = new Date(dateStr);
-    return d.toLocaleDateString("en-US", {
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    });
   }
 
   function createCard(title, notes, date, time) {
@@ -121,7 +121,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const dayLessons = lessons.filter((l) => l.date === isoDate);
       const dayNotes = notes.filter((n) => n.date === isoDate);
 
-      // Tasks
       if (dayTasks.length === 0) {
         taskContainer.innerHTML = "<p>No tasks.</p>";
       } else {
@@ -131,7 +130,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
 
-      // Goals
       if (dayGoals.length === 0) {
         goalContainer.innerHTML = "<p>No goals.</p>";
       } else {
@@ -141,7 +139,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
 
-      // Lessons
       if (dayLessons.length === 0) {
         lessonContainer.innerHTML = "<p>No lessons.</p>";
       } else {
@@ -156,7 +153,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
 
-      // Notes
       if (dayNotes.length === 0) {
         noteContainer.innerHTML = "<p>No notes.</p>";
       } else {
