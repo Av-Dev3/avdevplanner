@@ -155,26 +155,71 @@ def toggle_task(index):
         return jsonify({"message": "Task toggled"}), 200
     return jsonify({"error": "Task not found"}), 404
 
-
 # === GOALS ===
 @app.route('/goals', methods=['GET'])
 def get_goals():
     goals = load_json(GOAL_FILE, [])
     for goal in goals:
-        date_obj = parse_datetime_safe(goal.get("date", ""))
+        # Safe date parsing
+        date_str = goal.get("date", "")
+        date_obj = None
+        if date_str:
+            try:
+                if "T" in date_str:
+                    date_obj = parse_datetime_safe(date_str)
+                else:
+                    date_obj = datetime.strptime(date_str, "%Y-%m-%d").replace(tzinfo=ZoneInfo("America/Los_Angeles"))
+            except Exception as e:
+                print("Goal date parse error:", e)
+
+        # Safe time parsing
+        time_str = goal.get("time", "")
+        time_obj = None
+        if time_str:
+            try:
+                h, m = map(int, time_str.split(":"))
+                now_vegas = datetime.now(ZoneInfo("America/Los_Angeles"))
+                time_obj = now_vegas.replace(hour=h, minute=m, second=0, microsecond=0)
+            except Exception as e:
+                print("Goal time parse error:", e)
+
         if date_obj:
-            vegas_time = date_obj.astimezone(ZoneInfo("America/Los_Angeles"))
-            goal["prettyDate"] = format_pretty_date(vegas_time)
+            if date_obj.tzinfo is None:
+                date_obj = date_obj.replace(tzinfo=ZoneInfo("America/Los_Angeles"))
+            else:
+                date_obj = date_obj.astimezone(ZoneInfo("America/Los_Angeles"))
+            goal["prettyDate"] = format_pretty_date(date_obj)
+
+        if time_obj:
+            if time_obj.tzinfo is None:
+                time_obj = time_obj.replace(tzinfo=ZoneInfo("America/Los_Angeles"))
+            else:
+                time_obj = time_obj.astimezone(ZoneInfo("America/Los_Angeles"))
+            goal["prettyTime"] = format_pretty_time(time_obj)
+
     return jsonify(goals)
 
 @app.route('/goals', methods=['POST'])
+@cross_origin()
 def add_goal():
-    goals = load_json(GOAL_FILE, [])
-    new_goal = request.json
-    new_goal["completed"] = new_goal.get("completed", False)
-    goals.append(new_goal)
-    save_json(GOAL_FILE, goals)
-    return jsonify({"message": "Goal added"}), 201
+    try:
+        data = request.json
+        if not data:
+            return jsonify({"error": "Missing JSON data"}), 400
+
+        goals = load_json(GOAL_FILE, [])
+        goal = {
+            "title": data.get("title", ""),
+            "notes": data.get("notes", ""),
+            "date": data.get("date", ""),
+            "time": data.get("time", ""),
+            "completed": data.get("completed", False)
+        }
+        goals.append(goal)
+        save_json(GOAL_FILE, goals)
+        return jsonify({"message": "Goal added"}), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 @app.route('/goals/<int:index>', methods=['PUT'])
 def update_goal(index):
@@ -184,6 +229,7 @@ def update_goal(index):
         goals[index]['title'] = updated.get('title', goals[index]['title'])
         goals[index]['notes'] = updated.get('notes', goals[index]['notes'])
         goals[index]['date'] = updated.get('date', goals[index].get('date'))
+        goals[index]['time'] = updated.get('time', goals[index].get('time', ""))
         goals[index]['completed'] = updated.get('completed', goals[index].get('completed', False))
         save_json(GOAL_FILE, goals)
         return jsonify({"message": "Goal updated"}), 200
@@ -206,6 +252,7 @@ def delete_goal(index):
         save_json(GOAL_FILE, goals)
         return jsonify({"message": "Goal deleted"}), 200
     return jsonify({"error": "Goal not found"}), 404
+
 
 # === LOGS ===
 @app.route('/logs', methods=['GET'])
