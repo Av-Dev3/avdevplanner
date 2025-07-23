@@ -2,23 +2,32 @@ document.addEventListener("DOMContentLoaded", () => {
   const scheduleContainer = document.getElementById("schedule-container");
   const dayTemplate = document.getElementById("day-expand-template");
 
+  const today = new Date();
+  const todayStr = today.toLocaleDateString("en-CA");
+
   function formatTime(timeStr) {
-    if (!timeStr) return "";
     const [h, m] = timeStr.split(":");
-    let hour = parseInt(h, 10);
+    const hour = parseInt(h);
     const suffix = hour >= 12 ? "PM" : "AM";
-    hour = hour % 12;
-    if (hour === 0) hour = 12;
-    return `${hour}:${m} ${suffix}`;
+    const adjusted = hour % 12 === 0 ? 12 : hour % 12;
+    return `${adjusted}:${m} ${suffix}`;
   }
 
-  function formatCardDate(dateStr) {
-    if (!dateStr) return "";
-    const d = new Date(dateStr);
-    return d.toLocaleDateString("en-US", {
+  function formatPrettyDate(dateStr) {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
       month: "long",
       day: "numeric",
-      year: "numeric",
+    });
+  }
+
+  function formatHeaderDate(dateStr) {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString("en-US", {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
     });
   }
 
@@ -27,8 +36,19 @@ document.addEventListener("DOMContentLoaded", () => {
     div.className =
       "snap-center shrink-0 w-full sm:w-[240px] bg-[#2b2b2b] rounded-lg p-4 shadow-inner text-sm";
 
-    const timeDisplay = time ? `<p><small>Time: ${formatTime(time)}</small></p>` : "";
-    const dateDisplay = date ? `<p><small>Date: ${formatCardDate(date)}</small></p>` : "";
+    const timeDisplay =
+      time && time.includes("M")
+        ? `<p><small>Time: ${time}</small></p>`
+        : time
+        ? `<p><small>Time: ${formatTime(time)}</small></p>`
+        : "";
+
+    const dateDisplay =
+      date && date.includes(",")
+        ? `<p><small>Date: ${date}</small></p>`
+        : date
+        ? `<p><small>Date: ${formatPrettyDate(date)}</small></p>`
+        : "";
 
     div.innerHTML = `
       <h3 class="font-semibold mb-1">${title}</h3>
@@ -69,22 +89,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function getLocalDateString(date) {
-    const year = date.getFullYear();
-    const month = `${date.getMonth() + 1}`.padStart(2, "0");
-    const day = `${date.getDate()}`.padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  }
-
-  function formatHeaderDate(dateStr) {
-    const d = new Date(dateStr);
-    return d.toLocaleDateString("en-US", {
-      weekday: "long",
-      month: "long",
-      day: "numeric",
-    });
-  }
-
   async function renderSchedule() {
     const [tasks, goals, lessons, notes] = await Promise.all([
       fetch("https://avdevplanner.onrender.com/tasks").then((res) => res.json()),
@@ -95,14 +99,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     for (let i = 0; i < 30; i++) {
       const date = new Date();
-      date.setDate(date.getDate() + i);
-      const isoDate = getLocalDateString(date);
+      date.setDate(today.getDate() + i);
+      const isoDate = date.toLocaleDateString("en-CA"); // ✅ Proper local ISO date
 
-      // === Day Card ===
       const dayCard = document.createElement("div");
       dayCard.className =
         "bg-[#1f1f1f] rounded-xl shadow-md p-4 cursor-pointer transition hover:bg-[#2a2a2a]";
-
       const heading = document.createElement("h2");
       heading.className = "text-base font-semibold mb-2 text-white";
       heading.textContent = formatHeaderDate(isoDate);
