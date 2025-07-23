@@ -1,59 +1,24 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const scheduleContainer = document.getElementById("schedule-container");
-  const dayTemplate = document.getElementById("day-expand-template");
+  const scheduleGrid = document.getElementById("schedule-grid");
+  const template = document.getElementById("day-template");
 
-  function formatTime(timeStr) {
-    const [h, m] = timeStr.split(":");
-    const hour = parseInt(h);
-    const suffix = hour >= 12 ? "PM" : "AM";
-    const adjusted = hour % 12 === 0 ? 12 : hour % 12;
-    return `${adjusted}:${m} ${suffix}`;
-  }
+  const today = new Date();
+  const dates = Array.from({ length: 30 }, (_, i) => {
+    const date = new Date();
+    date.setDate(today.getDate() + i);
+    return date;
+  });
 
-  function formatPrettyDate(dateStr) {
-    const date = new Date(dateStr);
+  function formatDisplayDate(date) {
     return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  }
-
-  function formatHeaderDate(dateStr) {
-    const d = new Date(dateStr);
-    return d.toLocaleDateString("en-US", {
       weekday: "long",
       month: "long",
       day: "numeric",
     });
   }
 
-  function createFullCard(title, notes, date, time) {
-    const div = document.createElement("div");
-    div.className =
-      "snap-center shrink-0 w-full sm:w-[240px] bg-[#2b2b2b] rounded-lg p-4 shadow-inner text-sm";
-
-    const timeDisplay =
-      time && time.includes("M")
-        ? `<p><small>Time: ${time}</small></p>`
-        : time
-        ? `<p><small>Time: ${formatTime(time)}</small></p>`
-        : "";
-
-    const dateDisplay =
-      date && date.includes(",")
-        ? `<p><small>Date: ${date}</small></p>`
-        : date
-        ? `<p><small>Date: ${formatPrettyDate(date)}</small></p>`
-        : "";
-
-    div.innerHTML = `
-      <h3 class="font-semibold mb-1">${title}</h3>
-      ${notes ? `<p class="mb-1">${notes}</p>` : ""}
-      ${timeDisplay}
-      ${dateDisplay}
-    `;
-    return div;
+  function getISODate(date) {
+    return date.toLocaleDateString("en-CA"); // yyyy-mm-dd
   }
 
   function setupSwipeContainer(container) {
@@ -86,126 +51,133 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  async function renderSchedule() {
-    const [tasks, goals, lessons, notes] = await Promise.all([
-      fetch("https://avdevplanner.onrender.com/tasks").then((res) => res.json()),
-      fetch("https://avdevplanner.onrender.com/goals").then((res) => res.json()),
-      fetch("https://avdevplanner.onrender.com/lessons").then((res) => res.json()),
-      fetch("https://avdevplanner.onrender.com/notes").then((res) => res.json()),
-    ]);
+  function formatTime(timeStr) {
+    if (!timeStr) return "";
+    const [h, m] = timeStr.split(":");
+    let hour = parseInt(h, 10);
+    const suffix = hour >= 12 ? "PM" : "AM";
+    hour = hour % 12;
+    if (hour === 0) hour = 12;
+    return `${hour}:${m} ${suffix}`;
+  }
 
-    const today = new Date();
+  function formatCardDate(dateStr) {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString("en-US", {
+      month: "long",
+      day: "numeric",
+      year: "numeric",
+    });
+  }
 
-    for (let i = 0; i < 30; i++) {
-      const date = new Date(today);
-      date.setDate(today.getDate() + i);
-      const dayStr = date.toLocaleDateString("en-CA");
-      const prettyHeader = formatHeaderDate(dayStr);
+  function createCard(title, notes, date, time) {
+    const div = document.createElement("div");
+    div.className =
+      "snap-center shrink-0 w-full sm:w-[240px] bg-[#2b2b2b] rounded-lg p-4 shadow-inner text-sm";
 
-      const dayCard = document.createElement("div");
-      dayCard.className =
-        "bg-[#1f1f1f] rounded-xl shadow-md p-4 cursor-pointer transition hover:bg-[#2a2a2a]";
-      const heading = document.createElement("h2");
-      heading.className = "text-base font-semibold mb-2 text-white";
-      heading.textContent = prettyHeader;
-      dayCard.appendChild(heading);
+    const timeDisplay = time ? `<p><small>Time: ${formatTime(time)}</small></p>` : "";
+    const dateDisplay = date ? `<p><small>Date: ${formatCardDate(date)}</small></p>` : "";
 
-      const expandSection = dayTemplate.content.cloneNode(true);
-      const expandWrapper = document.createElement("div");
-      expandWrapper.className = "hidden";
-      expandWrapper.appendChild(expandSection);
+    div.innerHTML = `
+      <h3 class="font-semibold mb-1">${title}</h3>
+      ${notes ? `<p class="mb-1">${notes}</p>` : ""}
+      ${timeDisplay}
+      ${dateDisplay}
+    `;
+    return div;
+  }
 
-      let isExpanded = false;
-      dayCard.addEventListener("click", async () => {
-        if (isExpanded) {
-          expandWrapper.classList.add("hidden");
-          isExpanded = false;
-        } else {
-          await populateDayContent(
-            expandWrapper,
-            dayStr,
-            tasks,
-            goals,
-            lessons,
-            notes
+  async function createDayCard(dateObj) {
+    const isoDate = getISODate(dateObj);
+    const displayDate = formatDisplayDate(dateObj);
+    const clone = template.content.cloneNode(true);
+    const toggle = clone.querySelector(".day-toggle");
+    const content = clone.querySelector(".day-content");
+    const taskContainer = clone.querySelector(".task-container");
+    const goalContainer = clone.querySelector(".goal-container");
+    const lessonContainer = clone.querySelector(".lesson-container");
+    const noteContainer = clone.querySelector(".note-container");
+
+    toggle.textContent = displayDate;
+    toggle.addEventListener("click", () => {
+      content.classList.toggle("hidden");
+    });
+
+    try {
+      const [tasksRes, goalsRes, lessonsRes, notesRes] = await Promise.all([
+        fetch("https://avdevplanner.onrender.com/tasks"),
+        fetch("https://avdevplanner.onrender.com/goals"),
+        fetch("https://avdevplanner.onrender.com/lessons"),
+        fetch("https://avdevplanner.onrender.com/notes"),
+      ]);
+
+      const tasks = await tasksRes.json();
+      const goals = await goalsRes.json();
+      const lessons = await lessonsRes.json();
+      const notes = await notesRes.json();
+
+      const dayTasks = tasks.filter((t) => t.date === isoDate);
+      const dayGoals = goals.filter((g) => g.date === isoDate);
+      const dayLessons = lessons.filter((l) => l.date === isoDate);
+      const dayNotes = notes.filter((n) => n.date === isoDate);
+
+      // Tasks
+      if (dayTasks.length === 0) {
+        taskContainer.innerHTML = "<p>No tasks.</p>";
+      } else {
+        dayTasks.forEach((t) => {
+          const card = createCard(t.text || t.title, t.notes, t.prettyDate, t.time);
+          taskContainer.appendChild(card);
+        });
+      }
+
+      // Goals
+      if (dayGoals.length === 0) {
+        goalContainer.innerHTML = "<p>No goals.</p>";
+      } else {
+        dayGoals.forEach((g) => {
+          const card = createCard(g.title, g.notes, g.prettyDate);
+          goalContainer.appendChild(card);
+        });
+      }
+
+      // Lessons
+      if (dayLessons.length === 0) {
+        lessonContainer.innerHTML = "<p>No lessons.</p>";
+      } else {
+        dayLessons.forEach((l) => {
+          const extra = `${l.description || ""}${l.notes ? ` (${l.notes})` : ""}`;
+          const card = createCard(
+            l.title,
+            `Category: ${l.category || "N/A"} | Priority: ${l.priority || "Normal"} | ${extra}`,
+            l.prettyDate
           );
-          expandWrapper.classList.remove("hidden");
-          isExpanded = true;
-        }
-      });
+          lessonContainer.appendChild(card);
+        });
+      }
 
-      scheduleContainer.appendChild(dayCard);
-      scheduleContainer.appendChild(expandWrapper);
+      // Notes
+      if (dayNotes.length === 0) {
+        noteContainer.innerHTML = "<p>No notes.</p>";
+      } else {
+        dayNotes.forEach((n) => {
+          const card = createCard(n.title, n.content, n.date);
+          noteContainer.appendChild(card);
+        });
+      }
+
+      setupSwipeContainer(taskContainer);
+      setupSwipeContainer(goalContainer);
+      setupSwipeContainer(lessonContainer);
+      setupSwipeContainer(noteContainer);
+    } catch (err) {
+      console.error("Error loading day content:", err);
     }
+
+    scheduleGrid.appendChild(clone);
   }
 
-  async function populateDayContent(wrapper, dayStr, tasks, goals, lessons, notes) {
-    const taskC = wrapper.querySelector(".task-container");
-    const goalC = wrapper.querySelector(".goal-container");
-    const lessonC = wrapper.querySelector(".lesson-container");
-    const noteC = wrapper.querySelector(".note-container");
-
-    taskC.innerHTML = "";
-    goalC.innerHTML = "";
-    lessonC.innerHTML = "";
-    noteC.innerHTML = "";
-
-    const dayTasks = tasks.filter((t) => t.date === dayStr);
-    const dayGoals = goals.filter((g) => g.date === dayStr);
-    const dayLessons = lessons.filter((l) => l.date === dayStr);
-    const dayNotes = notes.filter((n) => n.date === dayStr);
-
-    if (dayTasks.length) {
-      dayTasks.forEach((t) => {
-        const card = createFullCard(
-          t.text || t.title,
-          t.notes,
-          t.prettyDate,
-          t.time
-        );
-        taskC.appendChild(card);
-      });
-    } else {
-      taskC.innerHTML = "<p class='text-gray-400'>No tasks.</p>";
-    }
-
-    if (dayGoals.length) {
-      dayGoals.forEach((g) => {
-        const card = createFullCard(g.title, g.notes, g.prettyDate);
-        goalC.appendChild(card);
-      });
-    } else {
-      goalC.innerHTML = "<p class='text-gray-400'>No goals.</p>";
-    }
-
-    if (dayLessons.length) {
-      dayLessons.forEach((l) => {
-        const content = `${l.description || ""}${l.notes ? ` (${l.notes})` : ""}`;
-        const card = createFullCard(
-          l.title,
-          `Category: ${l.category || "N/A"} | Priority: ${l.priority || "Normal"} | ${content}`,
-          l.prettyDate
-        );
-        lessonC.appendChild(card);
-      });
-    } else {
-      lessonC.innerHTML = "<p class='text-gray-400'>No lessons.</p>";
-    }
-
-    if (dayNotes.length) {
-      dayNotes.forEach((n) => {
-        const card = createFullCard(n.title, n.content, n.prettyDate);
-        noteC.appendChild(card);
-      });
-    } else {
-      noteC.innerHTML = "<p class='text-gray-400'>No notes.</p>";
-    }
-
-    setupSwipeContainer(taskC);
-    setupSwipeContainer(goalC);
-    setupSwipeContainer(lessonC);
-    setupSwipeContainer(noteC);
-  }
-
-  renderSchedule();
+  dates.forEach((dateObj) => {
+    createDayCard(dateObj);
+  });
 });
