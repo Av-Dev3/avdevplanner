@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
       month: "long",
       day: "numeric",
     });
-    const isoDate = date.toISOString().split("T")[0];
+    const isoDate = date.toLocaleDateString("en-CA"); // yyyy-mm-dd
     createDaySection(formatted, isoDate);
   });
 
@@ -70,7 +70,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Format date for card display as July 21, 2025
   function formatCardDate(dateStr) {
     if (!dateStr) return "";
     const d = new Date(dateStr);
@@ -81,7 +80,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Convert 24h time to 12h AM/PM
   function formatTime(timeStr) {
     if (!timeStr) return "";
     const [h, m] = timeStr.split(":");
@@ -136,7 +134,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const goals = await goalsRes.json();
       const lessons = await lessonsRes.json();
 
-      // Filter tasks/goals/lessons by exact date string match
       const todayTasks = tasks.filter((t) => t.date === isoDate);
       const todayGoals = goals.filter((g) => g.date === isoDate);
       const todayLessons = lessons.filter((l) => l.date === isoDate);
@@ -145,7 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
         taskContainer.innerHTML = "<p>No tasks.</p>";
       } else {
         todayTasks.forEach((t) => {
-          const card = createFullCard(t.text || t.title, t.notes, t.date, t.time);
+          const card = createFullCard(t.text || t.title, t.notes, t.prettyDate, t.time);
           taskContainer.appendChild(card);
         });
       }
@@ -154,7 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
         goalContainer.innerHTML = "<p>No goals.</p>";
       } else {
         todayGoals.forEach((g) => {
-          const card = createFullCard(g.title, g.notes, g.date);
+          const card = createFullCard(g.title, g.notes, g.prettyDate);
           goalContainer.appendChild(card);
         });
       }
@@ -167,7 +164,7 @@ document.addEventListener("DOMContentLoaded", () => {
           const card = createFullCard(
             l.title,
             `Category: ${l.category || "N/A"} | Priority: ${l.priority || "Normal"} | ${content}`,
-            l.date
+            l.prettyDate
           );
           lessonContainer.appendChild(card);
         });
