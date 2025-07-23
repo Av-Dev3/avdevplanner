@@ -15,7 +15,6 @@ if (form && container) {
       title: titleInput.value.trim(),
       notes: notesInput.value.trim(),
       date: parseNaturalDate(dateInput.value),
-      created_at: new Date().toISOString(),
       completed: false
     };
 
@@ -51,16 +50,12 @@ if (form && container) {
       }
 
       const parsedGoalDate = parseNaturalDate((goal.date || "").trim());
-      const parsedCreatedAt = parseNaturalDate((goal.created_at || "").split("T")[0]);
-
       const displayDate = parsedGoalDate ? formatPrettyDate(parsedGoalDate) : "(No Date Set)";
-      const addedDate = parsedCreatedAt ? formatPrettyDate(parsedCreatedAt) : "(Unknown)";
 
       card.innerHTML = `
         <h3>${goal.title}</h3>
         ${goal.notes ? `<p><strong>Notes:</strong> ${goal.notes}</p>` : ""}
         ${displayDate ? `<p><strong>Target Date:</strong> ${displayDate}</p>` : ""}
-        <p><small>Added: ${addedDate}</small></p>
         ${goal.completed ? `<p style="color:limegreen"><strong>✅ Completed</strong></p>` : ""}
       `;
 

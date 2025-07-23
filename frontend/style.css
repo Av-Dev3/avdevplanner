@@ -21,7 +21,7 @@ body {
 .head {
   background-color: #1a1a1a;
   padding: 10px 16px;
-  border-radius: 12px;
+  border-radius: 0px 0px 12px 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
 }
 

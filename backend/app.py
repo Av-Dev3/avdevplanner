@@ -450,10 +450,12 @@ Only include keys that apply. Use today's date only if no date is implied. Respo
 def get_lessons():
     lessons = load_json(LESSON_FILE, [])
     for lesson in lessons:
-        date_obj = parse_datetime_safe(lesson.get("date", ""))
+        date_str = lesson.get("date", "")
+        date_obj = parse_datetime_safe(date_str)
         if date_obj:
             vegas_time = date_obj.astimezone(ZoneInfo("America/Los_Angeles"))
             lesson["prettyDate"] = format_pretty_date(vegas_time)
+            lesson["prettyTime"] = format_pretty_time(vegas_time)
     return jsonify(lessons)
 
 @app.route('/lessons', methods=['POST'])
