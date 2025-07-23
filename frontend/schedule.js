@@ -44,13 +44,20 @@ document.addEventListener("DOMContentLoaded", async () => {
     setupSwipe(noteContainer);
 
     const expander = document.createElement("div");
+    expander.classList.add("day-expanded");
     expander.appendChild(expandContent);
     expander.style.display = "none";
     dayCard.appendChild(expander);
 
-    dayCard.addEventListener("click", () => {
-      document.querySelectorAll("#schedule-container > div > div").forEach((el) => (el.style.display = "none"));
-      expander.style.display = "block";
+    dayCard.addEventListener("click", (e) => {
+      const isOpen = expander.style.display === "block";
+      document.querySelectorAll(".day-expanded").forEach((el) => (el.style.display = "none"));
+      if (!isOpen) {
+        expander.style.display = "block";
+      } else {
+        expander.style.display = "none";
+      }
+      e.stopPropagation();
     });
 
     scheduleContainer.appendChild(dayCard);
@@ -176,18 +183,12 @@ function setupSwipe(container) {
   }
 }
 
-// === Close expanded sections when clicking outside ===
+// === Close expanded sections when clicking outside any card ===
 document.addEventListener("click", (event) => {
-  const expanded = document.querySelector(".expanded");
-  if (!expanded) return;
-
-  // Close if click is outside of any expanded section or its corresponding date card
-  const isInsideExpanded = expanded.contains(event.target);
-  const isDayCard = event.target.closest(".day-card");
-
-  if (!isInsideExpanded && !isDayCard) {
-    expanded.remove();
-    const openCard = document.querySelector(".day-card.open");
-    if (openCard) openCard.classList.remove("open");
+  const insideAnyDay = event.target.closest("#schedule-container > div");
+  if (!insideAnyDay) {
+    document.querySelectorAll(".day-expanded").forEach((el) => {
+      el.style.display = "none";
+    });
   }
 });
