@@ -175,3 +175,19 @@ function setupSwipe(container) {
     container.style.gap = "1rem";
   }
 }
+
+// === Close expanded sections when clicking outside ===
+document.addEventListener("click", (event) => {
+  const expanded = document.querySelector(".expanded");
+  if (!expanded) return;
+
+  // Close if click is outside of any expanded section or its corresponding date card
+  const isInsideExpanded = expanded.contains(event.target);
+  const isDayCard = event.target.closest(".day-card");
+
+  if (!isInsideExpanded && !isDayCard) {
+    expanded.remove();
+    const openCard = document.querySelector(".day-card.open");
+    if (openCard) openCard.classList.remove("open");
+  }
+});
