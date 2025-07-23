@@ -450,12 +450,44 @@ Only include keys that apply. Use today's date only if no date is implied. Respo
 def get_lessons():
     lessons = load_json(LESSON_FILE, [])
     for lesson in lessons:
+        # === Safe date parsing ===
         date_str = lesson.get("date", "")
-        date_obj = parse_datetime_safe(date_str)
+        date_obj = None
+        if date_str:
+            try:
+                if "T" in date_str:
+                    date_obj = parse_datetime_safe(date_str)
+                else:
+                    date_obj = datetime.strptime(date_str, "%Y-%m-%d").replace(tzinfo=ZoneInfo("America/Los_Angeles"))
+            except Exception as e:
+                print("Lesson date parse error:", e)
+
+        # === Safe time parsing ===
+        time_str = lesson.get("time", "")
+        time_obj = None
+        if time_str:
+            try:
+                h, m = map(int, time_str.split(":"))
+                now_vegas = datetime.now(ZoneInfo("America/Los_Angeles"))
+                time_obj = now_vegas.replace(hour=h, minute=m, second=0, microsecond=0)
+            except Exception as e:
+                print("Lesson time parse error:", e)
+
+        # === Format date/time ===
         if date_obj:
-            vegas_time = date_obj.astimezone(ZoneInfo("America/Los_Angeles"))
-            lesson["prettyDate"] = format_pretty_date(vegas_time)
-            lesson["prettyTime"] = format_pretty_time(vegas_time)
+            if date_obj.tzinfo is None:
+                date_obj = date_obj.replace(tzinfo=ZoneInfo("America/Los_Angeles"))
+            else:
+                date_obj = date_obj.astimezone(ZoneInfo("America/Los_Angeles"))
+            lesson["prettyDate"] = format_pretty_date(date_obj)
+
+        if time_obj:
+            if time_obj.tzinfo is None:
+                time_obj = time_obj.replace(tzinfo=ZoneInfo("America/Los_Angeles"))
+            else:
+                time_obj = time_obj.astimezone(ZoneInfo("America/Los_Angeles"))
+            lesson["prettyTime"] = format_pretty_time(time_obj)
+
     return jsonify(lessons)
 
 @app.route('/lessons', methods=['POST'])
@@ -468,6 +500,7 @@ def add_lesson():
         "description": data.get("description", ""),
         "category": data.get("category", ""),
         "date": data.get("date", ""),
+        "time": data.get("time", ""),  # time now supported
         "priority": data.get("priority", ""),
         "notes": data.get("notes", ""),
         "completed": False
