@@ -38,18 +38,35 @@ function setupSwipeContainer(container) {
   }
 }
 
+function formatPrettyDate(dateStr) {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
+
 // === Card Builder (matches homepage card style) ===
 function createFullCard(title, notes, date, time) {
   const div = document.createElement("div");
   div.className =
     "snap-center shrink-0 w-full sm:w-[240px] bg-[#2b2b2b] rounded-lg p-4 shadow-inner text-sm";
 
-  const timeDisplay = time
-    ? `<p><small>Time: ${formatTime(time)}</small></p>`
-    : "";
-  const dateDisplay = date
-    ? `<p><small>Date: ${date}</small></p>`
-    : "";
+  const timeDisplay =
+    time && time.includes("M") // already pretty
+      ? `<p><small>Time: ${time}</small></p>`
+      : time
+      ? `<p><small>Time: ${formatTime(time)}</small></p>`
+      : "";
+
+  const dateDisplay =
+    date && date.includes(",") // already pretty
+      ? `<p><small>Date: ${date}</small></p>`
+      : date
+      ? `<p><small>Date: ${formatPrettyDate(date)}</small></p>`
+      : "";
 
   div.innerHTML = `
     <h3 class="font-semibold mb-1">${title}</h3>
@@ -59,6 +76,7 @@ function createFullCard(title, notes, date, time) {
   `;
   return div;
 }
+
 
 function formatTime(timeStr) {
   const [h, m] = timeStr.split(":");
