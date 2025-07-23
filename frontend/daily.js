@@ -95,12 +95,13 @@ async function loadTodayTasks() {
     }
 
     todayTasks.forEach((task) => {
-      const card = createFullCard(
-        task.text || task.title || "Untitled Task",
-        task.notes,
-        task.date,
-        task.time
-      );
+const card = createFullCard(
+  task.text || task.title || "Untitled Task",
+  task.notes,
+  task.prettyDate,
+  task.time
+);
+
       tasksContainer.appendChild(card);
     });
   } catch {
@@ -122,7 +123,7 @@ async function loadGoals() {
     }
 
     todayGoals.forEach((goal) => {
-      const card = createFullCard(goal.title, goal.notes, goal.date);
+const card = createFullCard(goal.title, goal.notes, goal.prettyDate);
       goalsContainer.appendChild(card);
     });
   } catch {
@@ -148,10 +149,11 @@ async function loadLessons() {
         lesson.notes ? ` (${lesson.notes})` : ""
       }`;
       const card = createFullCard(
-        lesson.title,
-        `Category: ${lesson.category || "N/A"} | Priority: ${lesson.priority || "Normal"} | ${content}`,
-        lesson.date
-      );
+  lesson.title,
+  `Category: ${lesson.category || "N/A"} | Priority: ${lesson.priority || "Normal"} | ${content}`,
+  lesson.prettyDate
+);
+
       lessonsContainer.appendChild(card);
     });
   } catch {
