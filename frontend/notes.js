@@ -68,18 +68,25 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const groupNotesByWeek = (notes) => {
-    const weeks = {};
-    notes.forEach((note) => {
-      const date = note.date || note.created_at;
-      const d = new Date(date);
-      const sunday = new Date(d);
-      sunday.setDate(d.getDate() - d.getDay());
-      const weekKey = sunday.toISOString().split("T")[0];
-      if (!weeks[weekKey]) weeks[weekKey] = [];
-      weeks[weekKey].push(note);
-    });
-    return weeks;
-  };
+  const weeks = {};
+  notes.forEach((note) => {
+    const date = note.date || note.created_at;
+    const d = new Date(date);
+
+    // Get Sunday in Vegas time
+    const vegasDate = new Date(d.toLocaleString("en-US", { timeZone: "America/Los_Angeles" }));
+    const sunday = new Date(vegasDate);
+    sunday.setDate(vegasDate.getDate() - vegasDate.getDay());
+
+    // Format the weekKey using Vegas time
+    const weekKey = sunday.toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
+
+    if (!weeks[weekKey]) weeks[weekKey] = [];
+    weeks[weekKey].push(note);
+  });
+  return weeks;
+};
+
 
   const createNoteCard = (note) => {
     const div = document.createElement("div");
