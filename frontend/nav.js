@@ -3,7 +3,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const drawer = document.getElementById('drawer'); // only on homepage
   const siteLinksDrawer = document.getElementById('siteLinksDrawer');
   const isHome = window.location.pathname.includes('index.html') || window.location.pathname === '/';
-  const isNotes = window.location.pathname.includes('notes.html');
+  const path = window.location.pathname;
+const isNotes = path.includes('notes') && !path.includes('notes.css');
+
 
   let isDrawerOpen = false;
   let longPressTriggered = false;
