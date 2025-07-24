@@ -54,25 +54,24 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.target === popup) popup.classList.add("hidden");
   });
 
-function formatPrettyDateFromISO(dateStr) {
-  const date = new Date(dateStr);
-  return date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
+  function formatPrettyDateFromISO(dateStr) {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  }
 
   function formatPrettyDate(dateStr) {
-  const [year, month, day] = dateStr.split("-");
-  const date = new Date(`${year}-${month}-${day}T00:00:00`);
-  return date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
-
+    const [year, month, day] = dateStr.split("-");
+    const date = new Date(`${year}-${month}-${day}T00:00:00`);
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  }
 
   const groupNotesByDate = (notes) => {
     const groups = {};
@@ -86,8 +85,7 @@ function formatPrettyDateFromISO(dateStr) {
     notes.forEach((note) => {
       const rawDate = note.date || note.created_at;
       const parsed = new Date(rawDate);
-      const vegasDateStr = formatter.format(parsed); // "YYYY-MM-DD"
-
+      const vegasDateStr = formatter.format(parsed);
       if (!groups[vegasDateStr]) groups[vegasDateStr] = [];
       groups[vegasDateStr].push(note);
     });
@@ -104,14 +102,13 @@ function formatPrettyDateFromISO(dateStr) {
       <h3 class="font-semibold mb-1">${note.title}</h3>
       ${note.content ? `<p class="mb-1">${note.content}</p>` : ""}
       ${note.date || note.created_at
-  ? `<p><small>${formatPrettyDateFromISO(note.date || note.created_at)}</small></p>`
-  : ""}
-
+        ? `<p><small>${formatPrettyDateFromISO(note.date || note.created_at)}</small></p>`
+        : ""}
     `;
 
     div.addEventListener("contextmenu", (e) => {
       e.preventDefault();
-      showNoteOptions(note);
+      showNoteOptions(note, e.clientX, e.clientY);
     });
 
     return div;
@@ -181,6 +178,64 @@ function formatPrettyDateFromISO(dateStr) {
     });
   };
 
+  const showNoteOptions = (note, x, y) => {
+    const popup = document.createElement("div");
+    popup.className =
+      "fixed z-50 bg-[#1f1f1f] border border-neutral-700 text-white rounded shadow-lg p-2 text-sm";
+    popup.style.top = `${y}px`;
+    popup.style.left = `${x}px`;
+
+    popup.innerHTML = `
+      <button class="block w-full text-left px-2 py-1 hover:bg-[#b91c1c]" data-action="pin">${note.pinned ? "Unpin" : "Pin"}</button>
+      <button class="block w-full text-left px-2 py-1 hover:bg-[#b91c1c]" data-action="delete">Delete</button>
+    `;
+
+    document.body.appendChild(popup);
+
+    const closePopup = () => {
+      if (popup && popup.parentNode) popup.remove();
+      document.removeEventListener("click", closePopup);
+    };
+
+    document.addEventListener("click", closePopup);
+
+    popup.addEventListener("click", async (e) => {
+      const action = e.target.dataset.action;
+      if (action === "pin") {
+        await togglePin(note);
+      } else if (action === "delete") {
+        await deleteNote(note);
+      }
+      closePopup();
+      loadNotes();
+    });
+  };
+
+  const togglePin = async (note) => {
+    try {
+      const res = await fetch(`https://avdevplanner.onrender.com/notes/${note.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...note, pinned: !note.pinned }),
+      });
+      if (!res.ok) throw new Error("Failed to toggle pin");
+    } catch (err) {
+      console.error("Pin error:", err);
+    }
+  };
+
+  const deleteNote = async (note) => {
+    if (!confirm(`Delete note "${note.title}"?`)) return;
+    try {
+      const res = await fetch(`https://avdevplanner.onrender.com/notes/${note.id}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) throw new Error("Delete failed");
+    } catch (err) {
+      console.error("Delete error:", err);
+    }
+  };
+
   const renderTags = () => {
     const tagSet = new Set();
     allNotes.forEach((n) => (n.tags || []).forEach((t) => tagSet.add(t)));
@@ -226,16 +281,10 @@ function formatPrettyDateFromISO(dateStr) {
       card.className = "bg-[#2b2b2b] p-4 rounded-lg shadow text-white";
       card.innerHTML = `<h4 class='font-semibold mb-1'>${name}</h4><p>${notes.length} notes</p>`;
       card.addEventListener("click", () => {
-        // Optional: show collection notes
+        // Optional: view that collection’s notes
       });
       collectionsContainer.appendChild(card);
     });
-  };
-
-  const showNoteOptions = (note) => {
-    alert(
-      `Options for: ${note.title}\n(Pin/unpin, Delete, Add to Collection coming soon)`
-    );
   };
 
   saveBtn.addEventListener("click", async () => {
