@@ -291,7 +291,7 @@ def delete_log(date, index):
         save_json(LOG_FILE, logs)
         return jsonify({"message": "Log deleted"}), 200
     return jsonify({"error": "Log not found"}), 404
-
+from uuid import uuid4
 # === NOTES ROUTES ===
 @app.route('/notes', methods=['GET'])
 def get_notes():
@@ -326,7 +326,11 @@ def get_notes():
 def add_note():
     notes = load_json(NOTE_FILE, [])
     data = request.json
+
+    new_id = max([n.get("id", -1) for n in notes], default=-1) + 1
+
     notes.append({
+        "id": new_id,
         "title": data.get("title", ""),
         "content": data.get("content", ""),
         "date": data.get("date", ""),
@@ -336,30 +340,33 @@ def add_note():
         "notebook": data.get("notebook", "")
     })
     save_json(NOTE_FILE, notes)
-    return jsonify({"message": "Note added"}), 201
+    return jsonify({"message": "Note added", "id": new_id}), 201
 
-@app.route('/notes/<int:index>', methods=['PUT'])
-def update_note(index):
+@app.route('/notes/<int:note_id>', methods=['PUT'])
+def update_note(note_id):
     notes = load_json(NOTE_FILE, [])
-    if 0 <= index < len(notes):
-        updated = request.json
-        notes[index]['title'] = updated.get('title', notes[index]['title'])
-        notes[index]['content'] = updated.get('content', notes[index]['content'])
-        notes[index]['pinned'] = updated.get('pinned', notes[index].get('pinned', False))
-        notes[index]['tags'] = updated.get('tags', notes[index].get('tags', []))
-        notes[index]['notebook'] = updated.get('notebook', notes[index].get('notebook', ""))
-        save_json(NOTE_FILE, notes)
-        return jsonify({"message": "Note updated"}), 200
+    for note in notes:
+        if note.get("id") == note_id:
+            updated = request.json
+            note["title"] = updated.get("title", note["title"])
+            note["content"] = updated.get("content", note["content"])
+            note["pinned"] = updated.get("pinned", note.get("pinned", False))
+            note["tags"] = updated.get("tags", note.get("tags", []))
+            note["notebook"] = updated.get("notebook", note.get("notebook", ""))
+            save_json(NOTE_FILE, notes)
+            return jsonify({"message": "Note updated"}), 200
     return jsonify({"error": "Note not found"}), 404
 
-@app.route('/notes/<int:index>', methods=['DELETE'])
-def delete_note(index):
+@app.route('/notes/<int:note_id>', methods=['DELETE'])
+def delete_note(note_id):
     notes = load_json(NOTE_FILE, [])
-    if 0 <= index < len(notes):
-        notes.pop(index)
-        save_json(NOTE_FILE, notes)
+    updated_notes = [note for note in notes if note.get("id") != note_id]
+    if len(updated_notes) < len(notes):
+        save_json(NOTE_FILE, updated_notes)
         return jsonify({"message": "Note deleted"}), 200
     return jsonify({"error": "Note not found"}), 404
+
+
 
 # === REFLECTIONS ===
 @app.route('/reflections', methods=['GET'])
