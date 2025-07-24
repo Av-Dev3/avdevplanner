@@ -67,25 +67,36 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
 
-  const groupNotesByWeek = (notes) => {
+ const groupNotesByWeek = (notes) => {
   const weeks = {};
+  const formatter = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "America/Los_Angeles",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  });
+
   notes.forEach((note) => {
     const date = note.date || note.created_at;
     const d = new Date(date);
 
-    // Get Sunday in Vegas time
-    const vegasDate = new Date(d.toLocaleString("en-US", { timeZone: "America/Los_Angeles" }));
+    // Convert to Vegas date string like "2025-07-23"
+    const vegasStr = formatter.format(d);
+    const vegasDate = new Date(vegasStr + "T00:00:00");
+
+    // Get Sunday of that week
     const sunday = new Date(vegasDate);
     sunday.setDate(vegasDate.getDate() - vegasDate.getDay());
 
-    // Format the weekKey using Vegas time
-    const weekKey = sunday.toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
+    const weekKey = formatter.format(sunday); // "YYYY-MM-DD" for Vegas Sunday
 
     if (!weeks[weekKey]) weeks[weekKey] = [];
     weeks[weekKey].push(note);
   });
+
   return weeks;
 };
+
 
 
   const createNoteCard = (note) => {
