@@ -41,6 +41,11 @@ if (initialActive) {
     popup.classList.remove("hidden");
   });
 
+  document.getElementById("add-note-desktop").addEventListener("click", () => {
+  popup.classList.remove("hidden");
+});
+
+
   popup.addEventListener("click", (e) => {
     if (e.target === popup) popup.classList.add("hidden");
   });
