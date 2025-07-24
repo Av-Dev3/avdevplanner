@@ -58,6 +58,14 @@
 </header>
 <main id="notes-wrapper" class="max-w-4xl mx-auto px-4 pt-2 pb-4">
 
+
+  <!-- 🖥️ Desktop-Only Add Note Button -->
+<button
+  id="add-note-desktop"
+  class="hidden md:flex items-center justify-center fixed bottom-6 right-6 bg-[#b91c1c] hover:bg-red-700 text-white w-12 h-12 rounded-full shadow-lg z-40">
+  +
+</button>
+
   <!-- ✅ Fully centered header using flexbox -->
   <div class="w-full flex justify-center items-center">
     <h2 class="text-xl font-semibold text-white">My Notes</h2>
@@ -89,12 +97,6 @@
     <div id="collection-list" class="flex flex-col gap-4"></div>
   </div>
 
-  <!-- 🖥️ Desktop-Only Add Note Button -->
-<button
-  id="add-note-desktop"
-  class="hidden md:flex items-center justify-center fixed bottom-6 right-6 bg-[#b91c1c] hover:bg-red-700 text-white w-12 h-12 rounded-full shadow-lg z-40">
-  +
-</button>
 
 
   <!-- Note Modal -->
