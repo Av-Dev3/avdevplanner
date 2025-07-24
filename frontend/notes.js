@@ -103,11 +103,10 @@ function formatPrettyDateFromISO(dateStr) {
     div.innerHTML = `
       <h3 class="font-semibold mb-1">${note.title}</h3>
       ${note.content ? `<p class="mb-1">${note.content}</p>` : ""}
-      ${
-        note.date || note.created_at
-          ? `<p><small>${formatPrettyDate(note.date || note.created_at)}</small></p>`
-          : ""
-      }
+      ${note.date || note.created_at
+  ? `<p><small>${formatPrettyDateFromISO(note.date || note.created_at)}</small></p>`
+  : ""}
+
     `;
 
     div.addEventListener("contextmenu", (e) => {
