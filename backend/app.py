@@ -587,3 +587,21 @@ def add_to_collection():
 
     save_json("collections.json", collections)
     return jsonify({"message": "Added to collection"}), 200
+
+@app.route('/fix-notes', methods=['POST'])
+def fix_notes_ids():
+    notes = load_json(NOTE_FILE, [])
+    changed = False
+    max_id = max([n.get("id", -1) for n in notes], default=-1)
+
+    for note in notes:
+        if "id" not in note:
+            max_id += 1
+            note["id"] = max_id
+            changed = True
+
+    if changed:
+        save_json(NOTE_FILE, notes)
+        return jsonify({"message": "IDs fixed"}), 200
+    else:
+        return jsonify({"message": "All notes already have IDs"}), 200
