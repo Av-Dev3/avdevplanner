@@ -54,6 +54,15 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.target === popup) popup.classList.add("hidden");
   });
 
+function formatPrettyDateFromISO(dateStr) {
+  const date = new Date(dateStr);
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
   function formatPrettyDate(dateStr) {
   const [year, month, day] = dateStr.split("-");
   const date = new Date(`${year}-${month}-${day}T00:00:00`);
