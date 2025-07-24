@@ -54,14 +54,16 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.target === popup) popup.classList.add("hidden");
   });
 
-  const formatPrettyDate = (dateStr) => {
-    const d = new Date(dateStr);
-    return d.toLocaleDateString("en-US", {
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    });
-  };
+  function formatPrettyDate(dateStr) {
+  const [year, month, day] = dateStr.split("-");
+  const date = new Date(`${year}-${month}-${day}T00:00:00`);
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
 
   const groupNotesByDate = (notes) => {
     const groups = {};
