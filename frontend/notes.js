@@ -13,7 +13,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let allNotes = [];
 
-  // === Tab logic ===
   tabs.forEach((tab) => {
     tab.addEventListener("click", () => {
       tabs.forEach((t) => t.classList.remove("text-white", "font-semibold"));
@@ -31,14 +30,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // === On page load, set active bar under default active tab ===
   const initialActive = document.querySelector(".tab-link.text-white");
   if (initialActive && activeBar) {
     activeBar.style.transform = `translateX(${initialActive.offsetLeft}px)`;
     activeBar.style.width = `${initialActive.offsetWidth}px`;
   }
 
-  // === Open popup from FAB (mobile) ===
   const fab = document.getElementById("fab-notes");
   if (fab) {
     fab.addEventListener("click", () => {
@@ -46,7 +43,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // === Open popup from desktop button ===
   const desktopBtn = document.getElementById("add-note-desktop");
   if (desktopBtn) {
     desktopBtn.addEventListener("click", () => {
@@ -67,37 +63,26 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
 
- const groupNotesByWeek = (notes) => {
-  const weeks = {};
-  const formatter = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "America/Los_Angeles",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  });
+  const groupNotesByDate = (notes) => {
+    const groups = {};
+    const formatter = new Intl.DateTimeFormat("en-CA", {
+      timeZone: "America/Los_Angeles",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
 
-  notes.forEach((note) => {
-    const date = note.date || note.created_at;
-    const d = new Date(date);
+    notes.forEach((note) => {
+      const rawDate = note.date || note.created_at;
+      const parsed = new Date(rawDate);
+      const vegasDateStr = formatter.format(parsed); // "YYYY-MM-DD"
 
-    // Convert to Vegas date string like "2025-07-23"
-    const vegasStr = formatter.format(d);
-    const vegasDate = new Date(vegasStr + "T00:00:00");
+      if (!groups[vegasDateStr]) groups[vegasDateStr] = [];
+      groups[vegasDateStr].push(note);
+    });
 
-    // Get Sunday of that week
-    const sunday = new Date(vegasDate);
-    sunday.setDate(vegasDate.getDate() - vegasDate.getDay());
-
-    const weekKey = formatter.format(sunday); // "YYYY-MM-DD" for Vegas Sunday
-
-    if (!weeks[weekKey]) weeks[weekKey] = [];
-    weeks[weekKey].push(note);
-  });
-
-  return weeks;
-};
-
-
+    return groups;
+  };
 
   const createNoteCard = (note) => {
     const div = document.createElement("div");
@@ -157,21 +142,21 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const res = await fetch("https://avdevplanner.onrender.com/notes");
       allNotes = await res.json();
-      renderNotesByWeek();
+      renderNotesByDate();
     } catch (err) {
       console.error("Error loading notes:", err);
     }
   };
 
-  const renderNotesByWeek = () => {
-    const grouped = groupNotesByWeek(allNotes);
+  const renderNotesByDate = () => {
+    const grouped = groupNotesByDate(allNotes);
     notesContainer.innerHTML = "";
 
-    Object.entries(grouped).forEach(([week, notes]) => {
+    Object.entries(grouped).forEach(([dateStr, notes]) => {
       const group = document.createElement("div");
       group.className = "flex flex-col gap-3";
       group.innerHTML = `<h3 class="text-sm text-neutral-400 border-b border-neutral-700 pb-1">${formatPrettyDate(
-        week
+        dateStr
       )}</h3>`;
 
       const cardRow = document.createElement("div");
@@ -199,12 +184,12 @@ document.addEventListener("DOMContentLoaded", () => {
       btn.addEventListener("click", () => {
         const filtered = allNotes.filter((n) => n.tags?.includes(tag));
         notesContainer.innerHTML = "";
-        const grouped = groupNotesByWeek(filtered);
-        Object.entries(grouped).forEach(([week, notes]) => {
+        const grouped = groupNotesByDate(filtered);
+        Object.entries(grouped).forEach(([dateStr, notes]) => {
           const group = document.createElement("div");
           group.className = "flex flex-col gap-3";
           group.innerHTML = `<h3 class="text-sm text-neutral-400 border-b border-neutral-700 pb-1">${formatPrettyDate(
-            week
+            dateStr
           )}</h3>`;
           const row = document.createElement("div");
           setupSwipeContainer(row);
