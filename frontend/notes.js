@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let allNotes = [];
 
+  // === Tab logic ===
   tabs.forEach((tab) => {
     tab.addEventListener("click", () => {
       tabs.forEach((t) => t.classList.remove("text-white", "font-semibold"));
@@ -30,21 +31,28 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // === On page load, set active bar under default active tab ===
   const initialActive = document.querySelector(".tab-link.text-white");
-if (initialActive) {
-  activeBar.style.transform = `translateX(${initialActive.offsetLeft}px)`;
-  activeBar.style.width = `${initialActive.offsetWidth}px`;
-}
+  if (initialActive && activeBar) {
+    activeBar.style.transform = `translateX(${initialActive.offsetLeft}px)`;
+    activeBar.style.width = `${initialActive.offsetWidth}px`;
+  }
 
+  // === Open popup from FAB (mobile) ===
+  const fab = document.getElementById("fab-notes");
+  if (fab) {
+    fab.addEventListener("click", () => {
+      popup.classList.remove("hidden");
+    });
+  }
 
-  document.getElementById("fab-notes").addEventListener("click", () => {
-    popup.classList.remove("hidden");
-  });
-
-  document.getElementById("add-note-desktop").addEventListener("click", () => {
-  popup.classList.remove("hidden");
-});
-
+  // === Open popup from desktop button ===
+  const desktopBtn = document.getElementById("add-note-desktop");
+  if (desktopBtn) {
+    desktopBtn.addEventListener("click", () => {
+      popup.classList.remove("hidden");
+    });
+  }
 
   popup.addEventListener("click", (e) => {
     if (e.target === popup) popup.classList.add("hidden");
@@ -81,7 +89,11 @@ if (initialActive) {
     div.innerHTML = `
       <h3 class="font-semibold mb-1">${note.title}</h3>
       ${note.content ? `<p class="mb-1">${note.content}</p>` : ""}
-      ${(note.date || note.created_at) ? `<p><small>${formatPrettyDate(note.date || note.created_at)}</small></p>` : ""}
+      ${
+        note.date || note.created_at
+          ? `<p><small>${formatPrettyDate(note.date || note.created_at)}</small></p>`
+          : ""
+      }
     `;
 
     div.addEventListener("contextmenu", (e) => {
@@ -117,7 +129,8 @@ if (initialActive) {
       );
       container.style.overflow = "visible";
       container.style.display = "grid";
-      container.style.gridTemplateColumns = "repeat(auto-fit, minmax(200px, 1fr))";
+      container.style.gridTemplateColumns =
+        "repeat(auto-fit, minmax(200px, 1fr))";
       container.style.gap = "1rem";
     }
   };
@@ -139,7 +152,9 @@ if (initialActive) {
     Object.entries(grouped).forEach(([week, notes]) => {
       const group = document.createElement("div");
       group.className = "flex flex-col gap-3";
-      group.innerHTML = `<h3 class="text-sm text-neutral-400 border-b border-neutral-700 pb-1">${formatPrettyDate(week)}</h3>`;
+      group.innerHTML = `<h3 class="text-sm text-neutral-400 border-b border-neutral-700 pb-1">${formatPrettyDate(
+        week
+      )}</h3>`;
 
       const cardRow = document.createElement("div");
       setupSwipeContainer(cardRow);
@@ -161,7 +176,8 @@ if (initialActive) {
     tagSet.forEach((tag) => {
       const btn = document.createElement("button");
       btn.textContent = `#${tag}`;
-      btn.className = "bg-[#333] text-white px-2 py-1 rounded hover:bg-[#b91c1c]";
+      btn.className =
+        "bg-[#333] text-white px-2 py-1 rounded hover:bg-[#b91c1c]";
       btn.addEventListener("click", () => {
         const filtered = allNotes.filter((n) => n.tags?.includes(tag));
         notesContainer.innerHTML = "";
@@ -169,7 +185,9 @@ if (initialActive) {
         Object.entries(grouped).forEach(([week, notes]) => {
           const group = document.createElement("div");
           group.className = "flex flex-col gap-3";
-          group.innerHTML = `<h3 class="text-sm text-neutral-400 border-b border-neutral-700 pb-1">${formatPrettyDate(week)}</h3>`;
+          group.innerHTML = `<h3 class="text-sm text-neutral-400 border-b border-neutral-700 pb-1">${formatPrettyDate(
+            week
+          )}</h3>`;
           const row = document.createElement("div");
           setupSwipeContainer(row);
           notes.forEach((note) => row.appendChild(createNoteCard(note)));
@@ -202,13 +220,18 @@ if (initialActive) {
   };
 
   const showNoteOptions = (note) => {
-    alert(`Options for: ${note.title}\n(Pin/unpin, Delete, Add to Collection coming soon)`);
+    alert(
+      `Options for: ${note.title}\n(Pin/unpin, Delete, Add to Collection coming soon)`
+    );
   };
 
   saveBtn.addEventListener("click", async () => {
     const title = titleInput.value.trim();
     const content = contentInput.value.trim();
-    const tags = tagsInput.value.split(",").map((t) => t.trim()).filter((t) => t);
+    const tags = tagsInput.value
+      .split(",")
+      .map((t) => t.trim())
+      .filter((t) => t);
     const date = new Date().toISOString();
 
     if (!title && !content) return;
