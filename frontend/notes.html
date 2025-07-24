@@ -92,6 +92,20 @@
     <div id="collection-list" class="flex flex-col gap-4"></div>
   </div>
 
+<!-- Tags Section -->
+<div id="tags-tab" class="tab-content hidden p-4 text-white">
+  <div id="tag-popup" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 items-center justify-center">
+    <div class="bg-[#1f1f1f] rounded-lg p-4 w-[90%] max-w-xl shadow-xl text-white overflow-y-auto max-h-[80vh]">
+      <div class="flex justify-between items-center mb-2">
+        <h2 class="text-lg font-semibold">Tagged Notes</h2>
+        <button id="close-tag-popup" class="text-red-400 hover:text-red-600 text-xl">&times;</button>
+      </div>
+      <div id="tag-popup-notes" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+    </div>
+  </div>
+
+  <div id="tag-list" class="flex flex-wrap gap-2"></div>
+</div>
 
 
   <!-- Note Modal -->
@@ -199,5 +213,6 @@
 </button>
 <script src="notes.js"></script>
 <script src="nav.js"></script>
+<script src="tags.js"></script>
 </body>
 </html>

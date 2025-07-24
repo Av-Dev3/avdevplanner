@@ -8,8 +8,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const tabs = document.querySelectorAll(".tab-link");
   const contents = document.querySelectorAll(".tab-content");
   const activeBar = document.getElementById("active-tab-bar");
-  const tagList = document.getElementById("tag-list");
-  const collectionsContainer = document.getElementById("collection-list");
 
   let allNotes = [];
 
@@ -24,9 +22,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       activeBar.style.transform = `translateX(${tab.offsetLeft}px)`;
       activeBar.style.width = `${tab.offsetWidth}px`;
-
-      if (tabName === "tags") renderTags();
-      if (tabName === "collections") renderCollections();
     });
   });
 
@@ -211,11 +206,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const togglePin = async (note) => {
     try {
-      const res = await fetch(`https://avdevplanner.onrender.com/notes/${note.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...note, pinned: !note.pinned }),
-      });
+      const res = await fetch(
+        `https://avdevplanner.onrender.com/notes/${note.id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...note, pinned: !note.pinned }),
+        }
+      );
       if (!res.ok) throw new Error("Failed to toggle pin");
     } catch (err) {
       console.error("Pin error:", err);
@@ -225,64 +223,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const deleteNote = async (note) => {
     if (!confirm(`Delete note "${note.title}"?`)) return;
     try {
-      const res = await fetch(`https://avdevplanner.onrender.com/notes/${note.id}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(
+        `https://avdevplanner.onrender.com/notes/${note.id}`,
+        {
+          method: "DELETE",
+        }
+      );
       if (!res.ok) throw new Error("Delete failed");
     } catch (err) {
       console.error("Delete error:", err);
     }
-  };
-
-  const renderTags = () => {
-    const tagSet = new Set();
-    allNotes.forEach((n) => (n.tags || []).forEach((t) => tagSet.add(t)));
-
-    tagList.innerHTML = "";
-    tagSet.forEach((tag) => {
-      const btn = document.createElement("button");
-      btn.textContent = `#${tag}`;
-      btn.className =
-        "bg-[#333] text-white px-2 py-1 rounded hover:bg-[#b91c1c]";
-      btn.addEventListener("click", () => {
-        const filtered = allNotes.filter((n) => n.tags?.includes(tag));
-        notesContainer.innerHTML = "";
-        const grouped = groupNotesByDate(filtered);
-        Object.entries(grouped).forEach(([dateStr, notes]) => {
-          const group = document.createElement("div");
-          group.className = "flex flex-col gap-3";
-          group.innerHTML = `<h3 class="text-sm text-neutral-400 border-b border-neutral-700 pb-1">${formatPrettyDate(
-            dateStr
-          )}</h3>`;
-          const row = document.createElement("div");
-          setupSwipeContainer(row);
-          notes.forEach((note) => row.appendChild(createNoteCard(note)));
-          group.appendChild(row);
-          notesContainer.appendChild(group);
-        });
-      });
-      tagList.appendChild(btn);
-    });
-  };
-
-  const renderCollections = () => {
-    const grouped = {};
-    allNotes.forEach((note) => {
-      const col = note.collection || "Unassigned";
-      if (!grouped[col]) grouped[col] = [];
-      grouped[col].push(note);
-    });
-
-    collectionsContainer.innerHTML = "";
-    Object.entries(grouped).forEach(([name, notes]) => {
-      const card = document.createElement("div");
-      card.className = "bg-[#2b2b2b] p-4 rounded-lg shadow text-white";
-      card.innerHTML = `<h4 class='font-semibold mb-1'>${name}</h4><p>${notes.length} notes</p>`;
-      card.addEventListener("click", () => {
-        // Optional: view that collection’s notes
-      });
-      collectionsContainer.appendChild(card);
-    });
   };
 
   saveBtn.addEventListener("click", async () => {
