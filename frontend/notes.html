@@ -56,19 +56,81 @@
     </div>
   </div>
 </header>
-<!-- Navbar remains outside this -->
-<main id="notes-wrapper">
-  <h2>My Notes</h2>
-  <button id="toggle-note-editor">Create New Note</button>
+<main id="notes-wrapper" class="max-w-4xl mx-auto px-4 pt-2 pb-4">
 
-  <div class="note-input-editor hidden">
-    <input type="text" id="note-title" placeholder="Title" />
-    <textarea id="note-content" placeholder="Write your note here..."></textarea>
-    <button id="save-note-btn">Save Note</button>
+  <!-- ✅ Fully centered header using flexbox -->
+  <div class="w-full flex justify-center items-center">
+    <h2 class="text-xl font-semibold text-white">My Notes</h2>
   </div>
 
-  <div id="notes-by-date-container"></div>
+  <!-- ✅ Tab Buttons with red underline bar -->
+  <div class="relative">
+    <div class="flex justify-around border-b border-neutral-700 text-sm text-neutral-400 mt-2 mb-2">
+<button id="tab-notes" class="tab-link py-2 border-b-2 border-transparent text-white font-semibold">Notes</button>
+      <button id="tab-tags" class="tab-link py-2 border-b-2 border-transparent hover:text-white">Tags</button>
+      <button id="tab-collections" class="tab-link py-2 border-b-2 border-transparent hover:text-white">Collections</button>
+    </div>
+    <!-- Red underline bar that moves -->
+    <div id="active-tab-bar" class="absolute bottom-0 h-[2px] bg-red-600 transition-all duration-300 ease-in-out"></div>
+  </div>
+
+  <!-- Tab: Notes -->
+  <div id="notes-tab" class="tab-content">
+    <div id="notes-by-week-container" class="flex flex-col gap-4"></div>
+  </div>
+
+  <!-- Tab: Tags -->
+  <div id="tags-tab" class="tab-content hidden">
+    <div id="tag-list" class="flex flex-wrap gap-3 text-sm text-neutral-300"></div>
+  </div>
+
+  <!-- Tab: Collections -->
+  <div id="collections-tab" class="tab-content hidden">
+    <div id="collection-list" class="flex flex-col gap-4"></div>
+  </div>
+
+  <!-- Note Modal -->
+  <div id="noteFormPopup" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 hidden">
+    <div class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-6 w-[90%] max-w-xl flex flex-col gap-4 shadow-lg">
+      <h3 class="text-lg font-semibold text-white">Create New Note</h3>
+
+      <input type="text" id="note-title" placeholder="Note Title" class="bg-[#121212] border border-[#333] px-4 py-2 rounded-lg focus:outline-none" />
+
+      <textarea id="note-content" placeholder="Write your note..." class="bg-[#121212] border border-[#333] px-4 py-2 rounded-lg min-h-[200px] resize-y"></textarea>
+
+      <input type="text" id="note-tags" placeholder="Tags (comma-separated)" class="bg-[#121212] border border-[#333] px-4 py-2 rounded-lg focus:outline-none" />
+
+      <button id="save-note-btn" class="bg-[#b91c1c] text-white px-4 py-2 rounded-lg hover:bg-red-700 self-start">Save Note</button>
+    </div>
+  </div>
+
 </main>
+
+
+
+</main>
+
+<!-- Note Options Popup -->
+<div id="note-options-popup" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden">
+  <div class="bg-[#1f1f1f] text-white rounded-lg p-6 w-[90%] max-w-sm space-y-4">
+    <h3 class="text-lg font-semibold">Note Options</h3>
+    <button id="pin-note" class="w-full bg-neutral-800 px-4 py-2 rounded">Pin/Unpin</button>
+    <button id="delete-note" class="w-full bg-neutral-800 px-4 py-2 rounded text-red-400">Delete</button>
+    <button id="add-to-collection" class="w-full bg-neutral-800 px-4 py-2 rounded">Add to Collection</button>
+    <button id="close-options-popup" class="w-full bg-[#b91c1c] px-4 py-2 rounded">Close</button>
+  </div>
+</div>
+
+<!-- Collection Prompt Popup -->
+<div id="collection-prompt-popup" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden">
+  <div class="bg-[#1f1f1f] text-white rounded-lg p-6 w-[90%] max-w-sm space-y-4">
+    <h3 class="text-lg font-semibold">Add to Collection</h3>
+    <select id="collection-select" class="w-full bg-[#121212] border border-[#444] rounded px-3 py-2"></select>
+    <input type="text" id="new-collection-name" placeholder="Or enter new collection name" class="w-full bg-[#121212] border border-[#444] rounded px-3 py-2" />
+    <button id="confirm-collection" class="w-full bg-[#b91c1c] px-4 py-2 rounded">Confirm</button>
+    <button id="cancel-collection" class="w-full bg-neutral-700 px-4 py-2 rounded">Cancel</button>
+  </div>
+</div>
 
 
 </div>

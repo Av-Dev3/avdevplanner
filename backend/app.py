@@ -292,20 +292,34 @@ def delete_log(date, index):
         return jsonify({"message": "Log deleted"}), 200
     return jsonify({"error": "Log not found"}), 404
 
-# === NOTES ===
+# === NOTES ROUTES ===
 @app.route('/notes', methods=['GET'])
 def get_notes():
     notes = load_json(NOTE_FILE, [])
     for note in notes:
-        raw_date = note.get("date") or note.get("created_at")
-        try:
-            dt = datetime.strptime(raw_date, "%Y-%m-%d")
-            vegas_time = dt.replace(tzinfo=ZoneInfo("America/Los_Angeles"))
-            note["prettyDate"] = vegas_time.strftime("%B %-d, %Y")
-            note["prettyTime"] = vegas_time.strftime("%-I:%M %p")
-        except:
-            note["prettyDate"] = raw_date
+        date_str = note.get("date") or note.get("created_at", "")
+        date_obj = None
+
+        if date_str:
+            try:
+                if "T" in date_str:
+                    date_obj = parse_datetime_safe(date_str)
+                else:
+                    date_obj = datetime.strptime(date_str, "%Y-%m-%d").replace(tzinfo=ZoneInfo("America/Los_Angeles"))
+            except Exception as e:
+                print("Note date parse error:", e)
+
+        if date_obj:
+            if date_obj.tzinfo is None:
+                date_obj = date_obj.replace(tzinfo=ZoneInfo("America/Los_Angeles"))
+            else:
+                date_obj = date_obj.astimezone(ZoneInfo("America/Los_Angeles"))
+            note["prettyDate"] = format_pretty_date(date_obj)
+            note["prettyTime"] = format_pretty_time(date_obj)
+        else:
+            note["prettyDate"] = date_str
             note["prettyTime"] = ""
+
     return jsonify(notes)
 
 @app.route('/notes', methods=['POST'])
@@ -317,7 +331,9 @@ def add_note():
         "content": data.get("content", ""),
         "date": data.get("date", ""),
         "pinned": data.get("pinned", False),
-        "created_at": data.get("created_at", "")
+        "created_at": data.get("created_at", ""),
+        "tags": data.get("tags", []),
+        "notebook": data.get("notebook", "")
     })
     save_json(NOTE_FILE, notes)
     return jsonify({"message": "Note added"}), 201
@@ -330,6 +346,8 @@ def update_note(index):
         notes[index]['title'] = updated.get('title', notes[index]['title'])
         notes[index]['content'] = updated.get('content', notes[index]['content'])
         notes[index]['pinned'] = updated.get('pinned', notes[index].get('pinned', False))
+        notes[index]['tags'] = updated.get('tags', notes[index].get('tags', []))
+        notes[index]['notebook'] = updated.get('notebook', notes[index].get('notebook', ""))
         save_json(NOTE_FILE, notes)
         return jsonify({"message": "Note updated"}), 200
     return jsonify({"error": "Note not found"}), 404
@@ -538,3 +556,27 @@ def update_lesson(lesson_id):
 @app.route('/schedule', methods=['GET'])
 def get_schedule():
     return jsonify(load_json(SCHEDULE_FILE, []))
+
+# === COLLECTIONS ===
+@app.route('/collections', methods=['GET'])
+def get_collections():
+    return jsonify(load_json("collections.json", {}))
+
+@app.route('/collections', methods=['POST'])
+def add_to_collection():
+    data = request.json
+    collection = data.get("collection")
+    note_id = data.get("note_id")
+
+    if not collection or note_id is None:
+        return jsonify({"error": "Missing data"}), 400
+
+    collections = load_json("collections.json", {})
+    if collection not in collections:
+        collections[collection] = []
+
+    if note_id not in collections[collection]:
+        collections[collection].append(note_id)
+
+    save_json("collections.json", collections)
+    return jsonify({"message": "Added to collection"}), 200
