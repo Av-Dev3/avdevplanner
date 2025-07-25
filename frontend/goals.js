@@ -59,7 +59,8 @@ async function loadGoals() {
     }
 
     const grouped = {};
-    goals.forEach((goal) => {
+    goals.forEach((goal, index) => {
+      goal.index = index; // Inject index
       const dateKey = parseNaturalDate(goal.date);
       if (!grouped[dateKey]) grouped[dateKey] = [];
       grouped[dateKey].push(goal);
@@ -97,7 +98,7 @@ async function loadGoals() {
           `;
 
           const btnGroup = document.createElement("div");
-btnGroup.className = "flex flex-wrap gap-2 mt-3";
+          btnGroup.className = "flex flex-wrap gap-2 mt-3";
 
           const completeBtn = document.createElement("button");
           completeBtn.textContent = goal.completed ? "Undo Complete" : "Mark Complete";
@@ -106,7 +107,7 @@ btnGroup.className = "flex flex-wrap gap-2 mt-3";
           completeBtn.addEventListener("click", async () => {
             const updated = { ...goal, completed: !goal.completed };
             const res = await fetch(
-              `https://avdevplanner.onrender.com/goals/${goal.id}`,
+              `https://avdevplanner.onrender.com/goals/${goal.index}`,
               {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
@@ -125,7 +126,7 @@ btnGroup.className = "flex flex-wrap gap-2 mt-3";
             const confirmDelete = confirm("Delete this goal?");
             if (!confirmDelete) return;
             const res = await fetch(
-              `https://avdevplanner.onrender.com/goals/${goal.id}`,
+              `https://avdevplanner.onrender.com/goals/${goal.index}`,
               { method: "DELETE" }
             );
             if (res.ok) loadGoals();
@@ -149,7 +150,7 @@ btnGroup.className = "flex flex-wrap gap-2 mt-3";
                 date: parseNaturalDate(newDate.trim()),
               };
               const res = await fetch(
-                `https://avdevplanner.onrender.com/goals/${goal.id}`,
+                `https://avdevplanner.onrender.com/goals/${goal.index}`,
                 {
                   method: "PUT",
                   headers: { "Content-Type": "application/json" },

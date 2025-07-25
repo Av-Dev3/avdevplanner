@@ -63,7 +63,9 @@ async function loadTodayTasks() {
   try {
     const res = await fetch("https://avdevplanner.onrender.com/tasks");
     const tasks = await res.json();
-    const todayTasks = tasks.filter((t) => t.date === todayStr);
+    const todayTasks = tasks
+      .map((task, index) => ({ ...task, index }))
+      .filter((t) => t.date === todayStr);
     tasksContainer.innerHTML = "";
 
     if (!todayTasks.length) {
@@ -72,19 +74,26 @@ async function loadTodayTasks() {
     }
 
     todayTasks.forEach((task) => {
-      const card = createFullCard(task.text || task.title || "Untitled Task", task.notes, task.prettyDate, task.time);
+      const card = createFullCard(
+        task.text || task.title || "Untitled Task",
+        task.notes,
+        task.prettyDate,
+        task.time
+      );
 
       const completeBtn = document.createElement("button");
       completeBtn.textContent = task.completed ? "Undo Complete" : "Mark Complete";
       completeBtn.className = "text-xs bg-purple-600 hover:bg-purple-700 text-white px-2 py-1 rounded mt-2";
       completeBtn.addEventListener("click", async () => {
-        const updated = { ...task, completed: !task.completed };
-        const res = await fetch(`https://avdevplanner.onrender.com/tasks/${task.id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updated),
-        });
-        if (res.ok) loadTodayTasks();
+        try {
+          const res = await fetch(`https://avdevplanner.onrender.com/tasks/${task.index}/toggle`, {
+            method: "PATCH",
+          });
+          if (res.ok) loadTodayTasks();
+          else console.error("Failed to update task");
+        } catch (err) {
+          console.error("Task complete error:", err);
+        }
       });
 
       card.appendChild(completeBtn);
@@ -100,7 +109,9 @@ async function loadGoals() {
   try {
     const res = await fetch("https://avdevplanner.onrender.com/goals");
     const goals = await res.json();
-    const todayGoals = goals.filter((g) => g.date === todayStr);
+    const todayGoals = goals
+      .map((goal, index) => ({ ...goal, index }))
+      .filter((g) => g.date === todayStr);
     goalsContainer.innerHTML = "";
 
     if (!todayGoals.length) {
@@ -116,12 +127,13 @@ async function loadGoals() {
       completeBtn.className = "text-xs bg-purple-600 hover:bg-purple-700 text-white px-2 py-1 rounded mt-2";
       completeBtn.addEventListener("click", async () => {
         const updated = { ...goal, completed: !goal.completed };
-        const res = await fetch(`https://avdevplanner.onrender.com/goals/${goal.id}`, {
+        const res = await fetch(`https://avdevplanner.onrender.com/goals/${goal.index}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(updated),
         });
         if (res.ok) loadGoals();
+        else console.error("Failed to update goal");
       });
 
       card.appendChild(completeBtn);
