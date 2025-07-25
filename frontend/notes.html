@@ -98,16 +98,19 @@
 </div>
 
 
-  <!-- Tab: Collections -->
-  <div id="collections-tab" class="tab-content hidden">
-    <div class="mb-4">
-  <button id="create-collection-btn" class="bg-[#b91c1c] hover:bg-red-700 text-white px-4 py-2 rounded">
-    + New Collection
-  </button>
-</div>
-
-    <div id="collection-list" class="flex flex-col gap-4"></div>
+<!-- Tab: Collections -->
+<div id="collections-tab" class="tab-content hidden">
+  <div class="mb-4">
+    <button id="create-collection-btn" class="bg-[#b91c1c] hover:bg-red-700 text-white px-4 py-2 rounded">
+      + New Collection
+    </button>
   </div>
+
+  <div id="collection-list"
+       class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <!-- Collection cards injected here -->
+  </div>
+</div>
 
 
 
