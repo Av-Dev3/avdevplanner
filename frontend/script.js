@@ -201,7 +201,7 @@ if (container) {
 
         const completeBtn = document.createElement("button");
         completeBtn.textContent = task.completed ? "Mark Incomplete" : "Mark Complete";
-        completeBtn.className = "text-xs bg-green-700 px-2 py-1 rounded";
+        completeBtn.className = "text-xs bg-purple-600 px-2 rounded";
         completeBtn.addEventListener("click", async () => {
           await fetch(`https://avdevplanner.onrender.com/tasks/${task.index}/toggle`, {
             method: "PATCH"
