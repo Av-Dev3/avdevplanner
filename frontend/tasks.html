@@ -58,30 +58,31 @@
     </div>
   </div>
 </header>
+<!-- Task Form Popup Container -->
+<div id="task-form-popup" class="hidden fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+  <form id="task-form" class="bg-white dark:bg-zinc-900 p-4 rounded-lg w-full max-w-md">
+    <label for="task-text">Task</label>
+    <input type="text" id="task-text" required>
 
-<form id="task-form">
+    <label for="task-date">Date</label>
+    <input type="date" id="task-date" required>
 
-  <label for="task-text">Task</label>
-  <input type="text" id="task-text" required>
+    <label for="task-time">Time</label>
+    <input type="time" id="task-time" required>
 
-  <label for="task-date">Date</label>
-  <input type="date" id="task-date" required>
+    <label for="task-notes">Task Notes</label>
+    <textarea id="task-notes" name="task-notes" rows="4" placeholder="Add extra details..."></textarea>
 
-  <label for="task-time">Time</label>
-  <input type="time" id="task-time" required>
+    <button type="submit">Add Task</button>
+  </form>
+</div>
 
-  <label for="task-notes">Task Notes</label>
-  <textarea id="task-notes" name="task-notes" rows="4" placeholder="Add extra details..."></textarea>
-
-  <button type="submit">Add Task</button>
-</form>
   <div id="datetime-bar">
     <p id="current-date"></p>
     <p id="current-time"></p>
   </div>
   <div id="task-container"></div>
-  <div id="task-history">
-  <h2 style="text-align: center; margin-top: 40px;">Task History</h2>
+  
 </div>
 </div>
 <footer class="footer">
@@ -136,6 +137,13 @@
       </a>
     </nav>
   </div>
+
+  <button
+  id="add-task-desktop"
+  class="hidden md:flex items-center justify-center fixed bottom-[70px] right-6 bg-[#b91c1c] hover:bg-red-700 text-white w-12 h-12 rounded-full shadow-lg z-40">
+  +
+</button>
+
 
   <script  type="module" src="script.js"></script>
   <script src="nav.js"></script>

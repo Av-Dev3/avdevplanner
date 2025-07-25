@@ -4,8 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const siteLinksDrawer = document.getElementById('siteLinksDrawer');
   const isHome = window.location.pathname.includes('index.html') || window.location.pathname === '/';
   const path = window.location.pathname;
-const isNotes = path.includes('notes') && !path.includes('notes.css');
-
+  const isNotes = path.includes('notes') && !path.includes('notes.css');
+  const isTasks = path.includes('tasks') && !path.includes('tasks.css');
 
   let isDrawerOpen = false;
   let longPressTriggered = false;
@@ -36,14 +36,22 @@ const isNotes = path.includes('notes') && !path.includes('notes.css');
           if (e.target === notePopup) notePopup.classList.add('hidden');
         });
       }
+    } else if (isTasks) {
+      const taskPopup = document.getElementById('task-form-popup');
+      if (taskPopup) {
+        taskPopup.classList.remove('hidden');
+        taskPopup.addEventListener('click', (e) => {
+          if (e.target === taskPopup) taskPopup.classList.add('hidden');
+        });
+      }
     } else if (siteLinksDrawer) {
       siteLinksDrawer.classList.toggle('drawer-visible', isDrawerOpen);
       drawer?.classList.remove('drawer-visible');
     }
   });
 
-  // === Long press for homepage and notes page ===
-  if ((isHome || isNotes) && siteLinksDrawer) {
+  // === Long press for homepage, notes page, or tasks page ===
+  if ((isHome || isNotes || isTasks) && siteLinksDrawer) {
     const startLongPress = () => {
       pressTimer = setTimeout(() => {
         longPressTriggered = true;

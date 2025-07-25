@@ -25,20 +25,24 @@ function parseNaturalDate(dateStr) {
   return null;
 }
 
-// === FORM TOGGLE ===
-if (form) {
-  form.style.display = "none";
+// === DESKTOP FAB-LIKE BUTTON TO OPEN POPUP ===
+const addTaskDesktopBtn = document.getElementById("add-task-desktop");
+const taskFormPopup = document.getElementById("task-form-popup");
 
-  const toggleBtn = document.createElement("button");
-  toggleBtn.textContent = "Create New Task";
-  toggleBtn.id = "toggle-task-form";
-  toggleBtn.style.display = "block";
-  toggleBtn.addEventListener("click", () => {
-    form.style.display = form.style.display === "none" ? "flex" : "none";
+if (addTaskDesktopBtn && taskFormPopup) {
+  addTaskDesktopBtn.addEventListener("click", () => {
+    taskFormPopup.classList.remove("hidden");
   });
 
-  form.parentNode.insertBefore(toggleBtn, form);
+  taskFormPopup.addEventListener("click", (e) => {
+    if (e.target === taskFormPopup) {
+      taskFormPopup.classList.add("hidden");
+    }
+  });
+}
 
+// === FORM SUBMIT ===
+if (form) {
   const textInput = document.getElementById("task-text");
   const dateInput = document.getElementById("task-date");
   const timeInput = document.getElementById("task-time");
@@ -97,12 +101,11 @@ if (container) {
     const tasksByDate = {};
     filteredTasks.forEach((task) => {
       const actualIndex = tasks.findIndex(t => t.text === task.text && parseNaturalDate(t.date) === task.date && t.time === task.time);
-     const normalizedTask = {
-  ...task,
-  index: actualIndex,
-  text: task.text?.trim() || task.title?.trim() || "(No Title)"
-};
-
+      const normalizedTask = {
+        ...task,
+        index: actualIndex,
+        text: task.text?.trim() || task.title?.trim() || "(No Title)"
+      };
 
       if (!tasksByDate[task.date]) tasksByDate[task.date] = [];
       tasksByDate[task.date].push(normalizedTask);
