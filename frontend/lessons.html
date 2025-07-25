@@ -48,31 +48,10 @@
         </ul>
       </nav>
     </div>
-  </div>
 </header>
 <section class="pt-0 p-4 pb-20 max-w-screen-xl mx-auto">
-  <h2 class="text-xl font-bold text-white mb-4">Weekly Lessons</h2>
+  <h2 class="text-xl font-bold text-white pt-0 mb-4">Weekly Lessons</h2>
 
-  <!-- Desktop Add Lesson Button -->
-  <button
-    id="add-lesson-desktop"
-    class="hidden md:flex items-center justify-center fixed bottom-[70px] right-6 bg-[#b91c1c] hover:bg-red-700 text-white w-12 h-12 rounded-full shadow-lg z-40">
-    +
-  </button>
-
-  <!-- Lessons Grouped by Date -->
-  <div id="lessons-container" class="flex flex-col gap-6 mt-8">
-    <!-- JS will insert: -->
-    <!-- 
-      <div>
-        <h3 class="text-lg font-semibold text-white mb-2">Monday, July 22</h3>
-        <div class="grid grid-cols-2 xl:grid-cols-5 gap-4">
-          <!-- lesson cards here -->
-        </div>
-      </div> 
-    -->
-  </div>
-</section>
 
 <!-- Form popup wrapper -->
 <div id="lesson-form-popup" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center">
@@ -98,9 +77,28 @@
 </div>
 
 
+  <!-- Desktop Add Lesson Button -->
+  <button
+    id="add-lesson-desktop"
+    class="hidden md:flex items-center justify-center fixed bottom-[70px] right-6 bg-[#b91c1c] hover:bg-red-700 text-white w-12 h-12 rounded-full shadow-lg z-40">
+    +
+  </button>
 
-
+  <!-- Lessons Grouped by Date -->
+  <div id="lessons-container" class="flex flex-col gap-6 mt-8">
+    <!-- JS will insert: -->
+    <!-- 
+      <div>
+        <h3 class="text-lg font-semibold text-white mb-2">Monday, July 22</h3>
+        <div class="grid grid-cols-2 xl:grid-cols-5 gap-4">
+          <!-- lesson cards here -->
+        </div>
+      </div> 
   </div>
+</section>
+
+
+</div>
   <footer class="footer">
     <span>Eat</span>
     <span>Sleep</span>
