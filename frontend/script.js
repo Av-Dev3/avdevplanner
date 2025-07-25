@@ -182,7 +182,7 @@ if (container) {
         const subForm = document.createElement("form");
         subForm.className = "flex flex-wrap gap-2 mt-3";
         subForm.innerHTML = `
-          <input type="text" placeholder="New subtask..." class="flex-1 px-2 py-1 rounded bg-zinc-700 text-white text-sm" required>
+          <input type="text" placeholder="New subtask..." class="w-full px-2 py-1 rounded bg-zinc-700 text-white text-sm" required>
           <button type="submit" class="bg-red-700 px-2 rounded text-sm">Add</button>
         `;
         subForm.addEventListener("submit", async (e) => {
