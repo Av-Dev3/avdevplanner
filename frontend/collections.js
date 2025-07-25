@@ -37,7 +37,8 @@ document.addEventListener("DOMContentLoaded", () => {
     collectionMap.forEach((notes, notebook) => {
       const card = document.createElement("div");
       card.className =
-        "bg-[#1f1f1f] rounded-lg shadow text-white cursor-pointer collection-card flex w-36 h-36 sm:w-40 sm:h-40 hover:shadow-lg transition-all overflow-hidden";
+  "bg-[#1f1f1f] rounded-lg shadow text-white cursor-pointer collection-card flex w-36 h-36 sm:w-40 sm:h-40 transition-all transform hover:-translate-y-1 hover:shadow-[0_4px_12px_rgba(76,142,218,0.35)] overflow-hidden";
+
       card.dataset.notebook = notebook;
 
       card.innerHTML = `
