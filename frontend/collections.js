@@ -55,7 +55,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const name = prompt("Enter new collection name:");
     if (!name) return;
 
-    // Save to localStorage so we remember even if empty
     const saved = JSON.parse(localStorage.getItem("emptyCollections") || "[]");
     if (!saved.includes(name)) {
       saved.push(name);
@@ -90,14 +89,14 @@ document.addEventListener("DOMContentLoaded", () => {
           <h2 class="text-lg font-semibold">Collection: ${notebook}</h2>
           <button id="close-collection-popup" class="text-red-400 hover:text-red-600 text-xl">&times;</button>
         </div>
-        <div class="flex flex-col gap-3">
+        <div class="flex flex-col gap-3" id="collection-popup-notes">
           ${
             notes.length === 0
               ? `<p class="text-sm text-gray-400">No notes in this collection.</p>`
               : notes
                   .map(
-                    (note) => `
-              <div class="bg-[#2b2b2b] p-3 rounded shadow text-sm">
+                    (note, i) => `
+              <div class="bg-[#2b2b2b] p-3 rounded shadow text-sm cursor-pointer collection-note-card" data-index="${i}">
                 <h4 class="font-semibold">${note.title}</h4>
                 ${
                   note.content
@@ -118,6 +117,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById("close-collection-popup").addEventListener("click", () => {
       popup.remove();
+    });
+
+    // === Note click event for preview popup ===
+    popup.querySelectorAll(".collection-note-card").forEach((noteCard, i) => {
+      noteCard.addEventListener("click", () => {
+        const note = notes[i];
+        document.getElementById("collection-popup-title").textContent = note.title || "(No Title)";
+        document.getElementById("collection-popup-content").textContent = note.content || "";
+        document.getElementById("collection-popup-tags").textContent = note.tags?.length
+          ? `Tags: ${note.tags.join(", ")}`
+          : "";
+        document.getElementById("collection-note-preview").classList.remove("hidden");
+      });
     });
   };
 

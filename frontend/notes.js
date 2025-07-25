@@ -95,6 +95,18 @@ document.addEventListener("DOMContentLoaded", () => {
       showNoteOptions(note, e.clientX, e.clientY);
     });
 
+    // ⬇️ Add note preview popup on click
+    div.addEventListener("click", () => {
+      document.getElementById("popup-note-title").textContent =
+        note.title || "(No Title)";
+      document.getElementById("popup-note-content").textContent =
+        note.content || "";
+      document.getElementById("popup-note-tags").textContent = note.tags?.length
+        ? `Tags: ${note.tags.join(", ")}`
+        : "";
+      document.getElementById("note-preview-popup").classList.remove("hidden");
+    });
+
     return div;
   };
 
@@ -170,7 +182,9 @@ document.addEventListener("DOMContentLoaded", () => {
     popup.style.left = `${x}px`;
 
     popup.innerHTML = `
-      <button class="block w-full text-left px-2 py-1 hover:bg-[#b91c1c]" data-action="pin">${note.pinned ? "Unpin" : "Pin"}</button>
+      <button class="block w-full text-left px-2 py-1 hover:bg-[#b91c1c]" data-action="pin">${
+        note.pinned ? "Unpin" : "Pin"
+      }</button>
       <button class="block w-full text-left px-2 py-1 hover:bg-[#b91c1c]" data-action="delete">Delete</button>
       <button class="block w-full text-left px-2 py-1 hover:bg-[#b91c1c]" data-action="add-to-collection">Add to Collection</button>
     `;

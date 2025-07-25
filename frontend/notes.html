@@ -160,6 +160,28 @@
 
 
 </div>
+
+<!-- Note Preview Popup (for Notes Tab) -->
+<div id="note-preview-popup" class="fixed inset-0 bg-black bg-opacity-60 z-50 hidden flex items-center justify-center p-4">
+  <div class="bg-[#1f1f1f] rounded-lg shadow-lg p-6 max-w-lg w-full text-white relative">
+    <button class="absolute top-2 right-2 text-white hover:text-red-400" onclick="document.getElementById('note-preview-popup').classList.add('hidden')">&times;</button>
+    <h3 id="popup-note-title" class="text-xl font-semibold mb-2"></h3>
+    <p id="popup-note-content" class="mb-3 whitespace-pre-wrap"></p>
+    <p id="popup-note-tags" class="text-sm text-neutral-400"></p>
+  </div>
+</div>
+
+<!-- Note Preview Popup (for Collections Tab) -->
+<div id="collection-note-preview" class="fixed inset-0 bg-black bg-opacity-60 z-50 hidden flex items-center justify-center p-4">
+  <div class="bg-[#1f1f1f] rounded-lg shadow-lg p-6 max-w-lg w-full text-white relative">
+    <button class="absolute top-2 right-2 text-white hover:text-red-400" onclick="document.getElementById('collection-note-preview').classList.add('hidden')">&times;</button>
+    <h3 id="collection-popup-title" class="text-xl font-semibold mb-2"></h3>
+    <p id="collection-popup-content" class="mb-3 whitespace-pre-wrap"></p>
+    <p id="collection-popup-tags" class="text-sm text-neutral-400"></p>
+  </div>
+</div>
+
+
 <footer class="footer">
     <span>Eat</span>
     <span>Sleep</span>
