@@ -38,15 +38,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
     collectionMap.forEach((notes, notebook) => {
       const card = document.createElement("div");
-      card.className = "bg-[#1f1f1f] rounded p-4 shadow text-white cursor-pointer collection-card";
-      card.dataset.notebook = notebook;
+card.className =
+  "bg-[#1f1f1f] rounded-lg shadow text-white cursor-pointer collection-card flex w-36 h-36 sm:w-40 sm:h-40 hover:shadow-lg transition-all overflow-hidden";
 
-      card.innerHTML = `
-        <h3 class="text-lg font-semibold">${notebook || "Untitled"}</h3>
-        <p class="text-sm text-gray-400">${notes.length} note${notes.length !== 1 ? "s" : ""}</p>
-      `;
+card.dataset.notebook = notebook;
 
-      collectionList.appendChild(card);
+card.innerHTML = `
+  <div class="bg-purple-600 w-2 h-full"></div>
+  <div class="flex flex-col justify-between p-3 w-full">
+    <div class="flex items-center gap-2">
+      <svg class="w-5 h-5 text-purple-400" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M5 4v16h14V4H5zm2 2h10v12H7V6z"/>
+      </svg>
+      <h3 class="text-md font-semibold break-words">${notebook || "Untitled"}</h3>
+    </div>
+    <p class="text-xs text-gray-400 mt-auto">${notes.length} note${notes.length !== 1 ? "s" : ""}</p>
+  </div>
+`;
+
+collectionList.appendChild(card);
+
     });
   };
 
