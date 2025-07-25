@@ -25,7 +25,7 @@ function parseNaturalDate(dateStr) {
   return null;
 }
 
-// === DESKTOP FAB-LIKE BUTTON TO OPEN POPUP ===
+// === DESKTOP POPUP TRIGGER ===
 const addTaskDesktopBtn = document.getElementById("add-task-desktop");
 const taskFormPopup = document.getElementById("task-form-popup");
 
@@ -48,7 +48,7 @@ if (form) {
   const timeInput = document.getElementById("task-time");
   const notesInput = document.getElementById("task-notes");
 
-  form.addEventListener("submit", async function (e) {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const newTask = {
@@ -100,7 +100,12 @@ if (container) {
 
     const tasksByDate = {};
     filteredTasks.forEach((task) => {
-      const actualIndex = tasks.findIndex(t => t.text === task.text && parseNaturalDate(t.date) === task.date && t.time === task.time);
+      const actualIndex = tasks.findIndex(t =>
+        t.text === task.text &&
+        parseNaturalDate(t.date) === task.date &&
+        t.time === task.time
+      );
+
       const normalizedTask = {
         ...task,
         index: actualIndex,
@@ -118,8 +123,7 @@ if (container) {
     if (selectedDate) {
       const viewAllBtn = document.createElement("button");
       viewAllBtn.textContent = "View All Tasks";
-      viewAllBtn.id = "view-all-btn";
-      viewAllBtn.style.marginBottom = "1rem";
+      viewAllBtn.className = "mb-4 bg-gray-800 text-white px-4 py-2 rounded";
       viewAllBtn.addEventListener("click", () => {
         localStorage.removeItem("selectedDate");
         location.reload();
@@ -129,37 +133,37 @@ if (container) {
 
     sortedDates.forEach((date) => {
       const groupDiv = document.createElement("div");
-      groupDiv.className = "task-date-group";
+      groupDiv.className = "mb-8";
 
       const heading = document.createElement("h2");
-      heading.className = "task-date-heading";
+      heading.className = "text-xl font-semibold text-white mb-4";
       heading.textContent = formatDate(date);
       groupDiv.appendChild(heading);
 
       const grid = document.createElement("div");
-      grid.className = "task-grid";
+      grid.className = "grid grid-cols-2 md:grid-cols-5 gap-4";
 
       tasksByDate[date].forEach((task) => {
-        const taskDiv = document.createElement("div");
-        taskDiv.classList.add("task-card");
+        const card = document.createElement("div");
+        card.className =
+          "bg-zinc-800 text-white rounded-lg p-4 shadow-md flex flex-col gap-2";
 
-        taskDiv.innerHTML = `
-          <h3>${task.text}</h3>
-          <p><strong>Date:</strong> ${formatDate(task.date)}</p>
-          <p><strong>Time:</strong> ${formatTime(task.time)}</p>
-          ${task.notes ? `<p><strong>Notes:</strong> ${task.notes}</p>` : ""}
-          <p><strong>Status:</strong> ${task.completed ? "✅ Done" : "⏳ Not done"}</p>
+        card.innerHTML = `
+          <h3 class="text-lg font-semibold">${task.text}</h3>
+          <p class="text-sm text-zinc-400">${formatTime(task.time)}</p>
+          ${task.notes ? `<p class="text-sm">${task.notes}</p>` : ""}
+          <p class="text-sm">${task.completed ? "✅ Done" : "⏳ Not done"}</p>
         `;
 
-        // === Subtasks Section ===
+        // === Subtasks ===
         const subtaskList = document.createElement("ul");
-        subtaskList.className = "subtask-list";
+        subtaskList.className = "text-sm pl-2 space-y-1";
         if (Array.isArray(task.subtasks)) {
           task.subtasks.forEach((sub, subIndex) => {
             const li = document.createElement("li");
             li.innerHTML = `
-              <label>
-                <input type="checkbox" ${sub.done ? "checked" : ""}>
+              <label class="flex items-center gap-2">
+                <input type="checkbox" class="accent-red-600" ${sub.done ? "checked" : ""}>
                 ${sub.title}
               </label>
             `;
@@ -172,14 +176,14 @@ if (container) {
             subtaskList.appendChild(li);
           });
         }
-        taskDiv.appendChild(subtaskList);
+        card.appendChild(subtaskList);
 
-        // Add Subtask Form
+        // === Subtask Input ===
         const subForm = document.createElement("form");
-        subForm.className = "subtask-form";
+        subForm.className = "flex mt-2 gap-2";
         subForm.innerHTML = `
-          <input type="text" placeholder="New subtask..." required>
-          <button type="submit">Add</button>
+          <input type="text" placeholder="New subtask..." class="flex-1 px-2 py-1 rounded bg-zinc-700 text-white text-sm" required>
+          <button type="submit" class="bg-red-700 px-2 rounded text-sm">Add</button>
         `;
         subForm.addEventListener("submit", async (e) => {
           e.preventDefault();
@@ -189,29 +193,37 @@ if (container) {
           await updateTask(task.index, { ...task, subtasks: updatedSubtasks });
           loadTasks();
         });
-        taskDiv.appendChild(subForm);
+        card.appendChild(subForm);
+
+        // === Buttons ===
+        const btnGroup = document.createElement("div");
+        btnGroup.className = "flex justify-between mt-2";
 
         const completeBtn = document.createElement("button");
         completeBtn.textContent = task.completed ? "Mark Incomplete" : "Mark Complete";
+        completeBtn.className = "text-xs bg-green-700 px-2 py-1 rounded";
         completeBtn.addEventListener("click", async () => {
           await fetch(`https://avdevplanner.onrender.com/tasks/${task.index}/toggle`, {
             method: "PATCH"
           });
-          location.reload();
+          loadTasks();
         });
-        taskDiv.appendChild(completeBtn);
 
         const deleteBtn = document.createElement("button");
         deleteBtn.textContent = "Delete";
+        deleteBtn.className = "text-xs bg-red-700 px-2 py-1 rounded";
         deleteBtn.addEventListener("click", async () => {
           await fetch(`https://avdevplanner.onrender.com/tasks/${task.index}`, {
             method: "DELETE"
           });
-          location.reload();
+          loadTasks();
         });
-        taskDiv.appendChild(deleteBtn);
 
-        grid.appendChild(taskDiv);
+        btnGroup.appendChild(completeBtn);
+        btnGroup.appendChild(deleteBtn);
+        card.appendChild(btnGroup);
+
+        grid.appendChild(card);
       });
 
       groupDiv.appendChild(grid);
@@ -239,19 +251,18 @@ if (container) {
 
   function formatDate(dateStr) {
     if (!dateStr || dateStr.includes("NaN") || dateStr.length !== 10) return "(Invalid Date)";
-    
     const [year, month, day] = dateStr.split("-");
     const dateObj = new Date(+year, +month - 1, +day);
-
     if (isNaN(dateObj.getTime())) return "(Invalid Date)";
-
     const dayNum = dateObj.getDate();
     const monthName = dateObj.toLocaleString("default", { month: "long" });
-    const suffix =
-      dayNum % 10 === 1 && dayNum !== 11 ? "st" :
-      dayNum % 10 === 2 && dayNum !== 12 ? "nd" :
-      dayNum % 10 === 3 && dayNum !== 13 ? "rd" : "th";
-
+    const suffix = (dayNum % 10 === 1 && dayNum !== 11)
+      ? "st"
+      : (dayNum % 10 === 2 && dayNum !== 12)
+      ? "nd"
+      : (dayNum % 10 === 3 && dayNum !== 13)
+      ? "rd"
+      : "th";
     return `${monthName} ${dayNum}${suffix}, ${year}`;
   }
 
