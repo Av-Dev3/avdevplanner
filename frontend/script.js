@@ -197,7 +197,7 @@ if (container) {
 
         // === Buttons ===
         const btnGroup = document.createElement("div");
-        btnGroup.className = "flex justify-between mt-2";
+btnGroup.className = "flex flex-wrap gap-2 mt-3";
 
         const completeBtn = document.createElement("button");
         completeBtn.textContent = task.completed ? "Mark Incomplete" : "Mark Complete";
