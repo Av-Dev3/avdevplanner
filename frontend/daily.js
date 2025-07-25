@@ -1,22 +1,17 @@
+// === DOM Elements ===
 const tasksContainer = document.getElementById("log-tasks-container");
 const goalsContainer = document.getElementById("log-goals-container");
 const lessonsContainer = document.getElementById("log-lessons-container");
 const notesContainer = document.getElementById("log-notes-container");
 const logForm = document.getElementById("daily-log-form");
 const logEntries = document.getElementById("daily-log-entries");
-
 const todayStr = new Date().toLocaleDateString("en-CA");
 
-// === Setup Swipe Behavior (like homepage) ===
+// === Swipe Layout ===
 function setupSwipeContainer(container) {
   container.classList.add(
-    "flex",
-    "overflow-x-auto",
-    "snap-x",
-    "snap-mandatory",
-    "scroll-smooth",
-    "no-scrollbar",
-    "gap-3"
+    "flex", "overflow-x-auto", "snap-x", "snap-mandatory",
+    "scroll-smooth", "no-scrollbar", "gap-3"
   );
   container.style.scrollbarWidth = "none";
   container.style.msOverflowStyle = "none";
@@ -25,11 +20,7 @@ function setupSwipeContainer(container) {
 
   if (window.innerWidth >= 768) {
     container.classList.remove(
-      "flex",
-      "overflow-x-auto",
-      "snap-x",
-      "snap-mandatory",
-      "scroll-smooth"
+      "flex", "overflow-x-auto", "snap-x", "snap-mandatory", "scroll-smooth"
     );
     container.style.overflow = "visible";
     container.style.display = "grid";
@@ -40,33 +31,23 @@ function setupSwipeContainer(container) {
 
 function formatPrettyDate(dateStr) {
   const date = new Date(dateStr);
-  return date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+  return date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
 }
 
+function formatTime(timeStr) {
+  const [h, m] = timeStr.split(":");
+  const hour = parseInt(h);
+  const suffix = hour >= 12 ? "PM" : "AM";
+  const adjusted = hour % 12 === 0 ? 12 : hour % 12;
+  return `${adjusted}:${m} ${suffix}`;
+}
 
-// === Card Builder (matches homepage card style) ===
 function createFullCard(title, notes, date, time) {
   const div = document.createElement("div");
-  div.className =
-    "snap-center shrink-0 w-full sm:w-[240px] bg-[#2b2b2b] rounded-lg p-4 shadow-inner text-sm";
+  div.className = "snap-center shrink-0 w-full sm:w-[240px] bg-[#2b2b2b] rounded-lg p-4 shadow-inner text-sm";
 
-  const timeDisplay =
-    time && time.includes("M") // already pretty
-      ? `<p><small>Time: ${time}</small></p>`
-      : time
-      ? `<p><small>Time: ${formatTime(time)}</small></p>`
-      : "";
-
-  const dateDisplay =
-    date && date.includes(",") // already pretty
-      ? `<p><small>Date: ${date}</small></p>`
-      : date
-      ? `<p><small>Date: ${formatPrettyDate(date)}</small></p>`
-      : "";
+  const timeDisplay = time ? `<p><small>Time: ${formatTime(time)}</small></p>` : "";
+  const dateDisplay = date ? `<p><small>Date: ${formatPrettyDate(date)}</small></p>` : "";
 
   div.innerHTML = `
     <h3 class="font-semibold mb-1">${title}</h3>
@@ -77,28 +58,6 @@ function createFullCard(title, notes, date, time) {
   return div;
 }
 
-
-function formatTime(timeStr) {
-  const [h, m] = timeStr.split(":");
-  const hour = parseInt(h);
-  const suffix = hour >= 12 ? "PM" : "AM";
-  const adjusted = hour % 12 === 0 ? 12 : hour % 12;
-  return `${adjusted}:${m} ${suffix}`;
-}
-
-// === Load Everything ===
-loadTodayTasks();
-loadGoals();
-loadLessons();
-loadNotes();
-loadLogs();
-
-setupSwipeContainer(tasksContainer);
-setupSwipeContainer(goalsContainer);
-setupSwipeContainer(lessonsContainer);
-setupSwipeContainer(notesContainer);
-setupSwipeContainer(logEntries);
-
 // === Load Tasks ===
 async function loadTodayTasks() {
   try {
@@ -107,19 +66,28 @@ async function loadTodayTasks() {
     const todayTasks = tasks.filter((t) => t.date === todayStr);
     tasksContainer.innerHTML = "";
 
-    if (todayTasks.length === 0) {
+    if (!todayTasks.length) {
       tasksContainer.innerHTML = "<p>No tasks for today.</p>";
       return;
     }
 
     todayTasks.forEach((task) => {
-const card = createFullCard(
-  task.text || task.title || "Untitled Task",
-  task.notes,
-  task.prettyDate,
-  task.time
-);
+      const card = createFullCard(task.text || task.title || "Untitled Task", task.notes, task.prettyDate, task.time);
 
+      const completeBtn = document.createElement("button");
+      completeBtn.textContent = task.completed ? "Undo Complete" : "Mark Complete";
+      completeBtn.className = "text-xs bg-purple-600 hover:bg-purple-700 text-white px-2 py-1 rounded mt-2";
+      completeBtn.addEventListener("click", async () => {
+        const updated = { ...task, completed: !task.completed };
+        const res = await fetch(`https://avdevplanner.onrender.com/tasks/${task.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updated),
+        });
+        if (res.ok) loadTodayTasks();
+      });
+
+      card.appendChild(completeBtn);
       tasksContainer.appendChild(card);
     });
   } catch {
@@ -135,13 +103,28 @@ async function loadGoals() {
     const todayGoals = goals.filter((g) => g.date === todayStr);
     goalsContainer.innerHTML = "";
 
-    if (todayGoals.length === 0) {
+    if (!todayGoals.length) {
       goalsContainer.innerHTML = "<p>No goals for today.</p>";
       return;
     }
 
     todayGoals.forEach((goal) => {
-const card = createFullCard(goal.title, goal.notes, goal.prettyDate);
+      const card = createFullCard(goal.title, goal.notes, goal.prettyDate);
+
+      const completeBtn = document.createElement("button");
+      completeBtn.textContent = goal.completed ? "Undo Complete" : "Mark Complete";
+      completeBtn.className = "text-xs bg-purple-600 hover:bg-purple-700 text-white px-2 py-1 rounded mt-2";
+      completeBtn.addEventListener("click", async () => {
+        const updated = { ...goal, completed: !goal.completed };
+        const res = await fetch(`https://avdevplanner.onrender.com/goals/${goal.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updated),
+        });
+        if (res.ok) loadGoals();
+      });
+
+      card.appendChild(completeBtn);
       goalsContainer.appendChild(card);
     });
   } catch {
@@ -157,21 +140,33 @@ async function loadLessons() {
     const todayLessons = lessons.filter((l) => l.date === todayStr);
     lessonsContainer.innerHTML = "";
 
-    if (todayLessons.length === 0) {
+    if (!todayLessons.length) {
       lessonsContainer.innerHTML = "<p>No lessons for today.</p>";
       return;
     }
 
     todayLessons.forEach((lesson) => {
-      const content = `${lesson.description || ""}${
-        lesson.notes ? ` (${lesson.notes})` : ""
-      }`;
+      const content = `${lesson.description || ""}${lesson.notes ? ` (${lesson.notes})` : ""}`;
       const card = createFullCard(
-  lesson.title,
-  `Category: ${lesson.category || "N/A"} | Priority: ${lesson.priority || "Normal"} | ${content}`,
-  lesson.prettyDate
-);
+        lesson.title,
+        `Category: ${lesson.category || "N/A"} | Priority: ${lesson.priority || "Normal"} | ${content}`,
+        lesson.prettyDate
+      );
 
+      const completeBtn = document.createElement("button");
+      completeBtn.textContent = lesson.completed ? "Undo Complete" : "Mark Complete";
+      completeBtn.className = "text-xs bg-purple-600 hover:bg-purple-700 text-white px-2 py-1 rounded mt-2";
+      completeBtn.addEventListener("click", async () => {
+        const updated = { ...lesson, completed: !lesson.completed };
+        const res = await fetch(`https://avdevplanner.onrender.com/lessons/${lesson.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updated),
+        });
+        if (res.ok) loadLessons();
+      });
+
+      card.appendChild(completeBtn);
       lessonsContainer.appendChild(card);
     });
   } catch {
@@ -187,7 +182,7 @@ async function loadNotes() {
     const todayNotes = notes.filter((n) => n.date === todayStr);
     notesContainer.innerHTML = "";
 
-    if (todayNotes.length === 0) {
+    if (!todayNotes.length) {
       notesContainer.innerHTML = "<p>No notes for today.</p>";
       return;
     }
@@ -201,7 +196,7 @@ async function loadNotes() {
   }
 }
 
-// === Log Form ===
+// === Logs ===
 if (logForm) {
   logForm.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -234,7 +229,6 @@ if (logForm) {
   });
 }
 
-// === Load Logs ===
 async function loadLogs() {
   try {
     const res = await fetch("https://avdevplanner.onrender.com/logs");
@@ -242,7 +236,7 @@ async function loadLogs() {
     const todayLogs = logs[todayStr] || [];
     logEntries.innerHTML = "";
 
-    if (todayLogs.length === 0) {
+    if (!todayLogs.length) {
       logEntries.innerHTML = "<p>No personal logs for today.</p>";
       return;
     }
@@ -307,3 +301,16 @@ if (saveTimeBtn && timeInput && savedTimeText) {
     }
   }
 }
+
+// === INIT ===
+loadTodayTasks();
+loadGoals();
+loadLessons();
+loadNotes();
+loadLogs();
+
+setupSwipeContainer(tasksContainer);
+setupSwipeContainer(goalsContainer);
+setupSwipeContainer(lessonsContainer);
+setupSwipeContainer(notesContainer);
+setupSwipeContainer(logEntries);
