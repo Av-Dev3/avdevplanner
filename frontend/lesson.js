@@ -1,3 +1,4 @@
+// === ELEMENTS ===
 const form = document.getElementById("lesson-form");
 const titleInput = document.getElementById("lesson-title");
 const descriptionInput = document.getElementById("lesson-description");
@@ -6,9 +7,23 @@ const dateInput = document.getElementById("lesson-date");
 const priorityInput = document.getElementById("lesson-priority");
 const notesInput = document.getElementById("lesson-notes");
 const container = document.getElementById("lessons-container");
+const addLessonDesktopBtn = document.getElementById("add-lesson-desktop");
+const lessonFormPopup = document.getElementById("lesson-form-popup");
 
-loadLessons();
+// === EVENT: Desktop FAB opens popup ===
+if (addLessonDesktopBtn && lessonFormPopup) {
+  addLessonDesktopBtn.addEventListener("click", () => {
+    lessonFormPopup.classList.remove("hidden");
+  });
 
+  lessonFormPopup.addEventListener("click", (e) => {
+    if (e.target === lessonFormPopup) {
+      lessonFormPopup.classList.add("hidden");
+    }
+  });
+}
+
+// === FORM SUBMIT ===
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
@@ -30,12 +45,14 @@ form.addEventListener("submit", async (e) => {
 
   if (res.ok) {
     form.reset();
+    lessonFormPopup?.classList.add("hidden");
     loadLessons();
   } else {
     console.error("Failed to save lesson");
   }
 });
 
+// === LOAD LESSONS ===
 async function loadLessons() {
   container.innerHTML = "";
 
@@ -129,15 +146,13 @@ async function loadLessons() {
 
       container.appendChild(card);
     });
-
   } catch (err) {
     container.innerHTML = "<p>Error loading lessons.</p>";
     console.error(err);
   }
 }
 
-// === Helpers ===
-
+// === HELPERS ===
 function parseNaturalDate(dateStr) {
   if (!dateStr) return null;
 
@@ -173,3 +188,6 @@ function formatPrettyDate(dateStr) {
 
   return `${monthName} ${dayNum}`;
 }
+
+// === INIT ===
+loadLessons();

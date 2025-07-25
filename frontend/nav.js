@@ -1,11 +1,13 @@
 document.addEventListener('DOMContentLoaded', () => {
   const fab = document.getElementById('fab');
-  const drawer = document.getElementById('drawer'); // only on homepage
+  const drawer = document.getElementById('drawer');
   const siteLinksDrawer = document.getElementById('siteLinksDrawer');
-  const isHome = window.location.pathname.includes('index.html') || window.location.pathname === '/';
+
   const path = window.location.pathname;
+  const isHome = path.includes('index.html') || path === '/';
   const isNotes = path.includes('notes') && !path.includes('notes.css');
   const isTasks = path.includes('tasks') && !path.includes('tasks.css');
+  const isLessons = path.includes('lesson') || path.includes('lessons');
 
   let isDrawerOpen = false;
   let longPressTriggered = false;
@@ -16,7 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  // === FAB click (short press) ===
   fab.addEventListener('click', () => {
     if (longPressTriggered) {
       longPressTriggered = false;
@@ -44,14 +45,21 @@ document.addEventListener('DOMContentLoaded', () => {
           if (e.target === taskPopup) taskPopup.classList.add('hidden');
         });
       }
+    } else if (isLessons) {
+      const lessonPopup = document.getElementById('lesson-form-popup');
+      if (lessonPopup) {
+        lessonPopup.classList.remove('hidden');
+        lessonPopup.addEventListener('click', (e) => {
+          if (e.target === lessonPopup) lessonPopup.classList.add('hidden');
+        });
+      }
     } else if (siteLinksDrawer) {
       siteLinksDrawer.classList.toggle('drawer-visible', isDrawerOpen);
       drawer?.classList.remove('drawer-visible');
     }
   });
 
-  // === Long press for homepage, notes page, or tasks page ===
-  if ((isHome || isNotes || isTasks) && siteLinksDrawer) {
+  if ((isHome || isNotes || isTasks || isLessons) && siteLinksDrawer) {
     const startLongPress = () => {
       pressTimer = setTimeout(() => {
         longPressTriggered = true;
@@ -69,7 +77,6 @@ document.addEventListener('DOMContentLoaded', () => {
     fab.addEventListener('touchend', cancelLongPress);
   }
 
-  // === Click outside closes drawers
   document.addEventListener('click', (e) => {
     const insideFab = fab.contains(e.target);
     const insideDrawer = drawer?.contains(e.target);
@@ -82,7 +89,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // === Popup buttons only on homepage ===
   const taskBtn = document.getElementById('addTaskBtn');
   const goalBtn = document.getElementById('addGoalBtn');
   const lessonBtn = document.getElementById('addLessonBtn');
@@ -120,7 +126,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // === AI Chat Popup ===
   const openAiBtn = document.getElementById('openAiPopup');
   const aiPopup = document.getElementById('aiPopup');
 

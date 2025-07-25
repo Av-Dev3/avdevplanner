@@ -50,21 +50,42 @@
     </div>
   </div>
 </header>
+<section class="p-4 pb-20 max-w-screen-xl mx-auto">
+  <h2 class="text-xl font-bold text-white mb-4">Weekly Lessons</h2>
 
-  <section class="weekly-lessons-section">
-  <h2>Weekly Lessons</h2>
-  <form id="lesson-form">
-    <input type="text" id="lesson-title" placeholder="Lesson title" required />
-    <input type="text" id="lesson-category" placeholder="Category (e.g., Math, AI)" />
-    <input type="date" id="lesson-date" />
-    <input type="text" id="lesson-priority" placeholder="Priority (e.g., High, Medium, Low)" />
-    <textarea id="lesson-description" placeholder="Lesson description"></textarea>
-    <textarea id="lesson-notes" placeholder="Additional notes (optional)"></textarea>
-    <button type="submit">Save Lesson</button>
-  </form>
+  <!-- Desktop Add Lesson Button -->
+  <button
+    id="add-lesson-desktop"
+    class="hidden md:flex items-center justify-center fixed bottom-[70px] right-6 bg-[#b91c1c] hover:bg-red-700 text-white w-12 h-12 rounded-full shadow-lg z-40">
+    +
+  </button>
 
-  <div id="lessons-container"></div>
+  <div id="lessons-container" class="mt-8 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4"></div>
 </section>
+
+<!-- Form popup wrapper -->
+<div id="lesson-form-popup" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center">
+  <div class="bg-[#1f1f1f] p-6 rounded-lg shadow-lg w-[90%] max-w-lg">
+    <form id="lesson-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <input type="text" id="lesson-title" placeholder="Lesson title" required
+        class="bg-[#2b2b2b] p-2 rounded text-white placeholder-gray-400" />
+      <input type="text" id="lesson-category" placeholder="Category (e.g., Math, AI)"
+        class="bg-[#2b2b2b] p-2 rounded text-white placeholder-gray-400" />
+      <input type="date" id="lesson-date"
+        class="bg-[#2b2b2b] p-2 rounded text-white placeholder-gray-400" />
+      <input type="text" id="lesson-priority" placeholder="Priority (e.g., High, Medium, Low)"
+        class="bg-[#2b2b2b] p-2 rounded text-white placeholder-gray-400" />
+      <textarea id="lesson-description" placeholder="Lesson description" rows="3"
+        class="bg-[#2b2b2b] p-2 rounded text-white placeholder-gray-400 md:col-span-2"></textarea>
+      <textarea id="lesson-notes" placeholder="Additional notes (optional)" rows="2"
+        class="bg-[#2b2b2b] p-2 rounded text-white placeholder-gray-400 md:col-span-2"></textarea>
+
+      <button type="submit"
+        class="bg-[#b91c1c] hover:bg-red-700 text-white py-2 px-4 rounded md:col-span-2">Save Lesson</button>
+    </form>
+  </div>
+</div>
+
 
 
   </div>
