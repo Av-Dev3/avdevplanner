@@ -34,13 +34,13 @@ form.addEventListener("submit", async (e) => {
     date: parseNaturalDate(dateInput.value),
     priority: priorityInput.value.trim(),
     notes: notesInput.value.trim(),
-    completed: false
+    completed: false,
   };
 
   const res = await fetch("https://avdevplanner.onrender.com/lessons", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(newLesson)
+    body: JSON.stringify(newLesson),
   });
 
   if (res.ok) {
@@ -55,99 +55,116 @@ form.addEventListener("submit", async (e) => {
 // === LOAD LESSONS ===
 async function loadLessons() {
   container.innerHTML = "";
+  container.classList.add("mt-4");
 
   try {
     const res = await fetch("https://avdevplanner.onrender.com/lessons");
     const lessons = await res.json();
 
     if (lessons.length === 0) {
-      container.innerHTML = "<p>No lessons saved yet.</p>";
+      container.innerHTML = "<p class='text-white'>No lessons saved yet.</p>";
       return;
     }
 
+    // Group lessons by date
+    const grouped = {};
     lessons.forEach((lesson) => {
-      const card = document.createElement("div");
-      card.className = "lesson-card";
+      const dateKey = parseNaturalDate(lesson.date);
+      if (!grouped[dateKey]) grouped[dateKey] = [];
+      grouped[dateKey].push(lesson);
+    });
 
-      const displayDate = formatPrettyDate(parseNaturalDate(lesson.date));
+    Object.keys(grouped)
+      .sort()
+      .forEach((date) => {
+        const groupDiv = document.createElement("div");
 
-      card.innerHTML = `
-        <h3>${lesson.title}</h3>
-        <p><strong>Category:</strong> ${lesson.category}</p>
-        <p><strong>Date:</strong> ${displayDate || "No date set"}</p>
-        <p><strong>Priority:</strong> ${lesson.priority}</p>
-        <p>${lesson.description}</p>
-        ${lesson.notes ? `<p><em>${lesson.notes}</em></p>` : ""}
-        <p><small>Status: ${lesson.completed ? "✅ Completed" : "🕒 In Progress"}</small></p>
-        <div class="lesson-button-group">
-          <button class="complete-lesson">${lesson.completed ? "Undo Complete" : "Mark Complete"}</button>
-          <button class="edit-lesson">Edit</button>
-          <button class="delete-lesson">Delete</button>
-        </div>
-      `;
+        const title = document.createElement("h3");
+        title.className = "text-lg font-semibold text-white mb-2";
+        title.textContent = formatPrettyDate(date);
+        groupDiv.appendChild(title);
 
-      const completeBtn = card.querySelector(".complete-lesson");
-      const editBtn = card.querySelector(".edit-lesson");
-      const deleteBtn = card.querySelector(".delete-lesson");
+        const grid = document.createElement("div");
+        grid.className = "grid grid-cols-2 xl:grid-cols-5 gap-4";
 
-      completeBtn.addEventListener("click", async () => {
-        const updated = { ...lesson, completed: !lesson.completed };
-        const res = await fetch(`https://avdevplanner.onrender.com/lessons/${lesson.id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updated)
-        });
+        grouped[date].forEach((lesson) => {
+          const card = document.createElement("div");
+          card.className =
+            "bg-[#1f1f1f] text-white p-4 rounded-lg shadow hover:shadow-lg transition duration-200";
 
-        if (res.ok) loadLessons();
-        else console.error("Failed to update lesson");
-      });
+          card.innerHTML = `
+            <h4 class="text-base font-bold mb-1">${lesson.title}</h4>
+            <p class="text-sm"><strong>Category:</strong> ${lesson.category}</p>
+            <p class="text-sm"><strong>Date:</strong> ${formatPrettyDate(
+              lesson.date
+            )}</p>
+            <p class="text-sm"><strong>Priority:</strong> ${lesson.priority}</p>
+            <p class="text-sm">${lesson.description}</p>
+            ${
+              lesson.notes
+                ? `<p class="text-xs italic text-gray-300">${lesson.notes}</p>`
+                : ""
+            }
+            <p class="text-xs mt-1 text-gray-400">Status: ${
+              lesson.completed ? "✅ Completed" : "🕒 In Progress"
+            }</p>
+          `;
 
-      editBtn.addEventListener("click", async () => {
-        const newTitle = prompt("Edit title:", lesson.title);
-        const newDescription = prompt("Edit description:", lesson.description || "");
-        const newCategory = prompt("Edit category:", lesson.category || "");
-        const newDate = prompt("Edit date (YYYY-MM-DD or 'tomorrow'):", lesson.date || "");
-        const newPriority = prompt("Edit priority:", lesson.priority || "");
-        const newNotes = prompt("Edit notes:", lesson.notes || "");
+          // Buttons
+          const btnGroup = document.createElement("div");
+          btnGroup.className = "flex justify-between mt-3";
 
-        if (newTitle !== null) {
-          const updatedLesson = {
-            ...lesson,
-            title: newTitle.trim(),
-            description: newDescription.trim(),
-            category: newCategory.trim(),
-            date: parseNaturalDate(newDate.trim()),
-            priority: newPriority.trim(),
-            notes: newNotes.trim()
-          };
-
-          const res = await fetch(`https://avdevplanner.onrender.com/lessons/${lesson.id}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(updatedLesson)
+          const completeBtn = document.createElement("button");
+          completeBtn.textContent = lesson.completed
+            ? "Undo Complete"
+            : "Mark Complete";
+          completeBtn.className =
+            "text-xs bg-purple-600 hover:bg-purple-700 text-white px-2 py-1 rounded";
+          completeBtn.addEventListener("click", async () => {
+            const updated = { ...lesson, completed: !lesson.completed };
+            const res = await fetch(
+              `https://avdevplanner.onrender.com/lessons/${lesson.id}`,
+              {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(updated),
+              }
+            );
+            if (res.ok) loadLessons();
+            else console.error("Failed to update lesson");
           });
 
-          if (res.ok) loadLessons();
-          else console.error("Failed to update lesson");
-        }
-      });
+          const deleteBtn = document.createElement("button");
+          deleteBtn.textContent = "Delete";
+          deleteBtn.className =
+            "text-xs bg-red-700 hover:bg-red-800 text-white px-2 py-1 rounded";
+          deleteBtn.addEventListener("click", async () => {
+            const confirmDelete = confirm("Delete this lesson?");
+            if (!confirmDelete) return;
 
-      deleteBtn.addEventListener("click", async () => {
-        const confirmDelete = confirm("Delete this lesson?");
-        if (!confirmDelete) return;
+            const res = await fetch(
+              `https://avdevplanner.onrender.com/lessons/${lesson.id}`,
+              {
+                method: "DELETE",
+              }
+            );
+            if (res.ok) loadLessons();
+            else console.error("Failed to delete lesson");
+          });
 
-        const res = await fetch(`https://avdevplanner.onrender.com/lessons/${lesson.id}`, {
-          method: "DELETE"
+          btnGroup.appendChild(completeBtn);
+          btnGroup.appendChild(deleteBtn);
+          card.appendChild(btnGroup);
+
+          grid.appendChild(card);
         });
 
-        if (res.ok) loadLessons();
-        else console.error("Failed to delete lesson");
+        groupDiv.appendChild(grid);
+        container.appendChild(groupDiv);
       });
-
-      container.appendChild(card);
-    });
   } catch (err) {
-    container.innerHTML = "<p>Error loading lessons.</p>";
+    container.innerHTML =
+      "<p class='text-red-500'>Error loading lessons.</p>";
     console.error(err);
   }
 }
@@ -155,37 +172,26 @@ async function loadLessons() {
 // === HELPERS ===
 function parseNaturalDate(dateStr) {
   if (!dateStr) return null;
-
   const lowered = dateStr.toLowerCase();
   const today = new Date();
 
-  if (lowered === "today") {
-    return today.toISOString().split("T")[0];
-  }
-
+  if (lowered === "today") return today.toISOString().split("T")[0];
   if (lowered === "tomorrow") {
     today.setDate(today.getDate() + 1);
     return today.toISOString().split("T")[0];
   }
 
   const parsed = new Date(dateStr);
-  if (!isNaN(parsed.getTime())) {
-    return parsed.toISOString().split("T")[0];
-  }
-
-  return null;
+  return !isNaN(parsed.getTime()) ? parsed.toISOString().split("T")[0] : null;
 }
 
 function formatPrettyDate(dateStr) {
   if (!dateStr || dateStr.length !== 10) return "(Invalid Date)";
   const [year, month, day] = dateStr.split("-");
   const dateObj = new Date(+year, +month - 1, +day);
-
   if (isNaN(dateObj.getTime())) return "(Invalid Date)";
-
   const dayNum = dateObj.getDate();
   const monthName = dateObj.toLocaleString("default", { month: "long" });
-
   return `${monthName} ${dayNum}`;
 }
 
