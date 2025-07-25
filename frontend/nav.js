@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const isNotes = path.includes('notes') && !path.includes('notes.css');
   const isTasks = path.includes('tasks') && !path.includes('tasks.css');
   const isLessons = path.includes('lesson') || path.includes('lessons');
+  const isGoals = path.includes('goals');
 
   let isDrawerOpen = false;
   let longPressTriggered = false;
@@ -53,13 +54,21 @@ document.addEventListener('DOMContentLoaded', () => {
           if (e.target === lessonPopup) lessonPopup.classList.add('hidden');
         });
       }
+    } else if (isGoals) {
+      const goalPopup = document.getElementById('goal-form-popup');
+      if (goalPopup) {
+        goalPopup.classList.remove('hidden');
+        goalPopup.addEventListener('click', (e) => {
+          if (e.target === goalPopup) goalPopup.classList.add('hidden');
+        });
+      }
     } else if (siteLinksDrawer) {
       siteLinksDrawer.classList.toggle('drawer-visible', isDrawerOpen);
       drawer?.classList.remove('drawer-visible');
     }
   });
 
-  if ((isHome || isNotes || isTasks || isLessons) && siteLinksDrawer) {
+  if ((isHome || isNotes || isTasks || isLessons || isGoals) && siteLinksDrawer) {
     const startLongPress = () => {
       pressTimer = setTimeout(() => {
         longPressTriggered = true;

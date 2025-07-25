@@ -56,23 +56,29 @@
     </div>
   </div>
 </header>
-  <h2>Goals</h2>
-<form id="weekly-goal-form">
-  <label for="goal-title">Goal Title</label>
-  <input type="text" id="goal-title" required>
+  
+<section class="pt-0 p-4 pb-20 max-w-screen-xl mx-auto">
+      <h2 class="text-xl font-bold text-white pt-0 mb-4">Goals</h2>
 
-  <label for="goal-date">Target Date</label>
-  <input type="date" id="goal-date" required>
+      <!-- Goal Form Popup -->
+      <div id="goal-form-popup" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center">
+        <div class="bg-[#1f1f1f] p-6 rounded-lg shadow-lg w-[90%] max-w-lg">
+          <form id="weekly-goal-form" class="grid grid-cols-1 gap-4">
+            <input type="text" id="goal-title" placeholder="Goal title" required class="bg-[#2b2b2b] p-2 rounded text-white placeholder-gray-400" />
+            <input type="date" id="goal-date" required class="bg-[#2b2b2b] p-2 rounded text-white placeholder-gray-400" />
+            <textarea id="goal-notes" placeholder="Notes (optional)" rows="4" class="bg-[#2b2b2b] p-2 rounded text-white placeholder-gray-400"></textarea>
+            <button type="submit" class="bg-[#b91c1c] hover:bg-red-700 text-white py-2 px-4 rounded">Add Goal</button>
+          </form>
+        </div>
+      </div>
 
-  <label for="goal-notes">Notes (optional)</label>
-  <textarea id="goal-notes" rows="4" placeholder="Details, milestones, etc."></textarea>
+      <!-- Floating Add Button -->
+      <button id="add-goal-desktop" class="hidden md:flex items-center justify-center fixed bottom-[70px] right-6 bg-[#b91c1c] hover:bg-red-700 text-white w-12 h-12 rounded-full shadow-lg z-40">+</button>
 
-  <button type="submit">Add Weekly Goal</button>
-</form>
-
-
-<div id="weekly-goals-container"></div>
-</div>
+      <!-- Goals Container -->
+      <div id="weekly-goals-container" class="flex flex-col gap-6 mt-8"></div>
+    </section>
+  </div>
 
 <footer class="footer">
     <span>Eat</span>
