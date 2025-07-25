@@ -90,7 +90,7 @@ async function loadLessons() {
         grouped[date].forEach((lesson) => {
           const card = document.createElement("div");
           card.className =
-            "bg-[#1f1f1f] text-white p-4 rounded-lg shadow hover:shadow-lg transition duration-200";
+"bg-[#1f1f1f] text-white p-4 rounded-lg shadow transition-all transform hover:-translate-y-1 hover:shadow-[0_4px_12px_rgba(76,142,218,0.35)]"
 
           card.innerHTML = `
             <h4 class="text-base font-bold mb-1">${lesson.title}</h4>
