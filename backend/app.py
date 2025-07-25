@@ -563,7 +563,6 @@ def update_lesson(lesson_id):
 @app.route('/schedule', methods=['GET'])
 def get_schedule():
     return jsonify(load_json(SCHEDULE_FILE, []))
-
 # === COLLECTIONS ===
 @app.route('/collections', methods=['GET'])
 def get_collections():
@@ -587,6 +586,16 @@ def add_to_collection():
 
     save_json("collections.json", collections)
     return jsonify({"message": "Added to collection"}), 200
+
+@app.route('/collections/<collection_name>', methods=['DELETE'])
+def delete_collection(collection_name):
+    collections = load_json("collections.json", {})
+    if collection_name in collections:
+        del collections[collection_name]
+        save_json("collections.json", collections)
+        return jsonify({"message": f"Collection '{collection_name}' deleted"}), 200
+    else:
+        return jsonify({"error": "Collection not found"}), 404
 
 @app.route('/fix-notes', methods=['POST'])
 def fix_notes_ids():

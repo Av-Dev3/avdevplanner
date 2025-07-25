@@ -16,8 +16,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const renderCollections = () => {
     const collectionMap = new Map();
+    const saved = JSON.parse(localStorage.getItem("emptyCollections") || "[]");
 
-    // Group notes by notebook (collection)
     allNotes.forEach((note) => {
       const notebook = note.notebook?.trim();
       if (!collectionMap.has(notebook)) {
@@ -26,8 +26,6 @@ document.addEventListener("DOMContentLoaded", () => {
       collectionMap.get(notebook).push(note);
     });
 
-    // Check for empty collections saved locally
-    const saved = JSON.parse(localStorage.getItem("emptyCollections") || "[]");
     saved.forEach((name) => {
       if (!collectionMap.has(name)) {
         collectionMap.set(name, []);
@@ -38,30 +36,76 @@ document.addEventListener("DOMContentLoaded", () => {
 
     collectionMap.forEach((notes, notebook) => {
       const card = document.createElement("div");
-card.className =
-  "bg-[#1f1f1f] rounded-lg shadow text-white cursor-pointer collection-card flex w-36 h-36 sm:w-40 sm:h-40 hover:shadow-lg transition-all overflow-hidden";
+      card.className =
+        "bg-[#1f1f1f] rounded-lg shadow text-white cursor-pointer collection-card flex w-36 h-36 sm:w-40 sm:h-40 hover:shadow-lg transition-all overflow-hidden";
+      card.dataset.notebook = notebook;
 
-card.dataset.notebook = notebook;
-
-card.innerHTML = `
-  <div class="bg-purple-600 w-2 h-full"></div>
+      card.innerHTML = `
   <div class="flex flex-col justify-between p-3 w-full">
     <div class="flex items-center gap-2">
       <svg class="w-5 h-5 text-purple-400" fill="currentColor" viewBox="0 0 24 24">
         <path d="M5 4v16h14V4H5zm2 2h10v12H7V6z"/>
       </svg>
-      <h3 class="text-md font-semibold break-words">${notebook || "Untitled"}</h3>
+      <h3 class="text-md font-semibold break-words border-b-2 border-[#b91c1c] pb-1 w-full">
+        ${notebook || "Untitled"}
+      </h3>
     </div>
     <p class="text-xs text-gray-400 mt-auto">${notes.length} note${notes.length !== 1 ? "s" : ""}</p>
   </div>
 `;
 
-collectionList.appendChild(card);
 
+      // Right-click delete popup
+      card.addEventListener("contextmenu", (e) => {
+        e.preventDefault();
+        showCollectionOptions(notebook, e.clientX, e.clientY);
+      });
+
+      // Long-press for mobile delete popup
+      let longPressTimer;
+      card.addEventListener("touchstart", (e) => {
+        longPressTimer = setTimeout(() => {
+          const touch = e.touches[0];
+          showCollectionOptions(notebook, touch.clientX, touch.clientY);
+        }, 800);
+      });
+
+      card.addEventListener("touchend", () => clearTimeout(longPressTimer));
+      collectionList.appendChild(card);
     });
   };
 
-  // Add new empty collection
+  const showCollectionOptions = (notebook, x, y) => {
+    const popup = document.createElement("div");
+    popup.className =
+      "fixed z-50 bg-[#1f1f1f] border border-neutral-700 text-white rounded shadow-lg p-2 text-sm";
+    popup.style.top = `${y}px`;
+    popup.style.left = `${x}px`;
+
+    popup.innerHTML = `
+      <button class="block w-full text-left px-2 py-1 hover:bg-[#b91c1c]" data-action="delete">Delete Collection</button>
+    `;
+
+    document.body.appendChild(popup);
+
+    const closePopup = () => {
+      popup.remove();
+      document.removeEventListener("click", closePopup);
+    };
+
+    document.addEventListener("click", closePopup);
+
+    popup.querySelector("[data-action='delete']").addEventListener("click", () => {
+      if (confirm(`Delete collection "${notebook}"?`)) {
+        const saved = JSON.parse(localStorage.getItem("emptyCollections") || "[]");
+        const updated = saved.filter((name) => name !== notebook);
+        localStorage.setItem("emptyCollections", JSON.stringify(updated));
+        renderCollections();
+      }
+      closePopup();
+    });
+  };
+
   createBtn.addEventListener("click", () => {
     const name = prompt("Enter new collection name:");
     if (!name) return;
@@ -75,14 +119,12 @@ collectionList.appendChild(card);
     renderCollections();
   });
 
-  // Click to view notes in a collection
   collectionList.addEventListener("click", (e) => {
     const card = e.target.closest(".collection-card");
     if (!card) return;
 
     const notebook = card.dataset.notebook;
     const notes = allNotes.filter((n) => (n.notebook || "").trim() === notebook);
-
     showCollectionPopup(notebook, notes);
   });
 
@@ -109,11 +151,7 @@ collectionList.appendChild(card);
                     (note, i) => `
               <div class="bg-[#2b2b2b] p-3 rounded shadow text-sm cursor-pointer collection-note-card" data-index="${i}">
                 <h4 class="font-semibold">${note.title}</h4>
-                ${
-                  note.content
-                    ? `<p class="mt-1 text-neutral-300">${note.content}</p>`
-                    : ""
-                }
+                ${note.content ? `<p class="mt-1 text-neutral-300">${note.content}</p>` : ""}
                 <p class="text-xs text-gray-400 mt-1">${note.prettyDate || ""}</p>
               </div>
             `
@@ -130,7 +168,6 @@ collectionList.appendChild(card);
       popup.remove();
     });
 
-    // === Note click event for preview popup ===
     popup.querySelectorAll(".collection-note-card").forEach((noteCard, i) => {
       noteCard.addEventListener("click", () => {
         const note = notes[i];
