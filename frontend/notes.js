@@ -81,8 +81,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const createNoteCard = (note) => {
     const div = document.createElement("div");
-    div.className =
-      "shrink-0 w-full sm:w-[240px] bg-[#2b2b2b] rounded-lg p-4 shadow-inner text-sm relative text-white";
+   div.className =
+  "shrink-0 w-full sm:w-[240px] bg-[#2b2b2b] rounded-lg p-4 shadow-inner text-sm relative text-white transition-all transform hover:-translate-y-1 hover:shadow-[0_4px_12px_rgba(76,142,218,0.35)]";
 
     div.innerHTML = `
       <h3 class="font-semibold mb-1">${note.title}</h3>
