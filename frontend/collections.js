@@ -41,17 +41,17 @@ document.addEventListener("DOMContentLoaded", () => {
       card.dataset.notebook = notebook;
 
       card.innerHTML = `
-        <div class="bg-purple-600 w-2 h-full"></div>
-        <div class="flex flex-col justify-between p-3 w-full">
-          <div class="flex items-center gap-2">
-            <svg class="w-5 h-5 text-purple-400" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M5 4v16h14V4H5zm2 2h10v12H7V6z"/>
-            </svg>
-            <h3 class="text-md font-semibold break-words">${notebook || "Untitled"}</h3>
-          </div>
-          <p class="text-xs text-gray-400 mt-auto">${notes.length} note${notes.length !== 1 ? "s" : ""}</p>
-        </div>
-      `;
+  <div class="bg-purple-600 w-2 h-full"></div>
+  <div class="flex flex-col justify-between p-3 w-full">
+    <div>
+      <h3 class="text-md font-semibold break-words border-b-2 border-[#b91c1c] pb-1">
+        ${notebook || "Untitled"}
+      </h3>
+    </div>
+    <p class="text-xs text-gray-400 mt-auto">${notes.length} note${notes.length !== 1 ? "s" : ""}</p>
+  </div>
+`;
+
 
       // Right-click delete popup
       card.addEventListener("contextmenu", (e) => {
