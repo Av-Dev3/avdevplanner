@@ -145,8 +145,8 @@ if (container) {
 
       tasksByDate[date].forEach((task) => {
         const card = document.createElement("div");
-        card.className =
-          "bg-zinc-800 text-white rounded-lg p-4 shadow-md flex flex-col gap-2";
+       card.className = "bg-zinc-800 text-white rounded-lg p-4 shadow-md flex flex-col gap-2 transition-transform duration-200 hover:-translate-y-1 hover:shadow-[0_4px_12px_rgba(76,142,218,0.35)]";
+
 
         card.innerHTML = `
           <h3 class="text-lg font-semibold">${task.text}</h3>
