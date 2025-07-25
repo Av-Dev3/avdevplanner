@@ -18,7 +18,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const pretty = date.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
 
     const dayCard = document.createElement("div");
-    dayCard.className = "bg-[#1f1f1f] rounded-xl p-4 shadow-md";
+    dayCard.className = "bg-[#1f1f1f] rounded-xl p-4 shadow-md transition-all transform hover:-translate-y-1 hover:shadow-[0_4px_12px_rgba(76,142,218,0.35)]";
+;
     dayCard.innerHTML = `<h3 class="text-lg font-semibold">${pretty}</h3>`;
 
     const expandContent = template.content.cloneNode(true);
@@ -111,7 +112,7 @@ function appendNoteCards(notes, container) {
 function createFullCard(title, notes, date, time) {
   const div = document.createElement("div");
   div.className =
-  "snap-center shrink-0 w-full sm:w-[240px] bg-[#2b2b2b] rounded-lg p-4 shadow-inner text-sm transition-all transform hover:-translate-y-1 hover:shadow-[0_4px_12px_rgba(76,142,218,0.35)]";
+    "snap-center shrink-0 w-full sm:w-[240px] bg-[#2b2b2b] rounded-lg p-4 shadow-inner text-sm";
 
   const timeDisplay =
     time && time.includes("M")
