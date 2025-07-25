@@ -49,15 +49,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.target === popup) popup.classList.add("hidden");
   });
 
-  function formatPrettyDateFromISO(dateStr) {
-    const date = new Date(dateStr);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  }
-
   function formatPrettyDate(dateStr) {
     const [year, month, day] = dateStr.split("-");
     const date = new Date(`${year}-${month}-${day}T00:00:00`);
@@ -181,6 +172,7 @@ document.addEventListener("DOMContentLoaded", () => {
     popup.innerHTML = `
       <button class="block w-full text-left px-2 py-1 hover:bg-[#b91c1c]" data-action="pin">${note.pinned ? "Unpin" : "Pin"}</button>
       <button class="block w-full text-left px-2 py-1 hover:bg-[#b91c1c]" data-action="delete">Delete</button>
+      <button class="block w-full text-left px-2 py-1 hover:bg-[#b91c1c]" data-action="add-to-collection">Add to Collection</button>
     `;
 
     document.body.appendChild(popup);
@@ -198,10 +190,31 @@ document.addEventListener("DOMContentLoaded", () => {
         await togglePin(note);
       } else if (action === "delete") {
         await deleteNote(note);
+      } else if (action === "add-to-collection") {
+        const notebook = prompt("Enter collection name:");
+        if (notebook) {
+          await updateNotebook(note, notebook);
+        }
       }
       closePopup();
       loadNotes();
     });
+  };
+
+  const updateNotebook = async (note, notebook) => {
+    try {
+      const res = await fetch(
+        `https://avdevplanner.onrender.com/notes/${note.id}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...note, notebook }),
+        }
+      );
+      if (!res.ok) throw new Error("Failed to update notebook");
+    } catch (err) {
+      console.error("Notebook update error:", err);
+    }
   };
 
   const togglePin = async (note) => {
@@ -257,6 +270,7 @@ document.addEventListener("DOMContentLoaded", () => {
           pinned: false,
           date,
           created_at: date,
+          notebook: "",
         }),
       });
 
