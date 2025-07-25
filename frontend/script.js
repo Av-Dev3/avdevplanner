@@ -180,7 +180,7 @@ if (container) {
 
         // === Subtask Input ===
         const subForm = document.createElement("form");
-        subForm.className = "flex mt-2 gap-2";
+        subForm.className = "flex flex-wrap gap-2 mt-3";
         subForm.innerHTML = `
           <input type="text" placeholder="New subtask..." class="flex-1 px-2 py-1 rounded bg-zinc-700 text-white text-sm" required>
           <button type="submit" class="bg-red-700 px-2 rounded text-sm">Add</button>
@@ -197,7 +197,7 @@ if (container) {
 
         // === Buttons ===
         const btnGroup = document.createElement("div");
-btnGroup.className = "flex flex-wrap gap-2 mt-3";
+        btnGroup.className = "flex justify-between mt-2";
 
         const completeBtn = document.createElement("button");
         completeBtn.textContent = task.completed ? "Mark Incomplete" : "Mark Complete";
