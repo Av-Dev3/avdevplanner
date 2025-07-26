@@ -1,118 +1,73 @@
 document.addEventListener("DOMContentLoaded", () => {
+  // === DOM Elements ===
   const pinnedContainer = document.getElementById("pinned-notes-container");
   const focusInput = document.getElementById("daily-focus-input");
   const saveBtn = document.getElementById("save-focus-btn");
   const savedFocusText = document.getElementById("saved-focus-text");
 
-  const tasksCompletedEl = document.getElementById("tasks-completed");
-  const goalsCompletedEl = document.getElementById("goals-completed");
-  const lessonsCompletedEl = document.getElementById("lessons-completed");
+  // Stats & streaks card containers (new IDs)
+  const statTasksEl = document.getElementById("stat-tasks-completed");
+  const statGoalsEl = document.getElementById("stat-goals-completed");
+  const statLessonsEl = document.getElementById("stat-lessons-completed");
+  const streakTasksEl = document.getElementById("streak-tasks");
+  const streakGoalsEl = document.getElementById("streak-goals");
+  const streakLessonsEl = document.getElementById("streak-lessons");
 
-  const taskStreakEl = document.getElementById("task-streak");
-  const goalStreakEl = document.getElementById("goal-streak");
-  const lessonStreakEl = document.getElementById("lesson-streak");
+  // Carousel containers (new IDs)
+  const tasksCarousel = document.getElementById("tasks-carousel-container");
+  const goalsCarousel = document.getElementById("goals-carousel-container");
+  const lessonsCarousel = document.getElementById("lessons-carousel-container");
 
-  const taskContainer = document.getElementById("tasks-container");
-  const goalContainer = document.getElementById("goals-container");
-  const lessonContainer = document.getElementById("lessons-container");
-
-function getVegasTodayPretty() {
-  return new Date().toLocaleDateString("en-US", {
+  // Date/format helpers
+  function getVegasTodayPretty() {
+    return new Date().toLocaleDateString("en-US", {
+      timeZone: "America/Los_Angeles",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  }
+  const todayISO = new Date().toISOString().split("T")[0];
+  const vegasFormatter = new Intl.DateTimeFormat("en-US", {
     timeZone: "America/Los_Angeles",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
-
-const today = new Date().toISOString().split("T")[0]; // keep for backend use
-const todayPretty = getVegasTodayPretty();
-const vegasFormatter = new Intl.DateTimeFormat("en-US", {
-  timeZone: "America/Los_Angeles",
-  year: "numeric",
-  month: "long",
-  day: "numeric"
-});
-
-
-
-
-
-function parseNaturalDate(dateStr) {
-  if (!dateStr) return null;
-
-  const lowered = dateStr.toLowerCase();
-  const today = new Date();
-
-  if (lowered === "today") return today;
-
-  if (lowered === "tomorrow") {
-    today.setDate(today.getDate() + 1);
-    return today;
-  }
-
-  // Parse string as if it's local Vegas date
-  if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
-    const [y, m, d] = dateStr.split("-").map(Number);
-    return new Date(y, m - 1, d); // no timezone shift
-  }
-
-  const parsed = new Date(dateStr);
-  return !isNaN(parsed.getTime()) ? parsed : null;
-}
-
-
-
-
-function formatPrettyDate(dateStr) {
-  const dateObj = parseNaturalDate(dateStr);
-  if (!dateObj) return "Invalid Date";
-
-  const vegasDate = new Date(dateObj.toLocaleString("en-US", {
-    timeZone: "America/Los_Angeles"
-  }));
-
-  return vegasDate.toLocaleDateString("en-US", {
     year: "numeric",
     month: "long",
     day: "numeric"
   });
-}
 
+  function parseNaturalDate(dateStr) {
+    if (!dateStr) return null;
+    const lowered = dateStr.toLowerCase();
+    const today = new Date();
 
-function isSameDayInVegas(dateStr, targetDate = new Date()) {
-  const parsed = parseNaturalDate(dateStr);
-  if (!parsed) return false;
+    if (lowered === "today") return today;
+    if (lowered === "tomorrow") {
+      today.setDate(today.getDate() + 1);
+      return today;
+    }
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+      const [y, m, d] = dateStr.split("-").map(Number);
+      return new Date(y, m - 1, d);
+    }
+    const parsed = new Date(dateStr);
+    return !isNaN(parsed.getTime()) ? parsed : null;
+  }
 
-  const vegasToday = new Date(targetDate.toLocaleString("en-US", {
-    timeZone: "America/Los_Angeles"
-  }));
-
-  return (
-    parsed.getFullYear() === vegasToday.getFullYear() &&
-    parsed.getMonth() === vegasToday.getMonth() &&
-    parsed.getDate() === vegasToday.getDate()
-  );
-}
-
- function createFullCard(title, notes, date, time) {
-  const div = document.createElement("div");
-  div.className =
-    "snap-center shrink-0 w-full sm:w-[240px] bg-[#2b2b2b] rounded-lg p-4 shadow-inner text-sm";
-
-  const formattedDate = date || "";
-  const formattedTime = time || "";
-
-  div.innerHTML = `
-    <h3 class="font-semibold mb-1">${title}</h3>
-    ${notes ? `<p class="mb-1">${notes}</p>` : ""}
-    ${formattedTime ? `<p><small>Time: ${formattedTime}</small></p>` : ""}
-    ${formattedDate ? `<p><small>Date: ${formattedDate}</small></p>` : ""}
-  `;
-  return div;
-}
+  function formatPrettyDate(dateStr) {
+    const dateObj = parseNaturalDate(dateStr);
+    if (!dateObj) return "Invalid Date";
+    const vegasDate = new Date(dateObj.toLocaleString("en-US", {
+      timeZone: "America/Los_Angeles"
+    }));
+    return vegasDate.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    });
+  }
 
   function formatTime12Hour(timeStr) {
+    if (!timeStr) return "";
     const [hour, minute] = timeStr.split(":");
     const h = parseInt(hour);
     const suffix = h >= 12 ? "PM" : "AM";
@@ -120,49 +75,116 @@ function isSameDayInVegas(dateStr, targetDate = new Date()) {
     return `${adjustedHour}:${minute} ${suffix}`;
   }
 
- function setupSwipeContainer(container) {
-  const isMobile = window.innerWidth < 768;
-
-  if (isMobile) {
-    container.classList.add(
-      "flex",
-      "overflow-x-auto",
-      "snap-x",
-      "snap-mandatory",
-      "scroll-smooth",
-      "no-scrollbar",
-      "gap-3"
-    );
-    container.classList.remove("grid", "grid-cols-2", "lg:grid-cols-3");
-  } else {
-    container.classList.remove(
-      "flex",
-      "overflow-x-auto",
-      "snap-x",
-      "snap-mandatory",
-      "scroll-smooth",
-      "no-scrollbar"
-    );
-    container.classList.add("grid", "grid-cols-2", "lg:grid-cols-3");
+  // --- Carousel/Swipe Logic ---
+  function setupCarousel(container, items, createCardFn, arrowPrev, arrowNext) {
+    let idx = 0;
+    function renderCard() {
+      container.innerHTML = "";
+      if (!items.length) {
+        container.innerHTML = `<div class="carousel__card card__empty">No items for today.</div>`;
+        return;
+      }
+      container.appendChild(createCardFn(items[idx]));
+    }
+    function prev() {
+      idx = (idx - 1 + items.length) % items.length;
+      renderCard();
+    }
+    function next() {
+      idx = (idx + 1) % items.length;
+      renderCard();
+    }
+    // Arrow listeners
+    if (arrowPrev && arrowNext) {
+      arrowPrev.onclick = prev;
+      arrowNext.onclick = next;
+    }
+    // Mobile swipe
+    let startX = null;
+    container.ontouchstart = (e) => { startX = e.touches[0].clientX; };
+    container.ontouchend = (e) => {
+      if (startX == null) return;
+      let diff = e.changedTouches[0].clientX - startX;
+      if (diff > 50) prev();
+      else if (diff < -50) next();
+      startX = null;
+    };
+    renderCard();
   }
-}
 
+  // --- Card Creators ---
+  function createTaskCard(task) {
+    const div = document.createElement("div");
+    div.className = "carousel__card";
+    div.innerHTML = `
+      <h3 class="font-semibold mb-1">${task.text || task.title || "Untitled Task"}</h3>
+      ${task.notes ? `<p class="mb-1">${task.notes}</p>` : ""}
+      ${task.time ? `<p><small>Time: ${formatTime12Hour(task.time)}</small></p>` : ""}
+      <p class="text-xs text-gray-400">${task._vegasDateStr || ""}</p>
+    `;
+    return div;
+  }
+  function createGoalCard(goal) {
+    const div = document.createElement("div");
+    div.className = "carousel__card";
+    div.innerHTML = `
+      <h3 class="font-semibold mb-1">${goal.title}</h3>
+      ${goal.notes ? `<p class="mb-1">${goal.notes}</p>` : ""}
+      <p class="text-xs text-gray-400">${goal._vegasDateStr || ""}</p>
+    `;
+    return div;
+  }
+  function createLessonCard(lesson) {
+    const div = document.createElement("div");
+    div.className = "carousel__card";
+    div.innerHTML = `
+      <h3 class="font-semibold mb-1">${lesson.title}</h3>
+      ${lesson.description ? `<p class="mb-1">${lesson.description}</p>` : ""}
+      <p class="text-xs text-gray-400">${lesson._vegasDateStr || ""}</p>
+    `;
+    return div;
+  }
 
-  setupSwipeContainer(pinnedContainer);
+  // --- Stats/Streaks Calculation ---
+  function calculateStreak(datesArray) {
+    if (!datesArray.length) return 0;
+    const uniqueDates = [...new Set(datesArray)];
+    const sortedDates = uniqueDates
+      .map((dateStr) => new Date(dateStr))
+      .sort((a, b) => b - a);
+    let streak = 0;
+    let currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+    for (let d of sortedDates) {
+      d.setHours(0, 0, 0, 0);
+      if (d.getTime() === currentDate.getTime()) {
+        streak++;
+        currentDate.setDate(currentDate.getDate() - 1);
+      } else {
+        break;
+      }
+    }
+    return streak;
+  }
+
+  // === PINNED NOTES ===
   fetch("https://avdevplanner.onrender.com/notes")
     .then((res) => res.json())
     .then((notes) => {
       const pinned = notes.filter((note) => note.pinned);
+      pinnedContainer.innerHTML = "";
       if (pinned.length === 0) {
         pinnedContainer.innerHTML = "<p>No pinned notes yet.</p>";
         return;
       }
       pinned.forEach((note) => {
-        const card = createFullCard(
-          note.title,
-          note.content,
-          note.date || new Date(note.created_at).toLocaleDateString()
-        );
+        const card = document.createElement("div");
+        card.className = "pinned-note-card";
+        card.innerHTML = `
+          <div class="font-semibold">${note.title}</div>
+          <div class="text-sm">${note.content}</div>
+          <div class="text-xs text-gray-400">${note.date || new Date(note.created_at).toLocaleDateString()}</div>
+        `;
         pinnedContainer.appendChild(card);
       });
     })
@@ -171,7 +193,8 @@ function isSameDayInVegas(dateStr, targetDate = new Date()) {
       pinnedContainer.innerHTML = "<p>Error loading pinned notes.</p>";
     });
 
-  fetch(`https://avdevplanner.onrender.com/focus?date=${today}`)
+  // === DAILY FOCUS ===
+  fetch(`https://avdevplanner.onrender.com/focus?date=${todayISO}`)
     .then((res) => {
       if (!res.ok) throw new Error("No focus found");
       return res.json();
@@ -189,15 +212,12 @@ function isSameDayInVegas(dateStr, targetDate = new Date()) {
   saveBtn.addEventListener("click", async () => {
     const focus = focusInput.value.trim();
     if (!focus) return alert("Please enter a focus.");
-
-    const payload = { date: today, focus };
-
+    const payload = { date: todayISO, focus };
     const res = await fetch("https://avdevplanner.onrender.com/focus", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
-
     if (res.ok) {
       savedFocusText.textContent = `Saved focus: ${focus}`;
     } else {
@@ -206,127 +226,72 @@ function isSameDayInVegas(dateStr, targetDate = new Date()) {
     }
   });
 
+  // === LOAD DATA & RENDER DASHBOARD ===
   Promise.all([
     fetch("https://avdevplanner.onrender.com/tasks").then((res) => res.json()),
     fetch("https://avdevplanner.onrender.com/goals").then((res) => res.json()),
-    fetch("https://avdevplanner.onrender.com/lessons").then((res) =>
-      res.json()
-    ),
+    fetch("https://avdevplanner.onrender.com/lessons").then((res) => res.json()),
   ]).then(([tasks, goals, lessons]) => {
-    // Don't mutate the original date — keep raw ISO for filtering
- tasks.forEach(t => {
-    const d = parseNaturalDate(t.date);
-    t._vegasDateStr = d ? vegasFormatter.format(d) : null;
+    tasks.forEach(t => {
+      const d = parseNaturalDate(t.date);
+      t._vegasDateStr = d ? vegasFormatter.format(d) : null;
+    });
+    goals.forEach(g => {
+      const d = parseNaturalDate(g.date);
+      g._vegasDateStr = d ? vegasFormatter.format(d) : null;
+    });
+    lessons.forEach(l => {
+      const d = parseNaturalDate(l.date);
+      l._vegasDateStr = d ? vegasFormatter.format(d) : null;
+    });
+    const todayPretty = vegasFormatter.format(new Date());
+
+    // === STATS CARDS ===
+    statTasksEl.innerHTML = `
+      <div class="card__header"><span class="card__title">Tasks Completed</span></div>
+      <div class="card__stat-value">${tasks.filter((t) => t.completed && t._vegasDateStr === todayPretty).length}</div>
+    `;
+    statGoalsEl.innerHTML = `
+      <div class="card__header"><span class="card__title">Goals Completed</span></div>
+      <div class="card__stat-value">${goals.filter((g) => g.completed && g._vegasDateStr === todayPretty).length}</div>
+    `;
+    statLessonsEl.innerHTML = `
+      <div class="card__header"><span class="card__title">Lessons Completed</span></div>
+      <div class="card__stat-value">${lessons.filter((l) => l.completed && l._vegasDateStr === todayPretty).length}</div>
+    `;
+    // === STREAKS CARDS ===
+    streakTasksEl.innerHTML = `
+      <div class="card__header"><span class="card__title">Task Streak</span></div>
+      <div class="card__stat-value">${calculateStreak(tasks.filter((t) => t.completed).map((t) => t.date))} days</div>
+    `;
+    streakGoalsEl.innerHTML = `
+      <div class="card__header"><span class="card__title">Goal Streak</span></div>
+      <div class="card__stat-value">${calculateStreak(goals.filter((g) => g.completed).map((g) => g.date))} days</div>
+    `;
+    streakLessonsEl.innerHTML = `
+      <div class="card__header"><span class="card__title">Lesson Streak</span></div>
+      <div class="card__stat-value">${calculateStreak(lessons.filter((l) => l.completed).map((l) => l.date))} days</div>
+    `;
+
+    // === CAROUSEL SETUP (one card at a time, arrows/swipe) ===
+    const todayTasks = tasks.filter(t => t._vegasDateStr === todayPretty);
+    const todayGoals = goals.filter(g => g._vegasDateStr === todayPretty);
+    const todayLessons = lessons.filter(l => l._vegasDateStr === todayPretty);
+
+    // Arrow buttons for each carousel
+    const tasksPrev = document.querySelector('.carousel-arrow.prev[data-carousel="tasks"]');
+    const tasksNext = document.querySelector('.carousel-arrow.next[data-carousel="tasks"]');
+    const goalsPrev = document.querySelector('.carousel-arrow.prev[data-carousel="goals"]');
+    const goalsNext = document.querySelector('.carousel-arrow.next[data-carousel="goals"]');
+    const lessonsPrev = document.querySelector('.carousel-arrow.prev[data-carousel="lessons"]');
+    const lessonsNext = document.querySelector('.carousel-arrow.next[data-carousel="lessons"]');
+
+    setupCarousel(tasksCarousel, todayTasks, createTaskCard, tasksPrev, tasksNext);
+    setupCarousel(goalsCarousel, todayGoals, createGoalCard, goalsPrev, goalsNext);
+    setupCarousel(lessonsCarousel, todayLessons, createLessonCard, lessonsPrev, lessonsNext);
   });
 
-  goals.forEach(g => {
-    const d = parseNaturalDate(g.date);
-    g._vegasDateStr = d ? vegasFormatter.format(d) : null;
-  });
-
-  lessons.forEach(l => {
-    const d = parseNaturalDate(l.date);
-    l._vegasDateStr = d ? vegasFormatter.format(d) : null;
-  });
-
-  // ✅ Now get today's pretty Vegas date string
-  const todayPretty = vegasFormatter.format(new Date());
-
-  console.log("Today's Pretty Date:", todayPretty);
-  console.log("All Task Vegas Dates:", tasks.map(t => t._vegasDateStr));
-
-  const todayTasks = tasks.filter(t => t._vegasDateStr === todayPretty);
-  const todayGoals = goals.filter(g => g._vegasDateStr === todayPretty);
-  const todayLessons = lessons.filter(l => l._vegasDateStr === todayPretty);
-
-
-    const completedTasks = tasks.filter((t) => t.completed);
-    const completedGoals = goals.filter((g) => g.completed);
-    const completedLessons = lessons.filter((l) => l.completed);
-
-    tasksCompletedEl.textContent = `Tasks Completed: ${completedTasks.length}`;
-    goalsCompletedEl.textContent = `Goals Completed: ${completedGoals.length}`;
-    lessonsCompletedEl.textContent = `Lessons Completed: ${completedLessons.length}`;
-
-    taskStreakEl.textContent = `Task Streak: ${calculateStreak(
-      completedTasks.map((t) => t.date)
-    )} day(s)`;
-    goalStreakEl.textContent = `Goal Streak: ${calculateStreak(
-      completedGoals.map((g) => g.date)
-    )} day(s)`;
-    lessonStreakEl.textContent = `Lesson Streak: ${calculateStreak(
-      completedLessons.map((l) => l.date)
-    )} day(s)`;
-
-    setupSwipeContainer(taskContainer);
-    setupSwipeContainer(goalContainer);
-    setupSwipeContainer(lessonContainer);
-
-console.log("Today's Pretty Date:", todayPretty);
-console.log("All Task Dates:", tasks.map(t => t.date));
-console.log("All Task Dates (Pretty):", tasks.map(t => formatPrettyDate(t.date)));
-
-
-
-
-   todayTasks.forEach((task) =>
-  taskContainer.appendChild(
-createFullCard(
-  task.text || task.title || "Untitled Task",
-  task.notes,
-  task._vegasDateStr, // ✅ shows the correct Vegas date
-  formatTime12Hour(task.time || "")
-)
-
-  )
-);
-
-   todayGoals.forEach((goal) =>
-  goalContainer.appendChild(
-    createFullCard(
-      goal.title,
-      goal.notes,
-      goal._vegasDateStr // ✅ properly formatted Vegas date
-    )
-  )
-);
-
-todayLessons.forEach((lesson) =>
-  lessonContainer.appendChild(
-    createFullCard(
-      lesson.title,
-      lesson.description || lesson.notes,
-      lesson._vegasDateStr // ✅ properly formatted Vegas date
-    )
-  )
-);
-
-  });
-
-  function calculateStreak(datesArray) {
-    if (!datesArray.length) return 0;
-    const uniqueDates = [...new Set(datesArray)];
-    const sortedDates = uniqueDates
-      .map((dateStr) => new Date(dateStr))
-      .sort((a, b) => b - a);
-
-    let streak = 0;
-    let currentDate = new Date();
-    currentDate.setHours(0, 0, 0, 0);
-
-    for (let d of sortedDates) {
-      d.setHours(0, 0, 0, 0);
-      if (d.getTime() === currentDate.getTime()) {
-        streak++;
-        currentDate.setDate(currentDate.getDate() - 1);
-      } else {
-        break;
-      }
-    }
-    return streak;
-  }
-
-  // === Submit Task Form ===
+  // === FORM SUBMITS (keep as-is, triggers popups) ===
   const taskForm = document.getElementById("task-form");
   if (taskForm) {
     taskForm.addEventListener("submit", async (e) => {
@@ -337,13 +302,11 @@ todayLessons.forEach((lesson) =>
         time: document.getElementById("task-time").value,
         notes: document.getElementById("task-notes").value,
       };
-
       const res = await fetch("https://avdevplanner.onrender.com/tasks", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(task),
       });
-
       if (res.ok) {
         alert("Task added!");
         taskForm.reset();
@@ -353,7 +316,6 @@ todayLessons.forEach((lesson) =>
       }
     });
   }
-
   const goalForm = document.getElementById("weekly-goal-form");
   if (goalForm) {
     goalForm.addEventListener("submit", async (e) => {
@@ -363,13 +325,11 @@ todayLessons.forEach((lesson) =>
         date: document.getElementById("goal-date").value,
         notes: document.getElementById("goal-notes").value,
       };
-
       const res = await fetch("https://avdevplanner.onrender.com/goals", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(goal),
       });
-
       if (res.ok) {
         alert("Goal added!");
         goalForm.reset();
@@ -379,7 +339,6 @@ todayLessons.forEach((lesson) =>
       }
     });
   }
-
   const lessonForm = document.getElementById("lesson-form");
   if (lessonForm) {
     lessonForm.addEventListener("submit", async (e) => {
@@ -392,13 +351,11 @@ todayLessons.forEach((lesson) =>
         priority: document.getElementById("lesson-priority").value,
         notes: document.getElementById("lesson-notes").value,
       };
-
       const res = await fetch("https://avdevplanner.onrender.com/lessons", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(lesson),
       });
-
       if (res.ok) {
         alert("Lesson added!");
         lessonForm.reset();
