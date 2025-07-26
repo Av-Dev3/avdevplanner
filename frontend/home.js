@@ -112,6 +112,35 @@ document.addEventListener("DOMContentLoaded", () => {
     renderCard();
   }
 
+  // --- Mark Complete Functions ---
+  async function markTaskComplete(id) {
+    const res = await fetch(`https://avdevplanner.onrender.com/tasks/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ completed: true }),
+    });
+    if (res.ok) location.reload();
+    else alert("Error marking task complete.");
+  }
+  async function markGoalComplete(id) {
+    const res = await fetch(`https://avdevplanner.onrender.com/goals/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ completed: true }),
+    });
+    if (res.ok) location.reload();
+    else alert("Error marking goal complete.");
+  }
+  async function markLessonComplete(id) {
+    const res = await fetch(`https://avdevplanner.onrender.com/lessons/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ completed: true }),
+    });
+    if (res.ok) location.reload();
+    else alert("Error marking lesson complete.");
+  }
+
   // --- Card Creators ---
   function createTaskCard(task) {
     const div = document.createElement("div");
@@ -121,9 +150,22 @@ document.addEventListener("DOMContentLoaded", () => {
       ${task.notes ? `<p class="mb-1">${task.notes}</p>` : ""}
       ${task.time ? `<p><small>Time: ${formatTime12Hour(task.time)}</small></p>` : ""}
       <p class="text-xs text-gray-400">${task._vegasDateStr || ""}</p>
+      ${
+        !task.completed
+          ? `<button class="complete-btn mt-2" data-id="${task.id}">Mark Complete</button>`
+          : `<span class="text-green-500 font-semibold block mt-2">Completed</span>`
+      }
     `;
+    // Attach handler for mark complete
+    setTimeout(() => {
+      const btn = div.querySelector('.complete-btn');
+      if (btn) {
+        btn.onclick = () => markTaskComplete(task.id);
+      }
+    }, 0);
     return div;
   }
+
   function createGoalCard(goal) {
     const div = document.createElement("div");
     div.className = "carousel__card";
@@ -131,9 +173,21 @@ document.addEventListener("DOMContentLoaded", () => {
       <h3 class="font-semibold mb-1">${goal.title}</h3>
       ${goal.notes ? `<p class="mb-1">${goal.notes}</p>` : ""}
       <p class="text-xs text-gray-400">${goal._vegasDateStr || ""}</p>
+      ${
+        !goal.completed
+          ? `<button class="complete-btn mt-2" data-id="${goal.id}">Mark Complete</button>`
+          : `<span class="text-green-500 font-semibold block mt-2">Completed</span>`
+      }
     `;
+    setTimeout(() => {
+      const btn = div.querySelector('.complete-btn');
+      if (btn) {
+        btn.onclick = () => markGoalComplete(goal.id);
+      }
+    }, 0);
     return div;
   }
+
   function createLessonCard(lesson) {
     const div = document.createElement("div");
     div.className = "carousel__card";
@@ -141,7 +195,18 @@ document.addEventListener("DOMContentLoaded", () => {
       <h3 class="font-semibold mb-1">${lesson.title}</h3>
       ${lesson.description ? `<p class="mb-1">${lesson.description}</p>` : ""}
       <p class="text-xs text-gray-400">${lesson._vegasDateStr || ""}</p>
+      ${
+        !lesson.completed
+          ? `<button class="complete-btn mt-2" data-id="${lesson.id}">Mark Complete</button>`
+          : `<span class="text-green-500 font-semibold block mt-2">Completed</span>`
+      }
     `;
+    setTimeout(() => {
+      const btn = div.querySelector('.complete-btn');
+      if (btn) {
+        btn.onclick = () => markLessonComplete(lesson.id);
+      }
+    }, 0);
     return div;
   }
 
@@ -347,22 +412,4 @@ document.addEventListener("DOMContentLoaded", () => {
         title: document.getElementById("lesson-title").value,
         description: document.getElementById("lesson-description").value,
         category: document.getElementById("lesson-category").value,
-        date: document.getElementById("lesson-date").value,
-        priority: document.getElementById("lesson-priority").value,
-        notes: document.getElementById("lesson-notes").value,
-      };
-      const res = await fetch("https://avdevplanner.onrender.com/lessons", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(lesson),
-      });
-      if (res.ok) {
-        alert("Lesson added!");
-        lessonForm.reset();
-        document.getElementById("lessonPopup").classList.add("hidden");
-      } else {
-        alert("Error adding lesson.");
-      }
-    });
-  }
-});
+        date: document.getElementById("lesson-date
