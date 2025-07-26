@@ -9,30 +9,23 @@ const todayStr = new Date().toLocaleDateString("en-CA");
 
 // === Swipe Layout ===
 function setupSwipeContainer(container) {
-  const isMobile = window.innerWidth < 768;
+  container.classList.add(
+    "flex", "overflow-x-auto", "snap-x", "snap-mandatory",
+    "scroll-smooth", "no-scrollbar", "gap-3"
+  );
+  container.style.scrollbarWidth = "none";
+  container.style.msOverflowStyle = "none";
+  container.style.overflowY = "hidden";
+  container.style.webkitOverflowScrolling = "touch";
 
-  if (isMobile) {
-    container.classList.add(
-      "flex", "overflow-x-auto", "snap-x", "snap-mandatory",
-      "scroll-smooth", "no-scrollbar", "gap-3"
-    );
-    container.style.scrollbarWidth = "none";
-    container.style.msOverflowStyle = "none";
-    container.style.overflowY = "hidden";
-    container.style.webkitOverflowScrolling = "touch";
-  } else {
+  if (window.innerWidth >= 768) {
     container.classList.remove(
-      "flex", "overflow-x-auto", "snap-x", "snap-mandatory",
-      "scroll-smooth", "no-scrollbar", "gap-3"
+      "flex", "overflow-x-auto", "snap-x", "snap-mandatory", "scroll-smooth"
     );
-    container.style.scrollbarWidth = "";
-    container.style.msOverflowStyle = "";
-    container.style.overflowY = "";
-    container.style.webkitOverflowScrolling = "";
-    container.style.overflow = "";
-    container.style.display = "";
-    container.style.gridTemplateColumns = "";
-    container.style.gap = "";
+    container.style.overflow = "visible";
+    container.style.display = "grid";
+    container.style.gridTemplateColumns = "repeat(auto-fit, minmax(200px, 1fr))";
+    container.style.gap = "1rem";
   }
 }
 
