@@ -209,6 +209,14 @@ li a.active {
     list-style-type: none;
   }
 
+/* Fix for desktop */
+@media (min-width: 769px) {
+  #splash-screen img {
+    object-fit: contain;
+    background-color: black;
+  }
+}
+
 /* MEDIA QUERIES – MOBILE */
 @media (max-width: 768px)  {
   #ai-chatbox-wrapper {
@@ -220,10 +228,7 @@ li a.active {
   pointer-events: auto !important;
 }
 
-#splash-screen img {
-    object-fit: contain;
-    background-color: black;
-  }
+
 
 
   .nav-container {
