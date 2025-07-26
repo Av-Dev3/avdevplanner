@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const siteLinksDrawer = document.getElementById('siteLinksDrawer');
 
   const path = window.location.pathname;
-  const isHome = path.includes('index.html') || path === '/';
+  const isHome = path.includes('index.html') || path === '/' || path === '/index.html';
   const isNotes = path.includes('notes') && !path.includes('notes.css');
   const isTasks = path.includes('tasks') && !path.includes('tasks.css');
   const isLessons = path.includes('lesson') || path.includes('lessons');
@@ -27,10 +27,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     isDrawerOpen = !isDrawerOpen;
 
+    // ===== ONLY THIS BLOCK IS UPDATED =====
     if (isHome && drawer) {
-      drawer.classList.toggle('drawer-visible', isDrawerOpen);
+      // Show/hide drawer using modal style
+      if (drawer.classList.contains('hidden')) {
+        drawer.classList.remove('hidden');
+        setTimeout(() => drawer.classList.add('drawer-visible'), 10); // Animate in
+      } else {
+        drawer.classList.remove('drawer-visible');
+        setTimeout(() => drawer.classList.add('hidden'), 300); // Animate out
+      }
       siteLinksDrawer?.classList.remove('drawer-visible');
-    } else if (isNotes) {
+    } 
+    // ===== END OF UPDATED BLOCK =====
+    else if (isNotes) {
       const notePopup = document.getElementById('noteFormPopup');
       if (notePopup) {
         notePopup.classList.remove('hidden');
@@ -74,6 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
         longPressTriggered = true;
         drawer?.classList.remove('drawer-visible');
         siteLinksDrawer.classList.add('drawer-visible');
+        siteLinksDrawer.classList.remove('hidden');
       }, 600);
     };
 
@@ -94,6 +105,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!insideFab && !insideDrawer && !insideLinks) {
       drawer?.classList.remove('drawer-visible');
       siteLinksDrawer?.classList.remove('drawer-visible');
+      // Hide modal drawer for homepage
+      if (isHome && drawer && !drawer.classList.contains('hidden')) {
+        setTimeout(() => drawer.classList.add('hidden'), 300);
+      }
       isDrawerOpen = false;
     }
   });
