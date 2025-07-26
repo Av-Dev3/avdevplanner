@@ -141,7 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
     else alert("Error marking lesson complete.");
   }
 
-  // --- Card Creators ---
+  // --- Card Creators (Mark Complete Button Added) ---
   function createTaskCard(task) {
     const div = document.createElement("div");
     div.className = "carousel__card";
@@ -156,16 +156,13 @@ document.addEventListener("DOMContentLoaded", () => {
           : `<span class="text-green-500 font-semibold block mt-2">Completed</span>`
       }
     `;
-    // Attach handler for mark complete
+    // Handler for mark complete
     setTimeout(() => {
       const btn = div.querySelector('.complete-btn');
-      if (btn) {
-        btn.onclick = () => markTaskComplete(task.id);
-      }
+      if (btn) btn.onclick = () => markTaskComplete(task.id);
     }, 0);
     return div;
   }
-
   function createGoalCard(goal) {
     const div = document.createElement("div");
     div.className = "carousel__card";
@@ -181,13 +178,10 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
     setTimeout(() => {
       const btn = div.querySelector('.complete-btn');
-      if (btn) {
-        btn.onclick = () => markGoalComplete(goal.id);
-      }
+      if (btn) btn.onclick = () => markGoalComplete(goal.id);
     }, 0);
     return div;
   }
-
   function createLessonCard(lesson) {
     const div = document.createElement("div");
     div.className = "carousel__card";
@@ -203,9 +197,7 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
     setTimeout(() => {
       const btn = div.querySelector('.complete-btn');
-      if (btn) {
-        btn.onclick = () => markLessonComplete(lesson.id);
-      }
+      if (btn) btn.onclick = () => markLessonComplete(lesson.id);
     }, 0);
     return div;
   }
@@ -303,11 +295,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     goals.forEach(g => {
       const d = parseNaturalDate(g.date);
-      g._vegasDateStr = d ? vegasFormatter.format(d) : null;
+      g._vegasDateStr = d ? vegasFormatter.format(g.date) : null;
     });
     lessons.forEach(l => {
       const d = parseNaturalDate(l.date);
-      l._vegasDateStr = d ? vegasFormatter.format(d) : null;
+      l._vegasDateStr = d ? vegasFormatter.format(l.date) : null;
     });
     const todayPretty = vegasFormatter.format(new Date());
 
@@ -412,4 +404,24 @@ document.addEventListener("DOMContentLoaded", () => {
         title: document.getElementById("lesson-title").value,
         description: document.getElementById("lesson-description").value,
         category: document.getElementById("lesson-category").value,
-        date: document.getElementById("lesson-date
+        date: document.getElementById("lesson-date").value,
+        priority: document.getElementById("lesson-priority").value,
+        notes:
+          priority: document.getElementById("lesson-priority").value,
+      notes: document.getElementById("lesson-notes").value,
+    };
+    const res = await fetch("https://avdevplanner.onrender.com/lessons", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(lesson),
+    });
+    if (res.ok) {
+      alert("Lesson added!");
+      lessonForm.reset();
+      document.getElementById("lessonPopup").classList.add("hidden");
+    } else {
+      alert("Error adding lesson.");
+    }
+  });
+}
+});
