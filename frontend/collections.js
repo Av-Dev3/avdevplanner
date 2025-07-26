@@ -141,7 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <h2 class="text-lg font-semibold">Collection: ${notebook}</h2>
           <button id="close-collection-popup" class="text-red-400 hover:text-red-600 text-xl">&times;</button>
         </div>
-        <div class="flex flex-col gap-3" id="collection-popup-notes">
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="collection-popup-notes">
           ${
             notes.length === 0
               ? `<p class="text-sm text-gray-400">No notes in this collection.</p>`
