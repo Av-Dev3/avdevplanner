@@ -7,13 +7,12 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <title>OBIZU</title>
-
   <!-- Styles -->
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="home.css" />
   <link rel="stylesheet" href="animations.css" />
+  <link rel="stylesheet" href="dashboard.css" />
   <script src="https://cdn.tailwindcss.com"></script>
-
   <style>
     .drawer-visible {
       opacity: 1 !important;
@@ -31,21 +30,18 @@
 
   <div class="page-content">
     <!-- Header -->
-     
     <header class="head">
       <div class="nav-container">
         <div class="nav-left">
           <img class="logo" src="logo.png" alt="Logo">
           <h2 class="nav-quote">Get this shit done.</h2>
         </div>
-
         <div class="nav-right">
           <button class="hamburger" aria-label="Toggle menu">
             <span class="bar"></span>
             <span class="bar"></span>
             <span class="bar"></span>
           </button>
-
           <nav>
             <ul class="main-nav">
               <li><a href="index.html">Home</a></li>
@@ -71,103 +67,99 @@
       </div>
     </header>
 
-   <div id="home" class="flex flex-col gap-5 p-5">
+    <!-- === REDESIGNED DASHBOARD START === -->
+    <div id="home" class="dashboard flex flex-col gap-8 p-6 max-w-5xl mx-auto mt-8">
 
-  <!-- ✅ TRUE 2x2 Grid on ALL screen sizes -->
-  <div class="grid grid-cols-2 gap-5">
+      <!-- DASHBOARD GRID: STATS & STREAKS -->
+      <div class="dashboard__grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5">
+        <section class="card card--stat card--tasks" id="stat-tasks-completed"></section>
+        <section class="card card--stat card--goals" id="stat-goals-completed"></section>
+        <section class="card card--stat card--lessons" id="stat-lessons-completed"></section>
+        <section class="card card--streak card--tasks" id="streak-tasks"></section>
+        <section class="card card--streak card--goals" id="streak-goals"></section>
+        <section class="card card--streak card--lessons" id="streak-lessons"></section>
+      </div>
 
-  
-  <!-- Tasks -->
-<section class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-4 shadow-lg flex flex-col gap-3">
-  <h2 class="text-sm sm:text-base text-[#f0f0f0]">Tasks</h2>
-  <div id="tasks-container"
-    class="w-full flex overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar gap-3 sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible sm:snap-none">
-    <!-- task cards -->
-  </div>
-</section>
+      <!-- TASKS CAROUSEL -->
+      <section class="dashboard__carousel card card--carousel card--tasks" id="carousel-tasks">
+        <div class="card__header">
+          <h2 class="card__title">Today's Tasks</h2>
+          <div class="card__arrows">
+            <button class="carousel-arrow prev" data-carousel="tasks">&#8592;</button>
+            <button class="carousel-arrow next" data-carousel="tasks">&#8594;</button>
+          </div>
+        </div>
+        <div class="carousel__container" id="tasks-carousel-container"></div>
+      </section>
 
-<!-- Lessons -->
-<section class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-4 shadow-lg flex flex-col gap-3">
-  <h2 class="text-sm sm:text-base text-[#f0f0f0]">Lessons</h2>
-  <div id="lessons-container"
-    class="w-full flex overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar gap-3 sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible sm:snap-none">
-    <!-- lesson cards -->
-  </div>
-</section>
+      <!-- GOALS CAROUSEL -->
+      <section class="dashboard__carousel card card--carousel card--goals" id="carousel-goals">
+        <div class="card__header">
+          <h2 class="card__title">Today's Goals</h2>
+          <div class="card__arrows">
+            <button class="carousel-arrow prev" data-carousel="goals">&#8592;</button>
+            <button class="carousel-arrow next" data-carousel="goals">&#8594;</button>
+          </div>
+        </div>
+        <div class="carousel__container" id="goals-carousel-container"></div>
+      </section>
 
-<!-- Goals -->
-<section class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-4 shadow-lg flex flex-col gap-3">
-  <h2 class="text-sm sm:text-base text-[#f0f0f0]">Goals</h2>
-  <div id="goals-container"
-    class="w-full flex overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar gap-3 sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible sm:snap-none">
-    <!-- goal cards -->
-  </div>
-</section>
+      <!-- LESSONS CAROUSEL -->
+      <section class="dashboard__carousel card card--carousel card--lessons" id="carousel-lessons">
+        <div class="card__header">
+          <h2 class="card__title">Today's Lessons</h2>
+          <div class="card__arrows">
+            <button class="carousel-arrow prev" data-carousel="lessons">&#8592;</button>
+            <button class="carousel-arrow next" data-carousel="lessons">&#8594;</button>
+          </div>
+        </div>
+        <div class="carousel__container" id="lessons-carousel-container"></div>
+      </section>
 
-<!-- Pinned Notes -->
-<section class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-4 shadow-lg flex flex-col gap-3">
-  <h2 class="text-sm sm:text-base text-[#f0f0f0]">Pinned Notes</h2>
-  <div id="pinned-notes-container"
-    class="w-full flex overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar gap-3 sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible sm:snap-none">
-    <!-- pinned note cards -->
-  </div>
-</section>
+      <!-- PINNED NOTES -->
+      <section class="card card--notes" id="pinned-notes-card">
+        <div class="card__header">
+          <h2 class="card__title">Pinned Notes</h2>
+        </div>
+        <div class="card__notes-container" id="pinned-notes-container"></div>
+      </section>
 
+      <!-- DAILY FOCUS -->
+      <section class="card card--focus" id="daily-focus-card">
+        <div class="card__header">
+          <h2 class="card__title">🎯 Daily Focus</h2>
+        </div>
+        <div class="card__focus-content">
+          <input type="text" id="daily-focus-input" placeholder="What's your main focus today?" />
+          <button id="save-focus-btn">Save</button>
+          <p id="saved-focus-text"></p>
+        </div>
+      </section>
 
-
-  </div>
-
-  <!-- Daily Focus -->
-  <section class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-5 shadow-lg flex flex-col gap-4">
-    <h2 class="text-lg text-[#f0f0f0]">Daily Focus</h2>
-    <input type="text" id="daily-focus-input" placeholder="What's your main focus today?"
-      class="w-full p-2.5 rounded-lg bg-[#121212] border border-[#333] text-sm text-[#e4e4e7]" />
-    <button id="save-focus-btn"
-      class="w-fit px-4 py-2 bg-purple-600 text-white font-bold rounded-lg hover:bg-[#3b6fb3] transition-colors">
-      Save
-    </button>
-    <p id="saved-focus-text"></p>
-  </section>
-
-  <!-- Stats & Streaks -->
-  <section class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-5 shadow-lg flex flex-col gap-4">
-    <h2 class="text-lg text-[#f0f0f0]">Stats & Streaks</h2>
-
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-      <div class="bg-[#121212] rounded-lg p-4 text-sm shadow-inner" id="tasks-completed">Tasks Completed: 0</div>
-      <div class="bg-[#121212] rounded-lg p-4 text-sm shadow-inner" id="goals-completed">Goals Completed: 0</div>
-      <div class="bg-[#121212] rounded-lg p-4 text-sm shadow-inner" id="lessons-completed">Lessons Completed: 0</div>
+      <!-- DAILY MOTIVATION -->
+      <section class="card card--motivation" id="daily-motivation-card">
+        <div class="card__header">
+          <h2 class="card__title">💬 Daily Motivation</h2>
+        </div>
+        <div class="card__motivation-content">
+          <p id="quote-box"></p>
+        </div>
+      </section>
     </div>
+    <!-- === REDESIGNED DASHBOARD END === -->
 
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-      <div class="bg-[#121212] rounded-lg p-4 text-sm shadow-inner" id="task-streak">Task Streak: 0 days</div>
-      <div class="bg-[#121212] rounded-lg p-4 text-sm shadow-inner" id="goal-streak">Goal Streak: 0 days</div>
-      <div class="bg-[#121212] rounded-lg p-4 text-sm shadow-inner" id="lesson-streak">Lesson Streak: 0 days</div>
+    <!-- Floating AI Chat (hidden on mobile, visible on desktop) -->
+    <div id="ai-chatbox-wrapper" class="hidden md:block">
+      <button id="open-ai-chat">&#128172;</button>
+      <div id="ai-chatbox" class="hidden">
+        <div id="ai-chat-messages"></div>
+        <form id="ai-chat-form">
+          <input type="text" id="ai-task-input" placeholder="Describe a task and let AI add it..." />
+          <button type="submit" id="ask-ai-btn">Add</button>
+        </form>
+      </div>
     </div>
-  </section>
-
-  <!-- Daily Motivation -->
-  <section class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-5 shadow-lg flex flex-col gap-3">
-    <h2 class="text-lg text-[#f0f0f0] quote-title">💬 Daily Motivation</h2>
-    <p id="quote-box" class="italic text-sm text-[#d1d1d1]"></p>
-  </section>
-
-</div>
-
-      <!-- Floating AI Chat (hidden on mobile, visible on desktop) -->
-<div id="ai-chatbox-wrapper" class="hidden md:block">
-  <button id="open-ai-chat">&#128172;</button>
-
-  <div id="ai-chatbox" class="hidden">
-    <div id="ai-chat-messages"></div>
-    <form id="ai-chat-form">
-      <input type="text" id="ai-task-input" placeholder="Describe a task and let AI add it..." />
-      <button type="submit" id="ask-ai-btn">Add</button>
-    </form>
   </div>
-</div>
-
-    </div>
 
   <!-- Footer -->
   <footer class="footer">
@@ -176,180 +168,146 @@
     <span id="code">Code</span>
     <span id="repeat">Repeat</span>
   </footer>
-<div id="fork-fly"></div>
+  <div id="fork-fly"></div>
 
-
-<div id="z-animation">
-  <span class="z">Z</span>
-  <span class="z">Z</span>
-  <span class="z">Z</span>
-</div>
-
-<div id="code-editor-popup" class="hidden">
-  <div class="code-editor-header">
-    <span id="close-editor">×</span>
+  <div id="z-animation">
+    <span class="z">Z</span>
+    <span class="z">Z</span>
+    <span class="z">Z</span>
   </div>
 
-  <div class="code-editor-tabs">
-    <button class="tab-button active" data-tab="html">HTML</button>
-    <button class="tab-button" data-tab="css">CSS</button>
-    <button class="tab-button" data-tab="js">JS</button>
-    <button class="tab-button" data-tab="output">Output</button>
+  <div id="code-editor-popup" class="hidden">
+    <div class="code-editor-header">
+      <span id="close-editor">×</span>
+    </div>
+    <div class="code-editor-tabs">
+      <button class="tab-button active" data-tab="html">HTML</button>
+      <button class="tab-button" data-tab="css">CSS</button>
+      <button class="tab-button" data-tab="js">JS</button>
+      <button class="tab-button" data-tab="output">Output</button>
+    </div>
+    <div class="code-editor-body">
+      <textarea id="tab-html" class="editor-tab active" placeholder="HTML goes here..."></textarea>
+      <textarea id="tab-css" class="editor-tab" placeholder="CSS goes here..."></textarea>
+      <textarea id="tab-js" class="editor-tab" placeholder="JavaScript goes here..."></textarea>
+      <iframe id="tab-output" class="editor-tab"></iframe>
+    </div>
+    <button id="run-code">Run</button>
   </div>
 
-  <div class="code-editor-body">
-    <textarea id="tab-html" class="editor-tab active" placeholder="HTML goes here..."></textarea>
-    <textarea id="tab-css" class="editor-tab" placeholder="CSS goes here..."></textarea>
-    <textarea id="tab-js" class="editor-tab" placeholder="JavaScript goes here..."></textarea>
-    <iframe id="tab-output" class="editor-tab"></iframe>
-  </div>
-
-  <button id="run-code">Run</button>
-</div>
-
-  <!-- Drawer & Bottom Nav Components -->
-  <div class="fixed top-4 right-4 z-50">
-    
-  </div>
-
-<div id="drawer" class="fixed bottom-[120px] left-1/2 transform -translate-x-[45%] opacity-0 scale-95 transition-all duration-300 w-40 bg-gray-800 text-white p-3 rounded-xl shadow-lg z-50">
-    <div class="flex flex-col space-y-3">
-      <button id="addTaskBtn" class="bg-[#b91c1c] text-white p-3 rounded-lg text-sm">+ Add Task</button>
-      <button id="addGoalBtn" class="bg-[#b91c1c] text-white p-3 rounded-lg text-sm">+ Add Goal</button>
-      <button id="addLessonBtn" class="bg-[#b91c1c] text-white p-3 rounded-lg text-sm">+ Add Lesson</button>
-       <button id="openAiPopup" class="bg-[#7c3aed] text-white p-3 rounded-lg text-sm">Ask AI</button>
+  <!-- === REDESIGNED POPUPS/DRAWERS/MODALS === -->
+  <div id="drawer" class="modal drawer-modal hidden">
+    <div class="drawer__content">
+      <button class="modal__close" onclick="document.getElementById('drawer').classList.add('hidden')">&times;</button>
+      <h2 class="modal__title card--notes">Quick Actions</h2>
+      <ul class="drawer__links">
+        <li><button onclick="document.getElementById('taskPopup').classList.remove('hidden')">Add Task</button></li>
+        <li><button onclick="document.getElementById('goalPopup').classList.remove('hidden')">Add Goal</button></li>
+        <li><button onclick="document.getElementById('lessonPopup').classList.remove('hidden')">Add Lesson</button></li>
+        <li><button onclick="document.getElementById('aiPopup').classList.remove('hidden')">Open AI Assistant</button></li>
+      </ul>
     </div>
   </div>
 
- <div id="taskPopup" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-  <div class="bg-white dark:bg-gray-800 p-6 rounded-xl text-black dark:text-white w-full max-w-md">
-    <h2 class="text-lg font-semibold mb-4">Add New Task</h2>
-    <form id="task-form" class="flex flex-col space-y-4">
-      <input type="text" id="task-text" placeholder="Task title" required class="p-2 rounded bg-gray-200 dark:bg-gray-700 dark:text-white">
-      <input type="date" id="task-date" class="p-2 rounded bg-gray-200 dark:bg-gray-700 dark:text-white">
-      <input type="time" id="task-time" class="p-2 rounded bg-gray-200 dark:bg-gray-700 dark:text-white">
-      <textarea id="task-notes" placeholder="Notes..." rows="3" class="p-2 rounded bg-gray-200 dark:bg-gray-700 dark:text-white"></textarea>
-      <button type="submit" class="bg-[#b91c1c] text-white py-2 px-4 rounded hover:bg-red-700">Save Task</button>
-    </form>
-  </div>
-</div>
-
-<div id="goalPopup" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-  <div class="bg-white dark:bg-gray-800 p-6 rounded-xl text-black dark:text-white w-[90%] max-w-md">
-    <h2 class="text-lg font-semibold mb-4">Add Weekly Goal</h2>
-    <form id="weekly-goal-form">
-      <label for="goal-title" class="block text-sm font-medium mb-1">Goal Title</label>
-      <input type="text" id="goal-title" required class="w-full p-2 rounded mb-4 bg-gray-100 dark:bg-gray-700 dark:text-white">
-
-      <label for="goal-date" class="block text-sm font-medium mb-1">Target Date</label>
-      <input type="date" id="goal-date" required class="w-full p-2 rounded mb-4 bg-gray-100 dark:bg-gray-700 dark:text-white">
-
-      <label for="goal-notes" class="block text-sm font-medium mb-1">Notes (optional)</label>
-      <textarea id="goal-notes" rows="4" placeholder="Details, milestones, etc." class="w-full p-2 rounded mb-4 bg-gray-100 dark:bg-gray-700 dark:text-white"></textarea>
-
-      <button type="submit" class="bg-[#b91c1c] text-white px-4 py-2 rounded hover:bg-red-700 w-full">Add Weekly Goal</button>
-    </form>
-  </div>
-</div>
-
-<div id="lessonPopup" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-  <div class="bg-white dark:bg-gray-800 p-4 rounded-xl text-black dark:text-white w-[85%] max-w-sm max-h-[80vh] overflow-y-auto">
-    <h2 class="text-md font-semibold mb-3">Add Weekly Lesson</h2>
-    <form id="lesson-form">
-      <label for="lesson-title" class="block text-xs font-medium mb-1">Lesson Title</label>
-      <input type="text" id="lesson-title" required class="w-full p-1 rounded mb-2 bg-gray-100 dark:bg-gray-700 dark:text-white" />
-
-      <label for="lesson-category" class="block text-xs font-medium mb-1">Category</label>
-      <input type="text" id="lesson-category" class="w-full p-1 rounded mb-2 bg-gray-100 dark:bg-gray-700 dark:text-white" />
-
-      <label for="lesson-date" class="block text-xs font-medium mb-1">Date</label>
-      <input type="date" id="lesson-date" class="w-full p-1 rounded mb-2 bg-gray-100 dark:bg-gray-700 dark:text-white" />
-
-      <label for="lesson-priority" class="block text-xs font-medium mb-1">Priority</label>
-      <input type="text" id="lesson-priority" placeholder="High, Medium, Low" class="w-full p-1 rounded mb-2 bg-gray-100 dark:bg-gray-700 dark:text-white" />
-
-      <label for="lesson-description" class="block text-xs font-medium mb-1">Description</label>
-      <textarea id="lesson-description" class="w-full p-1 rounded mb-2 bg-gray-100 dark:bg-gray-700 dark:text-white" placeholder="Lesson description..."></textarea>
-
-      <label for="lesson-notes" class="block text-xs font-medium mb-1">Notes (optional)</label>
-      <textarea id="lesson-notes" class="w-full p-1 rounded mb-3 bg-gray-100 dark:bg-gray-700 dark:text-white" placeholder="Additional notes..."></textarea>
-
-      <button type="submit" class="bg-[#b91c1c] text-white px-3 py-2 rounded hover:bg-red-700 w-full text-sm">Save Lesson</button>
-    </form>
-  </div>
-</div>
-
-
-<div id="aiPopup" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div class="bg-white dark:bg-gray-800 p-4 rounded-xl text-black dark:text-white w-[90%] max-w-lg">
-      <h2 class="text-lg font-semibold mb-2">Chat with AI</h2>
-      <div id="ai-chat-messages" class="h-60 overflow-y-auto bg-gray-100 dark:bg-gray-700 text-black dark:text-white p-2 mb-2 rounded"></div>
-      <form id="ai-chat-form" class="flex gap-2">
-        <input type="text" id="ai-task-input" placeholder="Ask anything..." class="flex-1 p-2 rounded" required />
-        <button type="submit" id="ask-ai-btn" class="bg-[#7c3aed] text-white px-3 py-2 rounded">Send</button>
+  <div id="taskPopup" class="modal glass-modal hidden">
+    <div class="modal__content">
+      <button class="modal__close" onclick="document.getElementById('taskPopup').classList.add('hidden')">&times;</button>
+      <h2 class="modal__title card--tasks">Add Task</h2>
+      <form id="task-form" class="modal__form">
+        <input type="text" id="task-text" placeholder="Task" required/>
+        <input type="date" id="task-date" required/>
+        <input type="time" id="task-time"/>
+        <textarea id="task-notes" placeholder="Notes (optional)"></textarea>
+        <button type="submit" class="modal__submit card--tasks">Add Task</button>
       </form>
     </div>
   </div>
 
-  <!-- Site Links Drawer -->
-<div id="siteLinksDrawer" class="pointer-events-none fixed bottom-[120px] left-1/2 transform -translate-x-[45%] opacity-0 scale-95 transition-all duration-300 w-40 bg-[#1a1a1a] text-white p-3 rounded-xl shadow-lg z-50">
-  <div class="flex flex-col space-y-3 text-sm">
-    <a href="index.html" class="hover:text-[#b91c1c]">Home</a>
-    <a href="schedule.html" class="hover:text-[#b91c1c]">Schedule</a>
-    <a href="daily.html" class="hover:text-[#b91c1c]">Daily</a>
-    <a href="weekly.html" class="hover:text-[#b91c1c]">Weekly</a>
-    <a href="goals.html" class="hover:text-[#b91c1c]">Goals</a>
-    <a href="tasks.html" class="hover:text-[#b91c1c]">Tasks</a>
-    <a href="lessons.html" class="hover:text-[#b91c1c]">Lessons</a>
-    <a href="notes.html" class="hover:text-[#b91c1c]">Notes</a>
+  <div id="goalPopup" class="modal glass-modal hidden">
+    <div class="modal__content">
+      <button class="modal__close" onclick="document.getElementById('goalPopup').classList.add('hidden')">&times;</button>
+      <h2 class="modal__title card--goals">Add Goal</h2>
+      <form id="weekly-goal-form" class="modal__form">
+        <input type="text" id="goal-title" placeholder="Goal" required/>
+        <input type="date" id="goal-date" required/>
+        <textarea id="goal-notes" placeholder="Notes (optional)"></textarea>
+        <button type="submit" class="modal__submit card--goals">Add Goal</button>
+      </form>
+    </div>
   </div>
-</div>
 
+  <div id="lessonPopup" class="modal glass-modal hidden">
+    <div class="modal__content">
+      <button class="modal__close" onclick="document.getElementById('lessonPopup').classList.add('hidden')">&times;</button>
+      <h2 class="modal__title card--lessons">Add Lesson</h2>
+      <form id="lesson-form" class="modal__form">
+        <input type="text" id="lesson-title" placeholder="Lesson Title" required/>
+        <input type="text" id="lesson-description" placeholder="Description"/>
+        <input type="text" id="lesson-category" placeholder="Category"/>
+        <input type="date" id="lesson-date" required/>
+        <input type="text" id="lesson-priority" placeholder="Priority"/>
+        <textarea id="lesson-notes" placeholder="Notes (optional)"></textarea>
+        <button type="submit" class="modal__submit card--lessons">Add Lesson</button>
+      </form>
+    </div>
+  </div>
 
- <!-- Show only on mobile -->
-<div class="block md:hidden">
-  <nav id="bottomNav" style="background-color: #1a1a1a;" class="fixed bottom-0 left-0 w-full text-white rounded-t-2xl flex items-center justify-between px-6 py-4 shadow-inner z-40 transition-colors duration-300">
-    <a href="index.html" class="flex flex-col items-center text-sm hover:text-[#b91c1c]">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7m-9 2v8m4-8v8m5 0h2a2 2 0 002-2v-5a2 2 0 00-2-2h-3.28" />
-      </svg>
-      Home
-    </a>
+  <div id="aiPopup" class="modal glass-modal hidden">
+    <div class="modal__content">
+      <button class="modal__close" onclick="document.getElementById('aiPopup').classList.add('hidden')">&times;</button>
+      <h2 class="modal__title card--focus">AI Assistant</h2>
+      <div class="ai__chatbox" id="ai-chatbox"></div>
+      <form id="ai-form" class="ai__form">
+        <input type="text" id="ai-input" placeholder="Ask your AI assistant..." autocomplete="off"/>
+        <button type="submit" class="modal__submit card--focus">Send</button>
+      </form>
+    </div>
+  </div>
 
-    <a href="schedule.html" class="flex flex-col items-center text-sm hover:text-[#b91c1c]">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 10h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-      </svg>
-      Calendar
-    </a>
+  <div id="siteLinksDrawer" class="modal drawer-modal hidden">
+    <div class="drawer__content">
+      <button class="modal__close" onclick="document.getElementById('siteLinksDrawer').classList.add('hidden')">&times;</button>
+      <h2 class="modal__title card--lessons">Site Links</h2>
+      <ul class="drawer__links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="schedule.html">Schedule</a></li>
+        <li><a href="daily.html">Daily</a></li>
+        <li><a href="weekly.html">Weekly</a></li>
+        <li><a href="goals.html">Goals</a></li>
+        <li><a href="tasks.html">Tasks</a></li>
+        <li><a href="lessons.html">Lessons</a></li>
+        <li><a href="notes.html">Notes</a></li>
+      </ul>
+    </div>
+  </div>
 
-    <button id="fab" class="bg-[#b91c1c] w-14 h-14 rounded-full text-white flex items-center justify-center shadow-xl transform -translate-y-8 hover:scale-105 transition z-50">+</button>
-
-    <a href="daily.html" class="flex flex-col items-center text-sm hover:text-[#b91c1c]">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-      </svg>
-      Daily
-    </a>
-
-    <a href="weekly.html" class="flex flex-col items-center text-sm hover:text-[#b91c1c]">
-      <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18M3 17h18" />
-      </svg>
-      Weekly
-    </a>
-  </nav>
-</div>
-
-
-
-  <!-- Scripts -->
-  <script src="script.js"></script>
-  <script src="nav.js"></script>
-  <script src="quotes.js"></script>
-  <script src="home.js"></script>
-  <script src="ai.js"></script>
-  <script src="screen.js"></script>
-  <script src="animate.js"></script>
-</body>
-</html>
+  <!-- Show only on mobile -->
+  <div class="block md:hidden">
+    <nav id="bottomNav" style="background-color: #1a1a1a;" class="fixed bottom-0 left-0 w-full text-white rounded-t-2xl flex items-center justify-between px-6 py-4 shadow-inner z-40 transition-colors duration-300">
+      <a href="index.html" class="flex flex-col items-center text-sm hover:text-[#b91c1c]">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7m-9 2v8m4-8v8m5 0h2a2 2 0 002-2v-5a2 2 0 00-2-2h-3.28" />
+        </svg>
+        Home
+      </a>
+      <a href="schedule.html" class="flex flex-col items-center text-sm hover:text-[#b91c1c]">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 10h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+        Calendar
+      </a>
+      <button id="fab" class="bg-[#b91c1c] w-14 h-14 rounded-full text-white flex items-center justify-center shadow-xl transform -translate-y-8 hover:scale-105 transition z-50">+</button>
+      <a href="daily.html" class="flex flex-col items-center text-sm hover:text-[#b91c1c]">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        Daily
+      </a>
+      <a href="weekly.html" class="flex flex-col items-center text-sm hover:text-[#b91c1c]">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18M3 17h18" />
+        </svg>
+        Weekly
+      </a>
+    </nav>
+  </div
