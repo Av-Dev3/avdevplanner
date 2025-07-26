@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const goalsCarousel = document.getElementById("goals-carousel-container");
   const lessonsCarousel = document.getElementById("lessons-carousel-container");
 
-  // Date/format helpers
+  // Date/format helpers (unchanged)
   function getVegasTodayPretty() {
     return new Date().toLocaleDateString("en-US", {
       timeZone: "America/Los_Angeles",
@@ -75,7 +75,27 @@ document.addEventListener("DOMContentLoaded", () => {
     return `${adjustedHour}:${minute} ${suffix}`;
   }
 
-  // --- Carousel/Swipe Logic ---
+  // --- Event delegation for Mark Complete buttons ---
+  document.addEventListener('click', async (e) => {
+    if (e.target.classList.contains('mark-complete-btn')) {
+      const { type, id } = e.target.dataset;
+      if (!id || !type) return;
+
+      let url = `https://avdevplanner.onrender.com/${type}s/${id}`;
+      try {
+        const res = await fetch(url, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ completed: true }),
+        });
+        if (res.ok) location.reload();
+        else alert('Failed to mark complete');
+      } catch {
+        alert('Error marking complete');
+      }
+    }
+  });
+  // --- Carousel/Swipe Logic (unchanged) ---
   function setupCarousel(container, items, createCardFn, arrowPrev, arrowNext) {
     let idx = 0;
     function renderCard() {
@@ -110,36 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderCard();
   }
 
-  // --- Mark Complete Helpers ---
-  async function markTaskComplete(id) {
-    const res = await fetch(`https://avdevplanner.onrender.com/tasks/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ completed: true }),
-    });
-    if (res.ok) location.reload();
-    else alert("Error marking task complete.");
-  }
-  async function markGoalComplete(id) {
-    const res = await fetch(`https://avdevplanner.onrender.com/goals/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ completed: true }),
-    });
-    if (res.ok) location.reload();
-    else alert("Error marking goal complete.");
-  }
-  async function markLessonComplete(id) {
-    const res = await fetch(`https://avdevplanner.onrender.com/lessons/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ completed: true }),
-    });
-    if (res.ok) location.reload();
-    else alert("Error marking lesson complete.");
-  }
-
-  // --- Card Creators (with mark complete button) ---
+  // --- Card Creators with Mark Complete Button added ---
   function createTaskCard(task) {
     const div = document.createElement("div");
     div.className = "carousel__card";
@@ -150,17 +141,12 @@ document.addEventListener("DOMContentLoaded", () => {
       <p class="text-xs text-gray-400">${task._vegasDateStr || ""}</p>
       ${
         !task.completed
-          ? `<button class="complete-btn mt-2" data-id="${task.id}">Mark Complete</button>`
+          ? `<button class="mark-complete-btn mt-2" data-type="task" data-id="${task.id}">Mark Complete</button>`
           : `<span class="text-green-500 font-semibold block mt-2">Completed</span>`
       }
     `;
-    setTimeout(() => {
-      const btn = div.querySelector('.complete-btn');
-      if (btn) btn.onclick = () => markTaskComplete(task.id);
-    }, 0);
     return div;
   }
-
   function createGoalCard(goal) {
     const div = document.createElement("div");
     div.className = "carousel__card";
@@ -170,17 +156,12 @@ document.addEventListener("DOMContentLoaded", () => {
       <p class="text-xs text-gray-400">${goal._vegasDateStr || ""}</p>
       ${
         !goal.completed
-          ? `<button class="complete-btn mt-2" data-id="${goal.id}">Mark Complete</button>`
+          ? `<button class="mark-complete-btn mt-2" data-type="goal" data-id="${goal.id}">Mark Complete</button>`
           : `<span class="text-green-500 font-semibold block mt-2">Completed</span>`
       }
     `;
-    setTimeout(() => {
-      const btn = div.querySelector('.complete-btn');
-      if (btn) btn.onclick = () => markGoalComplete(goal.id);
-    }, 0);
     return div;
   }
-
   function createLessonCard(lesson) {
     const div = document.createElement("div");
     div.className = "carousel__card";
@@ -190,18 +171,14 @@ document.addEventListener("DOMContentLoaded", () => {
       <p class="text-xs text-gray-400">${lesson._vegasDateStr || ""}</p>
       ${
         !lesson.completed
-          ? `<button class="complete-btn mt-2" data-id="${lesson.id}">Mark Complete</button>`
+          ? `<button class="mark-complete-btn mt-2" data-type="lesson" data-id="${lesson.id}">Mark Complete</button>`
           : `<span class="text-green-500 font-semibold block mt-2">Completed</span>`
       }
     `;
-    setTimeout(() => {
-      const btn = div.querySelector('.complete-btn');
-      if (btn) btn.onclick = () => markLessonComplete(lesson.id);
-    }, 0);
     return div;
   }
 
-  // --- Stats/Streaks Calculation ---
+  // --- Stats/Streaks Calculation (unchanged) ---
   function calculateStreak(datesArray) {
     if (!datesArray.length) return 0;
     const uniqueDates = [...new Set(datesArray)];
@@ -222,7 +199,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     return streak;
   }
-
   // === PINNED NOTES ===
   fetch("https://avdevplanner.onrender.com/notes")
     .then((res) => res.json())
@@ -298,7 +274,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
     lessons.forEach(l => {
       const d = parseNaturalDate(l.date);
-      l._vegasDateStr = d ? vegasFormatter.format(l.date) : null;
+      l._vegasDateStr = d ? vegasFormatter.format(d) : null;
     });
     const todayPretty = vegasFormatter.format(new Date());
 
