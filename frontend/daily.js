@@ -9,23 +9,27 @@ const todayStr = new Date().toLocaleDateString("en-CA");
 
 // === Swipe Layout ===
 function setupSwipeContainer(container) {
-  container.classList.add(
-    "flex", "overflow-x-auto", "snap-x", "snap-mandatory",
-    "scroll-smooth", "no-scrollbar", "gap-3"
-  );
-  container.style.scrollbarWidth = "none";
-  container.style.msOverflowStyle = "none";
-  container.style.overflowY = "hidden";
-  container.style.webkitOverflowScrolling = "touch";
+  const isMobile = window.innerWidth < 768;
 
-  if (window.innerWidth >= 768) {
-    container.classList.remove(
-      "flex", "overflow-x-auto", "snap-x", "snap-mandatory", "scroll-smooth"
+  if (isMobile) {
+    container.classList.add(
+      "flex", "overflow-x-auto", "snap-x", "snap-mandatory",
+      "scroll-smooth", "no-scrollbar", "gap-3"
     );
-    container.style.overflow = "visible";
-    container.style.display = "grid";
-    container.style.gridTemplateColumns = "repeat(auto-fit, minmax(200px, 1fr))";
-    container.style.gap = "1rem";
+    container.classList.remove("grid");
+    container.style.scrollbarWidth = "none";
+    container.style.msOverflowStyle = "none";
+    container.style.overflowY = "hidden";
+    container.style.webkitOverflowScrolling = "touch";
+    container.style.display = "";
+    container.style.gridTemplateColumns = "";
+  } else {
+    container.classList.remove(
+      "flex", "overflow-x-auto", "snap-x", "snap-mandatory", "scroll-smooth", "no-scrollbar"
+    );
+    container.style.overflow = "";
+    container.style.display = "";
+    container.style.gridTemplateColumns = "";
   }
 }
 
