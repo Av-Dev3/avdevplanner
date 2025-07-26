@@ -4,22 +4,24 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const todayStr = new Date().toLocaleDateString("en-CA");
 
-  const [tasks, goals, lessons, notes] = await Promise.all([
+  const [tasks, goals, lessons] = await Promise.all([
     fetch("https://avdevplanner.onrender.com/tasks").then((res) => res.json()),
     fetch("https://avdevplanner.onrender.com/goals").then((res) => res.json()),
     fetch("https://avdevplanner.onrender.com/lessons").then((res) => res.json()),
-    fetch("https://avdevplanner.onrender.com/notes").then((res) => res.json()),
   ]);
 
   for (let i = 0; i < 30; i++) {
     const date = new Date();
     date.setDate(date.getDate() + i);
     const dateStr = date.toLocaleDateString("en-CA");
-    const pretty = date.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+    const pretty = date.toLocaleDateString("en-US", {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+    });
 
     const dayCard = document.createElement("div");
     dayCard.className = "bg-[#1f1f1f] rounded-xl p-4 shadow-md transition-all transform hover:-translate-y-1 hover:shadow-[0_4px_12px_rgba(76,142,218,0.35)]";
-;
     dayCard.innerHTML = `<h3 class="text-lg font-semibold">${pretty}</h3>`;
 
     const expandContent = template.content.cloneNode(true);
@@ -27,22 +29,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     const taskContainer = expandContent.querySelector(".task-container");
     const goalContainer = expandContent.querySelector(".goal-container");
     const lessonContainer = expandContent.querySelector(".lesson-container");
-    const noteContainer = expandContent.querySelector(".note-container");
 
     const dayTasks = tasks.filter((t) => t.date === dateStr);
     const dayGoals = goals.filter((g) => g.date === dateStr);
     const dayLessons = lessons.filter((l) => l.date === dateStr);
-    const dayNotes = notes.filter((n) => n.date === dateStr);
 
     appendCards(dayTasks, taskContainer);
     appendCards(dayGoals, goalContainer);
     appendLessonCards(dayLessons, lessonContainer);
-    appendNoteCards(dayNotes, noteContainer);
 
     setupSwipe(taskContainer);
     setupSwipe(goalContainer);
     setupSwipe(lessonContainer);
-    setupSwipe(noteContainer);
 
     const expander = document.createElement("div");
     expander.classList.add("day-expanded");
@@ -53,11 +51,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     dayCard.addEventListener("click", (e) => {
       const isOpen = expander.style.display === "block";
       document.querySelectorAll(".day-expanded").forEach((el) => (el.style.display = "none"));
-      if (!isOpen) {
-        expander.style.display = "block";
-      } else {
-        expander.style.display = "none";
-      }
+      expander.style.display = isOpen ? "none" : "block";
       e.stopPropagation();
     });
 
@@ -94,17 +88,6 @@ function appendLessonCards(lessons, container) {
       `Category: ${lesson.category || "N/A"} | Priority: ${lesson.priority || "Normal"} | ${content}`,
       lesson.prettyDate
     );
-    container.appendChild(card);
-  });
-}
-
-function appendNoteCards(notes, container) {
-  if (!notes.length) {
-    container.innerHTML = "<p class='text-xs'>No notes.</p>";
-    return;
-  }
-  notes.forEach((note) => {
-    const card = createFullCard(note.title, note.content, note.date);
     container.appendChild(card);
   });
 }
