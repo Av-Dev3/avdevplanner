@@ -7,35 +7,24 @@ const logForm = document.getElementById("daily-log-form");
 const logEntries = document.getElementById("daily-log-entries");
 const todayStr = new Date().toLocaleDateString("en-CA");
 
-// === Swipe Layout ===
+// === Swipe Layout for Mobile Only ===
 function setupSwipeContainer(container) {
-  const isMobile = window.innerWidth < 768;
-
-  if (isMobile) {
+  if (window.innerWidth < 768) {
     container.classList.add(
       "flex", "overflow-x-auto", "snap-x", "snap-mandatory",
       "scroll-smooth", "no-scrollbar", "gap-3"
     );
-    container.style.scrollbarWidth = "none";
-    container.style.msOverflowStyle = "none";
-    container.style.overflowY = "hidden";
-    container.style.webkitOverflowScrolling = "touch";
+    container.classList.remove("grid", "grid-cols-2", "lg:grid-cols-3");
   } else {
     container.classList.remove(
       "flex", "overflow-x-auto", "snap-x", "snap-mandatory",
       "scroll-smooth", "no-scrollbar", "gap-3"
     );
-    container.style.scrollbarWidth = "";
-    container.style.msOverflowStyle = "";
-    container.style.overflowY = "";
-    container.style.webkitOverflowScrolling = "";
-    container.style.overflow = "";
-    container.style.display = "";
-    container.style.gridTemplateColumns = "";
-    container.style.gap = "";
+    container.classList.add("grid", "grid-cols-2", "lg:grid-cols-3", "gap-3");
   }
 }
 
+// === Formatting Helpers ===
 function formatPrettyDate(dateStr) {
   const date = new Date(dateStr);
   return date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
@@ -92,15 +81,10 @@ async function loadTodayTasks() {
       completeBtn.textContent = task.completed ? "Undo Complete" : "Mark Complete";
       completeBtn.className = "text-xs bg-purple-600 hover:bg-purple-700 text-white px-2 py-1 rounded mt-2";
       completeBtn.addEventListener("click", async () => {
-        try {
-          const res = await fetch(`https://avdevplanner.onrender.com/tasks/${task.index}/toggle`, {
-            method: "PATCH",
-          });
-          if (res.ok) loadTodayTasks();
-          else console.error("Failed to update task");
-        } catch (err) {
-          console.error("Task complete error:", err);
-        }
+        const res = await fetch(`https://avdevplanner.onrender.com/tasks/${task.index}/toggle`, {
+          method: "PATCH",
+        });
+        if (res.ok) loadTodayTasks();
       });
 
       card.appendChild(completeBtn);
@@ -140,7 +124,6 @@ async function loadGoals() {
           body: JSON.stringify(updated),
         });
         if (res.ok) loadGoals();
-        else console.error("Failed to update goal");
       });
 
       card.appendChild(completeBtn);
@@ -239,8 +222,6 @@ if (logForm) {
       if (res.ok) {
         logForm.reset();
         loadLogs();
-      } else {
-        console.error("Log POST error:", await res.text());
       }
     } catch (err) {
       console.error("Submit failed:", err);
@@ -298,8 +279,6 @@ if (saveTimeBtn && timeInput && savedTimeText) {
       if (res.ok) {
         savedTimeText.textContent = `Saved: ${minutes} minutes of focused work.`;
         timeInput.value = "";
-      } else {
-        savedTimeText.textContent = "Error saving time.";
       }
     } catch (err) {
       savedTimeText.textContent = "Failed to save time.";
@@ -333,3 +312,11 @@ setupSwipeContainer(goalsContainer);
 setupSwipeContainer(lessonsContainer);
 setupSwipeContainer(notesContainer);
 setupSwipeContainer(logEntries);
+
+window.addEventListener("resize", () => {
+  setupSwipeContainer(tasksContainer);
+  setupSwipeContainer(goalsContainer);
+  setupSwipeContainer(lessonsContainer);
+  setupSwipeContainer(notesContainer);
+  setupSwipeContainer(logEntries);
+});
