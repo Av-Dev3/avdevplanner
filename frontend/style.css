@@ -220,6 +220,11 @@ li a.active {
   pointer-events: auto !important;
 }
 
+#splash-screen img {
+    object-fit: contain;
+    background-color: black;
+  }
+
 
   .nav-container {
     flex-wrap: nowrap;
