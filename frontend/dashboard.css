@@ -1334,7 +1334,7 @@ body, .modern-dashboard {
 
 /* === RESPONSIVE MODALS === */
 @media (max-width: 600px) {
-  .modal {
+  .modal:not(.hidden) {
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
@@ -1469,7 +1469,7 @@ body, .modern-dashboard {
 }
 
 @media (max-width: 480px) {
-  .modal {
+  .modal:not(.hidden) {
     padding: 0.5rem !important;
     align-items: center !important;
     justify-content: center !important;
