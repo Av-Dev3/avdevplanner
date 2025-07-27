@@ -32,6 +32,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const inputField = document.getElementById("ai-task-input");
   const chatMessages = document.getElementById("ai-chat-messages");
 
+  // === AI Popup Form ===
+  const aiPopupForm = document.getElementById("ai-form");
+  const aiPopupInput = document.getElementById("ai-input");
+  const aiPopupChatbox = document.getElementById("ai-chatbox");
+
   // === Floating Bubble Toggle ===
   if (floatingToggleBtn && floatingChatBox) {
     floatingToggleBtn.addEventListener("click", () => {
@@ -48,7 +53,58 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // === Form Submission Logic ===
+  // === AI Popup Form Submission ===
+  if (aiPopupForm && aiPopupInput) {
+    aiPopupForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      const prompt = aiPopupInput.value.trim();
+      if (!prompt) return;
+
+      console.log('AI Popup form submitted:', prompt);
+
+      // Add user message to popup chatbox
+      const userMessage = document.createElement("div");
+      userMessage.textContent = `You: ${prompt}`;
+      userMessage.style.color = "var(--text-primary)";
+      userMessage.style.marginBottom = "0.5rem";
+      aiPopupChatbox.appendChild(userMessage);
+
+      // Clear input
+      aiPopupInput.value = "";
+
+      // Add thinking message
+      const thinkingMessage = document.createElement("div");
+      thinkingMessage.textContent = "AI: Thinking...";
+      thinkingMessage.style.color = "var(--text-secondary)";
+      thinkingMessage.style.marginBottom = "0.5rem";
+      aiPopupChatbox.appendChild(thinkingMessage);
+
+      // Scroll to bottom
+      aiPopupChatbox.scrollTop = aiPopupChatbox.scrollHeight;
+
+      try {
+        // Get AI response
+        const response = await callAI(prompt);
+        thinkingMessage.textContent = `AI: ${response}`;
+        aiPopupChatbox.scrollTop = aiPopupChatbox.scrollHeight;
+      } catch (error) {
+        thinkingMessage.textContent = "AI: Sorry, I couldn't process that.";
+        aiPopupChatbox.scrollTop = aiPopupChatbox.scrollHeight;
+      }
+    });
+
+    // Prevent enter key from closing modal
+    aiPopupInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        aiPopupForm.dispatchEvent(new Event("submit"));
+      }
+    });
+  }
+
+  // === Form Submission Logic (Floating Chat) ===
   if (chatForm) {
     chatForm.addEventListener("submit", async (e) => {
       e.preventDefault();

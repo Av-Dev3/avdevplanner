@@ -311,16 +311,21 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- Card Creators with Mark Complete Button added ---
   function createTaskCard(task) {
     console.log('Creating task card:', task);
+    console.log('Task ID:', task.id, 'Task _id:', task._id, 'All keys:', Object.keys(task));
     const div = document.createElement("div");
     div.className = "carousel__card";
+    const taskId = task.id || task._id || task.taskId || '';
+    console.log('Using task ID:', taskId);
     div.innerHTML = `
       <h3 class="font-semibold mb-1">${task.text || task.title || "Untitled Task"}</h3>
       ${task.notes ? `<p class="mb-1">${task.notes}</p>` : ""}
       ${task.time ? `<p><small>Time: ${formatTime12Hour(task.time)}</small></p>` : ""}
       <p class="text-xs text-gray-400">${task._vegasDateStr || ""}</p>
       ${
-        !task.completed
-          ? `<button class="mark-complete-btn mt-2" data-type="task" data-id="${task.id || task._id || ''}">Mark Complete</button>`
+        !task.completed && taskId
+          ? `<button class="mark-complete-btn mt-2" data-type="task" data-id="${taskId}">Mark Complete</button>`
+          : !task.completed && !taskId
+          ? `<span class="text-yellow-500 font-semibold block mt-2">No ID available</span>`
           : `<span class="text-green-500 font-semibold block mt-2">Completed</span>`
       }
     `;
@@ -328,15 +333,20 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   function createGoalCard(goal) {
     console.log('Creating goal card:', goal);
+    console.log('Goal ID:', goal.id, 'Goal _id:', goal._id, 'All keys:', Object.keys(goal));
     const div = document.createElement("div");
     div.className = "carousel__card";
+    const goalId = goal.id || goal._id || goal.goalId || '';
+    console.log('Using goal ID:', goalId);
     div.innerHTML = `
       <h3 class="font-semibold mb-1">${goal.title}</h3>
       ${goal.notes ? `<p class="mb-1">${goal.notes}</p>` : ""}
       <p class="text-xs text-gray-400">${goal._vegasDateStr || ""}</p>
       ${
-        !goal.completed
-          ? `<button class="mark-complete-btn mt-2" data-type="goal" data-id="${goal.id || goal._id || ''}">Mark Complete</button>`
+        !goal.completed && goalId
+          ? `<button class="mark-complete-btn mt-2" data-type="goal" data-id="${goalId}">Mark Complete</button>`
+          : !goal.completed && !goalId
+          ? `<span class="text-yellow-500 font-semibold block mt-2">No ID available</span>`
           : `<span class="text-green-500 font-semibold block mt-2">Completed</span>`
       }
     `;
@@ -344,15 +354,20 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   function createLessonCard(lesson) {
     console.log('Creating lesson card:', lesson);
+    console.log('Lesson ID:', lesson.id, 'Lesson _id:', lesson._id, 'All keys:', Object.keys(lesson));
     const div = document.createElement("div");
     div.className = "carousel__card";
+    const lessonId = lesson.id || lesson._id || lesson.lessonId || '';
+    console.log('Using lesson ID:', lessonId);
     div.innerHTML = `
       <h3 class="font-semibold mb-1">${lesson.title}</h3>
       ${lesson.description ? `<p class="mb-1">${lesson.description}</p>` : ""}
       <p class="text-xs text-gray-400">${lesson._vegasDateStr || ""}</p>
       ${
-        !lesson.completed
-          ? `<button class="mark-complete-btn mt-2" data-type="lesson" data-id="${lesson.id || lesson._id || ''}">Mark Complete</button>`
+        !lesson.completed && lessonId
+          ? `<button class="mark-complete-btn mt-2" data-type="lesson" data-id="${lessonId}">Mark Complete</button>`
+          : !lesson.completed && !lessonId
+          ? `<span class="text-yellow-500 font-semibold block mt-2">No ID available</span>`
           : `<span class="text-green-500 font-semibold block mt-2">Completed</span>`
       }
     `;
