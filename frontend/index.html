@@ -393,7 +393,9 @@
   </div>
 
   <!-- === REDESIGNED POPUPS/DRAWERS/MODALS === -->
-  <div id="drawer" class="modal desktop-drawer hidden">
+  
+  <!-- Desktop Quick Actions Drawer (hidden on mobile) -->
+  <div id="drawer" class="modal desktop-drawer hidden hidden md:block">
     <div class="desktop-drawer__content">
       <div class="desktop-drawer__header">
         <h2 class="desktop-drawer__title">Quick Actions</h2>
@@ -422,6 +424,20 @@
           </div>
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- Mobile Quick Actions Drawer (hidden on desktop) -->
+  <div id="mobileDrawer" class="modal drawer-modal hidden block md:hidden">
+    <div class="drawer__content">
+      <button class="modal__close" onclick="document.getElementById('mobileDrawer').classList.add('hidden')">&times;</button>
+      <h2 class="modal__title card--notes">Quick Actions</h2>
+      <ul class="drawer__links">
+        <li><button onclick="document.getElementById('taskPopup').classList.remove('hidden')">Add Task</button></li>
+        <li><button onclick="document.getElementById('goalPopup').classList.remove('hidden')">Add Goal</button></li>
+        <li><button onclick="document.getElementById('lessonPopup').classList.remove('hidden')">Add Lesson</button></li>
+        <li><button onclick="document.getElementById('aiPopup').classList.remove('hidden')">Open AI Assistant</button></li>
+      </ul>
     </div>
   </div>
 

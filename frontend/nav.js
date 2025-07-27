@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   const fab = document.getElementById('fab');
-  const drawer = document.getElementById('drawer');
+  const mobileDrawer = document.getElementById('mobileDrawer');
   const siteLinksDrawer = document.getElementById('siteLinksDrawer');
 
   const path = window.location.pathname;
@@ -28,14 +28,14 @@ document.addEventListener('DOMContentLoaded', () => {
     isDrawerOpen = !isDrawerOpen;
 
     // ===== ONLY THIS BLOCK IS UPDATED =====
-    if (isHome && drawer) {
-      // Show/hide drawer using modal style
-      if (drawer.classList.contains('hidden')) {
-        drawer.classList.remove('hidden');
-        setTimeout(() => drawer.classList.add('drawer-visible'), 10); // Animate in
+    if (isHome && mobileDrawer) {
+      // Show/hide mobile drawer using modal style
+      if (mobileDrawer.classList.contains('hidden')) {
+        mobileDrawer.classList.remove('hidden');
+        setTimeout(() => mobileDrawer.classList.add('drawer-visible'), 10); // Animate in
       } else {
-        drawer.classList.remove('drawer-visible');
-        setTimeout(() => drawer.classList.add('hidden'), 300); // Animate out
+        mobileDrawer.classList.remove('drawer-visible');
+        setTimeout(() => mobileDrawer.classList.add('hidden'), 300); // Animate out
       }
       siteLinksDrawer?.classList.remove('drawer-visible');
     } 
@@ -82,9 +82,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const startLongPress = () => {
       pressTimer = setTimeout(() => {
         longPressTriggered = true;
-        drawer?.classList.remove('drawer-visible');
-        siteLinksDrawer.classList.add('drawer-visible');
-        siteLinksDrawer.classList.remove('hidden');
+              mobileDrawer?.classList.remove('drawer-visible');
+      siteLinksDrawer.classList.add('drawer-visible');
+      siteLinksDrawer.classList.remove('hidden');
       }, 600);
     };
 
@@ -99,15 +99,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.addEventListener('click', (e) => {
     const insideFab = fab.contains(e.target);
-    const insideDrawer = drawer?.contains(e.target);
+    const insideDrawer = mobileDrawer?.contains(e.target);
     const insideLinks = siteLinksDrawer?.contains(e.target);
 
     if (!insideFab && !insideDrawer && !insideLinks) {
-      drawer?.classList.remove('drawer-visible');
+      mobileDrawer?.classList.remove('drawer-visible');
       siteLinksDrawer?.classList.remove('drawer-visible');
       // Hide modal drawer for homepage
-      if (isHome && drawer && !drawer.classList.contains('hidden')) {
-        setTimeout(() => drawer.classList.add('hidden'), 300);
+      if (isHome && mobileDrawer && !mobileDrawer.classList.contains('hidden')) {
+        setTimeout(() => mobileDrawer.classList.add('hidden'), 300);
       }
       isDrawerOpen = false;
     }
@@ -129,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (taskBtn) {
     taskBtn.addEventListener('click', () => {
       showPopup('taskPopup');
-      drawer?.classList.remove('drawer-visible');
+      mobileDrawer?.classList.remove('drawer-visible');
       isDrawerOpen = false;
     });
   }
@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (goalBtn) {
     goalBtn.addEventListener('click', () => {
       showPopup('goalPopup');
-      drawer?.classList.remove('drawer-visible');
+      mobileDrawer?.classList.remove('drawer-visible');
       isDrawerOpen = false;
     });
   }
@@ -145,7 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (lessonBtn) {
     lessonBtn.addEventListener('click', () => {
       showPopup('lessonPopup');
-      drawer?.classList.remove('drawer-visible');
+      mobileDrawer?.classList.remove('drawer-visible');
       isDrawerOpen = false;
     });
   }
@@ -156,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (openAiBtn && aiPopup) {
     openAiBtn.addEventListener('click', () => {
       aiPopup.classList.remove('hidden');
-      drawer?.classList.remove('drawer-visible');
+      mobileDrawer?.classList.remove('drawer-visible');
       isDrawerOpen = false;
     });
   }

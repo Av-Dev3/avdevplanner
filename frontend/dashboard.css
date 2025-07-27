@@ -1493,6 +1493,14 @@ body, .modern-dashboard {
   right: 0;
   z-index: 9999;
   pointer-events: none;
+  display: none; /* Hidden by default */
+}
+
+/* Show desktop drawer only on desktop */
+@media (min-width: 768px) {
+  .desktop-drawer {
+    display: block;
+  }
 }
 
 .desktop-drawer__content {

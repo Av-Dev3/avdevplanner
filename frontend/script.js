@@ -43,63 +43,95 @@ if (addTaskDesktopBtn && taskFormPopup) {
 
 // === DRAWER HANDLING ===
 document.addEventListener('DOMContentLoaded', function() {
-  const drawer = document.getElementById('drawer');
-  const drawerContent = drawer?.querySelector('.drawer__content');
+  const desktopDrawer = document.getElementById('drawer');
+  const mobileDrawer = document.getElementById('mobileDrawer');
   const quickActionsBtn = document.getElementById('quick-actions-btn');
   
-  // Quick Actions button handler
+  // Quick Actions button handler - opens appropriate drawer based on screen size
   if (quickActionsBtn) {
     quickActionsBtn.addEventListener('click', function(e) {
       e.preventDefault();
       e.stopPropagation();
-      if (drawer) {
-        drawer.classList.remove('hidden');
+      
+      // Check if we're on mobile or desktop
+      if (window.innerWidth < 768) {
+        // Mobile - open mobile drawer
+        if (mobileDrawer) {
+          mobileDrawer.classList.remove('hidden');
+        }
+      } else {
+        // Desktop - open desktop drawer
+        if (desktopDrawer) {
+          desktopDrawer.classList.remove('hidden');
+        }
       }
     });
   }
   
-  // Prevent drawer from closing when clicking inside
-  if (drawerContent) {
-    drawerContent.addEventListener('click', function(e) {
-      e.stopPropagation();
-    });
-  }
-  
-  // Close drawer when clicking outside
-  if (drawer) {
-    drawer.addEventListener('click', function(e) {
-      if (e.target === drawer) {
-        drawer.classList.add('hidden');
-      }
-    });
-  }
-  
-  // Handle drawer button clicks
-  const drawerButtons = drawer?.querySelectorAll('.drawer__links button');
-  if (drawerButtons) {
-    drawerButtons.forEach(button => {
-      button.addEventListener('click', function(e) {
-        e.preventDefault();
+  // Desktop drawer handling
+  if (desktopDrawer) {
+    const desktopDrawerContent = desktopDrawer.querySelector('.desktop-drawer__content');
+    
+    // Prevent desktop drawer from closing when clicking inside
+    if (desktopDrawerContent) {
+      desktopDrawerContent.addEventListener('click', function(e) {
         e.stopPropagation();
-        
-        // Get the target popup from the onclick attribute
-        const onclickAttr = button.getAttribute('onclick');
-        if (onclickAttr) {
-          // Extract the popup ID from the onclick attribute
-          const match = onclickAttr.match(/getElementById\('([^']+)'\)/);
-          if (match) {
-            const popupId = match[1];
-            const popup = document.getElementById(popupId);
-            if (popup) {
-              // Close drawer first
-              drawer.classList.add('hidden');
-              // Open the target popup
-              popup.classList.remove('hidden');
+      });
+    }
+    
+    // Close desktop drawer when clicking outside
+    desktopDrawer.addEventListener('click', function(e) {
+      if (e.target === desktopDrawer) {
+        desktopDrawer.classList.add('hidden');
+      }
+    });
+  }
+  
+  // Mobile drawer handling
+  if (mobileDrawer) {
+    const mobileDrawerContent = mobileDrawer.querySelector('.drawer__content');
+    
+    // Prevent mobile drawer from closing when clicking inside
+    if (mobileDrawerContent) {
+      mobileDrawerContent.addEventListener('click', function(e) {
+        e.stopPropagation();
+      });
+    }
+    
+    // Close mobile drawer when clicking outside
+    mobileDrawer.addEventListener('click', function(e) {
+      if (e.target === mobileDrawer) {
+        mobileDrawer.classList.add('hidden');
+      }
+    });
+    
+    // Handle mobile drawer button clicks
+    const mobileDrawerButtons = mobileDrawer.querySelectorAll('.drawer__links button');
+    if (mobileDrawerButtons) {
+      mobileDrawerButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          // Get the target popup from the onclick attribute
+          const onclickAttr = button.getAttribute('onclick');
+          if (onclickAttr) {
+            // Extract the popup ID from the onclick attribute
+            const match = onclickAttr.match(/getElementById\('([^']+)'\)/);
+            if (match) {
+              const popupId = match[1];
+              const popup = document.getElementById(popupId);
+              if (popup) {
+                // Close mobile drawer first
+                mobileDrawer.classList.add('hidden');
+                // Open the target popup
+                popup.classList.remove('hidden');
+              }
             }
           }
-        }
+        });
       });
-    });
+    }
   }
 });
 
