@@ -54,16 +54,21 @@ body {
 @media (max-width: 768px) {
   .nav-left {
     gap: 1rem;
+    display: flex;
+    align-items: center;
+    width: 100%;
   }
 
   .nav-left .logo {
     margin-right: 1rem;
+    flex-shrink: 0;
   }
 
   .nav-left .nav-quote {
     font-size: 0.9rem;
     white-space: nowrap;
-    margin-left: 0.5rem;
+    flex: 1;
+    text-align: center;
   }
 }
 
