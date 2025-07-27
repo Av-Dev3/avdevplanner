@@ -99,7 +99,7 @@
 .day-content {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
 .day-content .content-card {
@@ -316,17 +316,61 @@
   cursor: pointer !important;
   transition: all 0.2s ease !important;
   box-shadow: var(--button-shadow) !important;
+  display: inline-block !important;
+  text-align: center !important;
+  text-decoration: none !important;
+  min-width: 120px !important;
 }
 
 .reflection-submit:hover {
   transform: translateY(-1px) !important;
   box-shadow: var(--button-shadow-hover) !important;
+  background: linear-gradient(135deg, var(--accent-secondary), var(--accent-primary)) !important;
 }
 
 .reflection-submit:disabled {
   opacity: 0.6 !important;
   cursor: not-allowed !important;
   transform: none !important;
+}
+
+/* More specific targeting */
+.reflection-form .reflection-submit,
+.reflection-card .reflection-submit,
+button.form-submit.reflection-submit,
+button.reflection-submit {
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary)) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: var(--border-radius-sm) !important;
+  padding: 0.75rem 1.5rem !important;
+  font-size: 0.9rem !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  box-shadow: var(--button-shadow) !important;
+  display: inline-block !important;
+  text-align: center !important;
+  text-decoration: none !important;
+  min-width: 120px !important;
+}
+
+/* Override form-submit styles for reflection button */
+button.form-submit.reflection-submit {
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary)) !important;
+  color: white !important;
+  border: none !important;
+  border-radius: var(--border-radius-sm) !important;
+  padding: 0.75rem 1.5rem !important;
+  font-size: 0.9rem !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  box-shadow: var(--button-shadow) !important;
+  display: inline-block !important;
+  text-align: center !important;
+  text-decoration: none !important;
+  min-width: 120px !important;
 }
 
 /* Log Entries Container (matching daily page) */
