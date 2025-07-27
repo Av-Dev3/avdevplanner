@@ -353,10 +353,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   function createGoalCard(goal) {
     console.log('Creating goal card:', goal);
-    console.log('Goal index:', goal.index, 'Goal id:', goal.id, 'Goal _id:', goal._id, 'Goal goalId:', goal.goalId);
+    console.log('Goal originalIndex:', goal.originalIndex, 'Goal index:', goal.index, 'Goal id:', goal.id, 'Goal _id:', goal._id, 'Goal goalId:', goal.goalId);
     const div = document.createElement("div");
     div.className = "carousel__card";
-    const goalId = goal.index || goal.id || goal._id || goal.goalId || '';
+    const goalId = goal.originalIndex !== undefined ? goal.originalIndex : (goal.index || goal.id || goal._id || goal.goalId || '');
     console.log('Using goal ID:', goalId);
     div.innerHTML = `
       <h3 class="font-semibold mb-1">${goal.title}</h3>
