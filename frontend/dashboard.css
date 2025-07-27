@@ -1196,6 +1196,15 @@ body, .modern-dashboard {
   margin-bottom: 1rem;
   flex: 1;
   min-height: 200px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-small);
+  padding: 1rem;
+  color: var(--text-primary);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 #aiPopup .ai__form {
@@ -1222,6 +1231,41 @@ body, .modern-dashboard {
   margin: 0;
   order: 2;
   align-self: flex-start;
+}
+
+/* === CHAT MESSAGE STYLES === */
+.chat-message {
+  padding: 0.75rem;
+  border-radius: var(--radius-small);
+  margin-bottom: 0.5rem;
+  max-width: 85%;
+  word-wrap: break-word;
+  line-height: 1.4;
+  font-size: 0.9rem;
+}
+
+.chat-message.user {
+  background: linear-gradient(135deg, var(--tasks-accent), #ff8e8e);
+  color: white;
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+}
+
+.chat-message.ai {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+}
+
+.chat-message.thinking {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-style: italic;
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
 }
 
 /* === MOBILE FAB BUTTON === */
@@ -1319,9 +1363,18 @@ body, .modern-dashboard {
   }
   
   #aiPopup .ai__chatbox {
-    min-height: 120px;
-    max-height: 180px;
+    min-height: 150px;
+    max-height: 200px;
     margin-bottom: 0.75rem;
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: var(--radius-small) !important;
+    padding: 0.75rem !important;
+    color: var(--text-primary) !important;
+    overflow-y: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.5rem !important;
   }
   
   #aiPopup .ai__form {

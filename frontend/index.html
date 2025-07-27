@@ -453,7 +453,11 @@
     <div class="modal__content">
       <button class="modal__close" onclick="document.getElementById('aiPopup').classList.add('hidden')">&times;</button>
       <h2 class="modal__title card--focus">AI Assistant</h2>
-      <div class="ai__chatbox" id="ai-chatbox"></div>
+      <div class="ai__chatbox" id="ai-chatbox">
+        <div class="chat-message ai">
+          <p>Hello! I'm your AI assistant. How can I help you today?</p>
+        </div>
+      </div>
       <form id="ai-form" class="ai__form">
         <input type="text" id="ai-input" placeholder="Ask your AI assistant..." autocomplete="off"/>
         <button type="submit" class="modal__submit card--focus">Send</button>
