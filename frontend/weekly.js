@@ -181,10 +181,11 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
     `;
 
+    const dayHeader = dayCard.querySelector(".day-header");
     const toggle = dayCard.querySelector(".day-toggle");
     const content = dayCard.querySelector(".day-content");
     
-    toggle.addEventListener("click", () => {
+    dayHeader.addEventListener("click", () => {
       if (content.style.display === "none" || content.style.display === "") {
         content.style.display = "block";
         toggle.classList.add("expanded");
