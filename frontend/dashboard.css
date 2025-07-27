@@ -1366,6 +1366,8 @@ body, .modern-dashboard {
     left: 0 !important;
     transform: none !important;
     align-self: center !important;
+    animation: modalFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    transform-origin: center !important;
   }
   
   .modal__close {
