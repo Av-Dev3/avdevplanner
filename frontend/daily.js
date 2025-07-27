@@ -411,7 +411,13 @@ function setupCarousel(container, carouselType) {
   
   // Show only first card initially
   cards.forEach((card, index) => {
-    card.style.display = index === 0 ? 'block' : 'none';
+    if (index === 0) {
+      card.style.display = 'block';
+      card.style.opacity = '1';
+    } else {
+      card.style.display = 'none';
+      card.style.opacity = '0';
+    }
   });
   
   // Setup arrow buttons
@@ -434,7 +440,17 @@ function setupCarousel(container, carouselType) {
   
   function updateCarouselDisplay() {
     cards.forEach((card, index) => {
-      card.style.display = index === currentIndex ? 'block' : 'none';
+      if (index === currentIndex) {
+        card.style.display = 'block';
+        setTimeout(() => {
+          card.style.opacity = '1';
+        }, 10);
+      } else {
+        card.style.opacity = '0';
+        setTimeout(() => {
+          card.style.display = 'none';
+        }, 300);
+      }
     });
     
     // Update arrow states

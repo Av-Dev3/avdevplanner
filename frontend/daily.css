@@ -58,11 +58,15 @@
   position: relative;
   overflow: hidden;
   min-height: 200px;
+  display: flex;
+  flex-direction: column;
 }
 
 .carousel__card {
   width: 100%;
-  transition: all 0.3s ease;
+  transition: opacity 0.3s ease;
+  flex-shrink: 0;
+  opacity: 1;
 }
 
 /* === DAILY ITEM CARD === */
