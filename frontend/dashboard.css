@@ -228,12 +228,11 @@ body, .modern-dashboard {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
-  flex: 1;
-  min-height: 180px;
+  height: 160px;
 }
 
 .content-card.focus-card {
-  min-height: 280px;
+  height: 280px;
 }
 
 .content-card::before {
@@ -272,6 +271,8 @@ body, .modern-dashboard {
   justify-content: space-between;
   padding: 1rem;
   border-bottom: 1px solid var(--border-color);
+  height: 60px;
+  box-sizing: border-box;
 }
 
 .card-title {
@@ -306,11 +307,12 @@ body, .modern-dashboard {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  box-sizing: border-box;
 }
 
 /* === CAROUSEL STYLES === */
 .carousel__container {
-  min-height: 100px;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -318,7 +320,6 @@ body, .modern-dashboard {
   overflow: hidden;
   border-radius: var(--radius-small);
   background: rgba(255, 255, 255, 0.02);
-  flex: 1;
   padding: 0.5rem;
   box-sizing: border-box;
 }
@@ -410,6 +411,7 @@ body, .modern-dashboard {
   position: relative;
   user-select: none;
   -webkit-user-select: none;
+  pointer-events: auto;
 }
 
 .carousel-arrow:hover {
@@ -420,6 +422,11 @@ body, .modern-dashboard {
 
 .carousel-arrow:active {
   transform: scale(0.95);
+}
+
+.carousel-arrow:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
 }
 
 /* === CAROUSEL PROGRESS === */

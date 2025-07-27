@@ -147,14 +147,29 @@ document.addEventListener("DOMContentLoaded", () => {
     
     // Arrow button setup
     if (arrowPrev && arrowNext) {
-      arrowPrev.onclick = prev;
-      arrowNext.onclick = next;
+      console.log('Setting up arrows for carousel:', { prev: arrowPrev, next: arrowNext, itemsCount: items.length });
+      
+      arrowPrev.onclick = (e) => {
+        console.log('Prev arrow clicked');
+        e.preventDefault();
+        e.stopPropagation();
+        prev();
+      };
+      
+      arrowNext.onclick = (e) => {
+        console.log('Next arrow clicked');
+        e.preventDefault();
+        e.stopPropagation();
+        next();
+      };
       
       // Hide arrows if only one item
       if (items.length <= 1) {
         arrowPrev.style.display = 'none';
         arrowNext.style.display = 'none';
       }
+    } else {
+      console.log('Arrow buttons not found:', { arrowPrev, arrowNext });
     }
     
     // Enhanced swipe functionality
@@ -466,6 +481,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const goalsNext = document.querySelector('.carousel-arrow.next[data-carousel="goals"]');
     const lessonsPrev = document.querySelector('.carousel-arrow.prev[data-carousel="lessons"]');
     const lessonsNext = document.querySelector('.carousel-arrow.next[data-carousel="lessons"]');
+
+    // Debug logging
+    console.log('Carousel setup:', {
+      tasks: { container: tasksCarousel, prev: tasksPrev, next: tasksNext, items: todayTasks.length },
+      goals: { container: goalsCarousel, prev: goalsPrev, next: goalsNext, items: todayGoals.length },
+      lessons: { container: lessonsCarousel, prev: lessonsPrev, next: lessonsNext, items: todayLessons.length }
+    });
 
     setupCarousel(tasksCarousel, todayTasks, createTaskCard, tasksPrev, tasksNext);
     setupCarousel(goalsCarousel, todayGoals, createGoalCard, goalsPrev, goalsNext);
