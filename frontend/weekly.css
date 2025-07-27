@@ -99,7 +99,12 @@
 .day-content {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 2rem;
+}
+
+.day-content .content-card {
+  margin-bottom: 0;
+  margin-top: 0;
 }
 
 .day-content .content-card {
@@ -306,16 +311,16 @@
 
 .reflection-submit {
   margin-top: 0.5rem;
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary)) !important;
+  background: linear-gradient(135deg, var(--tasks-accent), #c0392b) !important;
   color: white !important;
   border: none !important;
-  border-radius: var(--border-radius-sm) !important;
+  border-radius: var(--radius-small) !important;
   padding: 0.75rem 1.5rem !important;
   font-size: 0.9rem !important;
-  font-weight: 500 !important;
+  font-weight: 600 !important;
   cursor: pointer !important;
   transition: all 0.2s ease !important;
-  box-shadow: var(--button-shadow) !important;
+  box-shadow: var(--shadow) !important;
   display: inline-block !important;
   text-align: center !important;
   text-decoration: none !important;
@@ -324,8 +329,8 @@
 
 .reflection-submit:hover {
   transform: translateY(-1px) !important;
-  box-shadow: var(--button-shadow-hover) !important;
-  background: linear-gradient(135deg, var(--accent-secondary), var(--accent-primary)) !important;
+  box-shadow: var(--shadow-hover) !important;
+  background: linear-gradient(135deg, #c0392b, var(--tasks-accent)) !important;
 }
 
 .reflection-submit:disabled {
@@ -339,16 +344,16 @@
 .reflection-card .reflection-submit,
 button.form-submit.reflection-submit,
 button.reflection-submit {
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary)) !important;
+  background: linear-gradient(135deg, var(--tasks-accent), #c0392b) !important;
   color: white !important;
   border: none !important;
-  border-radius: var(--border-radius-sm) !important;
+  border-radius: var(--radius-small) !important;
   padding: 0.75rem 1.5rem !important;
   font-size: 0.9rem !important;
-  font-weight: 500 !important;
+  font-weight: 600 !important;
   cursor: pointer !important;
   transition: all 0.2s ease !important;
-  box-shadow: var(--button-shadow) !important;
+  box-shadow: var(--shadow) !important;
   display: inline-block !important;
   text-align: center !important;
   text-decoration: none !important;
@@ -357,16 +362,16 @@ button.reflection-submit {
 
 /* Override form-submit styles for reflection button */
 button.form-submit.reflection-submit {
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary)) !important;
+  background: linear-gradient(135deg, var(--tasks-accent), #c0392b) !important;
   color: white !important;
   border: none !important;
-  border-radius: var(--border-radius-sm) !important;
+  border-radius: var(--radius-small) !important;
   padding: 0.75rem 1.5rem !important;
   font-size: 0.9rem !important;
-  font-weight: 500 !important;
+  font-weight: 600 !important;
   cursor: pointer !important;
   transition: all 0.2s ease !important;
-  box-shadow: var(--button-shadow) !important;
+  box-shadow: var(--shadow) !important;
   display: inline-block !important;
   text-align: center !important;
   text-decoration: none !important;
