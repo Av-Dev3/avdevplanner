@@ -365,9 +365,9 @@ document.addEventListener("DOMContentLoaded", () => {
       ${goal.notes ? `<p class="mb-1">${goal.notes}</p>` : ""}
       <p class="text-xs text-gray-400">${goal._vegasDateStr || ""}</p>
       ${
-        !goal.completed && goalId
+        !goal.completed && goalId !== ''
           ? `<button class="mark-complete-btn mt-2" data-type="goal" data-id="${goalId}">Mark Complete</button>`
-          : !goal.completed && !goalId
+          : !goal.completed && goalId === ''
           ? `<span class="text-yellow-500 font-semibold block mt-2">No ID available</span>`
           : `<span class="text-green-500 font-semibold block mt-2">Completed</span>`
       }
