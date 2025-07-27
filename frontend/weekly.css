@@ -62,7 +62,8 @@
 }
 
 /* Different colors for each day */
-.day-header.monday {
+.day-header.monday,
+.day-header[class*="monday"] {
   background: linear-gradient(135deg, #e74c3c, #c0392b) !important;
 }
 
@@ -70,51 +71,63 @@
   background: linear-gradient(135deg, #c0392b, #e74c3c) !important;
 }
 
-.day-header.tuesday {
+.day-header.tuesday,
+.day-header[class*="tuesday"] {
   background: linear-gradient(135deg, #f39c12, #e67e22) !important;
 }
 
-.day-header.tuesday:hover {
+.day-header.tuesday:hover,
+.day-header[class*="tuesday"]:hover {
   background: linear-gradient(135deg, #e67e22, #f39c12) !important;
 }
 
-.day-header.wednesday {
+.day-header.wednesday,
+.day-header[class*="wednesday"] {
   background: linear-gradient(135deg, #27ae60, #2ecc71) !important;
 }
 
-.day-header.wednesday:hover {
+.day-header.wednesday:hover,
+.day-header[class*="wednesday"]:hover {
   background: linear-gradient(135deg, #2ecc71, #27ae60) !important;
 }
 
-.day-header.thursday {
+.day-header.thursday,
+.day-header[class*="thursday"] {
   background: linear-gradient(135deg, #9b59b6, #8e44ad) !important;
 }
 
-.day-header.thursday:hover {
+.day-header.thursday:hover,
+.day-header[class*="thursday"]:hover {
   background: linear-gradient(135deg, #8e44ad, #9b59b6) !important;
 }
 
-.day-header.friday {
+.day-header.friday,
+.day-header[class*="friday"] {
   background: linear-gradient(135deg, #3498db, #2980b9) !important;
 }
 
-.day-header.friday:hover {
+.day-header.friday:hover,
+.day-header[class*="friday"]:hover {
   background: linear-gradient(135deg, #2980b9, #3498db) !important;
 }
 
-.day-header.saturday {
+.day-header.saturday,
+.day-header[class*="saturday"] {
   background: linear-gradient(135deg, #e67e22, #d35400) !important;
 }
 
-.day-header.saturday:hover {
+.day-header.saturday:hover,
+.day-header[class*="saturday"]:hover {
   background: linear-gradient(135deg, #d35400, #e67e22) !important;
 }
 
-.day-header.sunday {
+.day-header.sunday,
+.day-header[class*="sunday"] {
   background: linear-gradient(135deg, #1abc9c, #16a085) !important;
 }
 
-.day-header.sunday:hover {
+.day-header.sunday:hover,
+.day-header[class*="sunday"]:hover {
   background: linear-gradient(135deg, #16a085, #1abc9c) !important;
 }
 
