@@ -52,7 +52,7 @@ body {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  background: linear-gradient(135deg, rgba(76, 142, 218, 0.8), rgba(255, 255, 255, 0.9));
+  background: linear-gradient(135deg, rgba(231, 76, 60, 0.8), rgba(255, 255, 255, 0.9));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -99,7 +99,7 @@ li {
 }
 
 li:hover {
-  background: rgba(76, 142, 218, 0.1);
+  background: rgba(231, 76, 60, 0.1);
   transform: translateY(-1px);
 }
 
@@ -129,7 +129,7 @@ li a.active::after {
   left: 0;
   right: 0;
   height: 2px;
-  background: linear-gradient(90deg, #4c8eda, #6ba3e8);
+  background: linear-gradient(90deg, #e74c3c, #c0392b);
   border-radius: 1px;
 }
 

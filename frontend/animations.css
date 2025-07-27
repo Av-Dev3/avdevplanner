@@ -186,7 +186,7 @@
 .footer:hover {
   transform: translateY(-2px);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-  border-color: rgba(76, 142, 218, 0.3);
+  border-color: rgba(231, 76, 60, 0.3);
 }
 
 .footer span {
@@ -216,9 +216,9 @@
 
 .footer span:hover {
   color: rgba(255, 255, 255, 1);
-  background: rgba(76, 142, 218, 0.1);
+  background: rgba(231, 76, 60, 0.1);
   transform: scale(1.05);
-  text-shadow: 0 0 20px rgba(76, 142, 218, 0.5);
+  text-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
 }
 
 /* === CODE EDITOR POPUP (Enhanced) === */

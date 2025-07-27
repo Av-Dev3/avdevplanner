@@ -1,18 +1,18 @@
 :root {
-  --dashboard-bg: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+  --dashboard-bg: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%);
   --card-bg: rgba(255, 255, 255, 0.05);
   --glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
   --shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 8px 16px rgba(0, 0, 0, 0.2);
   --shadow-hover: 0 25px 50px rgba(0, 0, 0, 0.4), 0 12px 24px rgba(0, 0, 0, 0.3);
   --radius: 20px;
   --radius-small: 12px;
-  --tasks-accent: #ff6b6b;
-  --goals-accent: #4ecdc4;
-  --lessons-accent: #a8e6cf;
-  --notes-accent: #ffd93d;
-  --focus-accent: #6c5ce7;
-  --motivation-accent: #fd79a8;
-  --popup-glass: rgba(15, 15, 35, 0.95);
+  --tasks-accent: #e74c3c;
+  --goals-accent: #27ae60;
+  --lessons-accent: #f39c12;
+  --notes-accent: #9b59b6;
+  --focus-accent: #34495e;
+  --motivation-accent: #e67e22;
+  --popup-glass: rgba(10, 10, 10, 0.95);
   --popup-blur: blur(20px);
   --popup-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
   --text-primary: #ffffff;
@@ -61,7 +61,7 @@ body, .modern-dashboard {
 }
 
 .title-icon {
-  background: linear-gradient(135deg, var(--focus-accent), #8b7fd8);
+  background: linear-gradient(135deg, var(--focus-accent), #2c3e50);
   border-radius: 12px;
   padding: 0.75rem;
   color: white;
@@ -82,7 +82,7 @@ body, .modern-dashboard {
 }
 
 .action-btn {
-  background: linear-gradient(135deg, var(--tasks-accent), #ff8e8e);
+  background: linear-gradient(135deg, var(--tasks-accent), #c0392b);
   color: white;
   border: none;
   border-radius: var(--radius-small);
@@ -190,27 +190,27 @@ body, .modern-dashboard {
 }
 
 .stat-icon.tasks {
-  background: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(255, 107, 107, 0.1));
+  background: linear-gradient(135deg, rgba(231, 76, 60, 0.2), rgba(231, 76, 60, 0.1));
   color: var(--tasks-accent);
-  border: 1px solid rgba(255, 107, 107, 0.3);
+  border: 1px solid rgba(231, 76, 60, 0.3);
 }
 
 .stat-icon.goals {
-  background: linear-gradient(135deg, rgba(78, 205, 196, 0.2), rgba(78, 205, 196, 0.1));
+  background: linear-gradient(135deg, rgba(39, 174, 96, 0.2), rgba(39, 174, 96, 0.1));
   color: var(--goals-accent);
-  border: 1px solid rgba(78, 205, 196, 0.3);
+  border: 1px solid rgba(39, 174, 96, 0.3);
 }
 
 .stat-icon.lessons {
-  background: linear-gradient(135deg, rgba(168, 230, 207, 0.2), rgba(168, 230, 207, 0.1));
+  background: linear-gradient(135deg, rgba(243, 156, 18, 0.2), rgba(243, 156, 18, 0.1));
   color: var(--lessons-accent);
-  border: 1px solid rgba(168, 230, 207, 0.3);
+  border: 1px solid rgba(243, 156, 18, 0.3);
 }
 
 .stat-icon.streak {
-  background: linear-gradient(135deg, rgba(253, 121, 168, 0.2), rgba(253, 121, 168, 0.1));
-  color: var(--motivation-accent);
-  border: 1px solid rgba(253, 121, 168, 0.3);
+  background: linear-gradient(135deg, rgba(52, 73, 94, 0.2), rgba(52, 73, 94, 0.1));
+  color: var(--focus-accent);
+  border: 1px solid rgba(52, 73, 94, 0.3);
 }
 
 .stat-content {
