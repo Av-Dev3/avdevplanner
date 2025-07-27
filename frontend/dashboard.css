@@ -201,8 +201,8 @@ body, .modern-dashboard {
 /* === DASHBOARD GRID === */
 .dashboard-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 2rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
   min-height: 500px;
 }
 
@@ -210,7 +210,6 @@ body, .modern-dashboard {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
-  max-width: 400px;
 }
 
 .dashboard-center {
@@ -235,19 +234,19 @@ body, .modern-dashboard {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
-  min-height: 180px;
+  height: 140px;
 }
 
 .content-card.focus-card {
-  min-height: 280px;
+  height: 140px;
 }
 
 .content-card.notes-card {
-  min-height: 200px;
+  height: 140px;
 }
 
 .content-card.motivation-card {
-  min-height: 160px;
+  height: 140px;
 }
 
 .content-card::before {
@@ -284,25 +283,27 @@ body, .modern-dashboard {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem;
+  padding: 0.75rem;
   border-bottom: 1px solid var(--border-color);
+  height: 50px;
+  box-sizing: border-box;
 }
 
 .card-title {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
 }
 
 .card-title .title-icon {
   background: rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  padding: 0.4rem;
+  border-radius: 6px;
+  padding: 0.3rem;
   color: var(--text-primary);
 }
 
 .card-title h3 {
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 600;
   color: var(--text-primary);
   margin: 0;
@@ -310,13 +311,13 @@ body, .modern-dashboard {
 
 .card-actions {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.25rem;
 }
 
 /* === CARD CONTENT === */
 .card-content {
-  padding: 0.75rem;
-  height: calc(100% - 60px);
+  padding: 0.5rem;
+  height: calc(100% - 50px);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -325,7 +326,7 @@ body, .modern-dashboard {
 
 /* === CAROUSEL STYLES === */
 .carousel__container {
-  min-height: 100px;
+  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -333,8 +334,7 @@ body, .modern-dashboard {
   overflow: hidden;
   border-radius: var(--radius-small);
   background: rgba(255, 255, 255, 0.02);
-  flex: 1;
-  padding: 0.5rem;
+  padding: 0.25rem;
   box-sizing: border-box;
 }
 
@@ -342,13 +342,13 @@ body, .modern-dashboard {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-small);
-  padding: 0.75rem;
-  width: 90%;
-  max-width: 300px;
+  padding: 0.5rem;
+  width: 95%;
+  max-width: 100%;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   animation: cardSlideIn 0.3s ease-out;
-  min-height: 80px;
+  min-height: 60px;
   box-sizing: border-box;
   margin: 0 auto;
 }
@@ -374,34 +374,33 @@ body, .modern-dashboard {
 .carousel__card h3 {
   color: var(--text-primary);
   font-weight: 600;
-  margin-bottom: 0.4rem;
-  font-size: 0.85rem;
-  line-height: 1.3;
+  margin-bottom: 0.25rem;
+  font-size: 0.8rem;
+  line-height: 1.2;
 }
 
 .carousel__card p {
   color: var(--text-secondary);
-  margin-bottom: 0.4rem;
-  line-height: 1.3;
-  font-size: 0.75rem;
+  margin-bottom: 0.25rem;
+  line-height: 1.2;
+  font-size: 0.7rem;
 }
 
 .carousel__card small {
   color: var(--text-muted);
-  font-size: 0.65rem;
+  font-size: 0.6rem;
 }
 
 .card__empty {
   color: var(--text-muted);
   text-align: center;
   font-style: italic;
-  padding: 1rem;
+  padding: 0.5rem;
   background: rgba(255, 255, 255, 0.02);
   border: 1px dashed var(--border-color);
   border-radius: var(--radius-small);
-  font-size: 0.75rem;
-  width: 90%;
-  max-width: 300px;
+  font-size: 0.7rem;
+  width: 95%;
   box-sizing: border-box;
   margin: 0 auto;
 }
@@ -411,13 +410,13 @@ body, .modern-dashboard {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid var(--border-color);
   color: var(--text-primary);
-  font-size: 0.8rem;
-  padding: 0.3rem;
+  font-size: 0.7rem;
+  padding: 0.2rem;
   border-radius: var(--radius-small);
   transition: all 0.2s ease;
   cursor: pointer;
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -479,19 +478,18 @@ body, .modern-dashboard {
 .focus-form {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.5rem;
   height: 100%;
-  min-height: 120px;
 }
 
 #daily-focus-input {
   width: 100%;
-  padding: 0.75rem 1rem;
+  padding: 0.5rem 0.75rem;
   border-radius: var(--radius-small);
   border: 1px solid var(--border-color);
   background: rgba(255, 255, 255, 0.05);
   color: var(--text-primary);
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   transition: all 0.2s ease;
   box-sizing: border-box;
 }
@@ -508,12 +506,12 @@ body, .modern-dashboard {
   color: white;
   border: none;
   border-radius: var(--radius-small);
-  padding: 0.6rem 1.2rem;
+  padding: 0.4rem 0.8rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
   align-self: flex-start;
-  font-size: 0.8rem;
+  font-size: 0.7rem;
 }
 
 #save-focus-btn:hover {
@@ -523,24 +521,24 @@ body, .modern-dashboard {
 
 .focus-display {
   color: var(--text-secondary);
-  font-size: 0.8rem;
-  margin-top: 0.5rem;
-  padding: 0.6rem;
+  font-size: 0.7rem;
+  margin-top: 0.25rem;
+  padding: 0.4rem;
   background: rgba(255, 255, 255, 0.03);
   border-radius: var(--radius-small);
   border: 1px solid var(--border-color);
   flex: 1;
   overflow-y: auto;
   word-wrap: break-word;
-  min-height: 60px;
+  min-height: 40px;
 }
 
 /* === NOTES CONTAINER === */
 .card__notes-container {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  max-height: 150px;
+  gap: 0.5rem;
+  max-height: 80px;
   overflow-y: auto;
   height: 100%;
 }
@@ -549,39 +547,39 @@ body, .modern-dashboard {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-small);
-  padding: 0.75rem;
+  padding: 0.4rem;
   transition: all 0.2s ease;
 }
 
 .pinned-note-card:hover {
   background: rgba(255, 255, 255, 0.08);
   border-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
+  transform: translateY(-1px);
 }
 
 .pinned-note-card .font-semibold {
   color: var(--text-primary);
   font-weight: 600;
-  margin-bottom: 0.4rem;
-  font-size: 0.8rem;
+  margin-bottom: 0.2rem;
+  font-size: 0.7rem;
 }
 
 .pinned-note-card .text-sm {
   color: var(--text-secondary);
-  line-height: 1.4;
-  margin-bottom: 0.4rem;
-  font-size: 0.75rem;
+  line-height: 1.2;
+  margin-bottom: 0.2rem;
+  font-size: 0.65rem;
 }
 
 .pinned-note-card .text-xs {
   color: var(--text-muted);
-  font-size: 0.7rem;
+  font-size: 0.6rem;
 }
 
 /* === MOTIVATION CONTENT === */
 .motivation-content {
   text-align: center;
-  padding: 0.75rem 0;
+  padding: 0.5rem 0;
   height: 100%;
   display: flex;
   align-items: center;
@@ -591,8 +589,8 @@ body, .modern-dashboard {
 #quote-box {
   color: var(--text-secondary);
   font-style: italic;
-  font-size: 0.9rem;
-  line-height: 1.5;
+  font-size: 0.8rem;
+  line-height: 1.3;
 }
 
 /* === MARK COMPLETE BUTTONS === */
@@ -601,12 +599,12 @@ body, .modern-dashboard {
   color: white;
   border: none;
   border-radius: var(--radius-small);
-  padding: 0.6rem 1.2rem;
+  padding: 0.3rem 0.6rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  margin-top: 0.75rem;
-  font-size: 0.8rem;
+  margin-top: 0.4rem;
+  font-size: 0.65rem;
 }
 
 .mark-complete-btn:hover {
