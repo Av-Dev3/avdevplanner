@@ -624,10 +624,6 @@ body, .modern-dashboard {
   .stats-row {
     grid-template-columns: repeat(3, 1fr);
   }
-  
-  .dashboard-grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 @media (max-width: 900px) {
@@ -653,6 +649,21 @@ body, .modern-dashboard {
   /* Hide quick actions button on mobile */
   .action-btn {
     display: none;
+  }
+  
+  /* Stack dashboard rows on mobile */
+  .dashboard-grid {
+    gap: 1.5rem;
+  }
+  
+  .dashboard-row {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  /* Remove max-width constraint on mobile */
+  .dashboard-left {
+    max-width: none;
   }
 }
 
@@ -683,29 +694,100 @@ body, .modern-dashboard {
   }
   
   .content-card {
-    min-height: 180px;
+    min-height: 160px;
+  }
+  
+  .dashboard-row {
+    gap: 1rem;
   }
 }
 
 @media (max-width: 600px) {
   .carousel__container {
-    min-height: 100px;
+    min-height: 80px;
   }
   
   .card-header {
-    padding: 1rem;
-  }
-  
-  .card-content {
-    padding: 1rem;
-  }
-  
-  .carousel__card {
     padding: 0.75rem;
   }
   
+  .card-content {
+    padding: 0.5rem;
+  }
+  
+  .carousel__card {
+    padding: 0.5rem;
+  }
+  
   .content-card {
-    min-height: 160px;
+    min-height: 140px;
+  }
+  
+  /* Make cards more compact on very small screens */
+  .card-title h3 {
+    font-size: 0.9rem;
+  }
+  
+  .carousel__card h3 {
+    font-size: 0.8rem;
+  }
+  
+  .carousel__card p {
+    font-size: 0.7rem;
+  }
+  
+  .carousel__card small {
+    font-size: 0.6rem;
+  }
+  
+  .focus-form {
+    gap: 0.5rem;
+  }
+  
+  #daily-focus-input {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+  
+  #save-focus-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+  }
+  
+  .focus-display {
+    font-size: 0.75rem;
+    padding: 0.5rem;
+  }
+  
+  .card__notes-container {
+    gap: 0.5rem;
+    max-height: 100px;
+  }
+  
+  .pinned-note-card {
+    padding: 0.5rem;
+  }
+  
+  .pinned-note-card .font-semibold {
+    font-size: 0.75rem;
+  }
+  
+  .pinned-note-card .text-sm {
+    font-size: 0.7rem;
+  }
+  
+  .pinned-note-card .text-xs {
+    font-size: 0.65rem;
+  }
+  
+  #quote-box {
+    font-size: 0.8rem;
+  }
+  
+  .mark-complete-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    margin-top: 0.5rem;
   }
 }
 
@@ -1023,6 +1105,8 @@ body, .modern-dashboard {
   overflow-y: auto;
   font-family: inherit;
   line-height: 1.5;
+  position: relative;
+  z-index: 1;
 }
 
 .ai__chatbox::-webkit-scrollbar {
@@ -1041,6 +1125,41 @@ body, .modern-dashboard {
 
 .ai__chatbox::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.3);
+}
+
+/* === AI FORM === */
+.ai__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  position: relative;
+  z-index: 2;
+}
+
+.ai__form input {
+  width: 100%;
+  padding: 1rem 1.2rem;
+  border-radius: var(--radius-small);
+  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+}
+
+.ai__form input:focus {
+  outline: none;
+  border-color: var(--focus-accent);
+  background: rgba(108, 92, 231, 0.1);
+  box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1);
+}
+
+.ai__form input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.7;
 }
 
 /* === MOBILE FAB BUTTON === */
@@ -1077,6 +1196,8 @@ body, .modern-dashboard {
   .drawer__content {
     min-width: 95vw;
     padding: 2rem 1.5rem;
+    max-height: 90vh;
+    overflow-y: auto;
   }
   
   .modal__close {
@@ -1089,11 +1210,29 @@ body, .modern-dashboard {
     padding: 1.2rem 1rem;
     font-size: 0.95rem;
   }
+  
+  /* Fix AI popup on mobile */
+  .ai__chatbox {
+    min-height: 100px;
+    max-height: 200px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .ai__form {
+    gap: 1rem;
+  }
+  
+  .ai__form input {
+    padding: 0.9rem 1rem;
+    font-size: 0.95rem;
+  }
 }
 
 @media (max-width: 480px) {
   .modal__content {
     padding: 1.5rem 1rem;
+    min-width: 98vw;
   }
   
   .modal__title {
@@ -1108,8 +1247,20 @@ body, .modern-dashboard {
   }
   
   .modal__submit {
-    padding: 0.9rem 0;
+    padding: 0.9rem 1.5rem;
     font-size: 0.95rem;
+  }
+  
+  /* Further compact AI popup on very small screens */
+  .ai__chatbox {
+    min-height: 80px;
+    max-height: 150px;
+    padding: 0.75rem;
+  }
+  
+  .ai__form input {
+    padding: 0.75rem 0.9rem;
+    font-size: 0.9rem;
   }
 }
 
