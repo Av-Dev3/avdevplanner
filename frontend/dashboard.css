@@ -1334,12 +1334,26 @@ body, .modern-dashboard {
 
 /* === RESPONSIVE MODALS === */
 @media (max-width: 600px) {
+  .modal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+  
   .modal__content,
   .drawer__content {
-    min-width: 95vw;
+    width: 100%;
+    max-width: 95vw;
+    min-width: auto;
     padding: 2rem 1.5rem;
     max-height: 90vh;
     overflow-y: auto;
+    margin: 0 auto;
+    position: relative;
+    top: 0;
+    left: 0;
+    transform: none;
   }
   
   .modal__close {
@@ -1448,9 +1462,15 @@ body, .modern-dashboard {
 }
 
 @media (max-width: 480px) {
+  .modal {
+    padding: 0.5rem;
+  }
+  
   .modal__content {
     padding: 1.5rem 1rem;
-    min-width: 98vw;
+    width: 100%;
+    max-width: 98vw;
+    min-width: auto;
   }
   
   .modal__title {
