@@ -53,7 +53,7 @@ body {
 
 @media (max-width: 768px) {
   .nav-left {
-    gap: 0.5rem;
+    gap: 1rem;
   }
 
   .nav-left .nav-quote {
