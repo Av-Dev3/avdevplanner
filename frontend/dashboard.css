@@ -1339,6 +1339,7 @@ body, .modern-dashboard {
     align-items: center;
     justify-content: center;
     padding: 1rem;
+    min-height: 100vh;
   }
   
   .modal__content,
@@ -1347,13 +1348,14 @@ body, .modern-dashboard {
     max-width: 95vw;
     min-width: auto;
     padding: 2rem 1.5rem;
-    max-height: 90vh;
+    max-height: 80vh;
     overflow-y: auto;
-    margin: 0 auto;
+    margin: auto;
     position: relative;
     top: 0;
     left: 0;
     transform: none;
+    align-self: center;
   }
   
   .modal__close {
