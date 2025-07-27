@@ -56,14 +56,6 @@ body {
     gap: 0.5rem;
   }
 
-  .nav-left .logo {
-    width: 56px;
-    height: 56px;
-    min-width: 56px;
-    flex-shrink: 0;
-    object-fit: contain;
-  }
-
   .nav-left .nav-quote {
     font-size: 0.9rem;
     white-space: nowrap;
