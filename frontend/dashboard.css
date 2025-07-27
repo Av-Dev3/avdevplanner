@@ -1525,6 +1525,7 @@ body, .modern-dashboard {
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.3s ease, visibility 0.3s ease;
+  display: block;
 }
 
 /* Show desktop drawer only on desktop */
@@ -1555,10 +1556,18 @@ body, .modern-dashboard {
   pointer-events: auto;
   box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.8);
   width: 100%;
+  min-height: 200px;
 }
 
 .desktop-drawer:not(.hidden) .desktop-drawer__content {
-  transform: translateY(0);
+  transform: translateY(0) !important;
+}
+
+/* Ensure desktop drawer is always visible when not hidden */
+.desktop-drawer:not(.hidden) {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
 }
 
 .desktop-drawer__header {

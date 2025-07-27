@@ -62,7 +62,10 @@ document.addEventListener('DOMContentLoaded', function() {
       } else {
         // Desktop - open desktop drawer
         if (desktopDrawer) {
+          console.log('Opening desktop drawer');
           desktopDrawer.classList.remove('hidden');
+          // Force reflow to ensure animation triggers
+          void desktopDrawer.offsetWidth;
         }
       }
     });
