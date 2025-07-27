@@ -1370,6 +1370,16 @@ body, .modern-dashboard {
     transform-origin: center !important;
   }
   
+  /* Override drawer-specific styles for mobile */
+  .drawer-modal:not(.hidden) .drawer__content {
+    position: relative !important;
+    transform: none !important;
+    animation: modalFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    transform-origin: center !important;
+    min-width: auto !important;
+    max-width: 95vw !important;
+  }
+  
   .modal__close {
     right: 1rem;
     top: 1rem;
