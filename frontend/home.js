@@ -353,7 +353,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   function createGoalCard(goal) {
     console.log('Creating goal card:', goal);
-    console.log('Goal originalIndex:', goal.originalIndex, 'Goal index:', goal.index, 'Goal id:', goal.id, 'Goal _id:', goal._id, 'Goal goalId:', goal.goalId);
+    console.log('Goal title:', goal.title, 'Goal originalIndex:', goal.originalIndex, 'Goal index:', goal.index, 'Goal id:', goal.id, 'Goal _id:', goal._id, 'Goal goalId:', goal.goalId);
     const div = document.createElement("div");
     div.className = "carousel__card";
     const goalId = goal.originalIndex !== undefined ? goal.originalIndex : (goal.index || goal.id || goal._id || goal.goalId || '');
@@ -582,6 +582,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const todayTasks = tasks.filter(t => t._vegasDateStr === todayPretty);
     const todayGoals = goals.filter(g => g._vegasDateStr === todayPretty);
     const todayLessons = lessons.filter(l => l._vegasDateStr === todayPretty);
+    
+    // Debug: Log the originalIndex values for filtered goals
+    console.log('Filtered goals with originalIndex:', todayGoals.map(g => ({ title: g.title, originalIndex: g.originalIndex })));
 
     // Arrow buttons for each carousel
     const tasksPrev = document.querySelector('.carousel-arrow.prev[data-carousel="tasks"]');
