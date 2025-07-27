@@ -83,102 +83,98 @@ document.addEventListener("DOMContentLoaded", () => {
         </button>
       </div>
       <div class="day-content">
-        <div class="day-content-grid">
-          <!-- Tasks Carousel -->
-          <div class="content-card tasks-card">
-            <div class="card-header">
-              <div class="card-title">
-                <div class="title-icon">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                    <polyline points="22,4 12,14.01 9,11.01"/>
-                  </svg>
-                </div>
-                <h3>Tasks</h3>
+        <!-- Tasks Carousel -->
+        <div class="content-card tasks-card">
+          <div class="card-header">
+            <div class="card-title">
+              <div class="title-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                  <polyline points="22,4 12,14.01 9,11.01"/>
+                </svg>
               </div>
-              <div class="card-actions">
-                <button class="carousel-arrow prev" data-carousel="tasks-${isoDate}">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="15,18 9,12 15,6"/>
-                  </svg>
-                </button>
-                <button class="carousel-arrow next" data-carousel="tasks-${isoDate}">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="9,18 15,12 9,6"/>
-                  </svg>
-                </button>
-              </div>
+              <h3>Tasks</h3>
             </div>
-            <div class="card-content">
-              <div class="carousel__container" id="tasks-${isoDate}">
-                <!-- JS will populate tasks here -->
-              </div>
+            <div class="card-actions">
+              <button class="carousel-arrow prev" data-carousel="tasks-${isoDate}">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="15,18 9,12 15,6"/>
+                </svg>
+              </button>
+              <button class="carousel-arrow next" data-carousel="tasks-${isoDate}">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="9,18 15,12 9,6"/>
+                </svg>
+              </button>
             </div>
           </div>
-          
-          <!-- Goals Carousel -->
-          <div class="content-card goals-card">
-            <div class="card-header">
-              <div class="card-title">
-                <div class="title-icon">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                  </svg>
-                </div>
-                <h3>Goals</h3>
-              </div>
-              <div class="card-actions">
-                <button class="carousel-arrow prev" data-carousel="goals-${isoDate}">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="15,18 9,12 15,6"/>
-                  </svg>
-                </button>
-                <button class="carousel-arrow next" data-carousel="goals-${isoDate}">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="9,18 15,12 9,6"/>
-                  </svg>
-                </button>
-              </div>
-            </div>
-            <div class="card-content">
-              <div class="carousel__container" id="goals-${isoDate}">
-                <!-- JS will populate goals here -->
-              </div>
+          <div class="card-content">
+            <div class="carousel__container" id="tasks-${isoDate}">
+              <!-- JS will populate tasks here -->
             </div>
           </div>
         </div>
         
-        <div class="day-content-full">
-          <!-- Lessons Carousel -->
-          <div class="content-card lessons-card">
-            <div class="card-header">
-              <div class="card-title">
-                <div class="title-icon">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 2L2 7L12 12L22 7L12 2Z"/>
-                    <path d="M2 17L12 22L22 17"/>
-                    <path d="M2 12L12 17L22 12"/>
-                  </svg>
-                </div>
-                <h3>Lessons</h3>
+        <!-- Goals Carousel -->
+        <div class="content-card goals-card">
+          <div class="card-header">
+            <div class="card-title">
+              <div class="title-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                </svg>
               </div>
-              <div class="card-actions">
-                <button class="carousel-arrow prev" data-carousel="lessons-${isoDate}">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="15,18 9,12 15,6"/>
-                  </svg>
-                </button>
-                <button class="carousel-arrow next" data-carousel="lessons-${isoDate}">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="9,18 15,12 9,6"/>
-                  </svg>
-                </button>
-              </div>
+              <h3>Goals</h3>
             </div>
-            <div class="card-content">
-              <div class="carousel__container" id="lessons-${isoDate}">
-                <!-- JS will populate lessons here -->
+            <div class="card-actions">
+              <button class="carousel-arrow prev" data-carousel="goals-${isoDate}">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="15,18 9,12 15,6"/>
+                </svg>
+              </button>
+              <button class="carousel-arrow next" data-carousel="goals-${isoDate}">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="9,18 15,12 9,6"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="carousel__container" id="goals-${isoDate}">
+              <!-- JS will populate goals here -->
+            </div>
+          </div>
+        </div>
+        
+        <!-- Lessons Carousel -->
+        <div class="content-card lessons-card">
+          <div class="card-header">
+            <div class="card-title">
+              <div class="title-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 2L2 7L12 12L22 7L12 2Z"/>
+                  <path d="M2 17L12 22L22 17"/>
+                  <path d="M2 12L12 17L22 12"/>
+                </svg>
               </div>
+              <h3>Lessons</h3>
+            </div>
+            <div class="card-actions">
+              <button class="carousel-arrow prev" data-carousel="lessons-${isoDate}">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="15,18 9,12 15,6"/>
+                </svg>
+              </button>
+              <button class="carousel-arrow next" data-carousel="lessons-${isoDate}">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="9,18 15,12 9,6"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="card-content">
+            <div class="carousel__container" id="lessons-${isoDate}">
+              <!-- JS will populate lessons here -->
             </div>
           </div>
         </div>
@@ -295,15 +291,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const statusText = task.completed ? 'Completed' : 'Pending';
     
     card.innerHTML = `
-      <div class="card-content">
-        <div class="card-header">
-          <h3 class="card-title">${task.text || task.title || 'Untitled Task'}</h3>
-          <span class="status-badge ${statusClass}">${statusText}</span>
+      <div class="carousel__card-content">
+        <div class="carousel__card-header">
+          <h3 class="carousel__card-title">${task.text || task.title || 'Untitled Task'}</h3>
+          <span class="carousel__card-status ${statusClass}">${statusText}</span>
         </div>
-        ${task.notes ? `<p class="card-description">${task.notes}</p>` : ''}
-        <div class="card-meta">
-          ${task.time ? `<span class="meta-item">Time: ${formatTime(task.time)}</span>` : ''}
-          ${task.prettyDate ? `<span class="meta-item">Date: ${formatCardDate(task.prettyDate)}</span>` : ''}
+        ${task.notes ? `<p class="carousel__card-description">${task.notes}</p>` : ''}
+        <div class="carousel__card-meta">
+          ${task.time ? `<span class="carousel__card-meta-item">Time: ${formatTime(task.time)}</span>` : ''}
+          ${task.prettyDate ? `<span class="carousel__card-meta-item">Date: ${formatCardDate(task.prettyDate)}</span>` : ''}
         </div>
         <button class="mark-complete-btn" data-type="task" data-id="${taskId}">
           Mark Complete
@@ -323,14 +319,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const statusText = goal.completed ? 'Completed' : 'Pending';
     
     card.innerHTML = `
-      <div class="card-content">
-        <div class="card-header">
-          <h3 class="card-title">${goal.title || 'Untitled Goal'}</h3>
-          <span class="status-badge ${statusClass}">${statusText}</span>
+      <div class="carousel__card-content">
+        <div class="carousel__card-header">
+          <h3 class="carousel__card-title">${goal.title || 'Untitled Goal'}</h3>
+          <span class="carousel__card-status ${statusClass}">${statusText}</span>
         </div>
-        ${goal.notes ? `<p class="card-description">${goal.notes}</p>` : ''}
-        <div class="card-meta">
-          ${goal.prettyDate ? `<span class="meta-item">Date: ${formatCardDate(goal.prettyDate)}</span>` : ''}
+        ${goal.notes ? `<p class="carousel__card-description">${goal.notes}</p>` : ''}
+        <div class="carousel__card-meta">
+          ${goal.prettyDate ? `<span class="carousel__card-meta-item">Date: ${formatCardDate(goal.prettyDate)}</span>` : ''}
         </div>
         <button class="mark-complete-btn" data-type="goal" data-id="${goalId}">
           Mark Complete
@@ -350,17 +346,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const statusText = lesson.completed ? 'Completed' : 'Pending';
     
     card.innerHTML = `
-      <div class="card-content">
-        <div class="card-header">
-          <h3 class="card-title">${lesson.title || 'Untitled Lesson'}</h3>
-          <span class="status-badge ${statusClass}">${statusText}</span>
+      <div class="carousel__card-content">
+        <div class="carousel__card-header">
+          <h3 class="carousel__card-title">${lesson.title || 'Untitled Lesson'}</h3>
+          <span class="carousel__card-status ${statusClass}">${statusText}</span>
         </div>
-        ${lesson.description ? `<p class="card-description">${lesson.description}</p>` : ''}
-        ${lesson.notes ? `<p class="card-notes">${lesson.notes}</p>` : ''}
-        <div class="card-meta">
-          ${lesson.category ? `<span class="meta-item">Category: ${lesson.category}</span>` : ''}
-          ${lesson.priority ? `<span class="meta-item">Priority: ${lesson.priority}</span>` : ''}
-          ${lesson.prettyDate ? `<span class="meta-item">Date: ${formatCardDate(lesson.prettyDate)}</span>` : ''}
+        ${lesson.description ? `<p class="carousel__card-description">${lesson.description}</p>` : ''}
+        ${lesson.notes ? `<p class="carousel__card-notes">${lesson.notes}</p>` : ''}
+        <div class="carousel__card-meta">
+          ${lesson.category ? `<span class="carousel__card-meta-item">Category: ${lesson.category}</span>` : ''}
+          ${lesson.priority ? `<span class="carousel__card-meta-item">Priority: ${lesson.priority}</span>` : ''}
+          ${lesson.prettyDate ? `<span class="carousel__card-meta-item">Date: ${formatCardDate(lesson.prettyDate)}</span>` : ''}
         </div>
         <button class="mark-complete-btn" data-type="lesson" data-id="${lessonId}">
           Mark Complete
