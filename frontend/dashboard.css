@@ -229,7 +229,7 @@ body, .modern-dashboard {
   position: relative;
   overflow: hidden;
   flex: 1;
-  min-height: 220px;
+  min-height: 180px;
 }
 
 .content-card.focus-card {
@@ -270,7 +270,7 @@ body, .modern-dashboard {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.2rem;
+  padding: 1rem;
   border-bottom: 1px solid var(--border-color);
 }
 
@@ -301,7 +301,7 @@ body, .modern-dashboard {
 
 /* === CARD CONTENT === */
 .card-content {
-  padding: 1rem;
+  padding: 0.75rem;
   height: calc(100% - 60px);
   display: flex;
   flex-direction: column;
@@ -310,7 +310,7 @@ body, .modern-dashboard {
 
 /* === CAROUSEL STYLES === */
 .carousel__container {
-  min-height: 120px;
+  min-height: 100px;
   display: flex;
   align-items: center;
   justify-content: center;
