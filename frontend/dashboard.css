@@ -26,6 +26,9 @@ body, .modern-dashboard {
   background: var(--dashboard-bg);
   min-height: 100vh;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+  width: 100%;
+  max-width: 100vw;
 }
 
 .modern-dashboard {
