@@ -134,6 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   // --- Carousel/Swipe Logic (enhanced) ---
   function setupCarousel(container, items, createCardFn, arrowPrev, arrowNext) {
+    console.log('Setting up carousel with items:', items.map((item, i) => ({ index: i, title: item.title, originalIndex: item.originalIndex })));
     let idx = 0;
     
     // Add progress bar to container
@@ -165,6 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
       
+      console.log('Rendering card at index:', idx, 'Item:', items[idx]);
       const card = createCardFn(items[idx]);
       container.appendChild(card);
       updateProgress();
