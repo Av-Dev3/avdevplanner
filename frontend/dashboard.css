@@ -229,7 +229,11 @@ body, .modern-dashboard {
   position: relative;
   overflow: hidden;
   flex: 1;
-  min-height: 200px;
+  min-height: 220px;
+}
+
+.content-card.focus-card {
+  min-height: 280px;
 }
 
 .content-card::before {
@@ -297,10 +301,11 @@ body, .modern-dashboard {
 
 /* === CARD CONTENT === */
 .card-content {
-  padding: 1.2rem;
+  padding: 1rem;
   height: calc(100% - 60px);
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 /* === CAROUSEL STYLES === */
@@ -310,22 +315,25 @@ body, .modern-dashboard {
   align-items: center;
   justify-content: center;
   position: relative;
-  overflow: visible;
+  overflow: hidden;
   border-radius: var(--radius-small);
   background: rgba(255, 255, 255, 0.02);
   flex: 1;
+  padding: 0.5rem;
 }
 
 .carousel__card {
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-small);
-  padding: 1rem;
-  width: 100%;
+  padding: 0.75rem;
+  width: calc(100% - 1rem);
+  max-width: 100%;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   animation: cardSlideIn 0.3s ease-out;
-  min-height: 100px;
+  min-height: 80px;
+  box-sizing: border-box;
 }
 
 @keyframes cardSlideIn {
@@ -349,31 +357,34 @@ body, .modern-dashboard {
 .carousel__card h3 {
   color: var(--text-primary);
   font-weight: 600;
-  margin-bottom: 0.5rem;
-  font-size: 0.9rem;
+  margin-bottom: 0.4rem;
+  font-size: 0.85rem;
+  line-height: 1.3;
 }
 
 .carousel__card p {
   color: var(--text-secondary);
-  margin-bottom: 0.5rem;
-  line-height: 1.4;
-  font-size: 0.8rem;
+  margin-bottom: 0.4rem;
+  line-height: 1.3;
+  font-size: 0.75rem;
 }
 
 .carousel__card small {
   color: var(--text-muted);
-  font-size: 0.7rem;
+  font-size: 0.65rem;
 }
 
 .card__empty {
   color: var(--text-muted);
   text-align: center;
   font-style: italic;
-  padding: 1.5rem;
+  padding: 1rem;
   background: rgba(255, 255, 255, 0.02);
   border: 1px dashed var(--border-color);
   border-radius: var(--radius-small);
-  font-size: 0.8rem;
+  font-size: 0.75rem;
+  width: calc(100% - 1rem);
+  box-sizing: border-box;
 }
 
 /* === CAROUSEL ARROWS === */
@@ -381,16 +392,18 @@ body, .modern-dashboard {
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid var(--border-color);
   color: var(--text-primary);
-  font-size: 0.9rem;
-  padding: 0.4rem;
+  font-size: 0.8rem;
+  padding: 0.3rem;
   border-radius: var(--radius-small);
   transition: all 0.2s ease;
   cursor: pointer;
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 10;
+  position: relative;
 }
 
 .carousel-arrow:hover {
@@ -399,12 +412,17 @@ body, .modern-dashboard {
   border-color: rgba(255, 255, 255, 0.3);
 }
 
+.carousel-arrow:active {
+  transform: scale(0.95);
+}
+
 /* === FOCUS FORM === */
 .focus-form {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
   height: 100%;
+  min-height: 120px;
 }
 
 #daily-focus-input {
@@ -416,6 +434,7 @@ body, .modern-dashboard {
   color: var(--text-primary);
   font-size: 0.9rem;
   transition: all 0.2s ease;
+  box-sizing: border-box;
 }
 
 #daily-focus-input:focus {
@@ -454,6 +473,7 @@ body, .modern-dashboard {
   flex: 1;
   overflow-y: auto;
   word-wrap: break-word;
+  min-height: 60px;
 }
 
 /* === NOTES CONTAINER === */
