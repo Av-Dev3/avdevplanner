@@ -56,9 +56,14 @@ body {
     gap: 1rem;
   }
 
+  .nav-left .logo {
+    margin-right: 0.5rem;
+  }
+
   .nav-left .nav-quote {
     font-size: 0.9rem;
     white-space: nowrap;
+    margin-left: 0.5rem;
   }
 }
 
