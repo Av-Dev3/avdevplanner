@@ -352,9 +352,12 @@ document.addEventListener("DOMContentLoaded", () => {
     return div;
   }
   function createGoalCard(goal) {
+    console.log('Creating goal card:', goal);
+    console.log('Goal index:', goal.index, 'Goal id:', goal.id, 'Goal _id:', goal._id, 'Goal goalId:', goal.goalId);
     const div = document.createElement("div");
     div.className = "carousel__card";
     const goalId = goal.index || goal.id || goal._id || goal.goalId || '';
+    console.log('Using goal ID:', goalId);
     div.innerHTML = `
       <h3 class="font-semibold mb-1">${goal.title}</h3>
       ${goal.notes ? `<p class="mb-1">${goal.notes}</p>` : ""}
@@ -500,29 +503,79 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // === STATS CARDS ===
     statTasksEl.innerHTML = `
-      <div class="card__header"><span class="card__title">Tasks Completed</span></div>
-      <div class="card__stat-value">${tasks.filter((t) => t.completed && t._vegasDateStr === todayPretty).length}</div>
+      <div class="stat-icon tasks">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M9 11l3 3L22 4"/>
+          <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">${tasks.filter((t) => t.completed && t._vegasDateStr === todayPretty).length}</div>
+        <div class="stat-label">Tasks Done</div>
+      </div>
     `;
     statGoalsEl.innerHTML = `
-      <div class="card__header"><span class="card__title">Goals Completed</span></div>
-      <div class="card__stat-value">${goals.filter((g) => g.completed && g._vegasDateStr === todayPretty).length}</div>
+      <div class="stat-icon goals">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+          <path d="M2 17l10 5 10-5"/>
+          <path d="M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">${goals.filter((g) => g.completed && g._vegasDateStr === todayPretty).length}</div>
+        <div class="stat-label">Goals Met</div>
+      </div>
     `;
     statLessonsEl.innerHTML = `
-      <div class="card__header"><span class="card__title">Lessons Completed</span></div>
-      <div class="card__stat-value">${lessons.filter((l) => l.completed && l._vegasDateStr === todayPretty).length}</div>
+      <div class="stat-icon lessons">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+          <polyline points="14,2 14,8 20,8"/>
+          <line x1="16" y1="13" x2="8" y2="13"/>
+          <line x1="16" y1="17" x2="8" y2="17"/>
+          <polyline points="10,9 9,9 8,9"/>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">${lessons.filter((l) => l.completed && l._vegasDateStr === todayPretty).length}</div>
+        <div class="stat-label">Lessons Learned</div>
+      </div>
     `;
     // === STREAKS CARDS ===
     streakTasksEl.innerHTML = `
-      <div class="card__header"><span class="card__title">Task Streak</span></div>
-      <div class="card__stat-value">${calculateStreak(tasks.filter((t) => t.completed).map((t) => t.date))} days</div>
+      <div class="stat-icon streak">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">${calculateStreak(tasks.filter((t) => t.completed).map((t) => t.date))} days</div>
+        <div class="stat-label">Task Streak</div>
+      </div>
     `;
     streakGoalsEl.innerHTML = `
-      <div class="card__header"><span class="card__title">Goal Streak</span></div>
-      <div class="card__stat-value">${calculateStreak(goals.filter((g) => g.completed).map((g) => g.date))} days</div>
+      <div class="stat-icon streak">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">${calculateStreak(goals.filter((g) => g.completed).map((g) => g.date))} days</div>
+        <div class="stat-label">Goal Streak</div>
+      </div>
     `;
     streakLessonsEl.innerHTML = `
-      <div class="card__header"><span class="card__title">Lesson Streak</span></div>
-      <div class="card__stat-value">${calculateStreak(lessons.filter((l) => l.completed).map((l) => l.date))} days</div>
+      <div class="stat-icon streak">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2v6m0 0l2-2m-2 2l-2-2m0 6v6m0 0l2-2m-2 2l-2-2"/>
+          <path d="M20 12h-6m0 0l2 2m-2-2l-2 2M4 12h6m0 0l-2 2m2-2l2 2"/>
+        </svg>
+      </div>
+      <div class="stat-content">
+        <div class="stat-value">${calculateStreak(lessons.filter((l) => l.completed).map((l) => l.date))} days</div>
+        <div class="stat-label">Lesson Streak</div>
+      </div>
     `;
 
     // === CAROUSEL SETUP (one card at a time, arrows/swipe) ===
