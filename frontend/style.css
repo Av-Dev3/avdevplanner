@@ -55,12 +55,12 @@ body {
   .nav-left {
     gap: 0.5rem;
   }
-  
+
   .nav-left .logo {
-    width: 32px;
-    height: 32px;
+    width: 40px;
+    height: 40px;
   }
-  
+
   .nav-left .nav-quote {
     font-size: 0.9rem;
     white-space: nowrap;
