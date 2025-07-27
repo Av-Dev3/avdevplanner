@@ -1,0 +1,444 @@
+/* === LESSONS DASHBOARD STYLES === */
+
+/* Import dashboard variables and base styles */
+@import url('dashboard.css');
+
+/* === LESSONS CONTENT === */
+.lessons-content {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.lessons-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* === LESSON DATE GROUP === */
+.lesson-date-group {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--glass-shadow);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.lesson-date-group:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--glass-shadow-hover);
+  border-color: var(--lessons-accent);
+}
+
+.lesson-date-group h3 {
+  color: var(--text-primary);
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.lesson-date-group h3::before {
+  content: '';
+  width: 4px;
+  height: 20px;
+  background: var(--lessons-accent);
+  border-radius: 2px;
+}
+
+.lessons-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
+/* === LESSON CARD === */
+.lesson-card {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: var(--glass-shadow);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.lesson-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--lessons-accent);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.lesson-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--glass-shadow-hover);
+  border-color: var(--lessons-accent);
+}
+
+.lesson-card:hover::before {
+  transform: scaleX(1);
+}
+
+.lesson-card h4 {
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  line-height: 1.3;
+}
+
+.lesson-card .lesson-category {
+  display: inline-block;
+  background: rgba(243, 156, 18, 0.1);
+  color: var(--lessons-accent);
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  border: 1px solid rgba(243, 156, 18, 0.2);
+  margin-bottom: 0.75rem;
+}
+
+.lesson-card .lesson-description {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.lesson-card .lesson-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.lesson-meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.lesson-meta-item svg {
+  width: 14px;
+  height: 14px;
+}
+
+.lesson-card .lesson-priority {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  border-radius: 8px;
+  margin-left: auto;
+}
+
+.lesson-card .lesson-priority.high {
+  background: rgba(231, 76, 60, 0.1);
+  color: #e74c3c;
+  border: 1px solid rgba(231, 76, 60, 0.2);
+}
+
+.lesson-card .lesson-priority.medium {
+  background: rgba(243, 156, 18, 0.1);
+  color: #f39c12;
+  border: 1px solid rgba(243, 156, 18, 0.2);
+}
+
+.lesson-card .lesson-priority.low {
+  background: rgba(39, 174, 96, 0.1);
+  color: #27ae60;
+  border: 1px solid rgba(39, 174, 96, 0.2);
+}
+
+.lesson-card .lesson-notes {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  line-height: 1.4;
+  font-style: italic;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-small);
+  margin-top: 0.75rem;
+}
+
+.lesson-card .lesson-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border-color);
+}
+
+.lesson-action-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-small);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.lesson-action-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-primary);
+  border-color: var(--lessons-accent);
+}
+
+.lesson-action-btn.delete {
+  background: rgba(231, 76, 60, 0.1);
+  color: #e74c3c;
+  border-color: rgba(231, 76, 60, 0.2);
+}
+
+.lesson-action-btn.delete:hover {
+  background: rgba(231, 76, 60, 0.2);
+  color: #e74c3c;
+}
+
+/* === EMPTY STATE === */
+.lessons-empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--text-muted);
+}
+
+.lessons-empty svg {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 1rem;
+  opacity: 0.5;
+}
+
+.lessons-empty h3 {
+  color: var(--text-secondary);
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.lessons-empty p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* === LOADING STATE === */
+.lessons-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4rem 2rem;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border-color);
+  border-top: 3px solid var(--lessons-accent);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* === RESPONSIVE DESIGN === */
+@media (max-width: 1200px) {
+  .lessons-row {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .lessons-content {
+    padding: 1.5rem;
+  }
+  
+  .lessons-row {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 0.75rem;
+  }
+  
+  .lesson-date-group {
+    padding: 1.25rem;
+  }
+}
+
+@media (max-width: 700px) {
+  .lessons-content {
+    padding: 1rem;
+  }
+  
+  .lessons-row {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .lesson-card {
+    padding: 1.25rem;
+  }
+  
+  .lesson-card h4 {
+    font-size: 1rem;
+  }
+  
+  .lesson-meta {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .lessons-content {
+    padding: 0.75rem;
+  }
+  
+  .lesson-date-group {
+    padding: 1rem;
+  }
+  
+  .lesson-date-group h3 {
+    font-size: 1.1rem;
+  }
+  
+  .lesson-card {
+    padding: 1rem;
+  }
+  
+  .lesson-actions {
+    flex-direction: column;
+  }
+  
+  .lesson-action-btn {
+    justify-content: center;
+  }
+}
+
+/* === LESSON CARD ANIMATIONS === */
+.lesson-card {
+  animation: lessonCardSlideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes lessonCardSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.lesson-date-group {
+  animation: lessonGroupSlideIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes lessonGroupSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* === LESSON CARD HOVER EFFECTS === */
+.lesson-card:hover .lesson-category {
+  background: rgba(243, 156, 18, 0.15);
+  border-color: rgba(243, 156, 18, 0.3);
+}
+
+.lesson-card:hover .lesson-meta-item {
+  color: var(--text-secondary);
+}
+
+/* === LESSON CARD FOCUS STATES === */
+.lesson-card:focus-within {
+  outline: 2px solid var(--lessons-accent);
+  outline-offset: 2px;
+}
+
+.lesson-action-btn:focus {
+  outline: 2px solid var(--lessons-accent);
+  outline-offset: 2px;
+}
+
+/* === LESSON CARD SELECTION === */
+.lesson-card.selected {
+  border-color: var(--lessons-accent);
+  background: rgba(243, 156, 18, 0.05);
+}
+
+.lesson-card.selected::before {
+  transform: scaleX(1);
+}
+
+/* === LESSON CARD COMPLETED STATE === */
+.lesson-card.completed {
+  opacity: 0.7;
+}
+
+.lesson-card.completed::after {
+  content: '✓';
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 24px;
+  height: 24px;
+  background: var(--lessons-accent);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* === LESSON CARD ARCHIVED STATE === */
+.lesson-card.archived {
+  opacity: 0.5;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.lesson-card.archived::after {
+  content: '📁';
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  font-size: 16px;
+}

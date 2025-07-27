@@ -5,100 +5,177 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="lesson.css">
-    <script src="https://cdn.tailwindcss.com"></script>
-
-  <title>Document</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Lessons - Dashboard</title>
 </head>
 <body>
   <div class="page-content">
-<header class="head">
-  <div class="nav-container">
-    <div class="nav-left">
-      <img class="logo" src="logo.png" alt="">
-      <h2 class="nav-quote">Get this shit done.</h2>
+    <!-- === MODERN DASHBOARD HEADER === -->
+    <header class="head">
+      <div class="nav-container">
+        <div class="nav-left">
+          <img class="logo" src="logo.png" alt="">
+          <h2 class="nav-quote">Get this shit done.</h2>
+        </div>
+        
+        <nav>
+          <ul class="main-nav">
+            <li><a href="index.html">Dashboard</a></li>
+            <li><a href="lessons.html" class="active">Lessons</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle">Daily ▾</a>
+              <ul class="dropdown-menu">
+                <li><a href="daily.html">Daily</a></li>
+                <li><a href="weekly.html">Weekly</a></li>
+              </ul>
+            </li>
+            <li><a href="goals.html">Goals</a></li>
+            <li><a href="notes.html">Notes</a></li>
+            <li><a href="tasks.html">Tasks</a></li>
+            <li><a href="schedule.html">Schedule</a></li>
+          </ul>
+          <ul class="submenu-panel" id="submenu">
+            <li><a href="daily.html">Daily</a></li>
+            <li><a href="weekly.html">Weekly</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <!-- === MODERN LESSONS DASHBOARD === -->
+    <div class="modern-dashboard">
+      <!-- Dashboard Header -->
+      <div class="dashboard-header">
+        <div class="dashboard-header-content">
+          <div class="dashboard-title">
+            <div class="title-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="title-text">
+              <h1>Lessons Dashboard</h1>
+              <p>Track your learning journey and insights</p>
+            </div>
+          </div>
+          <button id="quick-actions-btn" class="action-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Quick Actions
+          </button>
+        </div>
+      </div>
+
+      <!-- Lessons Content -->
+      <div class="lessons-content">
+        <div id="lessons-container" class="lessons-grid">
+          <!-- JS will populate lessons here -->
+        </div>
+      </div>
     </div>
 
+    <!-- === REDESIGNED POPUPS/DRAWERS/MODALS === -->
     
-      <nav>
-        <ul class="main-nav">
-          <li><a href="index.html">Home</a></li>
-          
-          <li><a href="lessons.html">Lessons</a></li>
+    <!-- Desktop Quick Actions Drawer (Lessons Only) -->
+    <div id="drawer" class="desktop-drawer hidden hidden md:block">
+      <div class="desktop-drawer__content">
+        <div class="desktop-drawer__header">
+          <h2 class="desktop-drawer__title">Quick Actions</h2>
+          <button class="desktop-drawer__close" onclick="document.getElementById('drawer').classList.add('hidden')">&times;</button>
+        </div>
+        <div class="desktop-drawer__actions">
+          <button class="desktop-action-btn lesson-action" onclick="document.getElementById('lessonPopup').classList.remove('hidden'); document.getElementById('drawer').classList.add('hidden')">
+            <div class="action-icon">📚</div>
+            <div class="action-text">
+              <span class="action-title">Add Lesson</span>
+              <span class="action-subtitle">Record a lesson learned</span>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
 
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle">Daily ▾</a>
-
-            <!-- Desktop dropdown menu -->
-            <ul class="dropdown-menu">
-              <li><a href="daily.html">Daily</a></li>
-              <li><a href="weekly.html">Weekly</a></li>
-            </ul>
-          </li>
-
-          <li><a href="goals.html">Goals</a></li>
-          <li><a href="notes.html">Notes</a></li>
-          <li><a href="tasks.html">Tasks</a></li>
-          <li><a href="schedule.html">Schedule</a></li>
+    <!-- Mobile Quick Actions Drawer (Lessons Only) -->
+    <div id="mobileDrawer" class="modal drawer-modal hidden block md:hidden">
+      <div class="drawer__content">
+        <button class="modal__close" onclick="document.getElementById('mobileDrawer').classList.add('hidden')">&times;</button>
+        <h2 class="modal__title card--lessons">Quick Actions</h2>
+        <ul class="drawer__links">
+          <li><button onclick="document.getElementById('lessonPopup').classList.remove('hidden')">Add Lesson</button></li>
         </ul>
+      </div>
+    </div>
 
-        <!-- Mobile slide-in submenu -->
-        <ul class="submenu-panel" id="submenu">
+    <!-- Add Lesson Popup -->
+    <div id="lessonPopup" class="modal glass-modal hidden">
+      <div class="modal__content">
+        <button class="modal__close" onclick="document.getElementById('lessonPopup').classList.add('hidden')">&times;</button>
+        <h2 class="modal__title card--lessons">Add Lesson</h2>
+        <form id="lesson-form" class="modal__form">
+          <input type="text" id="lesson-title" placeholder="Lesson Title" required/>
+          <input type="text" id="lesson-description" placeholder="Description"/>
+          <input type="text" id="lesson-category" placeholder="Category"/>
+          <input type="date" id="lesson-date" required/>
+          <input type="text" id="lesson-priority" placeholder="Priority"/>
+          <textarea id="lesson-notes" placeholder="Notes (optional)"></textarea>
+          <button type="submit" class="modal__submit card--lessons">Add Lesson</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Site Links Drawer -->
+    <div id="siteLinksDrawer" class="modal drawer-modal hidden">
+      <div class="drawer__content">
+        <button class="modal__close" onclick="document.getElementById('siteLinksDrawer').classList.add('hidden')">&times;</button>
+        <h2 class="modal__title card--lessons">Site Links</h2>
+        <ul class="drawer__links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="schedule.html">Schedule</a></li>
           <li><a href="daily.html">Daily</a></li>
           <li><a href="weekly.html">Weekly</a></li>
+          <li><a href="goals.html">Goals</a></li>
+          <li><a href="tasks.html">Tasks</a></li>
+          <li><a href="lessons.html">Lessons</a></li>
+          <li><a href="notes.html">Notes</a></li>
         </ul>
+      </div>
+    </div>
+
+    <!-- Show only on mobile -->
+    <div class="block md:hidden">
+      <nav id="bottomNav" style="background-color: #1a1a1a;" class="fixed bottom-0 left-0 right-0 text-white rounded-t-2xl flex items-center justify-between px-1 py-2 shadow-inner z-40 transition-colors duration-300">
+        <a href="index.html" class="flex flex-col items-center text-xs hover:text-[#b91c1c] min-w-0 flex-1">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7m-9 2v8m4-8v8m5 0h2a2 2 0 002-2v-5a2 2 0 00-2-2h-3.28" />
+          </svg>
+          <span class="text-xs truncate">Home</span>
+        </a>
+        <a href="schedule.html" class="flex flex-col items-center text-xs hover:text-[#b91c1c] min-w-0 flex-1">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 10h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <span class="text-xs truncate">Cal</span>
+        </a>
+        <button id="fab" class="bg-[#b91c1c] w-10 h-10 rounded-full text-white flex items-center justify-center shadow-xl transform -translate-y-4 hover:scale-105 transition z-50 mx-1">+</button>
+        <a href="daily.html" class="flex flex-col items-center text-xs hover:text-[#b91c1c] min-w-0 flex-1">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span class="text-xs truncate">Daily</span>
+        </a>
+        <a href="weekly.html" class="flex flex-col items-center text-xs hover:text-[#b91c1c] min-w-0 flex-1">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18M3 17h18" />
+          </svg>
+          <span class="text-xs truncate">Week</span>
+        </a>
       </nav>
     </div>
-</header>
-<section class="pt-0 p-4 pb-20 max-w-screen-xl mx-auto">
-  <h2 class="text-xl font-bold text-white pt-0 mb-4">Weekly Lessons</h2>
-
-
-<!-- Form popup wrapper -->
-<div id="lesson-form-popup" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center">
-  <div class="bg-[#1f1f1f] p-6 rounded-lg shadow-lg w-[90%] max-w-lg">
-    <form id="lesson-form" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <input type="text" id="lesson-title" placeholder="Lesson title" required
-        class="bg-[#2b2b2b] p-2 rounded text-white placeholder-gray-400" />
-      <input type="text" id="lesson-category" placeholder="Category (e.g., Math, AI)"
-        class="bg-[#2b2b2b] p-2 rounded text-white placeholder-gray-400" />
-      <input type="date" id="lesson-date"
-        class="bg-[#2b2b2b] p-2 rounded text-white placeholder-gray-400" />
-      <input type="text" id="lesson-priority" placeholder="Priority (e.g., High, Medium, Low)"
-        class="bg-[#2b2b2b] p-2 rounded text-white placeholder-gray-400" />
-      <textarea id="lesson-description" placeholder="Lesson description" rows="3"
-        class="bg-[#2b2b2b] p-2 rounded text-white placeholder-gray-400 md:col-span-2"></textarea>
-      <textarea id="lesson-notes" placeholder="Additional notes (optional)" rows="2"
-        class="bg-[#2b2b2b] p-2 rounded text-white placeholder-gray-400 md:col-span-2"></textarea>
-
-      <button type="submit"
-        class="bg-[#b91c1c] hover:bg-red-700 text-white py-2 px-4 rounded md:col-span-2">Save Lesson</button>
-    </form>
   </div>
-</div>
 
-
-  <!-- Desktop Add Lesson Button -->
-  <button
-    id="add-lesson-desktop"
-    class="hidden md:flex items-center justify-center fixed bottom-[70px] right-6 bg-[#b91c1c] hover:bg-red-700 text-white w-12 h-12 rounded-full shadow-lg z-40">
-    +
-  </button>
-
-  <!-- Lessons Grouped by Date -->
-  <div id="lessons-container" class="flex flex-col gap-6 mt-8">
-    <!-- JS will insert: -->
-    <!-- 
-      <div>
-        <h3 class="text-lg font-semibold text-white mb-2">Monday, July 22</h3>
-        <div class="grid grid-cols-2 xl:grid-cols-5 gap-4">
-          <!-- lesson cards here -->
-        </div>
-      </div> 
-  </div>
-</section>
-
-
-</div>
   <footer class="footer">
     <span>Eat</span>
     <span>Sleep</span>
@@ -106,53 +183,8 @@
     <span>Repeat</span>
   </footer>
 
-   <!-- Site Links Drawer -->
-<div id="siteLinksDrawer" class="pointer-events-none fixed bottom-[120px] left-1/2 transform -translate-x-[45%] opacity-0 scale-95 transition-all duration-300 w-40 bg-[#1a1a1a] text-white p-3 rounded-xl shadow-lg z-50">
-  <div class="flex flex-col space-y-3 text-sm">
-    <a href="index.html" class="hover:text-[#b91c1c]">Home</a>
-    <a href="schedule.html" class="hover:text-[#b91c1c]">Schedule</a>
-    <a href="daily.html" class="hover:text-[#b91c1c]">Daily</a>
-    <a href="weekly.html" class="hover:text-[#b91c1c]">Weekly</a>
-    <a href="goals.html" class="hover:text-[#b91c1c]">Goals</a>
-    <a href="tasks.html" class="hover:text-[#b91c1c]">Tasks</a>
-    <a href="lessons.html" class="hover:text-[#b91c1c]">Lessons</a>
-    <a href="notes.html" class="hover:text-[#b91c1c]">Notes</a>
-  </div>
-</div>
-
-
-  <!-- Bottom Nav (mobile only) -->
-  <div class="block md:hidden">
-    <nav id="bottomNav" style="background-color: #1a1a1a;" class="fixed bottom-0 left-0 w-full text-white rounded-t-2xl flex items-center justify-between px-6 py-4 shadow-inner z-40 transition-colors duration-300">
-      <a href="index.html" class="flex flex-col items-center text-sm hover:text-[#b91c1c]">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7m-9 2v8m4-8v8m5 0h2a2 2 0 002-2v-5a2 2 0 00-2-2h-3.28" />
-        </svg>
-        Home
-      </a>
-      <a href="schedule.html" class="flex flex-col items-center text-sm hover:text-[#b91c1c]">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 10h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-        </svg>
-        Calendar
-      </a>
-      <button id="fab" class="bg-[#b91c1c] w-14 h-14 rounded-full text-white flex items-center justify-center shadow-xl transform -translate-y-8 hover:scale-105 transition z-50">+</button>
-      <a href="daily.html" class="flex flex-col items-center text-sm hover:text-[#b91c1c]">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        Daily
-      </a>
-      <a href="weekly.html" class="flex flex-col items-center text-sm hover:text-[#b91c1c]">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18M3 17h18" />
-        </svg>
-        Weekly
-      </a>
-    </nav>
-  </div>
-
-<script src="nav.js"></script>
-<script src="lesson.js"></script>
+  <script src="nav.js"></script>
+  <script src="lesson.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>

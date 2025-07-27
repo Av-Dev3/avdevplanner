@@ -7,21 +7,7 @@ const dateInput = document.getElementById("lesson-date");
 const priorityInput = document.getElementById("lesson-priority");
 const notesInput = document.getElementById("lesson-notes");
 const container = document.getElementById("lessons-container");
-const addLessonDesktopBtn = document.getElementById("add-lesson-desktop");
-const lessonFormPopup = document.getElementById("lesson-form-popup");
-
-// === EVENT: Desktop FAB opens popup ===
-if (addLessonDesktopBtn && lessonFormPopup) {
-  addLessonDesktopBtn.addEventListener("click", () => {
-    lessonFormPopup.classList.remove("hidden");
-  });
-
-  lessonFormPopup.addEventListener("click", (e) => {
-    if (e.target === lessonFormPopup) {
-      lessonFormPopup.classList.add("hidden");
-    }
-  });
-}
+const lessonPopup = document.getElementById("lessonPopup");
 
 // === FORM SUBMIT ===
 form.addEventListener("submit", async (e) => {
@@ -37,32 +23,52 @@ form.addEventListener("submit", async (e) => {
     completed: false,
   };
 
-  const res = await fetch("https://avdevplanner.onrender.com/lessons", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(newLesson),
-  });
+  try {
+    const res = await fetch("https://avdevplanner.onrender.com/lessons", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newLesson),
+    });
 
-  if (res.ok) {
-    form.reset();
-    lessonFormPopup?.classList.add("hidden");
-    loadLessons();
-  } else {
-    console.error("Failed to save lesson");
+    if (res.ok) {
+      form.reset();
+      lessonPopup?.classList.add("hidden");
+      loadLessons();
+    } else {
+      console.error("Failed to save lesson");
+    }
+  } catch (error) {
+    console.error("Error saving lesson:", error);
   }
 });
 
 // === LOAD LESSONS ===
 async function loadLessons() {
   container.innerHTML = "";
-  container.classList.add("mt-4");
+  
+  // Show loading state
+  container.innerHTML = `
+    <div class="lessons-loading">
+      <div class="loading-spinner"></div>
+    </div>
+  `;
 
   try {
     const res = await fetch("https://avdevplanner.onrender.com/lessons");
     const lessons = await res.json();
 
     if (lessons.length === 0) {
-      container.innerHTML = "<p class='text-white'>No lessons saved yet.</p>";
+      container.innerHTML = `
+        <div class="lessons-empty">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <h3>No Lessons Yet</h3>
+          <p>Start tracking your learning journey by adding your first lesson.</p>
+        </div>
+      `;
       return;
     }
 
@@ -76,86 +82,20 @@ async function loadLessons() {
 
     Object.keys(grouped)
       .sort()
+      .reverse() // Show most recent first
       .forEach((date) => {
         const groupDiv = document.createElement("div");
+        groupDiv.className = "lesson-date-group";
 
         const title = document.createElement("h3");
-        title.className = "text-lg font-semibold text-white mb-2";
         title.textContent = formatPrettyDate(date);
         groupDiv.appendChild(title);
 
         const grid = document.createElement("div");
-        grid.className = "grid grid-cols-2 xl:grid-cols-5 gap-4";
+        grid.className = "lessons-row";
 
         grouped[date].forEach((lesson) => {
-          const card = document.createElement("div");
-          card.className =
-"bg-[#1f1f1f] text-white p-4 rounded-lg shadow transition-all transform hover:-translate-y-1 hover:shadow-[0_4px_12px_rgba(76,142,218,0.35)]"
-
-          card.innerHTML = `
-            <h4 class="text-base font-bold mb-1">${lesson.title}</h4>
-            <p class="text-sm"><strong>Category:</strong> ${lesson.category}</p>
-            <p class="text-sm"><strong>Date:</strong> ${formatPrettyDate(
-              lesson.date
-            )}</p>
-            <p class="text-sm"><strong>Priority:</strong> ${lesson.priority}</p>
-            <p class="text-sm">${lesson.description}</p>
-            ${
-              lesson.notes
-                ? `<p class="text-xs italic text-gray-300">${lesson.notes}</p>`
-                : ""
-            }
-            <p class="text-xs mt-1 text-gray-400">Status: ${
-              lesson.completed ? "✅ Completed" : "🕒 In Progress"
-            }</p>
-          `;
-
-          // Buttons
-          const btnGroup = document.createElement("div");
-          btnGroup.className = "flex justify-between mt-3";
-
-          const completeBtn = document.createElement("button");
-          completeBtn.textContent = lesson.completed
-            ? "Undo Complete"
-            : "Mark Complete";
-          completeBtn.className =
-            "text-xs bg-purple-600 hover:bg-purple-700 text-white px-2 py-1 rounded";
-          completeBtn.addEventListener("click", async () => {
-            const updated = { ...lesson, completed: !lesson.completed };
-            const res = await fetch(
-              `https://avdevplanner.onrender.com/lessons/${lesson.id}`,
-              {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(updated),
-              }
-            );
-            if (res.ok) loadLessons();
-            else console.error("Failed to update lesson");
-          });
-
-          const deleteBtn = document.createElement("button");
-          deleteBtn.textContent = "Delete";
-          deleteBtn.className =
-            "text-xs bg-red-700 hover:bg-red-800 text-white px-2 py-1 rounded";
-          deleteBtn.addEventListener("click", async () => {
-            const confirmDelete = confirm("Delete this lesson?");
-            if (!confirmDelete) return;
-
-            const res = await fetch(
-              `https://avdevplanner.onrender.com/lessons/${lesson.id}`,
-              {
-                method: "DELETE",
-              }
-            );
-            if (res.ok) loadLessons();
-            else console.error("Failed to delete lesson");
-          });
-
-          btnGroup.appendChild(completeBtn);
-          btnGroup.appendChild(deleteBtn);
-          card.appendChild(btnGroup);
-
+          const card = createLessonCard(lesson);
           grid.appendChild(card);
         });
 
@@ -163,9 +103,118 @@ async function loadLessons() {
         container.appendChild(groupDiv);
       });
   } catch (err) {
-    container.innerHTML =
-      "<p class='text-red-500'>Error loading lessons.</p>";
+    container.innerHTML = `
+      <div class="lessons-empty">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h3>Error Loading Lessons</h3>
+        <p>There was an error loading your lessons. Please try again.</p>
+      </div>
+    `;
     console.error(err);
+  }
+}
+
+// === CREATE LESSON CARD ===
+function createLessonCard(lesson) {
+  const card = document.createElement("div");
+  card.className = `lesson-card ${lesson.completed ? 'completed' : ''}`;
+  card.setAttribute('data-lesson-id', lesson.id || lesson._id);
+
+  const priorityClass = getPriorityClass(lesson.priority);
+  
+  card.innerHTML = `
+    <h4>${escapeHtml(lesson.title)}</h4>
+    ${lesson.category ? `<span class="lesson-category">${escapeHtml(lesson.category)}</span>` : ''}
+    ${lesson.description ? `<p class="lesson-description">${escapeHtml(lesson.description)}</p>` : ''}
+    
+    <div class="lesson-meta">
+      <div class="lesson-meta-item">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8 7V3m8 4V3m-9 10h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        ${formatPrettyDate(lesson.date)}
+      </div>
+      ${lesson.priority ? `<span class="lesson-priority ${priorityClass}">${escapeHtml(lesson.priority)}</span>` : ''}
+    </div>
+    
+    ${lesson.notes ? `<div class="lesson-notes">${escapeHtml(lesson.notes)}</div>` : ''}
+    
+    <div class="lesson-actions">
+      <button class="lesson-action-btn complete-btn" data-lesson-id="${lesson.id || lesson._id}">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        ${lesson.completed ? 'Undo Complete' : 'Mark Complete'}
+      </button>
+      <button class="lesson-action-btn delete" data-lesson-id="${lesson.id || lesson._id}">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Delete
+      </button>
+    </div>
+  `;
+
+  // Add event listeners
+  const completeBtn = card.querySelector('.complete-btn');
+  const deleteBtn = card.querySelector('.delete');
+
+  completeBtn.addEventListener('click', async () => {
+    await toggleLessonComplete(lesson);
+  });
+
+  deleteBtn.addEventListener('click', async () => {
+    await deleteLesson(lesson);
+  });
+
+  return card;
+}
+
+// === TOGGLE LESSON COMPLETE ===
+async function toggleLessonComplete(lesson) {
+  try {
+    const updated = { ...lesson, completed: !lesson.completed };
+    const res = await fetch(
+      `https://avdevplanner.onrender.com/lessons/${lesson.id || lesson._id}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updated),
+      }
+    );
+    
+    if (res.ok) {
+      loadLessons();
+    } else {
+      console.error("Failed to update lesson");
+    }
+  } catch (error) {
+    console.error("Error updating lesson:", error);
+  }
+}
+
+// === DELETE LESSON ===
+async function deleteLesson(lesson) {
+  const confirmDelete = confirm("Are you sure you want to delete this lesson?");
+  if (!confirmDelete) return;
+
+  try {
+    const res = await fetch(
+      `https://avdevplanner.onrender.com/lessons/${lesson.id || lesson._id}`,
+      {
+        method: "DELETE",
+      }
+    );
+    
+    if (res.ok) {
+      loadLessons();
+    } else {
+      console.error("Failed to delete lesson");
+    }
+  } catch (error) {
+    console.error("Error deleting lesson:", error);
   }
 }
 
@@ -190,10 +239,38 @@ function formatPrettyDate(dateStr) {
   const [year, month, day] = dateStr.split("-");
   const dateObj = new Date(+year, +month - 1, +day);
   if (isNaN(dateObj.getTime())) return "(Invalid Date)";
-  const dayNum = dateObj.getDate();
-  const monthName = dateObj.toLocaleString("default", { month: "long" });
-  return `${monthName} ${dayNum}`;
+  
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  
+  if (dateStr === today.toISOString().split("T")[0]) {
+    return "Today";
+  } else if (dateStr === tomorrow.toISOString().split("T")[0]) {
+    return "Tomorrow";
+  } else {
+    const dayNum = dateObj.getDate();
+    const monthName = dateObj.toLocaleString("default", { month: "long" });
+    return `${monthName} ${dayNum}`;
+  }
+}
+
+function getPriorityClass(priority) {
+  if (!priority) return '';
+  const lower = priority.toLowerCase();
+  if (lower.includes('high')) return 'high';
+  if (lower.includes('medium')) return 'medium';
+  if (lower.includes('low')) return 'low';
+  return 'medium';
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
 }
 
 // === INIT ===
-loadLessons();
+document.addEventListener('DOMContentLoaded', () => {
+  loadLessons();
+});

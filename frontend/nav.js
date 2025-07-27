@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       }
     } else if (isLessons) {
-      const lessonPopup = document.getElementById('lesson-form-popup');
+      const lessonPopup = document.getElementById('lessonPopup');
       if (lessonPopup) {
         lessonPopup.classList.remove('hidden');
         lessonPopup.addEventListener('click', (e) => {
