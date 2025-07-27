@@ -1335,11 +1335,16 @@ body, .modern-dashboard {
 /* === RESPONSIVE MODALS === */
 @media (max-width: 600px) {
   .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 1rem;
-    min-height: 100vh;
+    z-index: 1000;
   }
   
   .modal__content,
@@ -1350,12 +1355,11 @@ body, .modern-dashboard {
     padding: 2rem 1.5rem;
     max-height: 80vh;
     overflow-y: auto;
-    margin: auto;
+    margin: 0;
     position: relative;
     top: 0;
     left: 0;
     transform: none;
-    align-self: center;
   }
   
   .modal__close {
@@ -1518,7 +1522,9 @@ body, .modern-dashboard {
   right: 0;
   z-index: 9999;
   pointer-events: none;
-  display: none; /* Hidden by default */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 /* Show desktop drawer only on desktop */
@@ -1526,6 +1532,12 @@ body, .modern-dashboard {
   .desktop-drawer {
     display: block;
   }
+}
+
+.desktop-drawer:not(.hidden) {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 }
 
 .desktop-drawer__content {
@@ -1542,6 +1554,7 @@ body, .modern-dashboard {
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: auto;
   box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.8);
+  width: 100%;
 }
 
 .desktop-drawer:not(.hidden) .desktop-drawer__content {
