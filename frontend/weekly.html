@@ -5,194 +5,183 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="weekly.css">
-          <script src="https://cdn.tailwindcss.com"></script>
-
-  <title>Document</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Weekly - Dashboard</title>
 </head>
 <body>
   <div class="page-content">
-   <header class="head">
-  <div class="nav-container">
-    <div class="nav-left">
-      <img class="logo" src="logo.png" alt="">
-      <h2 class="nav-quote">Get this shit done.</h2>
-    </div>
+    <!-- === MODERN DASHBOARD HEADER === -->
+    <header class="head">
+      <div class="nav-container">
+        <div class="nav-left">
+          <div class="logo">OBIZU</div>
+          <h2 class="nav-quote">Get this shit done.</h2>
+        </div>
+        
+        <nav>
+          <ul class="main-nav">
+            <li><a href="index.html">Dashboard</a></li>
+            <li><a href="lessons.html">Lessons</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle">Daily ▾</a>
+              <ul class="dropdown-menu">
+                <li><a href="daily.html">Daily</a></li>
+                <li><a href="weekly.html" class="active">Weekly</a></li>
+              </ul>
+            </li>
+            <li><a href="goals.html">Goals</a></li>
+            <li><a href="notes.html">Notes</a></li>
+            <li><a href="tasks.html">Tasks</a></li>
+            <li><a href="schedule.html">Schedule</a></li>
+          </ul>
+          <ul class="submenu-panel" id="submenu">
+            <li><a href="daily.html">Daily</a></li>
+            <li><a href="weekly.html">Weekly</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
 
-    <div class="nav-right">
-      <button class="hamburger" aria-label="Toggle menu">
-        <span class="bar"></span>
-        <span class="bar"></span>
-        <span class="bar"></span>
-      </button>
-
-      <nav>
-        <ul class="main-nav">
-          <li><a href="index.html">Home</a></li>
-          
-          <li><a href="lessons.html">Lessons</a></li>
-
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle">Daily ▾</a>
-
-            <!-- Desktop dropdown menu -->
-            <ul class="dropdown-menu">
-              <li><a href="daily.html">Daily</a></li>
-              <li><a href="weekly.html">Weekly</a></li>
-            </ul>
-          </li>
-
-          <li><a href="goals.html">Goals</a></li>
-          <li><a href="notes.html">Notes</a></li>
-          <li><a href="tasks.html">Tasks</a></li>
-          <li><a href="schedule.html">Schedule</a></li>
-        </ul>
-
-        <!-- Mobile slide-in submenu -->
-        <ul class="submenu-panel" id="submenu">
-          <li><a href="daily.html">Daily</a></li>
-          <li><a href="weekly.html">Weekly</a></li>
-        </ul>
-      </nav>
-    </div>
-  </div>
-</header>
-
-   <div id="weekly" class="flex flex-col gap-5 p-5">
-  <div id="week-range" class="text-center text-lg font-semibold text-white mb-4"></div>
-
-  <!-- Days of the week (Sunday to Saturday) -->
-  <div id="weekly-days" class="flex flex-col gap-4">
-    <!-- JS will insert each day's expandable section here -->
-  </div>
-
-<!-- Weekly Reflection Form -->
-
-<section class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-5 shadow-lg flex flex-col gap-4">
-  <h2 class="text-lg text-[#f0f0f0]">Weekly Reflection</h2>
-
-  <label for="what-went-well" class="text-sm">What went well this week?</label>
-  <textarea id="what-went-well" rows="4"
-            class="bg-[#2b2b2b] text-white p-2 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-purple-600"
-            placeholder="Write about what went well this week..."></textarea>
-
-  <label for="what-to-improve" class="text-sm">What could be improved?</label>
-  <textarea id="what-to-improve" rows="4"
-            class="bg-[#2b2b2b] text-white p-2 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-purple-600"
-            placeholder="Write about what you want to improve..."></textarea>
-
-  <button id="save-reflection"
-          class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 transition">
-    Save Reflection
-  </button>
-</section>
-
-<!-- 🔽 SAVED REFLECTIONS LIST -->
-<section class="bg-[#1f1f1f] text-[#e4e4e7] rounded-xl p-4 shadow-lg flex flex-col gap-4 mt-6">
-  <h2 class="text-sm sm:text-base text-[#f0f0f0]">Past Reflections</h2>
-  <div id="weekly-reflection-entries" class="flex flex-col gap-3">
-    <!-- Reflections will load here -->
-  </div>
-</section>
-
-
-<!-- Template for each day (JS will clone and populate this) -->
-<template id="day-template">
-  <section class="day-section bg-[#1f1f1f] rounded-xl shadow-lg overflow-hidden">
-    <button class="w-full text-left text-white px-4 py-3 text-base sm:text-lg font-medium bg-[#2b2b2b] hover:bg-[#333] transition day-toggle"></button>
-    <div class="day-content hidden flex flex-col gap-4 p-4">
-
-      <!-- 1x2 Grid: Tasks + Goals -->
-      <div class="grid grid-cols-2 gap-4">
-        <!-- Tasks -->
-<section class="bg-[#181818] text-[#e4e4e7] rounded-xl p-3 shadow-[0_6px_20px_rgba(0,0,0,0.45)] flex flex-col gap-2">
-          <h3 class="text-sm sm:text-base text-[#f0f0f0]">Tasks</h3>
-          <div class="task-container w-full flex overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar gap-3
-                      sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible sm:snap-none">
-            <!-- Cards added by JS -->
+    <!-- === MODERN WEEKLY DASHBOARD === -->
+    <div class="modern-dashboard">
+      <!-- Dashboard Header -->
+      <div class="dashboard-header">
+        <div class="dashboard-header-content">
+          <div class="dashboard-title">
+            <div class="title-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M3 7h18M3 12h18M3 17h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="title-text">
+              <h1>Weekly Dashboard</h1>
+              <p>Your weekly overview and reflections</p>
+            </div>
           </div>
-        </section>
-
-        <!-- Goals -->
-<section class="bg-[#181818] text-[#e4e4e7] rounded-xl p-3 shadow-[0_6px_20px_rgba(0,0,0,0.45)] flex flex-col gap-2">
-          <h3 class="text-sm sm:text-base text-[#f0f0f0]">Goals</h3>
-          <div class="goal-container w-full flex overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar gap-3
-                      sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible sm:snap-none">
-            <!-- Cards added by JS -->
-          </div>
-        </section>
+        </div>
       </div>
 
-      <!-- Lessons -->
-<section class="bg-[#181818] text-[#e4e4e7] rounded-xl p-3 shadow-[0_6px_20px_rgba(0,0,0,0.45)] flex flex-col gap-2">
-        <h3 class="text-sm sm:text-base text-[#f0f0f0]">Lessons</h3>
-        <div class="lesson-container w-full flex overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar gap-3
-                    sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:overflow-visible sm:snap-none">
-          <!-- Cards added by JS -->
+      <!-- Weekly Content -->
+      <div class="weekly-content">
+        <!-- Week Range Display -->
+        <div class="week-range-display">
+          <h2 id="week-range" class="week-range-text"></h2>
         </div>
-      </section>
 
+        <!-- Days Grid -->
+        <div class="weekly-grid" id="weekly-days">
+          <!-- JS will populate day cards here -->
+        </div>
+
+        <!-- Weekly Reflection Section -->
+        <div class="reflection-section">
+          <div class="content-card reflection-card">
+            <div class="card-header">
+              <div class="card-title">
+                <div class="title-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14,2 14,8 20,8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                    <polyline points="10,9 9,9 8,9"/>
+                  </svg>
+                </div>
+                <h3>Weekly Reflection</h3>
+              </div>
+            </div>
+            <div class="card-content">
+              <form id="weekly-reflection-form" class="reflection-form">
+                <div class="form-group">
+                  <label for="what-went-well" class="form-label">What went well this week?</label>
+                  <textarea id="what-went-well" rows="4" class="form-textarea" placeholder="Write about what went well this week..."></textarea>
+                </div>
+                <div class="form-group">
+                  <label for="what-to-improve" class="form-label">What could be improved?</label>
+                  <textarea id="what-to-improve" rows="4" class="form-textarea" placeholder="Write about what you want to improve..."></textarea>
+                </div>
+                <button type="submit" class="form-submit reflection-submit">Save Reflection</button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Past Reflections -->
+          <div class="content-card reflections-card">
+            <div class="card-header">
+              <div class="card-title">
+                <div class="title-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 12l2 2 4-4"/>
+                    <path d="M21 12c-1 0-2-1-2-2s1-2 2-2 2 1 2 2-1 2-2 2z"/>
+                    <path d="M3 12c1 0 2-1 2-2s-1-2-2-2-2 1-2 2 1 2 2 2z"/>
+                    <path d="M12 3c0 1-1 2-2 2s-2-1-2-2 1-2 2-2 2 1 2 2z"/>
+                    <path d="M12 21c0-1 1-2 2-2s2 1 2 2-1 2-2 2-2-1-2-2z"/>
+                  </svg>
+                </div>
+                <h3>Past Reflections</h3>
+              </div>
+            </div>
+            <div class="card-content">
+              <div id="weekly-reflection-entries" class="reflections-list">
+                <!-- Past reflections will load here -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  </section>
-</template>
 
+    <!-- Site Links Drawer -->
+    <div id="siteLinksDrawer" class="modal drawer-modal hidden">
+      <div class="drawer__content">
+        <button class="modal__close" onclick="document.getElementById('siteLinksDrawer').classList.add('hidden')">&times;</button>
+        <h2 class="modal__title card--tasks">Site Links</h2>
+        <ul class="drawer__links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="schedule.html">Schedule</a></li>
+          <li><a href="daily.html">Daily</a></li>
+          <li><a href="weekly.html">Weekly</a></li>
+          <li><a href="goals.html">Goals</a></li>
+          <li><a href="tasks.html">Tasks</a></li>
+          <li><a href="lessons.html">Lessons</a></li>
+          <li><a href="notes.html">Notes</a></li>
+        </ul>
+      </div>
+    </div>
 
+    <!-- Show only on mobile -->
+    <div class="block md:hidden">
+      <nav id="bottomNav" style="background-color: #1a1a1a;" class="fixed bottom-0 left-0 right-0 text-white rounded-t-2xl flex items-center justify-between px-1 py-2 shadow-inner z-40 transition-colors duration-300">
+        <a href="index.html" class="flex flex-col items-center text-xs hover:text-[#b91c1c] min-w-0 flex-1">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7m-9 2v8m4-8v8m5 0h2a2 2 0 002-2v-5a2 2 0 00-2-2h-3.28" />
+          </svg>
+          <span class="text-xs truncate">Home</span>
+        </a>
+        <a href="schedule.html" class="flex flex-col items-center text-xs hover:text-[#b91c1c] min-w-0 flex-1">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 10h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <span class="text-xs truncate">Cal</span>
+        </a>
+        <button id="fab" class="bg-[#b91c1c] w-10 h-10 rounded-full text-white flex items-center justify-center shadow-xl transform -translate-y-4 hover:scale-105 transition z-50">+</button>
+        <a href="daily.html" class="flex flex-col items-center text-xs hover:text-[#b91c1c] min-w-0 flex-1">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span class="text-xs truncate">Daily</span>
+        </a>
+        <a href="weekly.html" class="flex flex-col items-center text-xs hover:text-[#b91c1c] min-w-0 flex-1">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18M3 17h18" />
+          </svg>
+          <span class="text-xs truncate">Weekly</span>
+        </a>
+      </nav>
+    </div>
 
+    <script src="nav.js"></script>
+    <script src="weekly.js"></script>
   </div>
-<footer class="footer">
-  <span id="eat">Eat</span>
-  <span id="sleep">Sleep</span>
-  <span id="code">Code</span>
-  <span id="repeat">Repeat</span>
-</footer>
-
-
-<!-- Site Links Drawer -->
-<div id="siteLinksDrawer" class="pointer-events-none fixed bottom-[120px] left-1/2 transform -translate-x-[45%] opacity-0 scale-95 transition-all duration-300 w-40 bg-[#1a1a1a] text-white p-3 rounded-xl shadow-lg z-50">
-  <div class="flex flex-col space-y-3 text-sm">
-    <a href="index.html" class="hover:text-[#b91c1c]">Home</a>
-    <a href="schedule.html" class="hover:text-[#b91c1c]">Schedule</a>
-    <a href="daily.html" class="hover:text-[#b91c1c]">Daily</a>
-    <a href="weekly.html" class="hover:text-[#b91c1c]">Weekly</a>
-    <a href="goals.html" class="hover:text-[#b91c1c]">Goals</a>
-    <a href="tasks.html" class="hover:text-[#b91c1c]">Tasks</a>
-    <a href="lessons.html" class="hover:text-[#b91c1c]">Lessons</a>
-    <a href="notes.html" class="hover:text-[#b91c1c]">Notes</a>
-  </div>
-</div>
-
-
-  <!-- Bottom Nav (mobile only) -->
-  <div class="block md:hidden">
-    <nav id="bottomNav" style="background-color: #1a1a1a;" class="fixed bottom-0 left-0 w-full text-white rounded-t-2xl flex items-center justify-between px-6 py-4 shadow-inner z-40 transition-colors duration-300">
-      <a href="index.html" class="flex flex-col items-center text-sm hover:text-[#b91c1c]">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7m-9 2v8m4-8v8m5 0h2a2 2 0 002-2v-5a2 2 0 00-2-2h-3.28" />
-        </svg>
-        Home
-      </a>
-      <a href="schedule.html" class="flex flex-col items-center text-sm hover:text-[#b91c1c]">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 10h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-        </svg>
-        Calendar
-      </a>
-      <button id="fab" class="bg-[#b91c1c] w-14 h-14 rounded-full text-white flex items-center justify-center shadow-xl transform -translate-y-8 hover:scale-105 transition z-50">+</button>
-      <a href="daily.html" class="flex flex-col items-center text-sm hover:text-[#b91c1c]">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        Daily
-      </a>
-      <a href="weekly.html" class="flex flex-col items-center text-sm hover:text-[#b91c1c]">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18M3 17h18" />
-        </svg>
-        Weekly
-      </a>
-    </nav>
-  </div>
-
-  <script src="nav.js"></script>
-  <script src="weekly.js"></script>
 </body>
 </html>
