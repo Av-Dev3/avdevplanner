@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const isTasks = path.includes('tasks') && !path.includes('tasks.css');
   const isLessons = path.includes('lesson') || path.includes('lessons');
   const isGoals = path.includes('goals');
+  const isDaily = path.includes('daily') && !path.includes('daily.css');
 
   let isDrawerOpen = false;
   let longPressTriggered = false;
@@ -76,13 +77,19 @@ document.addEventListener('DOMContentLoaded', () => {
           if (e.target === goalPopup) goalPopup.classList.add('hidden');
         });
       }
+    } else if (isDaily) {
+      // Daily page: only open site links (no quick actions)
+      if (siteLinksDrawer) {
+        siteLinksDrawer.classList.add('drawer-visible');
+        siteLinksDrawer.classList.remove('hidden');
+      }
     } else if (siteLinksDrawer) {
       siteLinksDrawer.classList.toggle('drawer-visible', isDrawerOpen);
       drawer?.classList.remove('drawer-visible');
     }
   });
 
-  if ((isHome || isNotes || isTasks || isLessons || isGoals) && siteLinksDrawer) {
+  if ((isHome || isNotes || isTasks || isLessons || isGoals || isDaily) && siteLinksDrawer) {
     const startLongPress = () => {
       pressTimer = setTimeout(() => {
         longPressTriggered = true;

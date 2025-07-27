@@ -51,6 +51,22 @@ body {
   gap: 16px;
 }
 
+@media (max-width: 768px) {
+  .nav-left {
+    gap: 0.5rem;
+  }
+  
+  .nav-left .logo {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .nav-left .nav-quote {
+    font-size: 0.9rem;
+    white-space: nowrap;
+  }
+}
+
 .nav-quote {
   color: rgba(255, 255, 255, 0.9);
   font-size: 1.1rem;

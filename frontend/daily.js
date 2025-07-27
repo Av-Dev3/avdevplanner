@@ -7,38 +7,14 @@ const logForm = document.getElementById("daily-log-form");
 const logEntries = document.getElementById("daily-log-entries");
 const todayStr = new Date().toLocaleDateString("en-CA");
 
-// === Swipe Layout ===
-function setupSwipeContainer(container) {
-  const isMobile = window.innerWidth < 768;
-
-  if (isMobile) {
-    container.classList.add(
-      "flex", "overflow-x-auto", "snap-x", "snap-mandatory",
-      "scroll-smooth", "no-scrollbar", "gap-3"
-    );
-    container.classList.remove("grid");
-    container.style.scrollbarWidth = "none";
-    container.style.msOverflowStyle = "none";
-    container.style.overflowY = "hidden";
-    container.style.webkitOverflowScrolling = "touch";
-    container.style.display = "";
-    container.style.gridTemplateColumns = "";
-  } else {
-    container.classList.remove(
-      "flex", "overflow-x-auto", "snap-x", "snap-mandatory", "scroll-smooth", "no-scrollbar"
-    );
-    container.style.overflow = "";
-    container.style.display = "";
-    container.style.gridTemplateColumns = "";
-  }
-}
-
+// === UTILITY FUNCTIONS ===
 function formatPrettyDate(dateStr) {
   const date = new Date(dateStr);
   return date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
 }
 
 function formatTime(timeStr) {
+  if (!timeStr) return "";
   const [h, m] = timeStr.split(":");
   const hour = parseInt(h);
   const suffix = hour >= 12 ? "PM" : "AM";
@@ -46,23 +22,53 @@ function formatTime(timeStr) {
   return `${adjusted}:${m} ${suffix}`;
 }
 
-function createFullCard(title, notes, date, time) {
-  const div = document.createElement("div");
-  div.className = "snap-center shrink-0 w-full sm:w-[240px] bg-[#2b2b2b] rounded-lg p-4 shadow-inner text-sm";
-
-  const timeDisplay = time ? `<p><small>Time: ${formatTime(time)}</small></p>` : "";
-  const dateDisplay = date ? `<p><small>Date: ${formatPrettyDate(date)}</small></p>` : "";
-
-  div.innerHTML = `
-    <h3 class="font-semibold mb-1">${title}</h3>
-    ${notes ? `<p class="mb-1">${notes}</p>` : ""}
-    ${timeDisplay}
-    ${dateDisplay}
-  `;
-  return div;
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
 }
 
-// === Load Tasks ===
+// === CREATE DAILY ITEM CARD ===
+function createDailyItemCard(title, notes, date, time, type = 'task', completed = false) {
+  const card = document.createElement("div");
+  card.className = `daily-item-card ${type}-item ${completed ? 'completed' : ''}`;
+  
+  const timeDisplay = time ? `<div class="item-time">${formatTime(time)}</div>` : "";
+  const dateDisplay = date ? `<div class="item-date">${formatPrettyDate(date)}</div>` : "";
+  
+  card.innerHTML = `
+    <h4>${escapeHtml(title)}</h4>
+    ${notes ? `<p>${escapeHtml(notes)}</p>` : ""}
+    <div class="item-meta">
+      ${timeDisplay}
+      ${dateDisplay}
+    </div>
+  `;
+  
+  return card;
+}
+
+// === CREATE LOG ENTRY CARD ===
+function createLogEntryCard(title, content, date, time) {
+  const card = document.createElement("div");
+  card.className = "log-entry-card";
+  
+  const timeDisplay = time ? `<div>${formatTime(time)}</div>` : "";
+  const dateDisplay = date ? `<div>${formatPrettyDate(date)}</div>` : "";
+  
+  card.innerHTML = `
+    <h4>${escapeHtml(title)}</h4>
+    <p>${escapeHtml(content)}</p>
+    <div class="entry-meta">
+      ${timeDisplay}
+      ${dateDisplay}
+    </div>
+  `;
+  
+  return card;
+}
+
+// === LOAD TODAY'S TASKS ===
 async function loadTodayTasks() {
   try {
     const res = await fetch("https://avdevplanner.onrender.com/tasks");
@@ -70,24 +76,36 @@ async function loadTodayTasks() {
     const todayTasks = tasks
       .map((task, index) => ({ ...task, index }))
       .filter((t) => t.date === todayStr);
+    
     tasksContainer.innerHTML = "";
 
     if (!todayTasks.length) {
-      tasksContainer.innerHTML = "<p>No tasks for today.</p>";
+      tasksContainer.innerHTML = `
+        <div class="daily-empty">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+            <polyline points="22,4 12,14.01 9,11.01"/>
+          </svg>
+          <h3>No Tasks Today</h3>
+          <p>Add some tasks to get started</p>
+        </div>
+      `;
       return;
     }
 
     todayTasks.forEach((task) => {
-      const card = createFullCard(
+      const card = createDailyItemCard(
         task.text || task.title || "Untitled Task",
         task.notes,
         task.prettyDate,
-        task.time
+        task.time,
+        'task',
+        task.completed
       );
 
       const completeBtn = document.createElement("button");
       completeBtn.textContent = task.completed ? "Undo Complete" : "Mark Complete";
-      completeBtn.className = "text-xs bg-purple-600 hover:bg-purple-700 text-white px-2 py-1 rounded mt-2";
+      completeBtn.className = "mark-complete-btn";
       completeBtn.addEventListener("click", async () => {
         try {
           const res = await fetch(`https://avdevplanner.onrender.com/tasks/${task.index}/toggle`, {
@@ -103,12 +121,21 @@ async function loadTodayTasks() {
       card.appendChild(completeBtn);
       tasksContainer.appendChild(card);
     });
-  } catch {
-    tasksContainer.innerHTML = "<p>Error loading tasks.</p>";
+  } catch (err) {
+    tasksContainer.innerHTML = `
+      <div class="daily-empty">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+        </svg>
+        <h3>Error Loading Tasks</h3>
+        <p>There was an error loading your tasks</p>
+      </div>
+    `;
+    console.error(err);
   }
 }
 
-// === Load Goals ===
+// === LOAD TODAY'S GOALS ===
 async function loadGoals() {
   try {
     const res = await fetch("https://avdevplanner.onrender.com/goals");
@@ -116,172 +143,285 @@ async function loadGoals() {
     const todayGoals = goals
       .map((goal, index) => ({ ...goal, index }))
       .filter((g) => g.date === todayStr);
+    
     goalsContainer.innerHTML = "";
 
     if (!todayGoals.length) {
-      goalsContainer.innerHTML = "<p>No goals for today.</p>";
+      goalsContainer.innerHTML = `
+        <div class="daily-empty">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12,6 12,12 16,14"/>
+          </svg>
+          <h3>No Goals Today</h3>
+          <p>Set some goals to track your progress</p>
+        </div>
+      `;
       return;
     }
 
     todayGoals.forEach((goal) => {
-      const card = createFullCard(goal.title, goal.notes, goal.prettyDate);
+      const card = createDailyItemCard(
+        goal.text || goal.title || "Untitled Goal",
+        goal.notes,
+        goal.prettyDate,
+        goal.time,
+        'goal',
+        goal.completed
+      );
 
       const completeBtn = document.createElement("button");
       completeBtn.textContent = goal.completed ? "Undo Complete" : "Mark Complete";
-      completeBtn.className = "text-xs bg-purple-600 hover:bg-purple-700 text-white px-2 py-1 rounded mt-2";
+      completeBtn.className = "mark-complete-btn";
       completeBtn.addEventListener("click", async () => {
-        const updated = { ...goal, completed: !goal.completed };
-        const res = await fetch(`https://avdevplanner.onrender.com/goals/${goal.index}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updated),
-        });
-        if (res.ok) loadGoals();
-        else console.error("Failed to update goal");
+        try {
+          const res = await fetch(`https://avdevplanner.onrender.com/goals/${goal.index}/toggle`, {
+            method: "PATCH",
+          });
+          if (res.ok) loadGoals();
+          else console.error("Failed to update goal");
+        } catch (err) {
+          console.error("Goal complete error:", err);
+        }
       });
 
       card.appendChild(completeBtn);
       goalsContainer.appendChild(card);
     });
-  } catch {
-    goalsContainer.innerHTML = "<p>Error loading goals.</p>";
+  } catch (err) {
+    goalsContainer.innerHTML = `
+      <div class="daily-empty">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+        </svg>
+        <h3>Error Loading Goals</h3>
+        <p>There was an error loading your goals</p>
+      </div>
+    `;
+    console.error(err);
   }
 }
 
-// === Load Lessons ===
+// === LOAD TODAY'S LESSONS ===
 async function loadLessons() {
   try {
     const res = await fetch("https://avdevplanner.onrender.com/lessons");
     const lessons = await res.json();
-    const todayLessons = lessons.filter((l) => l.date === todayStr);
+    const todayLessons = lessons
+      .map((lesson, index) => ({ ...lesson, index }))
+      .filter((l) => l.date === todayStr);
+    
     lessonsContainer.innerHTML = "";
 
     if (!todayLessons.length) {
-      lessonsContainer.innerHTML = "<p>No lessons for today.</p>";
+      lessonsContainer.innerHTML = `
+        <div class="daily-empty">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L2 7L12 12L22 7L12 2Z"/>
+            <path d="M2 17L12 22L22 17"/>
+            <path d="M2 12L12 17L22 12"/>
+          </svg>
+          <h3>No Lessons Today</h3>
+          <p>Record what you learned today</p>
+        </div>
+      `;
       return;
     }
 
     todayLessons.forEach((lesson) => {
-      const content = `${lesson.description || ""}${lesson.notes ? ` (${lesson.notes})` : ""}`;
-      const card = createFullCard(
-        lesson.title,
-        `Category: ${lesson.category || "N/A"} | Priority: ${lesson.priority || "Normal"} | ${content}`,
-        lesson.prettyDate
+      const card = createDailyItemCard(
+        lesson.title || "Untitled Lesson",
+        lesson.description || lesson.notes,
+        lesson.prettyDate,
+        lesson.time,
+        'lesson',
+        lesson.completed
       );
 
       const completeBtn = document.createElement("button");
       completeBtn.textContent = lesson.completed ? "Undo Complete" : "Mark Complete";
-      completeBtn.className = "text-xs bg-purple-600 hover:bg-purple-700 text-white px-2 py-1 rounded mt-2";
+      completeBtn.className = "mark-complete-btn";
       completeBtn.addEventListener("click", async () => {
-        const updated = { ...lesson, completed: !lesson.completed };
-        const res = await fetch(`https://avdevplanner.onrender.com/lessons/${lesson.id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updated),
-        });
-        if (res.ok) loadLessons();
+        try {
+          const res = await fetch(`https://avdevplanner.onrender.com/lessons/${lesson.index}/toggle`, {
+            method: "PATCH",
+          });
+          if (res.ok) loadLessons();
+          else console.error("Failed to update lesson");
+        } catch (err) {
+          console.error("Lesson complete error:", err);
+        }
       });
 
       card.appendChild(completeBtn);
       lessonsContainer.appendChild(card);
     });
-  } catch {
-    lessonsContainer.innerHTML = "<p>Error loading lessons.</p>";
+  } catch (err) {
+    lessonsContainer.innerHTML = `
+      <div class="daily-empty">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+        </svg>
+        <h3>Error Loading Lessons</h3>
+        <p>There was an error loading your lessons</p>
+      </div>
+    `;
+    console.error(err);
   }
 }
 
-// === Load Notes ===
+// === LOAD TODAY'S NOTES ===
 async function loadNotes() {
   try {
     const res = await fetch("https://avdevplanner.onrender.com/notes");
     const notes = await res.json();
-    const todayNotes = notes.filter((n) => n.date === todayStr);
+    const todayNotes = notes
+      .map((note, index) => ({ ...note, index }))
+      .filter((n) => n.date === todayStr);
+    
     notesContainer.innerHTML = "";
 
     if (!todayNotes.length) {
-      notesContainer.innerHTML = "<p>No notes for today.</p>";
+      notesContainer.innerHTML = `
+        <div class="daily-empty">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14,2 14,8 20,8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10,9 9,9 8,9"/>
+          </svg>
+          <h3>No Notes Today</h3>
+          <p>Add some notes to remember important things</p>
+        </div>
+      `;
       return;
     }
 
     todayNotes.forEach((note) => {
-      const card = createFullCard(note.title, note.content, note.date);
+      const card = createDailyItemCard(
+        note.title || "Untitled Note",
+        note.content || note.notes,
+        note.prettyDate,
+        note.time,
+        'note',
+        note.completed
+      );
+
+      const completeBtn = document.createElement("button");
+      completeBtn.textContent = note.completed ? "Undo Complete" : "Mark Complete";
+      completeBtn.className = "mark-complete-btn";
+      completeBtn.addEventListener("click", async () => {
+        try {
+          const res = await fetch(`https://avdevplanner.onrender.com/notes/${note.index}/toggle`, {
+            method: "PATCH",
+          });
+          if (res.ok) loadNotes();
+          else console.error("Failed to update note");
+        } catch (err) {
+          console.error("Note complete error:", err);
+        }
+      });
+
+      card.appendChild(completeBtn);
       notesContainer.appendChild(card);
     });
-  } catch {
-    notesContainer.innerHTML = "<p>Error loading notes.</p>";
+  } catch (err) {
+    notesContainer.innerHTML = `
+      <div class="daily-empty">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+        </svg>
+        <h3>Error Loading Notes</h3>
+        <p>There was an error loading your notes</p>
+      </div>
+    `;
+    console.error(err);
   }
 }
 
-// === Logs ===
-if (logForm) {
-  logForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const title = document.getElementById("log-title").value.trim();
-    const content = document.getElementById("log-content").value.trim();
-
-    const log = {
-      date: todayStr,
-      title,
-      content,
-      timestamp: new Date().toISOString(),
-    };
-
-    try {
-      const res = await fetch("https://avdevplanner.onrender.com/logs", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(log),
-      });
-
-      if (res.ok) {
-        logForm.reset();
-        loadLogs();
-      } else {
-        console.error("Log POST error:", await res.text());
-      }
-    } catch (err) {
-      console.error("Submit failed:", err);
-    }
-  });
-}
-
+// === LOAD TODAY'S LOG ENTRIES ===
 async function loadLogs() {
   try {
     const res = await fetch("https://avdevplanner.onrender.com/logs");
     const logs = await res.json();
-    const todayLogs = logs[todayStr] || [];
+    const todayLogs = logs.filter((log) => log.date === todayStr);
+    
     logEntries.innerHTML = "";
 
     if (!todayLogs.length) {
-      logEntries.innerHTML = "<p>No personal logs for today.</p>";
+      logEntries.innerHTML = `
+        <div class="daily-empty">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14,2 14,8 20,8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+            <polyline points="10,9 9,9 8,9"/>
+          </svg>
+          <h3>No Log Entries Today</h3>
+          <p>Add a personal log entry to reflect on your day</p>
+        </div>
+      `;
       return;
     }
 
     todayLogs.forEach((log) => {
-      const card = createFullCard(
+      const card = createLogEntryCard(
         log.title,
         log.content,
-        new Date(log.timestamp).toLocaleDateString()
+        log.prettyDate,
+        log.time
       );
       logEntries.appendChild(card);
     });
-  } catch {
-    logEntries.innerHTML = "<p>Error loading logs.</p>";
+  } catch (err) {
+    logEntries.innerHTML = `
+      <div class="daily-empty">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+        </svg>
+        <h3>Error Loading Logs</h3>
+        <p>There was an error loading your log entries</p>
+      </div>
+    `;
+    console.error(err);
   }
 }
 
-// === Time Tracker ===
-const saveTimeBtn = document.getElementById("save-time-btn");
-const timeInput = document.getElementById("time-spent");
-const savedTimeText = document.getElementById("saved-time-text");
+// === TIME TRACKER ===
+async function loadTime() {
+  try {
+    const res = await fetch("https://avdevplanner.onrender.com/time");
+    const timeData = await res.json();
+    const todayTime = timeData.find((t) => t.date === todayStr);
+    
+    if (todayTime) {
+      document.getElementById("saved-time-text").textContent = `Today's focused time: ${todayTime.minutes} minutes`;
+    }
+  } catch (err) {
+    console.error("Error loading time:", err);
+  }
+}
 
-if (saveTimeBtn && timeInput && savedTimeText) {
+// === EVENT LISTENERS ===
+document.addEventListener("DOMContentLoaded", () => {
+  // Load all data
+  loadTodayTasks();
+  loadGoals();
+  loadLessons();
+  loadNotes();
+  loadLogs();
   loadTime();
 
+  // Time tracker form
+  const saveTimeBtn = document.getElementById("save-time-btn");
+  const timeSpentInput = document.getElementById("time-spent");
+  
   saveTimeBtn.addEventListener("click", async () => {
-    const minutes = parseInt(timeInput.value);
-    if (isNaN(minutes) || minutes < 0) {
-      savedTimeText.textContent = "Please enter a valid number of minutes.";
+    const minutes = parseInt(timeSpentInput.value);
+    if (!minutes || minutes < 0) {
+      alert("Please enter a valid number of minutes");
       return;
     }
 
@@ -293,40 +433,169 @@ if (saveTimeBtn && timeInput && savedTimeText) {
       });
 
       if (res.ok) {
-        savedTimeText.textContent = `Saved: ${minutes} minutes of focused work.`;
-        timeInput.value = "";
+        document.getElementById("saved-time-text").textContent = `Saved: ${minutes} minutes of focused work`;
+        timeSpentInput.value = "";
+        loadTime();
       } else {
-        savedTimeText.textContent = "Error saving time.";
+        console.error("Failed to save time");
       }
     } catch (err) {
-      savedTimeText.textContent = "Failed to save time.";
-      console.error(err);
+      console.error("Error saving time:", err);
     }
   });
 
-  async function loadTime() {
+  // Personal log form
+  logForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    
+    const title = document.getElementById("log-title").value;
+    const content = document.getElementById("log-content").value;
+    
+    if (!title || !content) {
+      alert("Please fill in both title and content");
+      return;
+    }
+
     try {
-      const res = await fetch("https://avdevplanner.onrender.com/time");
-      const data = await res.json();
-      const todayTime = data[todayStr];
-      if (todayTime) {
-        savedTimeText.textContent = `You logged ${todayTime} minutes of focused work today.`;
+      const res = await fetch("https://avdevplanner.onrender.com/logs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title,
+          content,
+          date: todayStr,
+          time: new Date().toLocaleTimeString("en-CA", { hour12: false }),
+        }),
+      });
+
+      if (res.ok) {
+        logForm.reset();
+        loadLogs();
+      } else {
+        console.error("Failed to save log");
       }
     } catch (err) {
-      console.error("Error loading time data:", err);
+      console.error("Error saving log:", err);
     }
-  }
-}
+  });
 
-// === INIT ===
-loadTodayTasks();
-loadGoals();
-loadLessons();
-loadNotes();
-loadLogs();
+  // Form submissions for popups
+  const taskForm = document.getElementById("task-form");
+  const goalForm = document.getElementById("goal-form");
+  const lessonForm = document.getElementById("lesson-form");
+  const noteForm = document.getElementById("note-form");
 
-setupSwipeContainer(tasksContainer);
-setupSwipeContainer(goalsContainer);
-setupSwipeContainer(lessonsContainer);
-setupSwipeContainer(notesContainer);
-setupSwipeContainer(logEntries);
+  // Task form
+  taskForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    
+    const title = document.getElementById("task-title").value;
+    const notes = document.getElementById("task-notes").value;
+    const date = document.getElementById("task-date").value;
+    const time = document.getElementById("task-time").value;
+    
+    try {
+      const res = await fetch("https://avdevplanner.onrender.com/tasks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: title, notes, date, time }),
+      });
+
+      if (res.ok) {
+        taskForm.reset();
+        document.getElementById("taskPopup").classList.add("hidden");
+        loadTodayTasks();
+      } else {
+        console.error("Failed to save task");
+      }
+    } catch (err) {
+      console.error("Error saving task:", err);
+    }
+  });
+
+  // Goal form
+  goalForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    
+    const title = document.getElementById("goal-title").value;
+    const notes = document.getElementById("goal-notes").value;
+    const date = document.getElementById("goal-date").value;
+    const time = document.getElementById("goal-time").value;
+    
+    try {
+      const res = await fetch("https://avdevplanner.onrender.com/goals", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: title, notes, date, time }),
+      });
+
+      if (res.ok) {
+        goalForm.reset();
+        document.getElementById("goalPopup").classList.add("hidden");
+        loadGoals();
+      } else {
+        console.error("Failed to save goal");
+      }
+    } catch (err) {
+      console.error("Error saving goal:", err);
+    }
+  });
+
+  // Lesson form
+  lessonForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    
+    const title = document.getElementById("lesson-title").value;
+    const description = document.getElementById("lesson-description").value;
+    const category = document.getElementById("lesson-category").value;
+    const date = document.getElementById("lesson-date").value;
+    const priority = document.getElementById("lesson-priority").value;
+    const notes = document.getElementById("lesson-notes").value;
+    
+    try {
+      const res = await fetch("https://avdevplanner.onrender.com/lessons", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, description, category, date, priority, notes }),
+      });
+
+      if (res.ok) {
+        lessonForm.reset();
+        document.getElementById("lessonPopup").classList.add("hidden");
+        loadLessons();
+      } else {
+        console.error("Failed to save lesson");
+      }
+    } catch (err) {
+      console.error("Error saving lesson:", err);
+    }
+  });
+
+  // Note form
+  noteForm?.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    
+    const title = document.getElementById("note-title").value;
+    const content = document.getElementById("note-content").value;
+    const date = document.getElementById("note-date").value;
+    const time = document.getElementById("note-time").value;
+    
+    try {
+      const res = await fetch("https://avdevplanner.onrender.com/notes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, content, date, time }),
+      });
+
+      if (res.ok) {
+        noteForm.reset();
+        document.getElementById("notePopup").classList.add("hidden");
+        loadNotes();
+      } else {
+        console.error("Failed to save note");
+      }
+    } catch (err) {
+      console.error("Error saving note:", err);
+    }
+  });
+});
