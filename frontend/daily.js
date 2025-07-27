@@ -13,7 +13,7 @@ function formatPrettyDate(dateStr) {
   return date.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
 }
 
-function formatTime(timeStr) {
+function formatTime12Hour(timeStr) {
   if (!timeStr) return "";
   const [h, m] = timeStr.split(":");
   const hour = parseInt(h);
@@ -28,44 +28,249 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
-// === CREATE DAILY ITEM CARD ===
-function createDailyItemCard(title, notes, date, time, type = 'task', completed = false) {
-  const card = document.createElement("div");
-  card.className = `carousel__card daily-item-card ${type}-item ${completed ? 'completed' : ''}`;
-  
-  const timeDisplay = time ? `<div class="item-time">${formatTime(time)}</div>` : "";
-  const dateDisplay = date ? `<div class="item-date">${formatPrettyDate(date)}</div>` : "";
-  
-  card.innerHTML = `
-    <h4>${escapeHtml(title)}</h4>
-    ${notes ? `<p>${escapeHtml(notes)}</p>` : ""}
-    <div class="item-meta">
-      ${timeDisplay}
-      ${dateDisplay}
-    </div>
-  `;
-  
-  return card;
+// === CAROUSEL SETUP (Same as dashboard) ===
+function setupDailyCarousels() {
+  // Setup tasks carousel
+  const tasksArrowPrev = document.querySelector('[data-carousel="tasks"].prev');
+  const tasksArrowNext = document.querySelector('[data-carousel="tasks"].next');
+  if (tasksContainer && tasksArrowPrev && tasksArrowNext) {
+    setupCarousel(tasksContainer, [], createTaskCard, tasksArrowPrev, tasksArrowNext);
+  }
+
+  // Setup goals carousel
+  const goalsArrowPrev = document.querySelector('[data-carousel="goals"].prev');
+  const goalsArrowNext = document.querySelector('[data-carousel="goals"].next');
+  if (goalsContainer && goalsArrowPrev && goalsArrowNext) {
+    setupCarousel(goalsContainer, [], createGoalCard, goalsArrowPrev, goalsArrowNext);
+  }
+
+  // Setup lessons carousel
+  const lessonsArrowPrev = document.querySelector('[data-carousel="lessons"].prev');
+  const lessonsArrowNext = document.querySelector('[data-carousel="lessons"].next');
+  if (lessonsContainer && lessonsArrowPrev && lessonsArrowNext) {
+    setupCarousel(lessonsContainer, [], createLessonCard, lessonsArrowPrev, lessonsArrowNext);
+  }
+
+  // Setup notes carousel
+  const notesArrowPrev = document.querySelector('[data-carousel="notes"].prev');
+  const notesArrowNext = document.querySelector('[data-carousel="notes"].next');
+  if (notesContainer && notesArrowPrev && notesArrowNext) {
+    setupCarousel(notesContainer, [], createNoteCard, notesArrowPrev, notesArrowNext);
+  }
 }
 
-// === CREATE LOG ENTRY CARD ===
-function createLogEntryCard(title, content, date, time) {
-  const card = document.createElement("div");
-  card.className = "log-entry-card";
+function setupCarousel(container, items, createCardFn, arrowPrev, arrowNext) {
+  let currentIndex = 0;
+  let isMouseDown = false;
+  let mouseStartX = null;
+
+  function updateProgress() {
+    const progress = items.length > 1 ? ((currentIndex + 1) / items.length) * 100 : 100;
+    const progressBar = container.querySelector('.carousel__progress-bar');
+    if (progressBar) {
+      progressBar.style.width = `${progress}%`;
+    }
+  }
+
+  function renderCard() {
+    if (items.length === 0) {
+      container.innerHTML = '<div class="card__empty">No items found</div>';
+      return;
+    }
+
+    const card = createCardFn(items[currentIndex]);
+    container.innerHTML = '';
+    container.appendChild(card);
+    updateProgress();
+  }
+
+  function prev() {
+    if (items.length <= 1) return;
+    currentIndex = (currentIndex - 1 + items.length) % items.length;
+    renderCard();
+  }
+
+  function next() {
+    if (items.length <= 1) return;
+    currentIndex = (currentIndex + 1) % items.length;
+    renderCard();
+  }
+
+  // Arrow event listeners
+  if (arrowPrev) {
+    arrowPrev.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      prev();
+    });
+  }
+
+  if (arrowNext) {
+    arrowNext.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      next();
+    });
+  }
+
+  // Touch/swipe support
+  container.addEventListener('touchstart', (e) => {
+    const touch = e.touches[0];
+    mouseStartX = touch.clientX;
+  });
+
+  container.addEventListener('touchend', (e) => {
+    if (!mouseStartX) return;
+    
+    const touch = e.changedTouches[0];
+    const diff = mouseStartX - touch.clientX;
+    const threshold = 50;
+    
+    if (diff > threshold) {
+      next();
+    } else if (diff < -threshold) {
+      prev();
+    }
+    
+    mouseStartX = null;
+  });
+
+  // Mouse drag support for desktop
+  container.onmousedown = (e) => {
+    if (items.length <= 1) return;
+    
+    isMouseDown = true;
+    mouseStartX = e.clientX;
+    container.style.cursor = 'grabbing';
+    container.classList.add('swiping');
+  };
+
+  container.onmousemove = (e) => {
+    if (!isMouseDown || !mouseStartX) return;
+    
+    const diff = e.clientX - mouseStartX;
+    
+    if (diff > 10) {
+      container.classList.add('swipe-left');
+      container.classList.remove('swipe-right');
+    } else if (diff < -10) {
+      container.classList.add('swipe-right');
+      container.classList.remove('swipe-left');
+    }
+  };
+
+  container.onmouseup = (e) => {
+    if (!isMouseDown || !mouseStartX) return;
+    
+    const diff = e.clientX - mouseStartX;
+    const threshold = 50;
+    
+    if (diff > threshold) {
+      prev();
+    } else if (diff < -threshold) {
+      next();
+    }
+    
+    // Clean up
+    isMouseDown = false;
+    mouseStartX = null;
+    container.style.cursor = 'grab';
+    container.classList.remove('swiping', 'swipe-left', 'swipe-right');
+  };
   
-  const timeDisplay = time ? `<div>${formatTime(time)}</div>` : "";
-  const dateDisplay = date ? `<div>${formatPrettyDate(date)}</div>` : "";
+  container.onmouseleave = () => {
+    if (isMouseDown) {
+      isMouseDown = false;
+      mouseStartX = null;
+      container.style.cursor = 'grab';
+      container.classList.remove('swiping', 'swipe-left', 'swipe-right');
+    }
+  };
   
-  card.innerHTML = `
-    <h4>${escapeHtml(title)}</h4>
-    <p>${escapeHtml(content)}</p>
-    <div class="entry-meta">
-      ${timeDisplay}
-      ${dateDisplay}
-    </div>
+  // Set initial cursor
+  if (items.length > 1) {
+    container.style.cursor = 'grab';
+  }
+  
+  renderCard();
+}
+
+// === CARD CREATORS (Same as dashboard) ===
+function createTaskCard(task) {
+  const div = document.createElement("div");
+  div.className = "carousel__card";
+  const taskId = task.originalIndex !== undefined ? task.originalIndex : (task.id || task._id || task.taskId || '');
+  div.innerHTML = `
+    <h3 class="font-semibold mb-1">${task.text || task.title || "Untitled Task"}</h3>
+    ${task.notes ? `<p class="mb-1">${task.notes}</p>` : ""}
+    ${task.time ? `<p><small>Time: ${formatTime12Hour(task.time)}</small></p>` : ""}
+    <p class="text-xs text-gray-400">${task._vegasDateStr || ""}</p>
+    ${
+      !task.completed && taskId
+        ? `<button class="mark-complete-btn mt-2" data-type="task" data-id="${taskId}">Mark Complete</button>`
+        : !task.completed && !taskId
+        ? `<span class="text-yellow-500 font-semibold block mt-2">No ID available</span>`
+        : `<span class="text-green-500 font-semibold block mt-2">Completed</span>`
+    }
   `;
-  
-  return card;
+  return div;
+}
+
+function createGoalCard(goal) {
+  const div = document.createElement("div");
+  div.className = "carousel__card";
+  const goalId = goal.originalIndex !== undefined ? goal.originalIndex : (goal.index || goal.id || goal._id || goal.goalId || '');
+  div.innerHTML = `
+    <h3 class="font-semibold mb-1">${goal.title}</h3>
+    ${goal.notes ? `<p class="mb-1">${goal.notes}</p>` : ""}
+    <p class="text-xs text-gray-400">${goal._vegasDateStr || ""}</p>
+    ${
+      !goal.completed && goalId !== ''
+        ? `<button class="mark-complete-btn mt-2" data-type="goal" data-id="${goalId}">Mark Complete</button>`
+        : !goal.completed && goalId === ''
+        ? `<span class="text-yellow-500 font-semibold block mt-2">No ID available</span>`
+        : `<span class="text-green-500 font-semibold block mt-2">Completed</span>`
+    }
+  `;
+  return div;
+}
+
+function createLessonCard(lesson) {
+  const div = document.createElement("div");
+  div.className = "carousel__card";
+  const lessonId = lesson.id || lesson._id || lesson.lessonId || '';
+  div.innerHTML = `
+    <h3 class="font-semibold mb-1">${lesson.title}</h3>
+    ${lesson.description ? `<p class="mb-1">${lesson.description}</p>` : ""}
+    <p class="text-xs text-gray-400">${lesson._vegasDateStr || ""}</p>
+    ${
+      !lesson.completed && lessonId
+        ? `<button class="mark-complete-btn mt-2" data-type="lesson" data-id="${lessonId}">Mark Complete</button>`
+        : !lesson.completed && !lessonId
+        ? `<span class="text-yellow-500 font-semibold block mt-2">No ID available</span>`
+        : `<span class="text-green-500 font-semibold block mt-2">Completed</span>`
+    }
+  `;
+  return div;
+}
+
+function createNoteCard(note) {
+  const div = document.createElement("div");
+  div.className = "carousel__card";
+  const noteId = note.id || note._id || note.noteId || '';
+  div.innerHTML = `
+    <h3 class="font-semibold mb-1">${note.title}</h3>
+    ${note.content ? `<p class="mb-1">${note.content}</p>` : ""}
+    <p class="text-xs text-gray-400">${note._vegasDateStr || ""}</p>
+    ${
+      !note.completed && noteId
+        ? `<button class="mark-complete-btn mt-2" data-type="note" data-id="${noteId}">Mark Complete</button>`
+        : !note.completed && !noteId
+        ? `<span class="text-yellow-500 font-semibold block mt-2">No ID available</span>`
+        : `<span class="text-green-500 font-semibold block mt-2">Completed</span>`
+    }
+  `;
+  return div;
 }
 
 // === LOAD TODAY'S TASKS ===
@@ -74,64 +279,17 @@ async function loadTodayTasks() {
     const res = await fetch("https://avdevplanner.onrender.com/tasks");
     const tasks = await res.json();
     const todayTasks = tasks
-      .map((task, index) => ({ ...task, index }))
+      .map((task, index) => ({ ...task, originalIndex: index }))
       .filter((t) => t.date === todayStr);
-    
-    tasksContainer.innerHTML = "";
 
-    if (!todayTasks.length) {
-      tasksContainer.innerHTML = `
-        <div class="daily-empty">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-            <polyline points="22,4 12,14.01 9,11.01"/>
-          </svg>
-          <h3>No Tasks Today</h3>
-          <p>Add some tasks to get started</p>
-        </div>
-      `;
-      return;
+    // Update carousel with tasks
+    const tasksArrowPrev = document.querySelector('[data-carousel="tasks"].prev');
+    const tasksArrowNext = document.querySelector('[data-carousel="tasks"].next');
+    if (tasksContainer && tasksArrowPrev && tasksArrowNext) {
+      setupCarousel(tasksContainer, todayTasks, createTaskCard, tasksArrowPrev, tasksArrowNext);
     }
-
-    todayTasks.forEach((task) => {
-      const card = createDailyItemCard(
-        task.text || task.title || "Untitled Task",
-        task.notes,
-        task.prettyDate,
-        task.time,
-        'task',
-        task.completed
-      );
-
-      const completeBtn = document.createElement("button");
-      completeBtn.textContent = task.completed ? "Undo Complete" : "Mark Complete";
-      completeBtn.className = "mark-complete-btn";
-      completeBtn.addEventListener("click", async () => {
-        try {
-          const res = await fetch(`https://avdevplanner.onrender.com/tasks/${task.index}/toggle`, {
-            method: "PATCH",
-          });
-          if (res.ok) loadTodayTasks();
-          else console.error("Failed to update task");
-        } catch (err) {
-          console.error("Task complete error:", err);
-        }
-      });
-
-      card.appendChild(completeBtn);
-      tasksContainer.appendChild(card);
-    });
   } catch (err) {
-    tasksContainer.innerHTML = `
-      <div class="daily-empty">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
-        </svg>
-        <h3>Error Loading Tasks</h3>
-        <p>There was an error loading your tasks</p>
-      </div>
-    `;
-    console.error(err);
+    console.error("Error loading tasks:", err);
   }
 }
 
@@ -141,64 +299,17 @@ async function loadGoals() {
     const res = await fetch("https://avdevplanner.onrender.com/goals");
     const goals = await res.json();
     const todayGoals = goals
-      .map((goal, index) => ({ ...goal, index }))
+      .map((goal, index) => ({ ...goal, originalIndex: index }))
       .filter((g) => g.date === todayStr);
-    
-    goalsContainer.innerHTML = "";
 
-    if (!todayGoals.length) {
-      goalsContainer.innerHTML = `
-        <div class="daily-empty">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="12" cy="12" r="10"/>
-            <polyline points="12,6 12,12 16,14"/>
-          </svg>
-          <h3>No Goals Today</h3>
-          <p>Set some goals to track your progress</p>
-        </div>
-      `;
-      return;
+    // Update carousel with goals
+    const goalsArrowPrev = document.querySelector('[data-carousel="goals"].prev');
+    const goalsArrowNext = document.querySelector('[data-carousel="goals"].next');
+    if (goalsContainer && goalsArrowPrev && goalsArrowNext) {
+      setupCarousel(goalsContainer, todayGoals, createGoalCard, goalsArrowPrev, goalsArrowNext);
     }
-
-    todayGoals.forEach((goal) => {
-      const card = createDailyItemCard(
-        goal.text || goal.title || "Untitled Goal",
-        goal.notes,
-        goal.prettyDate,
-        goal.time,
-        'goal',
-        goal.completed
-      );
-
-      const completeBtn = document.createElement("button");
-      completeBtn.textContent = goal.completed ? "Undo Complete" : "Mark Complete";
-      completeBtn.className = "mark-complete-btn";
-      completeBtn.addEventListener("click", async () => {
-        try {
-          const res = await fetch(`https://avdevplanner.onrender.com/goals/${goal.index}/toggle`, {
-            method: "PATCH",
-          });
-          if (res.ok) loadGoals();
-          else console.error("Failed to update goal");
-        } catch (err) {
-          console.error("Goal complete error:", err);
-        }
-      });
-
-      card.appendChild(completeBtn);
-      goalsContainer.appendChild(card);
-    });
   } catch (err) {
-    goalsContainer.innerHTML = `
-      <div class="daily-empty">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
-        </svg>
-        <h3>Error Loading Goals</h3>
-        <p>There was an error loading your goals</p>
-      </div>
-    `;
-    console.error(err);
+    console.error("Error loading goals:", err);
   }
 }
 
@@ -208,65 +319,17 @@ async function loadLessons() {
     const res = await fetch("https://avdevplanner.onrender.com/lessons");
     const lessons = await res.json();
     const todayLessons = lessons
-      .map((lesson, index) => ({ ...lesson, index }))
+      .map((lesson, index) => ({ ...lesson, originalIndex: index }))
       .filter((l) => l.date === todayStr);
-    
-    lessonsContainer.innerHTML = "";
 
-    if (!todayLessons.length) {
-      lessonsContainer.innerHTML = `
-        <div class="daily-empty">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2L2 7L12 12L22 7L12 2Z"/>
-            <path d="M2 17L12 22L22 17"/>
-            <path d="M2 12L12 17L22 12"/>
-          </svg>
-          <h3>No Lessons Today</h3>
-          <p>Record what you learned today</p>
-        </div>
-      `;
-      return;
+    // Update carousel with lessons
+    const lessonsArrowPrev = document.querySelector('[data-carousel="lessons"].prev');
+    const lessonsArrowNext = document.querySelector('[data-carousel="lessons"].next');
+    if (lessonsContainer && lessonsArrowPrev && lessonsArrowNext) {
+      setupCarousel(lessonsContainer, todayLessons, createLessonCard, lessonsArrowPrev, lessonsArrowNext);
     }
-
-    todayLessons.forEach((lesson) => {
-      const card = createDailyItemCard(
-        lesson.title || "Untitled Lesson",
-        lesson.description || lesson.notes,
-        lesson.prettyDate,
-        lesson.time,
-        'lesson',
-        lesson.completed
-      );
-
-      const completeBtn = document.createElement("button");
-      completeBtn.textContent = lesson.completed ? "Undo Complete" : "Mark Complete";
-      completeBtn.className = "mark-complete-btn";
-      completeBtn.addEventListener("click", async () => {
-        try {
-          const res = await fetch(`https://avdevplanner.onrender.com/lessons/${lesson.index}/toggle`, {
-            method: "PATCH",
-          });
-          if (res.ok) loadLessons();
-          else console.error("Failed to update lesson");
-        } catch (err) {
-          console.error("Lesson complete error:", err);
-        }
-      });
-
-      card.appendChild(completeBtn);
-      lessonsContainer.appendChild(card);
-    });
   } catch (err) {
-    lessonsContainer.innerHTML = `
-      <div class="daily-empty">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
-        </svg>
-        <h3>Error Loading Lessons</h3>
-        <p>There was an error loading your lessons</p>
-      </div>
-    `;
-    console.error(err);
+    console.error("Error loading lessons:", err);
   }
 }
 
@@ -276,67 +339,17 @@ async function loadNotes() {
     const res = await fetch("https://avdevplanner.onrender.com/notes");
     const notes = await res.json();
     const todayNotes = notes
-      .map((note, index) => ({ ...note, index }))
+      .map((note, index) => ({ ...note, originalIndex: index }))
       .filter((n) => n.date === todayStr);
-    
-    notesContainer.innerHTML = "";
 
-    if (!todayNotes.length) {
-      notesContainer.innerHTML = `
-        <div class="daily-empty">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-            <polyline points="14,2 14,8 20,8"/>
-            <line x1="16" y1="13" x2="8" y2="13"/>
-            <line x1="16" y1="17" x2="8" y2="17"/>
-            <polyline points="10,9 9,9 8,9"/>
-          </svg>
-          <h3>No Notes Today</h3>
-          <p>Add some notes to remember important things</p>
-        </div>
-      `;
-      return;
+    // Update carousel with notes
+    const notesArrowPrev = document.querySelector('[data-carousel="notes"].prev');
+    const notesArrowNext = document.querySelector('[data-carousel="notes"].next');
+    if (notesContainer && notesArrowPrev && notesArrowNext) {
+      setupCarousel(notesContainer, todayNotes, createNoteCard, notesArrowPrev, notesArrowNext);
     }
-
-    todayNotes.forEach((note) => {
-      const card = createDailyItemCard(
-        note.title || "Untitled Note",
-        note.content || note.notes,
-        note.prettyDate,
-        note.time,
-        'note',
-        note.completed
-      );
-
-      const completeBtn = document.createElement("button");
-      completeBtn.textContent = note.completed ? "Undo Complete" : "Mark Complete";
-      completeBtn.className = "mark-complete-btn";
-      completeBtn.addEventListener("click", async () => {
-        try {
-          const res = await fetch(`https://avdevplanner.onrender.com/notes/${note.index}/toggle`, {
-            method: "PATCH",
-          });
-          if (res.ok) loadNotes();
-          else console.error("Failed to update note");
-        } catch (err) {
-          console.error("Note complete error:", err);
-        }
-      });
-
-      card.appendChild(completeBtn);
-      notesContainer.appendChild(card);
-    });
   } catch (err) {
-    notesContainer.innerHTML = `
-      <div class="daily-empty">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
-        </svg>
-        <h3>Error Loading Notes</h3>
-        <p>There was an error loading your notes</p>
-      </div>
-    `;
-    console.error(err);
+    console.error("Error loading notes:", err);
   }
 }
 
@@ -401,106 +414,24 @@ async function loadLogs() {
   }
 }
 
-// === CAROUSEL SETUP ===
-function setupDailyCarousels() {
-  const carousels = ['tasks', 'goals', 'lessons', 'notes'];
+// === CREATE LOG ENTRY CARD ===
+function createLogEntryCard(title, content, date, time) {
+  const card = document.createElement("div");
+  card.className = "log-entry-card";
   
-  carousels.forEach(carouselType => {
-    const container = document.getElementById(`log-${carouselType}-container`);
-    if (!container) return;
-    
-    // Setup carousel functionality
-    setupCarousel(container, carouselType);
-  });
-}
-
-function setupCarousel(container, carouselType) {
-  let currentIndex = 0;
-  const cards = container.querySelectorAll('.carousel__card');
-  const totalCards = cards.length;
+  const timeDisplay = time ? `<div>${formatTime12Hour(time)}</div>` : "";
+  const dateDisplay = date ? `<div>${formatPrettyDate(date)}</div>` : "";
   
-  if (totalCards <= 1) return;
+  card.innerHTML = `
+    <h4>${escapeHtml(title)}</h4>
+    <p>${escapeHtml(content)}</p>
+    <div class="entry-meta">
+      ${timeDisplay}
+      ${dateDisplay}
+    </div>
+  `;
   
-  // Show only first card initially
-  cards.forEach((card, index) => {
-    if (index === 0) {
-      card.style.display = 'block';
-      card.style.opacity = '1';
-    } else {
-      card.style.display = 'none';
-      card.style.opacity = '0';
-    }
-  });
-  
-  // Setup arrow buttons
-  const prevBtn = document.querySelector(`[data-carousel="${carouselType}"].prev`);
-  const nextBtn = document.querySelector(`[data-carousel="${carouselType}"].next`);
-  
-  if (prevBtn) {
-    prevBtn.addEventListener('click', () => {
-      currentIndex = (currentIndex - 1 + totalCards) % totalCards;
-      updateCarouselDisplay();
-    });
-  }
-  
-  if (nextBtn) {
-    nextBtn.addEventListener('click', () => {
-      currentIndex = (currentIndex + 1) % totalCards;
-      updateCarouselDisplay();
-    });
-  }
-  
-  function updateCarouselDisplay() {
-    cards.forEach((card, index) => {
-      if (index === currentIndex) {
-        card.style.display = 'block';
-        setTimeout(() => {
-          card.style.opacity = '1';
-        }, 10);
-      } else {
-        card.style.opacity = '0';
-        setTimeout(() => {
-          card.style.display = 'none';
-        }, 300);
-      }
-    });
-    
-    // Update arrow states
-    if (prevBtn) prevBtn.disabled = totalCards <= 1;
-    if (nextBtn) nextBtn.disabled = totalCards <= 1;
-  }
-  
-  // Setup touch/swipe for mobile
-  let startX = 0;
-  let endX = 0;
-  
-  container.addEventListener('touchstart', (e) => {
-    startX = e.touches[0].clientX;
-  });
-  
-  container.addEventListener('touchend', (e) => {
-    endX = e.changedTouches[0].clientX;
-    handleSwipe();
-  });
-  
-  function handleSwipe() {
-    const swipeThreshold = 50;
-    const diff = startX - endX;
-    
-    if (Math.abs(diff) > swipeThreshold) {
-      if (diff > 0) {
-        // Swipe left - next
-        currentIndex = (currentIndex + 1) % totalCards;
-      } else {
-        // Swipe right - previous
-        currentIndex = (currentIndex - 1 + totalCards) % totalCards;
-      }
-      updateCarouselDisplay();
-    }
-  }
-  
-  // Initial setup
-  updateCarouselDisplay();
+  return card;
 }
 
 // === TIME TRACKER ===
@@ -535,6 +466,9 @@ async function loadTime() {
 
 // === EVENT LISTENERS ===
 document.addEventListener("DOMContentLoaded", () => {
+  // Setup carousels first
+  setupDailyCarousels();
+  
   // Load all data
   loadTodayTasks();
   loadGoals();
@@ -729,10 +663,7 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("Failed to save note");
       }
     } catch (err) {
-             console.error("Error saving note:", err);
-     }
-   });
-
-  // Setup carousels for daily page
-  setupDailyCarousels();
- });
+      console.error("Error saving note:", err);
+    }
+  });
+});

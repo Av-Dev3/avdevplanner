@@ -53,21 +53,8 @@
   background: var(--text-primary);
 }
 
-/* === CAROUSEL CONTAINER FOR DAILY === */
-.carousel__container {
-  position: relative;
-  overflow: hidden;
-  min-height: 200px;
-  display: flex;
-  flex-direction: column;
-}
-
-.carousel__card {
-  width: 100%;
-  transition: opacity 0.3s ease;
-  flex-shrink: 0;
-  opacity: 1;
-}
+/* === CAROUSEL STYLES === */
+/* Using dashboard carousel styles - no custom overrides needed */
 
 /* === DAILY ITEM CARD === */
 .daily-item-card {
