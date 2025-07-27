@@ -158,26 +158,59 @@ body, .modern-dashboard {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-icon::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.stat-icon:hover::before {
+  opacity: 1;
+}
+
+.stat-icon svg {
+  position: relative;
+  z-index: 1;
+  transition: transform 0.3s ease;
+}
+
+.stat-icon:hover svg {
+  transform: scale(1.1);
 }
 
 .stat-icon.tasks {
-  background: rgba(255, 107, 107, 0.2);
+  background: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(255, 107, 107, 0.1));
   color: var(--tasks-accent);
+  border: 1px solid rgba(255, 107, 107, 0.3);
 }
 
 .stat-icon.goals {
-  background: rgba(78, 205, 196, 0.2);
+  background: linear-gradient(135deg, rgba(78, 205, 196, 0.2), rgba(78, 205, 196, 0.1));
   color: var(--goals-accent);
+  border: 1px solid rgba(78, 205, 196, 0.3);
 }
 
 .stat-icon.lessons {
-  background: rgba(168, 230, 207, 0.2);
+  background: linear-gradient(135deg, rgba(168, 230, 207, 0.2), rgba(168, 230, 207, 0.1));
   color: var(--lessons-accent);
+  border: 1px solid rgba(168, 230, 207, 0.3);
 }
 
 .stat-icon.streak {
-  background: rgba(253, 121, 168, 0.2);
+  background: linear-gradient(135deg, rgba(253, 121, 168, 0.2), rgba(253, 121, 168, 0.1));
   color: var(--motivation-accent);
+  border: 1px solid rgba(253, 121, 168, 0.3);
 }
 
 .stat-content {

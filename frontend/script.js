@@ -45,6 +45,18 @@ if (addTaskDesktopBtn && taskFormPopup) {
 document.addEventListener('DOMContentLoaded', function() {
   const drawer = document.getElementById('drawer');
   const drawerContent = drawer?.querySelector('.drawer__content');
+  const quickActionsBtn = document.getElementById('quick-actions-btn');
+  
+  // Quick Actions button handler
+  if (quickActionsBtn) {
+    quickActionsBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (drawer) {
+        drawer.classList.remove('hidden');
+      }
+    });
+  }
   
   // Prevent drawer from closing when clicking inside
   if (drawerContent) {

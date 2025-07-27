@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // === AI Popup Form ===
   const aiPopupForm = document.getElementById("ai-form");
   const aiPopupInput = document.getElementById("ai-input");
-  const aiPopupChatbox = document.getElementById("ai-chatbox");
+  const aiPopupChatbox = document.getElementById("ai-popup-chatbox");
 
   // === Floating Bubble Toggle ===
   if (floatingToggleBtn && floatingChatBox) {
@@ -66,9 +66,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Add user message to popup chatbox
       const userMessage = document.createElement("div");
-      userMessage.textContent = `You: ${prompt}`;
-      userMessage.style.color = "var(--text-primary)";
-      userMessage.style.marginBottom = "0.5rem";
+      userMessage.className = "chat-message user";
+      userMessage.textContent = prompt;
       aiPopupChatbox.appendChild(userMessage);
 
       // Clear input
@@ -76,9 +75,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Add thinking message
       const thinkingMessage = document.createElement("div");
+      thinkingMessage.className = "chat-message thinking";
       thinkingMessage.textContent = "AI: Thinking...";
-      thinkingMessage.style.color = "var(--text-secondary)";
-      thinkingMessage.style.marginBottom = "0.5rem";
       aiPopupChatbox.appendChild(thinkingMessage);
 
       // Scroll to bottom
@@ -87,10 +85,12 @@ document.addEventListener("DOMContentLoaded", () => {
       try {
         // Get AI response
         const response = await callAI(prompt);
-        thinkingMessage.textContent = `AI: ${response}`;
+        thinkingMessage.className = "chat-message ai";
+        thinkingMessage.textContent = response;
         aiPopupChatbox.scrollTop = aiPopupChatbox.scrollHeight;
       } catch (error) {
-        thinkingMessage.textContent = "AI: Sorry, I couldn't process that.";
+        thinkingMessage.className = "chat-message ai";
+        thinkingMessage.textContent = "Sorry, I couldn't process that.";
         aiPopupChatbox.scrollTop = aiPopupChatbox.scrollHeight;
       }
     });

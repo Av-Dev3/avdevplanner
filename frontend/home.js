@@ -333,12 +333,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- Card Creators with Mark Complete Button added ---
   function createTaskCard(task) {
-    console.log('Creating task card:', task);
-    console.log('Task ID:', task.id, 'Task _id:', task._id, 'Task index:', task.index, 'All keys:', Object.keys(task));
     const div = document.createElement("div");
     div.className = "carousel__card";
     const taskId = task.index || task.id || task._id || task.taskId || '';
-    console.log('Using task ID:', taskId);
     div.innerHTML = `
       <h3 class="font-semibold mb-1">${task.text || task.title || "Untitled Task"}</h3>
       ${task.notes ? `<p class="mb-1">${task.notes}</p>` : ""}
@@ -355,12 +352,9 @@ document.addEventListener("DOMContentLoaded", () => {
     return div;
   }
   function createGoalCard(goal) {
-    console.log('Creating goal card:', goal);
-    console.log('Goal ID:', goal.id, 'Goal _id:', goal._id, 'Goal index:', goal.index, 'All keys:', Object.keys(goal));
     const div = document.createElement("div");
     div.className = "carousel__card";
     const goalId = goal.index || goal.id || goal._id || goal.goalId || '';
-    console.log('Using goal ID:', goalId);
     div.innerHTML = `
       <h3 class="font-semibold mb-1">${goal.title}</h3>
       ${goal.notes ? `<p class="mb-1">${goal.notes}</p>` : ""}
@@ -376,12 +370,9 @@ document.addEventListener("DOMContentLoaded", () => {
     return div;
   }
   function createLessonCard(lesson) {
-    console.log('Creating lesson card:', lesson);
-    console.log('Lesson ID:', lesson.id, 'Lesson _id:', lesson._id, 'All keys:', Object.keys(lesson));
     const div = document.createElement("div");
     div.className = "carousel__card";
     const lessonId = lesson.id || lesson._id || lesson.lessonId || '';
-    console.log('Using lesson ID:', lessonId);
     div.innerHTML = `
       <h3 class="font-semibold mb-1">${lesson.title}</h3>
       ${lesson.description ? `<p class="mb-1">${lesson.description}</p>` : ""}
@@ -491,13 +482,15 @@ document.addEventListener("DOMContentLoaded", () => {
     fetch("https://avdevplanner.onrender.com/goals").then((res) => res.json()),
     fetch("https://avdevplanner.onrender.com/lessons").then((res) => res.json()),
   ]).then(([tasks, goals, lessons]) => {
-    tasks.forEach(t => {
+    tasks.forEach((t, index) => {
       const d = parseNaturalDate(t.date);
       t._vegasDateStr = d ? vegasFormatter.format(d) : null;
+      t.index = index; // Add the array index as the ID
     });
-    goals.forEach(g => {
+    goals.forEach((g, index) => {
       const d = parseNaturalDate(g.date);
       g._vegasDateStr = d ? vegasFormatter.format(d) : null;
+      g.index = index; // Add the array index as the ID
     });
     lessons.forEach(l => {
       const d = parseNaturalDate(l.date);
