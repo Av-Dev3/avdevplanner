@@ -1347,6 +1347,8 @@ body, .modern-dashboard {
     padding: 1rem !important;
     z-index: 1000 !important;
     inset: unset !important;
+    background: rgba(0, 0, 0, 0.7) !important;
+    backdrop-filter: blur(10px) !important;
   }
   
   .modal:not(.hidden) .modal__content,
