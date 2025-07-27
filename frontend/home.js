@@ -335,7 +335,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function createTaskCard(task) {
     const div = document.createElement("div");
     div.className = "carousel__card";
-    const taskId = task.index || task.id || task._id || task.taskId || '';
+    const taskId = task.originalIndex !== undefined ? task.originalIndex : (task.id || task._id || task.taskId || '');
     div.innerHTML = `
       <h3 class="font-semibold mb-1">${task.text || task.title || "Untitled Task"}</h3>
       ${task.notes ? `<p class="mb-1">${task.notes}</p>` : ""}
@@ -488,12 +488,12 @@ document.addEventListener("DOMContentLoaded", () => {
     tasks.forEach((t, index) => {
       const d = parseNaturalDate(t.date);
       t._vegasDateStr = d ? vegasFormatter.format(d) : null;
-      t.index = index; // Add the array index as the ID
+      t.originalIndex = index; // Add the original array index as the ID
     });
     goals.forEach((g, index) => {
       const d = parseNaturalDate(g.date);
       g._vegasDateStr = d ? vegasFormatter.format(d) : null;
-      g.index = index; // Add the array index as the ID
+      g.originalIndex = index; // Add the original array index as the ID
     });
     lessons.forEach(l => {
       const d = parseNaturalDate(l.date);
