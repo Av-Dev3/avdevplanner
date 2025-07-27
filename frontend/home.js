@@ -95,38 +95,187 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   });
-  // --- Carousel/Swipe Logic (unchanged) ---
+  // --- Carousel/Swipe Logic (enhanced) ---
   function setupCarousel(container, items, createCardFn, arrowPrev, arrowNext) {
     let idx = 0;
+    
+    // Add progress bar to container
+    const progressBar = document.createElement('div');
+    progressBar.className = 'carousel__progress';
+    progressBar.innerHTML = '<div class="carousel__progress-bar"></div>';
+    container.appendChild(progressBar);
+    
+    function updateProgress() {
+      const progressBarEl = container.querySelector('.carousel__progress-bar');
+      if (progressBarEl && items.length > 1) {
+        const progress = ((idx + 1) / items.length) * 100;
+        progressBarEl.style.width = `${progress}%`;
+      }
+    }
+    
     function renderCard() {
-      container.innerHTML = "";
+      // Remove existing card but keep progress bar
+      const existingCard = container.querySelector('.carousel__card');
+      if (existingCard) {
+        existingCard.remove();
+      }
+      
       if (!items.length) {
-        container.innerHTML = `<div class="carousel__card card__empty">No items for today.</div>`;
+        const emptyCard = document.createElement("div");
+        emptyCard.className = "carousel__card card__empty";
+        emptyCard.innerHTML = "No items for today.";
+        container.appendChild(emptyCard);
         return;
       }
-      container.appendChild(createCardFn(items[idx]));
+      
+      const card = createCardFn(items[idx]);
+      container.appendChild(card);
+      updateProgress();
     }
+    
     function prev() {
+      if (items.length <= 1) return;
       idx = (idx - 1 + items.length) % items.length;
       renderCard();
     }
+    
     function next() {
+      if (items.length <= 1) return;
       idx = (idx + 1) % items.length;
       renderCard();
     }
+    
+    // Arrow button setup
     if (arrowPrev && arrowNext) {
       arrowPrev.onclick = prev;
       arrowNext.onclick = next;
+      
+      // Hide arrows if only one item
+      if (items.length <= 1) {
+        arrowPrev.style.display = 'none';
+        arrowNext.style.display = 'none';
+      }
     }
+    
+    // Enhanced swipe functionality
     let startX = null;
-    container.ontouchstart = (e) => { startX = e.touches[0].clientX; };
-    container.ontouchend = (e) => {
-      if (startX == null) return;
-      let diff = e.changedTouches[0].clientX - startX;
-      if (diff > 50) prev();
-      else if (diff < -50) next();
-      startX = null;
+    let startY = null;
+    let isSwiping = false;
+    
+    container.ontouchstart = (e) => {
+      if (items.length <= 1) return;
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      isSwiping = false;
     };
+    
+    container.ontouchmove = (e) => {
+      if (!startX || !startY) return;
+      
+      const diffX = e.touches[0].clientX - startX;
+      const diffY = e.touches[0].clientY - startY;
+      
+      // Only trigger swipe if horizontal movement is greater than vertical
+      if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 10) {
+        isSwiping = true;
+        container.classList.add('swiping');
+        
+        // Add visual feedback
+        if (diffX > 0) {
+          container.classList.add('swipe-right');
+          container.classList.remove('swipe-left');
+        } else {
+          container.classList.add('swipe-left');
+          container.classList.remove('swipe-right');
+        }
+      }
+    };
+    
+    container.ontouchend = (e) => {
+      if (!startX || !isSwiping) {
+        startX = null;
+        startY = null;
+        isSwiping = false;
+        container.classList.remove('swiping', 'swipe-left', 'swipe-right');
+        return;
+      }
+      
+      const diff = e.changedTouches[0].clientX - startX;
+      const threshold = 50;
+      
+      if (diff > threshold) {
+        prev();
+      } else if (diff < -threshold) {
+        next();
+      }
+      
+      // Clean up
+      startX = null;
+      startY = null;
+      isSwiping = false;
+      container.classList.remove('swiping', 'swipe-left', 'swipe-right');
+    };
+    
+    // Mouse drag support for desktop
+    let isMouseDown = false;
+    let mouseStartX = null;
+    
+    container.onmousedown = (e) => {
+      if (items.length <= 1) return;
+      isMouseDown = true;
+      mouseStartX = e.clientX;
+      container.style.cursor = 'grabbing';
+    };
+    
+    container.onmousemove = (e) => {
+      if (!isMouseDown || !mouseStartX) return;
+      const diff = e.clientX - mouseStartX;
+      
+      if (Math.abs(diff) > 10) {
+        container.classList.add('swiping');
+        if (diff > 0) {
+          container.classList.add('swipe-right');
+          container.classList.remove('swipe-left');
+        } else {
+          container.classList.add('swipe-left');
+          container.classList.remove('swipe-right');
+        }
+      }
+    };
+    
+    container.onmouseup = (e) => {
+      if (!isMouseDown || !mouseStartX) return;
+      
+      const diff = e.clientX - mouseStartX;
+      const threshold = 50;
+      
+      if (diff > threshold) {
+        prev();
+      } else if (diff < -threshold) {
+        next();
+      }
+      
+      // Clean up
+      isMouseDown = false;
+      mouseStartX = null;
+      container.style.cursor = 'grab';
+      container.classList.remove('swiping', 'swipe-left', 'swipe-right');
+    };
+    
+    container.onmouseleave = () => {
+      if (isMouseDown) {
+        isMouseDown = false;
+        mouseStartX = null;
+        container.style.cursor = 'grab';
+        container.classList.remove('swiping', 'swipe-left', 'swipe-right');
+      }
+    };
+    
+    // Set initial cursor
+    if (items.length > 1) {
+      container.style.cursor = 'grab';
+    }
+    
     renderCard();
   }
 
