@@ -6,7 +6,11 @@
   padding: 2rem;
   max-width: 1400px;
   margin: 0 auto;
-  padding-bottom: 6rem;
+  padding-bottom: 8rem;
+}
+
+.reflection-section {
+  margin-bottom: 6rem;
 }
 
 /* Week Range Display */
@@ -612,6 +616,7 @@ button.form-submit.reflection-submit {
 @media (max-width: 768px) {
   .weekly-content {
     padding: 1rem;
+    padding-bottom: 10rem;
   }
   
   .weekly-grid {
@@ -640,6 +645,7 @@ button.form-submit.reflection-submit {
 @media (max-width: 480px) {
   .weekly-content {
     padding: 0.75rem;
+    padding-bottom: 10rem;
   }
   
   .day-header {
