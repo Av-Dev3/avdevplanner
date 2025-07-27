@@ -68,9 +68,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const isToday = date.toDateString() === today.toDateString();
     const dayName = date.toLocaleDateString("en-US", { weekday: "short" });
     const dayNumber = date.getDate();
+    const dayClass = dayName.toLowerCase();
     
     dayCard.innerHTML = `
-      <div class="day-header ${isToday ? 'today' : ''}">
+      <div class="day-header ${dayClass} ${isToday ? 'today' : ''}">
         <div class="day-title">
           <span class="day-name">${dayName}</span>
           <span class="day-number">${dayNumber}</span>

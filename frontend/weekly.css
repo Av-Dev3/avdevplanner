@@ -56,8 +56,61 @@
   user-select: none;
 }
 
-.day-header:hover {
-  background: linear-gradient(135deg, #c0392b, var(--tasks-accent));
+/* Different colors for each day */
+.day-header.monday {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+}
+
+.day-header.monday:hover {
+  background: linear-gradient(135deg, #c0392b, #e74c3c);
+}
+
+.day-header.tuesday {
+  background: linear-gradient(135deg, #f39c12, #e67e22);
+}
+
+.day-header.tuesday:hover {
+  background: linear-gradient(135deg, #e67e22, #f39c12);
+}
+
+.day-header.wednesday {
+  background: linear-gradient(135deg, #27ae60, #2ecc71);
+}
+
+.day-header.wednesday:hover {
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
+}
+
+.day-header.thursday {
+  background: linear-gradient(135deg, #9b59b6, #8e44ad);
+}
+
+.day-header.thursday:hover {
+  background: linear-gradient(135deg, #8e44ad, #9b59b6);
+}
+
+.day-header.friday {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+}
+
+.day-header.friday:hover {
+  background: linear-gradient(135deg, #2980b9, #3498db);
+}
+
+.day-header.saturday {
+  background: linear-gradient(135deg, #e67e22, #d35400);
+}
+
+.day-header.saturday:hover {
+  background: linear-gradient(135deg, #d35400, #e67e22);
+}
+
+.day-header.sunday {
+  background: linear-gradient(135deg, #1abc9c, #16a085);
+}
+
+.day-header.sunday:hover {
+  background: linear-gradient(135deg, #16a085, #1abc9c);
 }
 
 .day-title {
@@ -104,8 +157,9 @@
 }
 
 .day-content .content-card {
-  margin-bottom: 2.5rem;
+  margin-bottom: 3rem;
   margin-top: 0;
+  padding-bottom: 1rem;
 }
 
 .day-content .content-card:last-child {
