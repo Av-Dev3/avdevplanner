@@ -320,6 +320,7 @@ body, .modern-dashboard {
   background: rgba(255, 255, 255, 0.02);
   flex: 1;
   padding: 0.5rem;
+  box-sizing: border-box;
 }
 
 .carousel__card {
@@ -327,13 +328,14 @@ body, .modern-dashboard {
   border: 1px solid var(--border-color);
   border-radius: var(--radius-small);
   padding: 0.75rem;
-  width: calc(100% - 1rem);
-  max-width: 100%;
+  width: 90%;
+  max-width: 300px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   animation: cardSlideIn 0.3s ease-out;
   min-height: 80px;
   box-sizing: border-box;
+  margin: 0 auto;
 }
 
 @keyframes cardSlideIn {
@@ -383,8 +385,10 @@ body, .modern-dashboard {
   border: 1px dashed var(--border-color);
   border-radius: var(--radius-small);
   font-size: 0.75rem;
-  width: calc(100% - 1rem);
+  width: 90%;
+  max-width: 300px;
   box-sizing: border-box;
+  margin: 0 auto;
 }
 
 /* === CAROUSEL ARROWS === */
@@ -404,6 +408,8 @@ body, .modern-dashboard {
   justify-content: center;
   z-index: 10;
   position: relative;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .carousel-arrow:hover {
@@ -414,6 +420,38 @@ body, .modern-dashboard {
 
 .carousel-arrow:active {
   transform: scale(0.95);
+}
+
+/* === CAROUSEL PROGRESS === */
+.carousel__progress {
+  position: absolute;
+  bottom: 0.5rem;
+  left: 0.5rem;
+  right: 0.5rem;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 1px;
+  overflow: hidden;
+}
+
+.carousel__progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--tasks-accent), var(--goals-accent));
+  transition: width 0.3s ease;
+  width: 0%;
+}
+
+/* === SWIPE FEEDBACK === */
+.carousel__container.swiping {
+  transition: transform 0.1s ease;
+}
+
+.carousel__container.swipe-left {
+  transform: translateX(-10px);
+}
+
+.carousel__container.swipe-right {
+  transform: translateX(10px);
 }
 
 /* === FOCUS FORM === */
