@@ -1,6 +1,6 @@
 // Enhanced Footer Animations - Modern Glass Morphism Style
 
-// === EAT ANIMATION ===
+// === EAT ANIMATION - Donut Being Eaten ===
 document.getElementById("eat").addEventListener("click", () => {
   const fork = document.getElementById("fork-fly");
   const eatSpan = document.getElementById("eat");
@@ -22,7 +22,7 @@ document.getElementById("eat").addEventListener("click", () => {
   audio.play().catch(() => {}); // Ignore if audio fails
 });
 
-// === SLEEP ANIMATION ===
+// === SLEEP ANIMATION - Enhanced Z's Rising Higher ===
 document.getElementById("sleep").addEventListener("click", () => {
   const zBox = document.getElementById("z-animation");
   const sleepSpan = document.getElementById("sleep");
@@ -37,17 +37,17 @@ document.getElementById("sleep").addEventListener("click", () => {
   
   // Position Z animation above "Sleep"
   zBox.style.left = `${rect.left + rect.width / 2}px`;
-  zBox.style.top = `${rect.top - 40 + window.scrollY}px`;
+  zBox.style.top = `${rect.top - 50 + window.scrollY}px`;
   zBox.innerHTML = "";
 
   // Create multiple Z's with different delays and positions
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 7; i++) {
     const z = document.createElement("span");
     z.classList.add("z");
     z.textContent = "Z";
-    z.style.left = `${(i - 2) * 25}px`;
-    z.style.animationDelay = `${i * 0.2}s`;
-    z.style.fontSize = `${28 - i * 2}px`;
+    z.style.left = `${(i - 3) * 30}px`;
+    z.style.animationDelay = `${i * 0.15}s`;
+    z.style.fontSize = `${40 - i * 3}px`;
     zBox.appendChild(z);
   }
 
@@ -60,7 +60,7 @@ document.getElementById("sleep").addEventListener("click", () => {
 
   setTimeout(() => {
     zBox.style.opacity = "0";
-  }, 3000);
+  }, 4000);
 });
 
 // === CODE EDITOR POPUP ===
@@ -117,12 +117,8 @@ if (runBtn && outputFrame) {
   });
 }
 
-// === REPEAT ANIMATION ===
+// === REPEAT ANIMATION - Sun Setting and Rising ===
 document.getElementById("repeat").addEventListener("click", () => {
-  const footerWords = ["eat", "sleep", "repeat"].map(id =>
-    document.getElementById(id)
-  ).filter(word => word); // Filter out any null elements
-
   const repeatSpan = document.getElementById("repeat");
   
   // Add click feedback
@@ -131,11 +127,28 @@ document.getElementById("repeat").addEventListener("click", () => {
     repeatSpan.style.transform = "scale(1)";
   }, 150);
 
+  // Create sun animation element if it doesn't exist
+  let sunAnimation = document.getElementById("sun-animation");
+  if (!sunAnimation) {
+    sunAnimation = document.createElement("div");
+    sunAnimation.id = "sun-animation";
+    document.body.appendChild(sunAnimation);
+  }
+
+  // Trigger sun animation
+  sunAnimation.classList.remove("sun-animate");
+  void sunAnimation.offsetWidth; // Force reflow
+  sunAnimation.classList.add("sun-animate");
+
+  // Enhanced word floating animation
+  const footerWords = ["eat", "sleep", "repeat"].map(id =>
+    document.getElementById(id)
+  ).filter(word => word);
+
   const screenOverlay = document.createElement("div");
   screenOverlay.id = "fade-screen";
   document.body.appendChild(screenOverlay);
 
-  // Enhanced word floating animation
   const centerX = window.innerWidth / 2;
   const centerY = window.innerHeight / 2;
 
@@ -160,7 +173,7 @@ document.getElementById("repeat").addEventListener("click", () => {
   // Enhanced fade screen with pulse effect
   setTimeout(() => {
     screenOverlay.classList.add("fade-in");
-  }, 1000);
+  }, 2000);
 
   // Add dramatic sound effect (optional)
   const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmGgU7k9n1unEiBC13yO/eizEIHWq+8+OWT');
@@ -182,7 +195,7 @@ document.getElementById("repeat").addEventListener("click", () => {
     setTimeout(() => {
       screenOverlay.remove();
     }, 1500);
-  }, 4000);
+  }, 6000);
 });
 
 // === ADDITIONAL ENHANCEMENTS ===
@@ -194,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
   footerSpans.forEach(span => {
     span.addEventListener('mouseenter', () => {
       // Add subtle glow effect
-      span.style.textShadow = '0 0 15px rgba(76, 142, 218, 0.6)';
+      span.style.textShadow = '0 0 15px rgba(231, 76, 60, 0.6)';
     });
     
     span.addEventListener('mouseleave', () => {

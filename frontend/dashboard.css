@@ -1485,3 +1485,194 @@ body, .modern-dashboard {
   }
 }
 
+/* === DESKTOP QUICK ACTIONS DRAWER === */
+.desktop-drawer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.desktop-drawer__content {
+  background: rgba(10, 10, 10, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: none;
+  border-radius: 20px 20px 0 0;
+  padding: 0;
+  max-width: 600px;
+  margin: 0 auto;
+  transform: translateY(100%);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: auto;
+  box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.8);
+}
+
+.desktop-drawer:not(.hidden) .desktop-drawer__content {
+  transform: translateY(0);
+}
+
+.desktop-drawer__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 32px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.desktop-drawer__title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.desktop-drawer__close {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.desktop-drawer__close:hover {
+  background: rgba(231, 76, 60, 0.2);
+  border-color: rgba(231, 76, 60, 0.3);
+  color: rgba(255, 255, 255, 1);
+  transform: scale(1.05);
+}
+
+.desktop-drawer__actions {
+  padding: 24px 32px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.desktop-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  text-align: left;
+  width: 100%;
+}
+
+.desktop-action-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.desktop-action-btn:active {
+  transform: translateY(0);
+}
+
+.action-icon {
+  font-size: 32px;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+
+.task-action .action-icon {
+  background: linear-gradient(135deg, rgba(231, 76, 60, 0.2), rgba(231, 76, 60, 0.1));
+  border: 1px solid rgba(231, 76, 60, 0.3);
+}
+
+.goal-action .action-icon {
+  background: linear-gradient(135deg, rgba(39, 174, 96, 0.2), rgba(39, 174, 96, 0.1));
+  border: 1px solid rgba(39, 174, 96, 0.3);
+}
+
+.lesson-action .action-icon {
+  background: linear-gradient(135deg, rgba(243, 156, 18, 0.2), rgba(243, 156, 18, 0.1));
+  border: 1px solid rgba(243, 156, 18, 0.3);
+}
+
+.action-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.action-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.action-subtitle {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+/* Mobile responsive for desktop drawer */
+@media (max-width: 768px) {
+  .desktop-drawer__content {
+    max-width: 100%;
+    border-radius: 16px 16px 0 0;
+  }
+  
+  .desktop-drawer__header {
+    padding: 20px 24px 12px;
+  }
+  
+  .desktop-drawer__title {
+    font-size: 1.3rem;
+  }
+  
+  .desktop-drawer__actions {
+    padding: 20px 24px 28px;
+    gap: 12px;
+  }
+  
+  .desktop-action-btn {
+    padding: 16px 20px;
+  }
+  
+  .action-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
+  }
+  
+  .action-title {
+    font-size: 1rem;
+  }
+  
+  .action-subtitle {
+    font-size: 0.8rem;
+  }
+}
+
