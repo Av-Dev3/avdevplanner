@@ -57,12 +57,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       }
     } else if (isLessons) {
-      const lessonPopup = document.getElementById('lessonPopup');
-      if (lessonPopup) {
-        lessonPopup.classList.remove('hidden');
-        lessonPopup.addEventListener('click', (e) => {
-          if (e.target === lessonPopup) lessonPopup.classList.add('hidden');
-        });
+      // Open mobile drawer for lessons page (not direct popup)
+      if (mobileDrawer) {
+        if (mobileDrawer.classList.contains('hidden')) {
+          mobileDrawer.classList.remove('hidden');
+          setTimeout(() => mobileDrawer.classList.add('drawer-visible'), 10);
+        } else {
+          mobileDrawer.classList.remove('drawer-visible');
+          setTimeout(() => mobileDrawer.classList.add('hidden'), 300);
+        }
+        siteLinksDrawer?.classList.remove('drawer-visible');
       }
     } else if (isGoals) {
       const goalPopup = document.getElementById('goal-form-popup');

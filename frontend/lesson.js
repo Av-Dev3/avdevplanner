@@ -46,12 +46,7 @@ lessonForm.addEventListener("submit", async (e) => {
 async function loadLessons() {
   lessonsContainer.innerHTML = "";
   
-  // Show loading state
-  lessonsContainer.innerHTML = `
-    <div class="lessons-loading">
-      <div class="loading-spinner"></div>
-    </div>
-  `;
+  // Removed loading state - no more yellow circle
 
   try {
     const res = await fetch("https://avdevplanner.onrender.com/lessons");
