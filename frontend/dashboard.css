@@ -1148,6 +1148,7 @@ body, .modern-dashboard {
   box-sizing: border-box;
   position: relative;
   z-index: 1;
+  margin: 0;
 }
 
 .ai__form input:focus {
@@ -1160,6 +1161,37 @@ body, .modern-dashboard {
 .ai__form input::placeholder {
   color: var(--text-muted);
   opacity: 0.7;
+}
+
+/* === AI POPUP SPECIFIC STYLES === */
+#aiPopup .modal__content {
+  position: relative;
+  z-index: 1001;
+}
+
+#aiPopup .ai__chatbox {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 1rem;
+}
+
+#aiPopup .ai__form {
+  position: relative;
+  z-index: 2;
+  margin-top: 0;
+}
+
+#aiPopup .ai__form input {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+  display: block;
+}
+
+#aiPopup .modal__submit {
+  position: relative;
+  z-index: 1;
+  margin: 0;
 }
 
 /* === MOBILE FAB BUTTON === */
@@ -1227,6 +1259,28 @@ body, .modern-dashboard {
     padding: 0.9rem 1rem;
     font-size: 0.95rem;
   }
+  
+  /* Specific overrides for AI popup to prevent conflicts */
+  #aiPopup .ai__form input {
+    width: 100% !important;
+    padding: 0.9rem 1rem !important;
+    font-size: 0.95rem !important;
+    border-radius: var(--radius-small) !important;
+    border: 1px solid var(--border-color) !important;
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: var(--text-primary) !important;
+    margin: 0 !important;
+    position: relative !important;
+    z-index: 1 !important;
+    box-sizing: border-box !important;
+  }
+  
+  #aiPopup .ai__form input:focus {
+    outline: none !important;
+    border-color: var(--focus-accent) !important;
+    background: rgba(108, 92, 231, 0.1) !important;
+    box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.1) !important;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1261,6 +1315,12 @@ body, .modern-dashboard {
   .ai__form input {
     padding: 0.75rem 0.9rem;
     font-size: 0.9rem;
+  }
+  
+  /* Additional overrides for very small screens */
+  #aiPopup .ai__form input {
+    padding: 0.75rem 0.9rem !important;
+    font-size: 0.9rem !important;
   }
 }
 

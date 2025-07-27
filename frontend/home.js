@@ -79,18 +79,32 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener('click', async (e) => {
     if (e.target.classList.contains('mark-complete-btn')) {
       const { type, id } = e.target.dataset;
-      if (!id || !type) return;
+      console.log('Mark complete clicked:', { type, id, element: e.target });
+      
+      if (!id || !type) {
+        console.error('Missing data attributes:', { type, id });
+        alert('Error: Missing item information');
+        return;
+      }
 
       let url = `https://avdevplanner.onrender.com/${type}s/${id}`;
+      console.log('Making request to:', url);
+      
       try {
         const res = await fetch(url, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ completed: true }),
         });
-        if (res.ok) location.reload();
-        else alert('Failed to mark complete');
-      } catch {
+        if (res.ok) {
+          console.log('Successfully marked complete');
+          location.reload();
+        } else {
+          console.error('Failed to mark complete:', res.status, res.statusText);
+          alert('Failed to mark complete');
+        }
+      } catch (error) {
+        console.error('Error marking complete:', error);
         alert('Error marking complete');
       }
     }
@@ -296,6 +310,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- Card Creators with Mark Complete Button added ---
   function createTaskCard(task) {
+    console.log('Creating task card:', task);
     const div = document.createElement("div");
     div.className = "carousel__card";
     div.innerHTML = `
@@ -305,13 +320,14 @@ document.addEventListener("DOMContentLoaded", () => {
       <p class="text-xs text-gray-400">${task._vegasDateStr || ""}</p>
       ${
         !task.completed
-          ? `<button class="mark-complete-btn mt-2" data-type="task" data-id="${task.id}">Mark Complete</button>`
+          ? `<button class="mark-complete-btn mt-2" data-type="task" data-id="${task.id || task._id || ''}">Mark Complete</button>`
           : `<span class="text-green-500 font-semibold block mt-2">Completed</span>`
       }
     `;
     return div;
   }
   function createGoalCard(goal) {
+    console.log('Creating goal card:', goal);
     const div = document.createElement("div");
     div.className = "carousel__card";
     div.innerHTML = `
@@ -320,13 +336,14 @@ document.addEventListener("DOMContentLoaded", () => {
       <p class="text-xs text-gray-400">${goal._vegasDateStr || ""}</p>
       ${
         !goal.completed
-          ? `<button class="mark-complete-btn mt-2" data-type="goal" data-id="${goal.id}">Mark Complete</button>`
+          ? `<button class="mark-complete-btn mt-2" data-type="goal" data-id="${goal.id || goal._id || ''}">Mark Complete</button>`
           : `<span class="text-green-500 font-semibold block mt-2">Completed</span>`
       }
     `;
     return div;
   }
   function createLessonCard(lesson) {
+    console.log('Creating lesson card:', lesson);
     const div = document.createElement("div");
     div.className = "carousel__card";
     div.innerHTML = `
@@ -335,7 +352,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <p class="text-xs text-gray-400">${lesson._vegasDateStr || ""}</p>
       ${
         !lesson.completed
-          ? `<button class="mark-complete-btn mt-2" data-type="lesson" data-id="${lesson.id}">Mark Complete</button>`
+          ? `<button class="mark-complete-btn mt-2" data-type="lesson" data-id="${lesson.id || lesson._id || ''}">Mark Complete</button>`
           : `<span class="text-green-500 font-semibold block mt-2">Completed</span>`
       }
     `;
@@ -392,17 +409,25 @@ document.addEventListener("DOMContentLoaded", () => {
   // === DAILY FOCUS ===
   fetch(`https://avdevplanner.onrender.com/focus?date=${todayISO}`)
     .then((res) => {
-      if (!res.ok) throw new Error("No focus found");
+      if (!res.ok) {
+        if (res.status === 404) {
+          console.log('No focus found for today, this is normal');
+          return null;
+        }
+        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+      }
       return res.json();
     })
-    .then((data) => {
-      focusInput.value = data.focus || "";
-      savedFocusText.textContent = data.focus
-        ? `Saved focus: ${data.focus}`
-        : "";
+    .then((focusData) => {
+      if (focusData && focusData.focus) {
+        savedFocusText.textContent = focusData.focus;
+      } else {
+        savedFocusText.textContent = "No focus set for today.";
+      }
     })
-    .catch(() => {
-      savedFocusText.textContent = "No focus saved yet.";
+    .catch((err) => {
+      console.error("Failed to load daily focus:", err);
+      savedFocusText.textContent = "Error loading focus.";
     });
 
   saveBtn.addEventListener("click", async () => {
