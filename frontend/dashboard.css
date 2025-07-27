@@ -1334,7 +1334,8 @@ body, .modern-dashboard {
 
 /* === RESPONSIVE MODALS === */
 @media (max-width: 600px) {
-  .modal:not(.hidden) {
+  .modal:not(.hidden),
+  .drawer-modal:not(.hidden) {
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
@@ -1349,7 +1350,8 @@ body, .modern-dashboard {
   }
   
   .modal:not(.hidden) .modal__content,
-  .modal:not(.hidden) .drawer__content {
+  .modal:not(.hidden) .drawer__content,
+  .drawer-modal:not(.hidden) .drawer__content {
     width: 100% !important;
     max-width: 95vw !important;
     min-width: auto !important;
