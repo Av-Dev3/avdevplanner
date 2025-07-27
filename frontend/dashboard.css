@@ -201,7 +201,7 @@ body, .modern-dashboard {
 /* === DASHBOARD GRID === */
 .dashboard-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   gap: 2rem;
   min-height: 500px;
 }
@@ -211,6 +211,12 @@ body, .modern-dashboard {
   flex-direction: column;
   gap: 1.5rem;
   max-width: 400px;
+}
+
+.dashboard-center {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 .dashboard-right {
@@ -234,6 +240,14 @@ body, .modern-dashboard {
 
 .content-card.focus-card {
   min-height: 280px;
+}
+
+.content-card.notes-card {
+  min-height: 200px;
+}
+
+.content-card.motivation-card {
+  min-height: 160px;
 }
 
 .content-card::before {

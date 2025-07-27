@@ -179,7 +179,7 @@
       <!-- Main Content Grid -->
       <div class="dashboard-grid">
         
-        <!-- Left Column -->
+        <!-- Left Column - Tasks, Goals, Lessons -->
         <div class="dashboard-left">
           
           <!-- Today's Tasks -->
@@ -274,8 +274,8 @@
 
         </div>
 
-        <!-- Right Column -->
-        <div class="dashboard-right">
+        <!-- Center Column - Daily Focus -->
+        <div class="dashboard-center">
           
           <!-- Daily Focus -->
           <div class="content-card focus-card" id="daily-focus-card">
@@ -300,6 +300,11 @@
             </div>
           </div>
 
+        </div>
+
+        <!-- Right Column - Notes & Motivation -->
+        <div class="dashboard-right">
+          
           <!-- Pinned Notes -->
           <div class="content-card notes-card" id="pinned-notes-card">
             <div class="card-header">
@@ -322,12 +327,12 @@
           </div>
 
           <!-- Daily Motivation -->
-          <div class="content-card motivation-card" id="daily-motivation-card">
+          <div class="content-card motivation-card" id="motivation-card">
             <div class="card-header">
               <div class="card-title">
                 <div class="title-icon">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
                   </svg>
                 </div>
                 <h3>Daily Motivation</h3>
@@ -335,7 +340,7 @@
             </div>
             <div class="card-content">
               <div class="motivation-content">
-                <p id="quote-box"></p>
+                <div id="quote-box">Loading motivation...</div>
               </div>
             </div>
           </div>
