@@ -103,8 +103,12 @@
 }
 
 .day-content .content-card {
-  margin-bottom: 0;
+  margin-bottom: 1.5rem;
   margin-top: 0;
+}
+
+.day-content .content-card:last-child {
+  margin-bottom: 0;
 }
 
 .day-content .content-card {
