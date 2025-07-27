@@ -2,7 +2,6 @@
 const tasksContainer = document.getElementById("log-tasks-container");
 const goalsContainer = document.getElementById("log-goals-container");
 const lessonsContainer = document.getElementById("log-lessons-container");
-const notesContainer = document.getElementById("log-notes-container");
 const logForm = document.getElementById("daily-log-form");
 const logEntries = document.getElementById("daily-log-entries");
 const todayStr = new Date().toLocaleDateString("en-CA");
@@ -51,12 +50,7 @@ function setupDailyCarousels() {
     setupCarousel(lessonsContainer, [], createLessonCard, lessonsArrowPrev, lessonsArrowNext);
   }
 
-  // Setup notes carousel
-  const notesArrowPrev = document.querySelector('[data-carousel="notes"].prev');
-  const notesArrowNext = document.querySelector('[data-carousel="notes"].next');
-  if (notesContainer && notesArrowPrev && notesArrowNext) {
-    setupCarousel(notesContainer, [], createNoteCard, notesArrowPrev, notesArrowNext);
-  }
+
 }
 
 function setupCarousel(container, items, createCardFn, arrowPrev, arrowNext) {
@@ -254,24 +248,7 @@ function createLessonCard(lesson) {
   return div;
 }
 
-function createNoteCard(note) {
-  const div = document.createElement("div");
-  div.className = "carousel__card";
-  const noteId = note.id || note._id || note.noteId || '';
-  div.innerHTML = `
-    <h3 class="font-semibold mb-1">${note.title}</h3>
-    ${note.content ? `<p class="mb-1">${note.content}</p>` : ""}
-    <p class="text-xs text-gray-400">${note._vegasDateStr || ""}</p>
-    ${
-      !note.completed && noteId
-        ? `<button class="mark-complete-btn mt-2" data-type="note" data-id="${noteId}">Mark Complete</button>`
-        : !note.completed && !noteId
-        ? `<span class="text-yellow-500 font-semibold block mt-2">No ID available</span>`
-        : `<span class="text-green-500 font-semibold block mt-2">Completed</span>`
-    }
-  `;
-  return div;
-}
+
 
 // === LOAD TODAY'S TASKS ===
 async function loadTodayTasks() {
@@ -333,25 +310,7 @@ async function loadLessons() {
   }
 }
 
-// === LOAD TODAY'S NOTES ===
-async function loadNotes() {
-  try {
-    const res = await fetch("https://avdevplanner.onrender.com/notes");
-    const notes = await res.json();
-    const todayNotes = notes
-      .map((note, index) => ({ ...note, originalIndex: index }))
-      .filter((n) => n.date === todayStr);
 
-    // Update carousel with notes
-    const notesArrowPrev = document.querySelector('[data-carousel="notes"].prev');
-    const notesArrowNext = document.querySelector('[data-carousel="notes"].next');
-    if (notesContainer && notesArrowPrev && notesArrowNext) {
-      setupCarousel(notesContainer, todayNotes, createNoteCard, notesArrowPrev, notesArrowNext);
-    }
-  } catch (err) {
-    console.error("Error loading notes:", err);
-  }
-}
 
 // === LOAD TODAY'S LOG ENTRIES ===
 async function loadLogs() {
@@ -473,7 +432,6 @@ document.addEventListener("DOMContentLoaded", () => {
   loadTodayTasks();
   loadGoals();
   loadLessons();
-  loadNotes();
   loadLogs();
   loadTime();
 
@@ -503,9 +461,7 @@ document.addEventListener("DOMContentLoaded", () => {
           case 'lesson':
             endpoint = `https://avdevplanner.onrender.com/lessons/${id}/toggle`;
             break;
-          case 'note':
-            endpoint = `https://avdevplanner.onrender.com/notes/${id}/toggle`;
-            break;
+
           default:
             console.error('Unknown type for mark complete:', type);
             return;
@@ -528,9 +484,7 @@ document.addEventListener("DOMContentLoaded", () => {
             case 'lesson':
               loadLessons();
               break;
-            case 'note':
-              loadNotes();
-              break;
+
           }
         } else {
           console.error(`Failed to mark ${type} complete`);
@@ -611,123 +565,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Form submissions for popups
-  const taskForm = document.getElementById("task-form");
-  const goalForm = document.getElementById("goal-form");
-  const lessonForm = document.getElementById("lesson-form");
-  const noteForm = document.getElementById("note-form");
 
-  // Task form
-  taskForm?.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    
-    const title = document.getElementById("task-title").value;
-    const notes = document.getElementById("task-notes").value;
-    const date = document.getElementById("task-date").value;
-    const time = document.getElementById("task-time").value;
-    
-    try {
-      const res = await fetch("https://avdevplanner.onrender.com/tasks", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: title, notes, date, time }),
-      });
 
-      if (res.ok) {
-        taskForm.reset();
-        document.getElementById("taskPopup").classList.add("hidden");
-        loadTodayTasks();
-      } else {
-        console.error("Failed to save task");
-      }
-    } catch (err) {
-      console.error("Error saving task:", err);
-    }
-  });
 
-  // Goal form
-  goalForm?.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    
-    const title = document.getElementById("goal-title").value;
-    const notes = document.getElementById("goal-notes").value;
-    const date = document.getElementById("goal-date").value;
-    const time = document.getElementById("goal-time").value;
-    
-    try {
-      const res = await fetch("https://avdevplanner.onrender.com/goals", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: title, notes, date, time }),
-      });
-
-      if (res.ok) {
-        goalForm.reset();
-        document.getElementById("goalPopup").classList.add("hidden");
-        loadGoals();
-      } else {
-        console.error("Failed to save goal");
-      }
-    } catch (err) {
-      console.error("Error saving goal:", err);
-    }
-  });
-
-  // Lesson form
-  lessonForm?.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    
-    const title = document.getElementById("lesson-title").value;
-    const description = document.getElementById("lesson-description").value;
-    const category = document.getElementById("lesson-category").value;
-    const date = document.getElementById("lesson-date").value;
-    const priority = document.getElementById("lesson-priority").value;
-    const notes = document.getElementById("lesson-notes").value;
-    
-    try {
-      const res = await fetch("https://avdevplanner.onrender.com/lessons", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, description, category, date, priority, notes }),
-      });
-
-      if (res.ok) {
-        lessonForm.reset();
-        document.getElementById("lessonPopup").classList.add("hidden");
-        loadLessons();
-      } else {
-        console.error("Failed to save lesson");
-      }
-    } catch (err) {
-      console.error("Error saving lesson:", err);
-    }
-  });
-
-  // Note form
-  noteForm?.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    
-    const title = document.getElementById("note-title").value;
-    const content = document.getElementById("note-content").value;
-    const date = document.getElementById("note-date").value;
-    const time = document.getElementById("note-time").value;
-    
-    try {
-      const res = await fetch("https://avdevplanner.onrender.com/notes", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title, content, date, time }),
-      });
-
-      if (res.ok) {
-        noteForm.reset();
-        document.getElementById("notePopup").classList.add("hidden");
-        loadNotes();
-      } else {
-        console.error("Failed to save note");
-      }
-    } catch (err) {
-      console.error("Error saving note:", err);
-    }
-  });
 });

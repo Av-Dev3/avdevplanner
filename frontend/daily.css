@@ -22,6 +22,12 @@
   gap: 1.5rem;
 }
 
+/* Make the first row containers bigger since we removed notes */
+.daily-row:first-child {
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
 .daily-row .full-width {
   grid-column: 1 / -1;
 }
