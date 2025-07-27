@@ -1,5 +1,5 @@
 // === ELEMENTS ===
-const form = document.getElementById("lesson-form");
+const lessonForm = document.getElementById("lesson-form");
 const titleInput = document.getElementById("lesson-title");
 const descriptionInput = document.getElementById("lesson-description");
 const categoryInput = document.getElementById("lesson-category");
@@ -10,7 +10,7 @@ const container = document.getElementById("lessons-container");
 const lessonPopup = document.getElementById("lessonPopup");
 
 // === FORM SUBMIT ===
-form.addEventListener("submit", async (e) => {
+lessonForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const newLesson = {
@@ -31,7 +31,7 @@ form.addEventListener("submit", async (e) => {
     });
 
     if (res.ok) {
-      form.reset();
+      lessonForm.reset();
       lessonPopup?.classList.add("hidden");
       loadLessons();
     } else {
