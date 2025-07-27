@@ -185,8 +185,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const content = dayCard.querySelector(".day-content");
     
     toggle.addEventListener("click", () => {
-      content.classList.toggle("expanded");
-      toggle.classList.toggle("expanded");
+      if (content.style.display === "none" || content.style.display === "") {
+        content.style.display = "block";
+        toggle.classList.add("expanded");
+      } else {
+        content.style.display = "none";
+        toggle.classList.remove("expanded");
+      }
     });
 
     daysContainer.appendChild(dayCard);
