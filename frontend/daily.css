@@ -53,6 +53,18 @@
   background: var(--text-primary);
 }
 
+/* === CAROUSEL CONTAINER FOR DAILY === */
+.carousel__container {
+  position: relative;
+  overflow: hidden;
+  min-height: 200px;
+}
+
+.carousel__card {
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
 /* === DAILY ITEM CARD === */
 .daily-item-card {
   background: var(--glass-bg);

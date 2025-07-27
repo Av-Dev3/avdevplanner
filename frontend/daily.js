@@ -31,7 +31,7 @@ function escapeHtml(text) {
 // === CREATE DAILY ITEM CARD ===
 function createDailyItemCard(title, notes, date, time, type = 'task', completed = false) {
   const card = document.createElement("div");
-  card.className = `daily-item-card ${type}-item ${completed ? 'completed' : ''}`;
+  card.className = `carousel__card daily-item-card ${type}-item ${completed ? 'completed' : ''}`;
   
   const timeDisplay = time ? `<div class="item-time">${formatTime(time)}</div>` : "";
   const dateDisplay = date ? `<div class="item-date">${formatPrettyDate(date)}</div>` : "";
@@ -389,6 +389,92 @@ async function loadLogs() {
   }
 }
 
+// === CAROUSEL SETUP ===
+function setupDailyCarousels() {
+  const carousels = ['tasks', 'goals', 'lessons', 'notes'];
+  
+  carousels.forEach(carouselType => {
+    const container = document.getElementById(`log-${carouselType}-container`);
+    if (!container) return;
+    
+    // Setup carousel functionality
+    setupCarousel(container, carouselType);
+  });
+}
+
+function setupCarousel(container, carouselType) {
+  let currentIndex = 0;
+  const cards = container.querySelectorAll('.carousel__card');
+  const totalCards = cards.length;
+  
+  if (totalCards <= 1) return;
+  
+  // Show only first card initially
+  cards.forEach((card, index) => {
+    card.style.display = index === 0 ? 'block' : 'none';
+  });
+  
+  // Setup arrow buttons
+  const prevBtn = document.querySelector(`[data-carousel="${carouselType}"].prev`);
+  const nextBtn = document.querySelector(`[data-carousel="${carouselType}"].next`);
+  
+  if (prevBtn) {
+    prevBtn.addEventListener('click', () => {
+      currentIndex = (currentIndex - 1 + totalCards) % totalCards;
+      updateCarouselDisplay();
+    });
+  }
+  
+  if (nextBtn) {
+    nextBtn.addEventListener('click', () => {
+      currentIndex = (currentIndex + 1) % totalCards;
+      updateCarouselDisplay();
+    });
+  }
+  
+  function updateCarouselDisplay() {
+    cards.forEach((card, index) => {
+      card.style.display = index === currentIndex ? 'block' : 'none';
+    });
+    
+    // Update arrow states
+    if (prevBtn) prevBtn.disabled = totalCards <= 1;
+    if (nextBtn) nextBtn.disabled = totalCards <= 1;
+  }
+  
+  // Setup touch/swipe for mobile
+  let startX = 0;
+  let endX = 0;
+  
+  container.addEventListener('touchstart', (e) => {
+    startX = e.touches[0].clientX;
+  });
+  
+  container.addEventListener('touchend', (e) => {
+    endX = e.changedTouches[0].clientX;
+    handleSwipe();
+  });
+  
+  function handleSwipe() {
+    const swipeThreshold = 50;
+    const diff = startX - endX;
+    
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0) {
+        // Swipe left - next
+        currentIndex = (currentIndex + 1) % totalCards;
+      } else {
+        // Swipe right - previous
+        currentIndex = (currentIndex - 1 + totalCards) % totalCards;
+      }
+      updateCarouselDisplay();
+    }
+  }
+  
+  // Initial setup
+  updateCarouselDisplay();
+}
+
 // === TIME TRACKER ===
 async function loadTime() {
   try {
@@ -595,7 +681,10 @@ document.addEventListener("DOMContentLoaded", () => {
         console.error("Failed to save note");
       }
     } catch (err) {
-      console.error("Error saving note:", err);
-    }
-  });
-});
+             console.error("Error saving note:", err);
+     }
+   });
+
+  // Setup carousels for daily page
+  setupDailyCarousels();
+ });

@@ -76,7 +76,7 @@
           <div class="daily-row">
             
             <!-- Today's Tasks -->
-            <div class="content-card tasks-card">
+            <div class="content-card tasks-card" id="carousel-tasks">
               <div class="card-header">
                 <div class="card-title">
                   <div class="title-icon">
@@ -87,16 +87,28 @@
                   </div>
                   <h3>Today's Tasks</h3>
                 </div>
+                <div class="card-actions">
+                  <button class="carousel-arrow prev" data-carousel="tasks">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="15,18 9,12 15,6"/>
+                    </svg>
+                  </button>
+                  <button class="carousel-arrow next" data-carousel="tasks">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="9,18 15,12 9,6"/>
+                    </svg>
+                  </button>
+                </div>
               </div>
               <div class="card-content">
-                <div id="log-tasks-container" class="daily-items-container">
+                <div class="carousel__container" id="log-tasks-container">
                   <!-- JS will populate tasks here -->
                 </div>
               </div>
             </div>
 
             <!-- Today's Goals -->
-            <div class="content-card goals-card">
+            <div class="content-card goals-card" id="carousel-goals">
               <div class="card-header">
                 <div class="card-title">
                   <div class="title-icon">
@@ -107,16 +119,28 @@
                   </div>
                   <h3>Today's Goals</h3>
                 </div>
+                <div class="card-actions">
+                  <button class="carousel-arrow prev" data-carousel="goals">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="15,18 9,12 15,6"/>
+                    </svg>
+                  </button>
+                  <button class="carousel-arrow next" data-carousel="goals">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="9,18 15,12 9,6"/>
+                    </svg>
+                  </button>
+                </div>
               </div>
               <div class="card-content">
-                <div id="log-goals-container" class="daily-items-container">
+                <div class="carousel__container" id="log-goals-container">
                   <!-- JS will populate goals here -->
                 </div>
               </div>
             </div>
 
             <!-- Today's Lessons -->
-            <div class="content-card lessons-card">
+            <div class="content-card lessons-card" id="carousel-lessons">
               <div class="card-header">
                 <div class="card-title">
                   <div class="title-icon">
@@ -128,16 +152,28 @@
                   </div>
                   <h3>Today's Lessons</h3>
                 </div>
+                <div class="card-actions">
+                  <button class="carousel-arrow prev" data-carousel="lessons">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="15,18 9,12 15,6"/>
+                    </svg>
+                  </button>
+                  <button class="carousel-arrow next" data-carousel="lessons">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="9,18 15,12 9,6"/>
+                    </svg>
+                  </button>
+                </div>
               </div>
               <div class="card-content">
-                <div id="log-lessons-container" class="daily-items-container">
+                <div class="carousel__container" id="log-lessons-container">
                   <!-- JS will populate lessons here -->
                 </div>
               </div>
             </div>
 
             <!-- Today's Notes -->
-            <div class="content-card notes-card">
+            <div class="content-card notes-card" id="carousel-notes">
               <div class="card-header">
                 <div class="card-title">
                   <div class="title-icon">
@@ -151,9 +187,21 @@
                   </div>
                   <h3>Today's Notes</h3>
                 </div>
+                <div class="card-actions">
+                  <button class="carousel-arrow prev" data-carousel="notes">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="15,18 9,12 15,6"/>
+                    </svg>
+                  </button>
+                  <button class="carousel-arrow next" data-carousel="notes">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="9,18 15,12 9,6"/>
+                    </svg>
+                  </button>
+                </div>
               </div>
               <div class="card-content">
-                <div id="log-notes-container" class="daily-items-container">
+                <div class="carousel__container" id="log-notes-container">
                   <!-- JS will populate notes here -->
                 </div>
               </div>
