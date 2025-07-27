@@ -186,34 +186,9 @@ li a.active::after {
   opacity: 1;
 }
 
-/* FOOTER */
-.footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 20px;
-  background-color: #1a1a1a;
-  padding: 16px 24px;
-  border-radius: 12px;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.4);
-  font-family: monospace;
-  font-size: 1rem;
-  margin-top: 40px;
-}
+/* FOOTER - Enhanced styles moved to animations.css */
 
-.footer span {
-  color: #cfcfcf;
-  animation: footerPulse 2.5s ease-in-out infinite;
-}
 
-@keyframes footerPulse {
-  0%, 100% {
-    text-shadow: 0 0 5px #4c8eda, 0 0 10px #4c8eda;
-  }
-  50% {
-    text-shadow: 0 0 10px #4c8eda, 0 0 20px #4c8eda;
-  }
-}
 
 #splash-screen {
   position: fixed;

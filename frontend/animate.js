@@ -1,48 +1,85 @@
-// Eat: Fork animation
+// Enhanced Footer Animations - Modern Glass Morphism Style
+
+// === EAT ANIMATION ===
 document.getElementById("eat").addEventListener("click", () => {
   const fork = document.getElementById("fork-fly");
+  const eatSpan = document.getElementById("eat");
+  
+  // Add click feedback
+  eatSpan.style.transform = "scale(0.95)";
+  setTimeout(() => {
+    eatSpan.style.transform = "scale(1)";
+  }, 150);
+  
+  // Reset and trigger animation
   fork.classList.remove("fork-animate");
-  void fork.offsetWidth;
+  void fork.offsetWidth; // Force reflow
   fork.classList.add("fork-animate");
+  
+  // Add sound effect (optional)
+  const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmGgU7k9n1unEiBC13yO/eizEIHWq+8+OWT');
+  audio.volume = 0.1;
+  audio.play().catch(() => {}); // Ignore if audio fails
 });
 
-// Sleep: Z float animation (positioned above "Sleep")
+// === SLEEP ANIMATION ===
 document.getElementById("sleep").addEventListener("click", () => {
   const zBox = document.getElementById("z-animation");
   const sleepSpan = document.getElementById("sleep");
+  
+  // Add click feedback
+  sleepSpan.style.transform = "scale(0.95)";
+  setTimeout(() => {
+    sleepSpan.style.transform = "scale(1)";
+  }, 150);
 
   const rect = sleepSpan.getBoundingClientRect();
-
+  
+  // Position Z animation above "Sleep"
   zBox.style.left = `${rect.left + rect.width / 2}px`;
-  zBox.style.top = `${rect.top - 30 + window.scrollY}px`;
-
+  zBox.style.top = `${rect.top - 40 + window.scrollY}px`;
   zBox.innerHTML = "";
 
-  for (let i = 0; i < 3; i++) {
+  // Create multiple Z's with different delays and positions
+  for (let i = 0; i < 5; i++) {
     const z = document.createElement("span");
     z.classList.add("z");
     z.textContent = "Z";
-    z.style.left = `${i * 20 - 20}px`;
-    z.style.animationDelay = `${i * 0.3}s`;
+    z.style.left = `${(i - 2) * 25}px`;
+    z.style.animationDelay = `${i * 0.2}s`;
+    z.style.fontSize = `${28 - i * 2}px`;
     zBox.appendChild(z);
   }
 
   zBox.style.opacity = "1";
+  
+  // Add sound effect (optional)
+  const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmGgU7k9n1unEiBC13yO/eizEIHWq+8+OWT');
+  audio.volume = 0.05;
+  audio.play().catch(() => {});
 
   setTimeout(() => {
     zBox.style.opacity = "0";
-  }, 2500);
+  }, 3000);
 });
 
-// Code: Toggle code editor popup
+// === CODE EDITOR POPUP ===
 const codeBtn = document.getElementById("code");
 const popup = document.getElementById("code-editor-popup");
 
-codeBtn.addEventListener("click", () => {
-  popup.classList.toggle("hidden");
-});
+if (codeBtn && popup) {
+  codeBtn.addEventListener("click", () => {
+    popup.classList.toggle("hidden");
+    
+    // Add click feedback
+    codeBtn.style.transform = "scale(0.95)";
+    setTimeout(() => {
+      codeBtn.style.transform = "scale(1)";
+    }, 150);
+  });
+}
 
-// Close: Close button inside popup
+// Close button inside popup
 const closeBtn = document.getElementById("close-editor");
 if (closeBtn) {
   closeBtn.addEventListener("click", () => {
@@ -80,49 +117,101 @@ if (runBtn && outputFrame) {
   });
 }
 
-// Repeat: Float words to center + fade to black screen
+// === REPEAT ANIMATION ===
 document.getElementById("repeat").addEventListener("click", () => {
-  const footerWords = ["eat", "sleep", "code", "repeat"].map(id =>
+  const footerWords = ["eat", "sleep", "repeat"].map(id =>
     document.getElementById(id)
-  );
+  ).filter(word => word); // Filter out any null elements
+
+  const repeatSpan = document.getElementById("repeat");
+  
+  // Add click feedback
+  repeatSpan.style.transform = "scale(0.95)";
+  setTimeout(() => {
+    repeatSpan.style.transform = "scale(1)";
+  }, 150);
 
   const screenOverlay = document.createElement("div");
   screenOverlay.id = "fade-screen";
   document.body.appendChild(screenOverlay);
 
-  // Ensure overlay is on top
-  setTimeout(() => {
-    screenOverlay.classList.add("fade-in");
-  }, 800);
-
-  // Animate each word toward center
+  // Enhanced word floating animation
   const centerX = window.innerWidth / 2;
   const centerY = window.innerHeight / 2;
 
-  footerWords.forEach(word => {
+  footerWords.forEach((word, index) => {
     const rect = word.getBoundingClientRect();
     const wordX = rect.left + rect.width / 2;
     const wordY = rect.top + rect.height / 2;
 
-    const deltaX = centerX - wordX + (Math.random() - 0.5) * 100;
-    const deltaY = centerY - wordY + (Math.random() - 0.5) * 100;
+    // Calculate random offset for more natural movement
+    const deltaX = centerX - wordX + (Math.random() - 0.5) * 200;
+    const deltaY = centerY - wordY + (Math.random() - 0.5) * 200;
+    const rotation = (Math.random() - 0.5) * 720; // Random rotation
+
+    // Set CSS custom properties for the animation
+    word.style.setProperty('--deltaX', `${deltaX}px`);
+    word.style.setProperty('--deltaY', `${deltaY}px`);
+    word.style.setProperty('--rotation', `${rotation}deg`);
 
     word.classList.add("float-word");
-    word.style.transform = `translate(${deltaX}px, ${deltaY}px) rotate(${Math.random() * 360}deg)`;
   });
 
-  // Fade back in after delay
+  // Enhanced fade screen with pulse effect
+  setTimeout(() => {
+    screenOverlay.classList.add("fade-in");
+  }, 1000);
+
+  // Add dramatic sound effect (optional)
+  const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmGgU7k9n1unEiBC13yO/eizEIHWq+8+OWT');
+  audio.volume = 0.2;
+  audio.play().catch(() => {});
+
+  // Reset everything after animation
   setTimeout(() => {
     screenOverlay.classList.remove("fade-in");
     screenOverlay.classList.add("fade-out");
 
     footerWords.forEach(word => {
       word.classList.remove("float-word");
-      word.style.transform = "";
+      word.style.removeProperty('--deltaX');
+      word.style.removeProperty('--deltaY');
+      word.style.removeProperty('--rotation');
     });
 
     setTimeout(() => {
       screenOverlay.remove();
-    }, 1000);
-  }, 3000);
+    }, 1500);
+  }, 4000);
+});
+
+// === ADDITIONAL ENHANCEMENTS ===
+
+// Add hover effects to footer words
+document.addEventListener('DOMContentLoaded', () => {
+  const footerSpans = document.querySelectorAll('.footer span');
+  
+  footerSpans.forEach(span => {
+    span.addEventListener('mouseenter', () => {
+      // Add subtle glow effect
+      span.style.textShadow = '0 0 15px rgba(76, 142, 218, 0.6)';
+    });
+    
+    span.addEventListener('mouseleave', () => {
+      // Remove glow effect
+      span.style.textShadow = '';
+    });
+  });
+});
+
+// Add keyboard shortcuts for animations
+document.addEventListener('keydown', (e) => {
+  // E for Eat, S for Sleep, R for Repeat
+  if (e.key.toLowerCase() === 'e') {
+    document.getElementById("eat")?.click();
+  } else if (e.key.toLowerCase() === 's') {
+    document.getElementById("sleep")?.click();
+  } else if (e.key.toLowerCase() === 'r') {
+    document.getElementById("repeat")?.click();
+  }
 });
