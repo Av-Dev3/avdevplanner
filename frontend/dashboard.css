@@ -1526,6 +1526,8 @@ body, .modern-dashboard {
   visibility: hidden;
   transition: opacity 0.3s ease, visibility 0.3s ease;
   display: block;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
 }
 
 /* Show desktop drawer only on desktop */
