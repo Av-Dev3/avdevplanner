@@ -143,7 +143,7 @@
 .day-content {
   padding: 2rem;
   display: none;
-  min-height: 400px;
+  min-height: 600px;
 }
 
 .day-content.expanded {
@@ -165,20 +165,20 @@
 
 /* Add specific spacing for each card type */
 .day-content .tasks-card {
-  margin-bottom: 3rem;
-  padding-bottom: 1rem;
+  margin-bottom: 4rem !important;
+  padding-bottom: 2rem !important;
 }
 
 .day-content .goals-card {
-  margin-bottom: 3rem;
-  margin-top: 0;
-  padding-bottom: 1rem;
+  margin-bottom: 4rem !important;
+  margin-top: 2rem !important;
+  padding-bottom: 2rem !important;
 }
 
 .day-content .lessons-card {
-  margin-bottom: 0;
-  margin-top: 0;
-  padding-bottom: 1rem;
+  margin-bottom: 0 !important;
+  margin-top: 2rem !important;
+  padding-bottom: 2rem !important;
 }
 
 .day-content .content-card:last-child {
