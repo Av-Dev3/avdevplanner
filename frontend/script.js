@@ -41,6 +41,56 @@ if (addTaskDesktopBtn && taskFormPopup) {
   });
 }
 
+// === DRAWER HANDLING ===
+document.addEventListener('DOMContentLoaded', function() {
+  const drawer = document.getElementById('drawer');
+  const drawerContent = drawer?.querySelector('.drawer__content');
+  
+  // Prevent drawer from closing when clicking inside
+  if (drawerContent) {
+    drawerContent.addEventListener('click', function(e) {
+      e.stopPropagation();
+    });
+  }
+  
+  // Close drawer when clicking outside
+  if (drawer) {
+    drawer.addEventListener('click', function(e) {
+      if (e.target === drawer) {
+        drawer.classList.add('hidden');
+      }
+    });
+  }
+  
+  // Handle drawer button clicks
+  const drawerButtons = drawer?.querySelectorAll('.drawer__links button');
+  if (drawerButtons) {
+    drawerButtons.forEach(button => {
+      button.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // Get the target popup from the onclick attribute
+        const onclickAttr = button.getAttribute('onclick');
+        if (onclickAttr) {
+          // Extract the popup ID from the onclick attribute
+          const match = onclickAttr.match(/getElementById\('([^']+)'\)/);
+          if (match) {
+            const popupId = match[1];
+            const popup = document.getElementById(popupId);
+            if (popup) {
+              // Close drawer first
+              drawer.classList.add('hidden');
+              // Open the target popup
+              popup.classList.remove('hidden');
+            }
+          }
+        }
+      });
+    });
+  }
+});
+
 // === FORM SUBMIT ===
 if (form) {
   const textInput = document.getElementById("task-text");

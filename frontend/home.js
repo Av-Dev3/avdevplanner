@@ -87,15 +87,38 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      let url = `https://avdevplanner.onrender.com/${type}s/${id}`;
-      console.log('Making request to:', url);
+      let url, method, body;
+      
+      if (type === 'task') {
+        // Tasks use PATCH /tasks/{index}/toggle
+        url = `https://avdevplanner.onrender.com/tasks/${id}/toggle`;
+        method = 'PATCH';
+        body = null;
+      } else if (type === 'goal') {
+        // Goals use PUT /goals/{index} with full object
+        url = `https://avdevplanner.onrender.com/goals/${id}`;
+        method = 'PUT';
+        body = JSON.stringify({ completed: true });
+      } else if (type === 'lesson') {
+        // Lessons use PUT /lessons/{id} with full object
+        url = `https://avdevplanner.onrender.com/lessons/${id}`;
+        method = 'PUT';
+        body = JSON.stringify({ completed: true });
+      }
+      
+      console.log('Making request to:', url, 'with method:', method);
       
       try {
-        const res = await fetch(url, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ completed: true }),
-        });
+        const options = {
+          method: method,
+          headers: { 'Content-Type': 'application/json' }
+        };
+        
+        if (body) {
+          options.body = body;
+        }
+        
+        const res = await fetch(url, options);
         if (res.ok) {
           console.log('Successfully marked complete');
           location.reload();
@@ -311,10 +334,10 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- Card Creators with Mark Complete Button added ---
   function createTaskCard(task) {
     console.log('Creating task card:', task);
-    console.log('Task ID:', task.id, 'Task _id:', task._id, 'All keys:', Object.keys(task));
+    console.log('Task ID:', task.id, 'Task _id:', task._id, 'Task index:', task.index, 'All keys:', Object.keys(task));
     const div = document.createElement("div");
     div.className = "carousel__card";
-    const taskId = task.id || task._id || task.taskId || '';
+    const taskId = task.index || task.id || task._id || task.taskId || '';
     console.log('Using task ID:', taskId);
     div.innerHTML = `
       <h3 class="font-semibold mb-1">${task.text || task.title || "Untitled Task"}</h3>
@@ -333,10 +356,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   function createGoalCard(goal) {
     console.log('Creating goal card:', goal);
-    console.log('Goal ID:', goal.id, 'Goal _id:', goal._id, 'All keys:', Object.keys(goal));
+    console.log('Goal ID:', goal.id, 'Goal _id:', goal._id, 'Goal index:', goal.index, 'All keys:', Object.keys(goal));
     const div = document.createElement("div");
     div.className = "carousel__card";
-    const goalId = goal.id || goal._id || goal.goalId || '';
+    const goalId = goal.index || goal.id || goal._id || goal.goalId || '';
     console.log('Using goal ID:', goalId);
     div.innerHTML = `
       <h3 class="font-semibold mb-1">${goal.title}</h3>
