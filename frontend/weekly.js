@@ -82,7 +82,7 @@ document.addEventListener("DOMContentLoaded", () => {
           </svg>
         </button>
       </div>
-      <div class="day-content">
+      <div class="day-content" style="display: none;">
         <!-- Tasks Carousel -->
         <div class="content-card tasks-card">
           <div class="card-header">
@@ -283,88 +283,61 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function createTaskCard(task, index) {
-    const card = document.createElement('div');
-    card.className = 'carousel__card';
-    
-    const taskId = task.id || task._id || task.taskId || index;
-    const statusClass = task.completed ? 'completed' : 'pending';
-    const statusText = task.completed ? 'Completed' : 'Pending';
-    
-    card.innerHTML = `
-      <div class="carousel__card-content">
-        <div class="carousel__card-header">
-          <h3 class="carousel__card-title">${task.text || task.title || 'Untitled Task'}</h3>
-          <span class="carousel__card-status ${statusClass}">${statusText}</span>
-        </div>
-        ${task.notes ? `<p class="carousel__card-description">${task.notes}</p>` : ''}
-        <div class="carousel__card-meta">
-          ${task.time ? `<span class="carousel__card-meta-item">Time: ${formatTime(task.time)}</span>` : ''}
-          ${task.prettyDate ? `<span class="carousel__card-meta-item">Date: ${formatCardDate(task.prettyDate)}</span>` : ''}
-        </div>
-        <button class="mark-complete-btn" data-type="task" data-id="${taskId}">
-          Mark Complete
-        </button>
-      </div>
+    const div = document.createElement("div");
+    div.className = "carousel__card";
+    const taskId = task.originalIndex !== undefined ? task.originalIndex : (task.id || task._id || task.taskId || '');
+    div.innerHTML = `
+      <h3 class="font-semibold mb-1">${task.text || task.title || "Untitled Task"}</h3>
+      ${task.notes ? `<p class="mb-1">${task.notes}</p>` : ""}
+      ${task.time ? `<p><small>Time: ${formatTime(task.time)}</small></p>` : ""}
+      <p class="text-xs text-gray-400">${task._vegasDateStr || ""}</p>
+      ${
+        !task.completed && taskId
+          ? `<button class="mark-complete-btn mt-2" data-type="task" data-id="${taskId}">Mark Complete</button>`
+          : !task.completed && !taskId
+          ? `<span class="text-yellow-500 font-semibold block mt-2">No ID available</span>`
+          : `<span class="text-green-500 font-semibold block mt-2">Completed</span>`
+      }
     `;
-    
-    return card;
+    return div;
   }
 
   function createGoalCard(goal, index) {
-    const card = document.createElement('div');
-    card.className = 'carousel__card';
-    
-    const goalId = goal.id || goal._id || goal.goalId || index;
-    const statusClass = goal.completed ? 'completed' : 'pending';
-    const statusText = goal.completed ? 'Completed' : 'Pending';
-    
-    card.innerHTML = `
-      <div class="carousel__card-content">
-        <div class="carousel__card-header">
-          <h3 class="carousel__card-title">${goal.title || 'Untitled Goal'}</h3>
-          <span class="carousel__card-status ${statusClass}">${statusText}</span>
-        </div>
-        ${goal.notes ? `<p class="carousel__card-description">${goal.notes}</p>` : ''}
-        <div class="carousel__card-meta">
-          ${goal.prettyDate ? `<span class="carousel__card-meta-item">Date: ${formatCardDate(goal.prettyDate)}</span>` : ''}
-        </div>
-        <button class="mark-complete-btn" data-type="goal" data-id="${goalId}">
-          Mark Complete
-        </button>
-      </div>
+    const div = document.createElement("div");
+    div.className = "carousel__card";
+    const goalId = goal.originalIndex !== undefined ? goal.originalIndex : (goal.index || goal.id || goal._id || goal.goalId || '');
+    div.innerHTML = `
+      <h3 class="font-semibold mb-1">${goal.title}</h3>
+      ${goal.notes ? `<p class="mb-1">${goal.notes}</p>` : ""}
+      <p class="text-xs text-gray-400">${goal._vegasDateStr || ""}</p>
+      ${
+        !goal.completed && goalId !== ''
+          ? `<button class="mark-complete-btn mt-2" data-type="goal" data-id="${goalId}">Mark Complete</button>`
+          : !goal.completed && goalId === ''
+          ? `<span class="text-yellow-500 font-semibold block mt-2">No ID available</span>`
+          : `<span class="text-green-500 font-semibold block mt-2">Completed</span>`
+      }
     `;
-    
-    return card;
+    return div;
   }
 
   function createLessonCard(lesson, index) {
-    const card = document.createElement('div');
-    card.className = 'carousel__card';
-    
-    const lessonId = lesson.id || lesson._id || lesson.lessonId || index;
-    const statusClass = lesson.completed ? 'completed' : 'pending';
-    const statusText = lesson.completed ? 'Completed' : 'Pending';
-    
-    card.innerHTML = `
-      <div class="carousel__card-content">
-        <div class="carousel__card-header">
-          <h3 class="carousel__card-title">${lesson.title || 'Untitled Lesson'}</h3>
-          <span class="carousel__card-status ${statusClass}">${statusText}</span>
-        </div>
-        ${lesson.description ? `<p class="carousel__card-description">${lesson.description}</p>` : ''}
-        ${lesson.notes ? `<p class="carousel__card-notes">${lesson.notes}</p>` : ''}
-        <div class="carousel__card-meta">
-          ${lesson.category ? `<span class="carousel__card-meta-item">Category: ${lesson.category}</span>` : ''}
-          ${lesson.priority ? `<span class="carousel__card-meta-item">Priority: ${lesson.priority}</span>` : ''}
-          ${lesson.prettyDate ? `<span class="carousel__card-meta-item">Date: ${formatCardDate(lesson.prettyDate)}</span>` : ''}
-        </div>
-        <button class="mark-complete-btn" data-type="lesson" data-id="${lessonId}">
-          Mark Complete
-        </button>
-      </div>
+    const div = document.createElement("div");
+    div.className = "carousel__card";
+    const lessonId = lesson.id || lesson._id || lesson.lessonId || '';
+    div.innerHTML = `
+      <h3 class="font-semibold mb-1">${lesson.title}</h3>
+      ${lesson.description ? `<p class="mb-1">${lesson.description}</p>` : ""}
+      <p class="text-xs text-gray-400">${lesson._vegasDateStr || ""}</p>
+      ${
+        !lesson.completed && lessonId
+          ? `<button class="mark-complete-btn mt-2" data-type="lesson" data-id="${lessonId}">Mark Complete</button>`
+          : !lesson.completed && !lessonId
+          ? `<span class="text-yellow-500 font-semibold block mt-2">No ID available</span>`
+          : `<span class="text-green-500 font-semibold block mt-2">Completed</span>`
+      }
     `;
-    
-    return card;
+    return div;
   }
 
   async function loadDayData(isoDate) {
@@ -379,9 +352,15 @@ document.addEventListener("DOMContentLoaded", () => {
       const goals = await goalsRes.json();
       const lessons = await lessonsRes.json();
 
-      const todayTasks = tasks.filter((t) => t.date === isoDate);
-      const todayGoals = goals.filter((g) => g.date === isoDate);
-      const todayLessons = lessons.filter((l) => l.date === isoDate);
+      const todayTasks = tasks
+        .map((task, index) => ({ ...task, originalIndex: index }))
+        .filter((t) => t.date === isoDate);
+      const todayGoals = goals
+        .map((goal, index) => ({ ...goal, originalIndex: index }))
+        .filter((g) => g.date === isoDate);
+      const todayLessons = lessons
+        .map((lesson, index) => ({ ...lesson, originalIndex: index }))
+        .filter((l) => l.date === isoDate);
 
       // Setup carousels using the dashboard system
       setupCarousel(`tasks-${isoDate}`, todayTasks, createTaskCard);
@@ -418,9 +397,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (Object.keys(reflections).length === 0) {
         reflectionsContainer.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-state-text">No reflections yet</div>
-            <div class="empty-state-subtext">Your weekly reflections will appear here</div>
+          <div class="daily-empty">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14,2 14,8 20,8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+              <polyline points="10,9 9,9 8,9"/>
+            </svg>
+            <h3>No Reflections Yet</h3>
+            <p>Add a weekly reflection to track your progress</p>
           </div>
         `;
         return;
@@ -428,14 +414,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
       for (const [week, data] of Object.entries(reflections)) {
         const entry = document.createElement("div");
-        entry.className = "reflection-entry";
+        entry.className = "log-entry-card";
         entry.innerHTML = `
-          <div class="reflection-date">Week of ${formatCardDate(week)}</div>
+          <h4>Week of ${formatCardDate(week)}</h4>
           <div class="reflection-content">
-            <div class="reflection-section-title">What went well:</div>
-            <div>${data.what_went_well || "—"}</div>
-            <div class="reflection-section-title">What to improve:</div>
-            <div>${data.what_to_improve || "—"}</div>
+            <p><strong>What went well:</strong> ${data.what_went_well || "—"}</p>
+            <p><strong>What to improve:</strong> ${data.what_to_improve || "—"}</p>
+          </div>
+          <div class="entry-meta">
+            <div>${formatCardDate(week)}</div>
           </div>
         `;
         reflectionsContainer.appendChild(entry);
@@ -443,9 +430,12 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch (err) {
       console.error("Failed to load reflections:", err);
       reflectionsContainer.innerHTML = `
-        <div class="empty-state">
-          <div class="empty-state-text">Error loading reflections</div>
-          <div class="empty-state-subtext">Please try refreshing the page</div>
+        <div class="daily-empty">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+          </svg>
+          <h3>Error Loading Reflections</h3>
+          <p>There was an error loading your reflections</p>
         </div>
       `;
     }
