@@ -477,6 +477,70 @@ document.addEventListener("DOMContentLoaded", () => {
   loadLogs();
   loadTime();
 
+  // Add event delegation for mark complete buttons
+  document.addEventListener('click', async (e) => {
+    if (e.target.classList.contains('mark-complete-btn')) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      const type = e.target.dataset.type;
+      const id = e.target.dataset.id;
+      
+      if (!id) {
+        console.error('No ID available for mark complete');
+        return;
+      }
+      
+      try {
+        let endpoint;
+        switch (type) {
+          case 'task':
+            endpoint = `https://avdevplanner.onrender.com/tasks/${id}/toggle`;
+            break;
+          case 'goal':
+            endpoint = `https://avdevplanner.onrender.com/goals/${id}/toggle`;
+            break;
+          case 'lesson':
+            endpoint = `https://avdevplanner.onrender.com/lessons/${id}/toggle`;
+            break;
+          case 'note':
+            endpoint = `https://avdevplanner.onrender.com/notes/${id}/toggle`;
+            break;
+          default:
+            console.error('Unknown type for mark complete:', type);
+            return;
+        }
+        
+        const res = await fetch(endpoint, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' }
+        });
+        
+        if (res.ok) {
+          // Reload the specific data
+          switch (type) {
+            case 'task':
+              loadTodayTasks();
+              break;
+            case 'goal':
+              loadGoals();
+              break;
+            case 'lesson':
+              loadLessons();
+              break;
+            case 'note':
+              loadNotes();
+              break;
+          }
+        } else {
+          console.error(`Failed to mark ${type} complete`);
+        }
+      } catch (err) {
+        console.error(`Error marking ${type} complete:`, err);
+      }
+    }
+  });
+
   // Time tracker form
   const saveTimeBtn = document.getElementById("save-time-btn");
   const timeSpentInput = document.getElementById("time-spent");
