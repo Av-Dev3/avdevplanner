@@ -150,6 +150,9 @@ document.addEventListener("DOMContentLoaded", () => {
       // Update collection select options
       updateCollectionSelect();
       
+      // Always render collections data (needed for all tabs)
+      renderCollections();
+      
       // Render based on current tab
       if (currentTab === 'notes') {
         renderNotes();
@@ -591,13 +594,21 @@ document.addEventListener("DOMContentLoaded", () => {
   // === RENDER COLLECTIONS ===
   function renderCollections() {
     const collectionList = document.getElementById("collection-list");
-    if (!collectionList) return;
+    if (!collectionList) {
+      console.error("Collection list element not found!");
+      return;
+    }
 
+    console.log("Rendering collections...");
+    console.log("All notes:", allNotes);
+    
     const collectionMap = new Map();
     const saved = JSON.parse(localStorage.getItem("emptyCollections") || "[]");
+    console.log("Saved empty collections:", saved);
 
     allNotes.forEach((note) => {
       const notebook = note.notebook?.trim();
+      console.log("Note notebook:", notebook, "for note:", note.title);
       if (notebook) { // Only add if notebook exists and is not empty
         if (!collectionMap.has(notebook)) {
           collectionMap.set(notebook, []);
@@ -627,8 +638,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     collectionList.innerHTML = "";
 
+    console.log("Final collection map:", collectionMap);
+    
     collectionMap.forEach((notes, notebook) => {
       if (notebook) { // Only create cards for valid notebook names
+        console.log("Creating collection card for:", notebook, "with", notes.length, "notes");
         const card = createCollectionCard(notebook, notes);
         collectionList.appendChild(card);
       }
@@ -778,6 +792,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // === GLOBAL FUNCTIONS ===
+  window.formatPrettyDate = formatPrettyDate;
+  
   window.showNotePreview = function(note) {
     const titleEl = document.getElementById('popup-note-title');
     const contentEl = document.getElementById('popup-note-content');
@@ -801,8 +817,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const popup = document.getElementById('note-preview-popup');
-    popup.classList.remove('hidden');
-    popup.style.zIndex = '10001';
+    if (popup) {
+      popup.classList.remove('hidden');
+      popup.style.zIndex = '10001';
+      console.log('Note preview popup opened');
+    } else {
+      console.error('Note preview popup not found!');
+    }
   };
 
   window.showNotePreviewFromTag = function(note, tagPopup) {
@@ -834,8 +855,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const popup = document.getElementById('note-preview-popup');
-    popup.classList.remove('hidden');
-    popup.style.zIndex = '10001';
+    if (popup) {
+      popup.classList.remove('hidden');
+      popup.style.zIndex = '10001';
+      console.log('Note preview popup opened from tag');
+    } else {
+      console.error('Note preview popup not found!');
+    }
   };
 
   window.showNotePreviewFromCollection = function(note) {
@@ -868,8 +894,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     const popup = document.getElementById('note-preview-popup');
-    popup.classList.remove('hidden');
-    popup.style.zIndex = '10001';
+    if (popup) {
+      popup.classList.remove('hidden');
+      popup.style.zIndex = '10001';
+      console.log('Note preview popup opened from collection');
+    } else {
+      console.error('Note preview popup not found!');
+    }
   };
 
   // === INITIALIZATION ===
