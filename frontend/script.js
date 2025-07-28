@@ -25,26 +25,95 @@ function parseNaturalDate(dateStr) {
   return null;
 }
 
-// === DESKTOP POPUP TRIGGER ===
-const addTaskDesktopBtn = document.getElementById("add-task-desktop");
-const taskFormPopup = document.getElementById("task-form-popup");
-
-if (addTaskDesktopBtn && taskFormPopup) {
-  addTaskDesktopBtn.addEventListener("click", () => {
-    taskFormPopup.classList.remove("hidden");
+// === POPUP HANDLING ===
+document.addEventListener('DOMContentLoaded', function() {
+  // Handle popup close buttons
+  const closeButtons = document.querySelectorAll('.modal__close');
+  closeButtons.forEach(button => {
+    button.addEventListener('click', function() {
+      const popup = this.closest('.modal');
+      if (popup) {
+        popup.classList.add('hidden');
+      }
+    });
   });
-
-  taskFormPopup.addEventListener("click", (e) => {
-    if (e.target === taskFormPopup) {
-      taskFormPopup.classList.add("hidden");
-    }
+  
+  // Handle popup background clicks
+  const popups = document.querySelectorAll('.modal');
+  popups.forEach(popup => {
+    popup.addEventListener('click', function(e) {
+      if (e.target === this) {
+        this.classList.add('hidden');
+      }
+    });
   });
-}
+});
+
+// === MOBILE FAB HANDLING ===
+let fabPressTimer;
+let fabLongPressTriggered = false;
+
+document.addEventListener('DOMContentLoaded', function() {
+  const fab = document.getElementById('fab');
+  const mobileDrawer = document.getElementById('mobileDrawer');
+  const siteLinksDrawer = document.getElementById('siteLinksDrawer');
+  
+  // Mobile FAB click handler (short press)
+  if (fab) {
+    fab.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      // Only trigger if it wasn't a long press
+      if (!fabLongPressTriggered) {
+        // Open Add Task popup
+        const taskPopup = document.getElementById('taskPopup');
+        if (taskPopup) {
+          taskPopup.classList.remove('hidden');
+        }
+      }
+      fabLongPressTriggered = false;
+    });
+    
+    // Mobile FAB long press handler
+    fab.addEventListener('mousedown', function(e) {
+      fabLongPressTriggered = false;
+      fabPressTimer = setTimeout(() => {
+        fabLongPressTriggered = true;
+        // Open Site Links drawer
+        if (siteLinksDrawer) {
+          siteLinksDrawer.classList.remove('hidden');
+        }
+      }, 500); // 500ms for long press
+    });
+    
+    fab.addEventListener('mouseup', function(e) {
+      clearTimeout(fabPressTimer);
+    });
+    
+    fab.addEventListener('mouseleave', function(e) {
+      clearTimeout(fabPressTimer);
+    });
+    
+    // Touch events for mobile
+    fab.addEventListener('touchstart', function(e) {
+      fabLongPressTriggered = false;
+      fabPressTimer = setTimeout(() => {
+        fabLongPressTriggered = true;
+        // Open Site Links drawer
+        if (siteLinksDrawer) {
+          siteLinksDrawer.classList.remove('hidden');
+        }
+      }, 500);
+    });
+    
+    fab.addEventListener('touchend', function(e) {
+      clearTimeout(fabPressTimer);
+    });
+  }
 
 // === DRAWER HANDLING ===
-document.addEventListener('DOMContentLoaded', function() {
   const desktopDrawer = document.getElementById('drawer');
-  const mobileDrawer = document.getElementById('mobileDrawer');
   const quickActionsBtn = document.getElementById('quick-actions-btn');
   
   // Quick Actions button handler - opens appropriate drawer based on screen size
@@ -136,6 +205,25 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }
   }
+  
+  // Site Links drawer handling
+  if (siteLinksDrawer) {
+    const siteLinksDrawerContent = siteLinksDrawer.querySelector('.drawer__content');
+    
+    // Prevent site links drawer from closing when clicking inside
+    if (siteLinksDrawerContent) {
+      siteLinksDrawerContent.addEventListener('click', function(e) {
+        e.stopPropagation();
+      });
+    }
+    
+    // Close site links drawer when clicking outside
+    siteLinksDrawer.addEventListener('click', function(e) {
+      if (e.target === siteLinksDrawer) {
+        siteLinksDrawer.classList.add('hidden');
+      }
+    });
+  }
 });
 
 // === FORM SUBMIT ===
@@ -144,6 +232,7 @@ if (form) {
   const dateInput = document.getElementById("task-date");
   const timeInput = document.getElementById("task-time");
   const notesInput = document.getElementById("task-notes");
+  const taskPopup = document.getElementById("taskPopup");
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -164,10 +253,17 @@ if (form) {
       body: JSON.stringify(newTask),
     });
 
-    if (res.ok) form.reset();
-    else console.error("Insert error:", await res.text());
-
-    location.reload();
+    if (res.ok) {
+      form.reset();
+      // Close the popup
+      if (taskPopup) {
+        taskPopup.classList.add('hidden');
+      }
+      // Reload the page to show the new task
+      location.reload();
+    } else {
+      console.error("Insert error:", await res.text());
+    }
   });
 }
 
