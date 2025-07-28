@@ -43,12 +43,16 @@ document.addEventListener('DOMContentLoaded', () => {
     } 
     // ===== END OF UPDATED BLOCK =====
     else if (isNotes) {
-      const notePopup = document.getElementById('noteFormPopup');
-      if (notePopup) {
-        notePopup.classList.remove('hidden');
-        notePopup.addEventListener('click', (e) => {
-          if (e.target === notePopup) notePopup.classList.add('hidden');
-        });
+      // Open mobile drawer for notes page (not direct popup)
+      if (mobileDrawer) {
+        if (mobileDrawer.classList.contains('hidden')) {
+          mobileDrawer.classList.remove('hidden');
+          setTimeout(() => mobileDrawer.classList.add('drawer-visible'), 10);
+        } else {
+          mobileDrawer.classList.remove('drawer-visible');
+          setTimeout(() => mobileDrawer.classList.add('hidden'), 300);
+        }
+        siteLinksDrawer?.classList.remove('drawer-visible');
       }
     } else if (isTasks) {
       const taskPopup = document.getElementById('task-form-popup');
