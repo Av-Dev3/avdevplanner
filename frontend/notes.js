@@ -344,24 +344,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (popup) {
       popup.classList.remove('hidden');
-      // Force inline styles to override any CSS conflicts
-      popup.style.display = 'flex';
-      popup.style.position = 'fixed';
-      popup.style.top = '0';
-      popup.style.left = '0';
-      popup.style.right = '0';
-      popup.style.bottom = '0';
-      popup.style.width = '100vw';
-      popup.style.height = '100vh';
-      popup.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-      popup.style.alignItems = 'center';
-      popup.style.justifyContent = 'center';
-      popup.style.zIndex = '9999';
-      popup.style.visibility = 'visible';
-      popup.style.opacity = '1';
-      
       console.log('Popup classes after removing hidden:', popup.className);
-      console.log('Popup display style:', getComputedStyle(popup).display);
       console.log('Popup should now be visible');
     } else {
       console.error('Note preview popup not found!');
@@ -888,7 +871,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const popup = document.getElementById('note-preview-popup');
     if (popup) {
       popup.classList.remove('hidden');
-      popup.style.zIndex = '10001';
       console.log('Note preview popup opened');
     } else {
       console.error('Note preview popup not found!');
@@ -927,7 +909,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const popup = document.getElementById('note-preview-popup');
     if (popup) {
       popup.classList.remove('hidden');
-      popup.style.zIndex = '10001';
       console.log('Note preview popup opened from tag');
     } else {
       console.error('Note preview popup not found!');
@@ -966,7 +947,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const popup = document.getElementById('note-preview-popup');
     if (popup) {
       popup.classList.remove('hidden');
-      popup.style.zIndex = '10001';
       console.log('Note preview popup opened from collection');
     } else {
       console.error('Note preview popup not found!');
