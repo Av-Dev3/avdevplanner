@@ -374,11 +374,12 @@
 }
 
 .collection-card {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  border: 3px solid #dee2e6;
-  border-radius: 12px;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
   padding: 1.5rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--glass-shadow);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   position: relative;
@@ -396,8 +397,8 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 6px;
-  background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4, #feca57);
+  height: 4px;
+  background: var(--notes-accent);
   transform: scaleX(0);
   transition: transform 0.3s ease;
 }
@@ -405,48 +406,60 @@
 .collection-card::after {
   content: '';
   position: absolute;
-  left: 20px;
-  top: 50%;
-  width: 3px;
-  height: 70%;
-  background: #ff6b6b;
-  transform: translateY(-50%);
-  border-radius: 2px;
+  left: 16px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--notes-accent) 0%, transparent 50%, var(--notes-accent) 100%);
+  opacity: 0.6;
 }
 
 .collection-card:hover {
-  transform: translateY(-6px) rotate(1deg);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.1);
-  border-color: #ff6b6b;
+  transform: translateY(-4px);
+  box-shadow: var(--glass-shadow-hover);
+  border-color: var(--notes-accent);
 }
 
 .collection-card:hover::before {
   transform: scaleX(1);
 }
 
+.collection-card:hover::after {
+  opacity: 1;
+  background: var(--notes-accent);
+}
+
 .collection-card h3 {
-  color: #2c3e50;
+  color: var(--text-primary);
   font-size: 1.1rem;
-  font-weight: 700;
+  font-weight: 600;
   margin-bottom: 0.5rem;
   line-height: 1.3;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
   position: relative;
   z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.collection-card h3::before {
+  content: '📓';
+  font-size: 1.2rem;
+  opacity: 0.8;
 }
 
 .collection-card .collection-count {
-  color: #6c757d;
+  color: var(--text-muted);
   font-size: 0.85rem;
-  font-weight: 600;
-  background: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
   padding: 6px 12px;
-  border-radius: 20px;
+  border-radius: 12px;
   align-self: flex-start;
   position: relative;
   z-index: 1;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* === EMPTY STATES === */
