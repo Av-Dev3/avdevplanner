@@ -325,6 +325,34 @@
   transform: translateY(0);
 }
 
+/* === MOBILE FAB BUTTON === */
+#fab {
+  background: linear-gradient(135deg, var(--tasks-accent), #ff8e8e);
+  border: none;
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 24px rgba(255, 107, 107, 0.4);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  z-index: 50;
+}
+
+#fab:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 12px 32px rgba(255, 107, 107, 0.5);
+}
+
+#fab:active {
+  transform: translateY(0) scale(0.95);
+}
+
 /* === RESPONSIVE STYLES === */
 @media (max-width: 768px) {
   .action-btn {
