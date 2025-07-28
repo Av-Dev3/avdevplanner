@@ -557,48 +557,36 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log('showTaggedNotes called with:', tag, notes);
     console.log('Creating tag popup...');
     
-    // Create a temporary popup to show tagged notes
-    const popup = document.createElement('div');
-    popup.className = 'modal glass-modal';
-    popup.style.cssText = 'display: flex; z-index: 9999; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); align-items: center; justify-content: center; padding: 1rem;';
+    // Use the existing collection notes popup instead of creating a new one
+    const popup = document.getElementById('collection-notes-popup');
+    const titleEl = document.getElementById('collection-popup-title');
+    const listEl = document.getElementById('collection-notes-list');
+
+    if (titleEl) titleEl.textContent = `Notes tagged with #${tag}`;
     
-    popup.innerHTML = `
-      <div class="modal__content" style="z-index: 10000; width: 95%; max-width: 600px; max-height: 80vh; overflow: hidden; margin: 0 auto;">
-        <button class="modal__close" onclick="this.closest('.modal').remove()" style="position: absolute; top: 16px; right: 16px; background: none; border: none; color: white; font-size: 24px; cursor: pointer; z-index: 10001;">&times;</button>
-        <h2 class="modal__title" style="margin-bottom: 20px; color: white; font-size: 1.5rem; font-weight: 600;">Notes tagged with #${tag}</h2>
-        <div class="tagged-notes-list">
-          ${notes.length === 0 ? '<p class="text-center text-gray-400">No notes found with this tag.</p>' : ''}
-          ${notes.map(note => `
-            <div class="collection-note-item" onclick="showNotePreviewFromTag(${JSON.stringify(note).replace(/"/g, '&quot;')}, this.closest('.modal'))" style="cursor: pointer;">
-              <h4>${note.title || '(No Title)'}</h4>
-              <p>${note.content ? note.content.substring(0, 100) + (note.content.length > 100 ? '...' : '') : ''}</p>
-              <div class="note-meta">
-                <small class="note-date">${formatPrettyDate(note.date || note.created_at)}</small>
-                ${note.notebook ? `<small class="note-collection">📚 ${note.notebook}</small>` : ''}
-              </div>
+    if (listEl) {
+      if (notes.length === 0) {
+        listEl.innerHTML = '<p class="text-center text-gray-400">No notes found with this tag.</p>';
+      } else {
+        listEl.innerHTML = notes.map(note => `
+          <div class="collection-note-item" onclick="showNotePreviewFromTag(${JSON.stringify(note).replace(/"/g, '&quot;')})" style="cursor: pointer;">
+            <h4>${note.title || '(No Title)'}</h4>
+            <p>${note.content ? note.content.substring(0, 100) + (note.content.length > 100 ? '...' : '') : ''}</p>
+            <div class="note-meta">
+              <small class="note-date">${formatPrettyDate(note.date || note.created_at)}</small>
+              ${note.notebook ? `<small class="note-collection">📚 ${note.notebook}</small>` : ''}
             </div>
-          `).join('')}
-        </div>
-      </div>
-    `;
-
-    document.body.appendChild(popup);
-
-    // Close popup when clicking outside
-    popup.addEventListener('click', (e) => {
-      if (e.target === popup) {
-        popup.remove();
+          </div>
+        `).join('');
       }
-    });
+    }
 
-    // Close popup with Escape key
-    const handleEscape = (e) => {
-      if (e.key === 'Escape') {
-        popup.remove();
-        document.removeEventListener('keydown', handleEscape);
-      }
-    };
-    document.addEventListener('keydown', handleEscape);
+    if (popup) {
+      popup.classList.remove('hidden');
+      console.log('Tag popup opened');
+    } else {
+      console.error('Collection notes popup not found!');
+    }
   }
 
   // === RENDER COLLECTIONS ===
@@ -655,8 +643,11 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("Creating collection card for:", notebook, "with", notes.length, "notes");
         const card = createCollectionCard(notebook, notes);
         collectionList.appendChild(card);
+        console.log("Collection card added to DOM");
       }
     });
+    
+    console.log("Total collections rendered:", collectionList.children.length);
   }
 
   function createCollectionCard(notebook, notes) {
@@ -699,9 +690,16 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function showCollectionNotes(notebook, notes) {
+    console.log('showCollectionNotes called with:', notebook, notes);
+    
     const popup = document.getElementById('collection-notes-popup');
     const titleEl = document.getElementById('collection-popup-title');
     const listEl = document.getElementById('collection-notes-list');
+
+    if (!popup) {
+      console.error('Collection notes popup not found!');
+      return;
+    }
 
     if (titleEl) titleEl.textContent = notebook || "Untitled";
     
@@ -723,6 +721,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     popup.classList.remove('hidden');
     popup.style.zIndex = '9999';
+    console.log('Collection notes popup opened');
   }
 
   function showCollectionOptions(notebook, x, y) {
@@ -836,10 +835,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  window.showNotePreviewFromTag = function(note, tagPopup) {
-    // Close the tag popup first
-    if (tagPopup) {
-      tagPopup.remove();
+  window.showNotePreviewFromTag = function(note) {
+    // Close the collection notes popup first
+    const collectionPopup = document.getElementById('collection-notes-popup');
+    if (collectionPopup) {
+      collectionPopup.classList.add('hidden');
     }
     
     // Then show the note preview
