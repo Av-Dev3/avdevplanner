@@ -3,23 +3,26 @@
 /* === NOTES PAGE STYLES === */
 /* Completely standalone notes page design system */
 :root {
-  --dashboard-bg: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 50%, #16213e 100%);
+  --dashboard-bg: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%);
   --card-bg: rgba(255, 255, 255, 0.05);
-  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
   --glass-blur: blur(20px);
   --border-color: rgba(255, 255, 255, 0.1);
-  --radius: 16px;
-  --radius-small: 8px;
-  --text-primary: rgba(255, 255, 255, 0.9);
-  --text-secondary: rgba(255, 255, 255, 0.7);
-  --text-muted: rgba(255, 255, 255, 0.5);
+  --radius: 20px;
+  --radius-small: 12px;
+  --text-primary: #ffffff;
+  --text-secondary: #b8b8b8;
+  --text-muted: #888888;
   --notes-accent: #9b59b6;
   --tasks-accent: #e74c3c;
   --lessons-accent: #f39c12;
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  --popup-glass: rgba(26, 26, 26, 0.95);
+  --focus-accent: #34495e;
+  --motivation-accent: #e67e22;
+  --shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 8px 16px rgba(0, 0, 0, 0.2);
+  --shadow-hover: 0 25px 50px rgba(0, 0, 0, 0.4), 0 12px 24px rgba(0, 0, 0, 0.3);
+  --popup-glass: rgba(10, 10, 10, 0.95);
   --popup-blur: blur(20px);
-  --popup-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  --popup-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
 }
 
 /* === DESKTOP DRAWER === */
@@ -395,12 +398,12 @@ body {
 /* === NOTES HEADER === */
 .dashboard-header {
   background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
+  backdrop-filter: blur(20px);
   border: 1px solid var(--border-color);
   border-radius: var(--radius);
   padding: 2rem;
   margin-bottom: 2rem;
-  box-shadow: var(--glass-shadow);
+  box-shadow: var(--shadow);
 }
 
 .dashboard-header-content {
@@ -418,7 +421,7 @@ body {
 }
 
 .title-icon {
-  background: linear-gradient(135deg, var(--notes-accent), #8e44ad);
+  background: linear-gradient(135deg, var(--focus-accent), #2c3e50);
   border-radius: 12px;
   padding: 0.75rem;
   color: white;
@@ -529,10 +532,10 @@ body {
   max-width: 1400px;
   margin: 0 auto;
   background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
+  backdrop-filter: blur(20px);
   border: 1px solid var(--border-color);
   border-radius: var(--radius);
-  box-shadow: var(--glass-shadow);
+  box-shadow: var(--shadow);
 }
 
 /* === TAB NAVIGATION === */
@@ -605,11 +608,12 @@ body {
 }
 
 .notes-week-group {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius);
   padding: 1.5rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--shadow);
 }
 
 .notes-week-group:hover {
@@ -644,14 +648,15 @@ body {
 
 /* === NOTE CARD === */
 .note-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius);
   padding: 1.5rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
   cursor: pointer;
+  box-shadow: var(--shadow);
 }
 
 .note-card::before {
@@ -780,13 +785,14 @@ body {
 }
 
 .tag-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius);
   padding: 1.5rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   text-align: center;
+  box-shadow: var(--shadow);
 }
 
 .tag-card:hover {
@@ -842,8 +848,8 @@ body {
 }
 
 .collection-card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
   border-radius: var(--radius);
   padding: 1.5rem;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -855,6 +861,7 @@ body {
   flex-direction: column;
   justify-content: space-between;
   min-height: 140px;
+  box-shadow: var(--shadow);
 }
 
 .collection-card::before {
