@@ -148,6 +148,48 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Collection form submission
+  const collectionForm = document.getElementById("collection-form");
+  if (collectionForm) {
+    collectionForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const collectionName = document.getElementById("collection-name").value.trim();
+      const collectionDescription = document.getElementById("collection-description").value.trim();
+
+      if (!collectionName) {
+        showErrorMessage("Collection name is required");
+        return;
+      }
+
+      try {
+        // Store the collection in localStorage for now
+        const savedCollections = JSON.parse(localStorage.getItem("emptyCollections") || "[]");
+        
+        // Check if collection already exists
+        if (savedCollections.includes(collectionName)) {
+          showErrorMessage("Collection already exists");
+          return;
+        }
+
+        // Add new collection
+        savedCollections.push(collectionName);
+        localStorage.setItem("emptyCollections", JSON.stringify(savedCollections));
+
+        // Reset form and close popup
+        collectionForm.reset();
+        document.getElementById("collectionPopup").classList.add("hidden");
+        
+        // Reload notes to update collections
+        await loadNotes();
+        showSuccessMessage("Collection created successfully!");
+      } catch (error) {
+        console.error("Error creating collection:", error);
+        showErrorMessage("Error creating collection");
+      }
+    });
+  }
+
   // === LOAD NOTES ===
   async function loadNotes() {
     try {
