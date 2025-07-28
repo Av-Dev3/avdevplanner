@@ -307,10 +307,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (popup) {
       popup.classList.remove('hidden');
-      // Force display flex for mobile
-      popup.style.display = 'flex';
-      popup.style.alignItems = 'center';
-      popup.style.justifyContent = 'center';
       console.log('Popup should now be visible');
     } else {
       console.error('Note preview popup not found!');
@@ -807,10 +803,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const popup = document.getElementById('note-preview-popup');
     popup.classList.remove('hidden');
     popup.style.zIndex = '10001';
-    // Force display flex for mobile
-    popup.style.display = 'flex';
-    popup.style.alignItems = 'center';
-    popup.style.justifyContent = 'center';
   };
 
   window.showNotePreviewFromTag = function(note, tagPopup) {
@@ -844,10 +836,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const popup = document.getElementById('note-preview-popup');
     popup.classList.remove('hidden');
     popup.style.zIndex = '10001';
-    // Force display flex for mobile
-    popup.style.display = 'flex';
-    popup.style.alignItems = 'center';
-    popup.style.justifyContent = 'center';
   };
 
   window.showNotePreviewFromCollection = function(note) {
@@ -882,10 +870,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const popup = document.getElementById('note-preview-popup');
     popup.classList.remove('hidden');
     popup.style.zIndex = '10001';
-    // Force display flex for mobile
-    popup.style.display = 'flex';
-    popup.style.alignItems = 'center';
-    popup.style.justifyContent = 'center';
   };
 
   // === INITIALIZATION ===
