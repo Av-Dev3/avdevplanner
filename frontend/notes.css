@@ -970,7 +970,7 @@ body {
   backdrop-filter: var(--popup-blur) !important;
   border: 1px solid var(--border-color) !important;
   border-radius: var(--radius) !important;
-  padding: 3rem 2rem 2.5rem 2rem !important;
+  padding: 3.5rem 2rem 2.5rem 2rem !important;
   min-width: 400px !important;
   max-width: 90vw !important;
   max-height: 90vh !important;
@@ -998,21 +998,21 @@ body {
   position: absolute;
   right: 1.5rem;
   top: 1.5rem;
-  background: rgba(255, 255, 255, 0.15);
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   color: white;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   line-height: 1;
   cursor: pointer;
-  width: 40px;
-  height: 40px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 10;
-  font-weight: bold;
+  font-weight: normal;
 }
 
 .modal__close:hover {
