@@ -326,38 +326,39 @@ if (container) {
 
     sortedDates.forEach((date) => {
       const groupDiv = document.createElement("div");
-      groupDiv.className = "mb-8";
+      groupDiv.className = "task-date-group";
 
       const heading = document.createElement("h2");
-      heading.className = "text-xl font-semibold text-white mb-4";
+      heading.className = "task-date-heading";
       heading.textContent = formatDate(date);
       groupDiv.appendChild(heading);
 
       const grid = document.createElement("div");
-      grid.className = "grid grid-cols-2 md:grid-cols-5 gap-4";
+      grid.className = "task-grid";
 
       tasksByDate[date].forEach((task) => {
         const card = document.createElement("div");
-       card.className = "bg-zinc-800 text-white rounded-lg p-4 shadow-md flex flex-col gap-2 transition-transform duration-200 hover:-translate-y-1 hover:shadow-[0_4px_12px_rgba(76,142,218,0.35)]";
-
+        card.className = "task-card";
 
         card.innerHTML = `
-          <h3 class="text-lg font-semibold">${task.text}</h3>
-          <p class="text-sm text-zinc-400">${formatTime(task.time)}</p>
-          ${task.notes ? `<p class="text-sm">${task.notes}</p>` : ""}
-          <p class="text-sm">${task.completed ? "✅ Done" : "⏳ Not done"}</p>
+          <h3>${task.text}</h3>
+          <div class="task-meta">
+            <span class="task-time">🕐 ${formatTime(task.time)}</span>
+            <span class="task-status">${task.completed ? "✅ Completed" : "⏳ Pending"}</span>
+          </div>
+          ${task.notes ? `<p>${task.notes}</p>` : ""}
         `;
 
         // === Subtasks ===
-        const subtaskList = document.createElement("ul");
-        subtaskList.className = "text-sm pl-2 space-y-1";
-        if (Array.isArray(task.subtasks)) {
+        if (Array.isArray(task.subtasks) && task.subtasks.length > 0) {
+          const subtaskList = document.createElement("ul");
+          subtaskList.className = "subtask-list";
           task.subtasks.forEach((sub, subIndex) => {
             const li = document.createElement("li");
             li.innerHTML = `
-              <label class="flex items-center gap-2">
-                <input type="checkbox" class="accent-red-600" ${sub.done ? "checked" : ""}>
-                ${sub.title}
+              <label class="subtask-item">
+                <input type="checkbox" ${sub.done ? "checked" : ""}>
+                <span>${sub.title}</span>
               </label>
             `;
             li.querySelector("input").addEventListener("change", async () => {
@@ -368,15 +369,15 @@ if (container) {
             });
             subtaskList.appendChild(li);
           });
+          card.appendChild(subtaskList);
         }
-        card.appendChild(subtaskList);
 
         // === Subtask Input ===
         const subForm = document.createElement("form");
-        subForm.className = "flex flex-wrap gap-2 mt-3";
+        subForm.className = "subtask-form";
         subForm.innerHTML = `
-          <input type="text" placeholder="New subtask..." class="w-full px-2 py-1 rounded bg-zinc-700 text-white text-sm" required>
-          <button type="submit" class="bg-red-700 px-2 rounded text-sm">Add</button>
+          <input type="text" placeholder="Add subtask..." required>
+          <button type="submit">Add</button>
         `;
         subForm.addEventListener("submit", async (e) => {
           e.preventDefault();
@@ -384,37 +385,40 @@ if (container) {
           const newSub = { title: input.value.trim(), done: false };
           const updatedSubtasks = [...(task.subtasks || []), newSub];
           await updateTask(task.index, { ...task, subtasks: updatedSubtasks });
+          input.value = '';
           loadTasks();
         });
         card.appendChild(subForm);
 
-        // === Buttons ===
-        const btnGroup = document.createElement("div");
-        btnGroup.className = "flex justify-between mt-2";
+        // === Action Buttons ===
+        const actionButtons = document.createElement("div");
+        actionButtons.className = "task-actions";
 
         const completeBtn = document.createElement("button");
         completeBtn.textContent = task.completed ? "Mark Incomplete" : "Mark Complete";
-        completeBtn.className = "text-xs bg-purple-600 px-2 rounded";
+        completeBtn.className = `task-action-btn complete`;
         completeBtn.addEventListener("click", async () => {
           await fetch(`https://avdevplanner.onrender.com/tasks/${task.index}/toggle`, {
             method: "PATCH"
           });
           loadTasks();
         });
+        actionButtons.appendChild(completeBtn);
 
         const deleteBtn = document.createElement("button");
         deleteBtn.textContent = "Delete";
-        deleteBtn.className = "text-xs bg-red-700 px-2 py-1 rounded";
+        deleteBtn.className = "task-action-btn delete";
         deleteBtn.addEventListener("click", async () => {
-          await fetch(`https://avdevplanner.onrender.com/tasks/${task.index}`, {
-            method: "DELETE"
-          });
-          loadTasks();
+          if (confirm("Are you sure you want to delete this task?")) {
+            await fetch(`https://avdevplanner.onrender.com/tasks/${task.index}`, {
+              method: "DELETE"
+            });
+            loadTasks();
+          }
         });
+        actionButtons.appendChild(deleteBtn);
 
-        btnGroup.appendChild(completeBtn);
-        btnGroup.appendChild(deleteBtn);
-        card.appendChild(btnGroup);
+        card.appendChild(actionButtons);
 
         grid.appendChild(card);
       });

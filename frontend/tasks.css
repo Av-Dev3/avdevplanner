@@ -110,6 +110,30 @@ body {
   gap: 1.5rem;
 }
 
+/* === TASK DATE GROUPS === */
+.task-date-group {
+  margin-bottom: 2rem;
+}
+
+.task-date-heading {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  border-left: 4px solid var(--tasks-accent);
+}
+
+.task-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+}
+
 /* === TASK CARDS === */
 .task-card {
   background: var(--card-bg);
@@ -205,6 +229,75 @@ body {
 .task-action-btn.delete:hover {
   background: var(--tasks-accent);
   color: white;
+}
+
+/* === SUBTASKS === */
+.subtask-list {
+  margin: 1rem 0;
+  padding-left: 1rem;
+  list-style: none;
+}
+
+.subtask-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.subtask-item input[type="checkbox"] {
+  accent-color: var(--tasks-accent);
+}
+
+.subtask-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.subtask-form input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 0.5rem;
+  color: var(--text-primary);
+  font-size: 0.8rem;
+}
+
+.subtask-form input:focus {
+  outline: none;
+  border-color: var(--tasks-accent);
+}
+
+.subtask-form button {
+  background: var(--tasks-accent);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.subtask-form button:hover {
+  background: var(--tasks-accent-dark);
+}
+
+/* === TASK STATUS === */
+.task-status {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* === MODAL TITLE ACCENT === */
+.card--tasks::before {
+  background: var(--tasks-accent) !important;
+  box-shadow: 0 0 20px rgba(231, 76, 60, 0.4) !important;
 }
 
 /* === EMPTY STATE === */

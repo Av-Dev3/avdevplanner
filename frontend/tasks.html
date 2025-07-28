@@ -122,7 +122,7 @@
     </div>
 
     <!-- Add Task Popup -->
-    <div id="taskPopup" class="modal hidden">
+    <div id="taskPopup" class="modal glass-modal hidden">
       <div class="modal__content">
         <button class="modal__close" onclick="document.getElementById('taskPopup').classList.add('hidden')">&times;</button>
         <h2 class="modal__title card--tasks">Add New Task</h2>
@@ -136,33 +136,33 @@
       </div>
     </div>
 
-    <!-- Mobile Navigation -->
+    <!-- Show only on mobile -->
     <div class="block md:hidden">
-      <nav id="bottomNav" class="fixed bottom-0 left-0 w-full text-white rounded-t-2xl flex items-center justify-between px-6 py-4 shadow-inner z-40 transition-colors duration-300">
-        <a href="index.html" class="flex flex-col items-center text-sm hover:text-[#b91c1c]">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <nav id="bottomNav" style="background-color: #1a1a1a;" class="fixed bottom-0 left-0 right-0 text-white rounded-t-2xl flex items-center justify-between px-1 py-2 shadow-inner z-40 transition-colors duration-300">
+        <a href="index.html" class="flex flex-col items-center text-xs hover:text-[#b91c1c] min-w-0 flex-1">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7m-9 2v8m4-8v8m5 0h2a2 2 0 002-2v-5a2 2 0 00-2-2h-3.28" />
           </svg>
-          Home
+          <span class="text-xs truncate">Home</span>
         </a>
-        <a href="schedule.html" class="flex flex-col items-center text-sm hover:text-[#b91c1c]">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <a href="schedule.html" class="flex flex-col items-center text-xs hover:text-[#b91c1c] min-w-0 flex-1">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 10h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
-          Calendar
+          <span class="text-xs truncate">Cal</span>
         </a>
-        <button id="fab" class="bg-[#b91c1c] w-14 h-14 rounded-full text-white flex items-center justify-center shadow-xl transform -translate-y-8 hover:scale-105 transition z-50 mx-1">+</button>
-        <a href="daily.html" class="flex flex-col items-center text-sm hover:text-[#b91c1c]">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <button id="fab" class="bg-[#b91c1c] w-10 h-10 rounded-full text-white flex items-center justify-center shadow-xl transform -translate-y-4 hover:scale-105 transition z-50">+</button>
+        <a href="daily.html" class="flex flex-col items-center text-xs hover:text-[#b91c1c] min-w-0 flex-1">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
-          Day
+          <span class="text-xs truncate">Daily</span>
         </a>
-        <a href="weekly.html" class="flex flex-col items-center text-sm hover:text-[#b91c1c]">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <a href="weekly.html" class="flex flex-col items-center text-xs hover:text-[#b91c1c] min-w-0 flex-1">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M3 12h18M3 17h18" />
           </svg>
-          Week
+          <span class="text-xs truncate">Week</span>
         </a>
       </nav>
     </div>
