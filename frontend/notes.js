@@ -474,7 +474,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <div class="tagged-notes-list">
           ${notes.length === 0 ? '<p class="text-center text-gray-400">No notes found with this tag.</p>' : ''}
           ${notes.map(note => `
-            <div class="collection-note-item" onclick="showNotePreview(${JSON.stringify(note).replace(/"/g, '&quot;')})" style="cursor: pointer;">
+            <div class="collection-note-item" onclick="showNotePreviewFromTag(${JSON.stringify(note).replace(/"/g, '&quot;')}, this.closest('.modal'))" style="cursor: pointer;">
               <h4>${note.title || '(No Title)'}</h4>
               <p>${note.content ? note.content.substring(0, 100) + (note.content.length > 100 ? '...' : '') : ''}</p>
               <div class="note-meta">
@@ -594,7 +594,7 @@ document.addEventListener("DOMContentLoaded", () => {
         listEl.innerHTML = '<p class="text-center text-gray-400">No notes in this collection.</p>';
       } else {
         listEl.innerHTML = notes.map(note => `
-          <div class="collection-note-item" onclick="showNotePreview(${JSON.stringify(note).replace(/"/g, '&quot;')})" style="cursor: pointer;">
+          <div class="collection-note-item" onclick="showNotePreviewFromCollection(${JSON.stringify(note).replace(/"/g, '&quot;')})" style="cursor: pointer;">
             <h4>${note.title || '(No Title)'}</h4>
             <p>${note.content ? note.content.substring(0, 100) + (note.content.length > 100 ? '...' : '') : ''}</p>
             <div class="note-meta">
@@ -655,7 +655,62 @@ document.addEventListener("DOMContentLoaded", () => {
         : '';
     }
 
-    document.getElementById('note-preview-popup').classList.remove('hidden');
+    const popup = document.getElementById('note-preview-popup');
+    popup.classList.remove('hidden');
+    popup.style.zIndex = '10001';
+  };
+
+  window.showNotePreviewFromTag = function(note, tagPopup) {
+    // Close the tag popup first
+    if (tagPopup) {
+      tagPopup.remove();
+    }
+    
+    // Then show the note preview
+    const titleEl = document.getElementById('popup-note-title');
+    const contentEl = document.getElementById('popup-note-content');
+    const tagsEl = document.getElementById('popup-note-tags');
+
+    if (titleEl) titleEl.textContent = note.title || "(No Title)";
+    if (contentEl) contentEl.textContent = note.content || "";
+    
+    const tags = note.tags || [];
+    if (tagsEl) {
+      tagsEl.innerHTML = tags.length > 0 
+        ? tags.map(tag => `<span class="note-tag">#${tag}</span>`).join('')
+        : '';
+    }
+
+    const popup = document.getElementById('note-preview-popup');
+    popup.classList.remove('hidden');
+    popup.style.zIndex = '10001';
+  };
+
+  window.showNotePreviewFromCollection = function(note) {
+    // Close the collection popup first
+    const collectionPopup = document.getElementById('collection-notes-popup');
+    if (collectionPopup) {
+      collectionPopup.classList.add('hidden');
+    }
+    
+    // Then show the note preview
+    const titleEl = document.getElementById('popup-note-title');
+    const contentEl = document.getElementById('popup-note-content');
+    const tagsEl = document.getElementById('popup-note-tags');
+
+    if (titleEl) titleEl.textContent = note.title || "(No Title)";
+    if (contentEl) contentEl.textContent = note.content || "";
+    
+    const tags = note.tags || [];
+    if (tagsEl) {
+      tagsEl.innerHTML = tags.length > 0 
+        ? tags.map(tag => `<span class="note-tag">#${tag}</span>`).join('')
+        : '';
+    }
+
+    const popup = document.getElementById('note-preview-popup');
+    popup.classList.remove('hidden');
+    popup.style.zIndex = '10001';
   };
 
   // === INITIALIZATION ===
