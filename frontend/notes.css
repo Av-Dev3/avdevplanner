@@ -962,14 +962,14 @@ body {
 
 /* === NOTE PREVIEW === */
 .note-preview-content {
-  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
-  border: 1px solid #e9ecef;
-  border-radius: 12px;
-  padding: 2rem;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  position: relative;
-  min-height: 200px;
+  background: var(--glass-bg) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: var(--radius) !important;
+  padding: 2rem !important;
+  margin-bottom: 1.5rem !important;
+  box-shadow: var(--shadow) !important;
+  position: relative !important;
+  min-height: 200px !important;
 }
 
 .note-preview-content::before {
@@ -995,7 +995,7 @@ body {
 }
 
 .note-preview-content .note-title {
-  color: #2c3e50;
+  color: var(--text-primary) !important;
   font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: 1rem;
@@ -1003,18 +1003,18 @@ body {
   position: relative;
   z-index: 1;
   padding-bottom: 0.5rem;
-  border-bottom: 2px solid #e9ecef;
+  border-bottom: 2px solid var(--border-color) !important;
 }
 
 .note-preview-content .note-content {
-  color: #495057;
+  color: var(--text-primary) !important;
   line-height: 1.8;
   margin-bottom: 1.5rem;
   white-space: pre-wrap;
   font-size: 1rem;
   position: relative;
   z-index: 1;
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.05) !important;
   padding: 1rem;
   border-radius: 8px;
   border-left: 4px solid var(--notes-accent);
@@ -1042,7 +1042,7 @@ body {
   position: absolute;
   bottom: 1rem;
   right: 1rem;
-  color: #6c757d;
+  color: var(--text-muted) !important;
   font-size: 0.85rem;
   font-style: italic;
   opacity: 0.8;
@@ -1071,21 +1071,21 @@ body {
 }
 
 .modal__content {
-  background: var(--popup-glass);
-  backdrop-filter: var(--popup-blur);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius);
-  padding: 2.5rem 2rem;
-  min-width: 400px;
-  max-width: 90vw;
-  max-height: 90vh;
-  overflow-y: auto;
-  position: relative;
-  box-shadow: var(--popup-shadow);
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  animation: modalFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: var(--popup-glass) !important;
+  backdrop-filter: var(--popup-blur) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: var(--radius) !important;
+  padding: 2.5rem 2rem !important;
+  min-width: 400px !important;
+  max-width: 90vw !important;
+  max-height: 90vh !important;
+  overflow-y: auto !important;
+  position: relative !important;
+  box-shadow: var(--popup-shadow) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  animation: modalFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
 @keyframes modalFadeIn {
@@ -1137,7 +1137,7 @@ body {
   font-size: 1.4rem;
   font-weight: 600;
   margin-bottom: 1.5rem;
-  color: var(--text-primary);
+  color: var(--text-primary) !important;
   letter-spacing: 0.025em;
   display: flex;
   align-items: center;
