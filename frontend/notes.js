@@ -465,16 +465,16 @@ document.addEventListener("DOMContentLoaded", () => {
     // Create a temporary popup to show tagged notes
     const popup = document.createElement('div');
     popup.className = 'modal glass-modal';
-    popup.style.display = 'flex';
+    popup.style.cssText = 'display: flex; z-index: 9999; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); align-items: center; justify-content: center;';
     
     popup.innerHTML = `
-      <div class="modal__content">
-        <button class="modal__close" onclick="this.closest('.modal').remove()">&times;</button>
-        <h2 class="modal__title">Notes tagged with #${tag}</h2>
+      <div class="modal__content" style="z-index: 10000; max-width: 600px; max-height: 80vh; overflow: hidden;">
+        <button class="modal__close" onclick="this.closest('.modal').remove()" style="position: absolute; top: 16px; right: 16px; background: none; border: none; color: white; font-size: 24px; cursor: pointer; z-index: 10001;">&times;</button>
+        <h2 class="modal__title" style="margin-bottom: 20px; color: white; font-size: 1.5rem; font-weight: 600;">Notes tagged with #${tag}</h2>
         <div class="tagged-notes-list">
           ${notes.length === 0 ? '<p class="text-center text-gray-400">No notes found with this tag.</p>' : ''}
           ${notes.map(note => `
-            <div class="collection-note-item" onclick="showNotePreview(${JSON.stringify(note).replace(/"/g, '&quot;')})">
+            <div class="collection-note-item" onclick="showNotePreview(${JSON.stringify(note).replace(/"/g, '&quot;')})" style="cursor: pointer;">
               <h4>${note.title || '(No Title)'}</h4>
               <p>${note.content ? note.content.substring(0, 100) + (note.content.length > 100 ? '...' : '') : ''}</p>
               <div class="note-meta">
@@ -495,6 +495,15 @@ document.addEventListener("DOMContentLoaded", () => {
         popup.remove();
       }
     });
+
+    // Close popup with Escape key
+    const handleEscape = (e) => {
+      if (e.key === 'Escape') {
+        popup.remove();
+        document.removeEventListener('keydown', handleEscape);
+      }
+    };
+    document.addEventListener('keydown', handleEscape);
   }
 
   // === RENDER COLLECTIONS ===
@@ -585,7 +594,7 @@ document.addEventListener("DOMContentLoaded", () => {
         listEl.innerHTML = '<p class="text-center text-gray-400">No notes in this collection.</p>';
       } else {
         listEl.innerHTML = notes.map(note => `
-          <div class="collection-note-item" onclick="showNotePreview(${JSON.stringify(note).replace(/"/g, '&quot;')})">
+          <div class="collection-note-item" onclick="showNotePreview(${JSON.stringify(note).replace(/"/g, '&quot;')})" style="cursor: pointer;">
             <h4>${note.title || '(No Title)'}</h4>
             <p>${note.content ? note.content.substring(0, 100) + (note.content.length > 100 ? '...' : '') : ''}</p>
             <div class="note-meta">
@@ -597,6 +606,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     popup.classList.remove('hidden');
+    popup.style.zIndex = '9999';
   }
 
   function showCollectionOptions(notebook, x, y) {
