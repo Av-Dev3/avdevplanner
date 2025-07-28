@@ -55,12 +55,16 @@ document.addEventListener('DOMContentLoaded', () => {
         siteLinksDrawer?.classList.remove('drawer-visible');
       }
     } else if (isTasks) {
-      const taskPopup = document.getElementById('task-form-popup');
-      if (taskPopup) {
-        taskPopup.classList.remove('hidden');
-        taskPopup.addEventListener('click', (e) => {
-          if (e.target === taskPopup) taskPopup.classList.add('hidden');
-        });
+      // Open mobile drawer for tasks page (not direct popup)
+      if (mobileDrawer) {
+        if (mobileDrawer.classList.contains('hidden')) {
+          mobileDrawer.classList.remove('hidden');
+          setTimeout(() => mobileDrawer.classList.add('drawer-visible'), 10);
+        } else {
+          mobileDrawer.classList.remove('drawer-visible');
+          setTimeout(() => mobileDrawer.classList.add('hidden'), 300);
+        }
+        siteLinksDrawer?.classList.remove('drawer-visible');
       }
     } else if (isLessons) {
       // Open mobile drawer for lessons page (not direct popup)

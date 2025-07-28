@@ -47,72 +47,8 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   });
-});
-
-// === MOBILE FAB HANDLING ===
-let fabPressTimer;
-let fabLongPressTriggered = false;
-
-document.addEventListener('DOMContentLoaded', function() {
-  const fab = document.getElementById('fab');
-  const mobileDrawer = document.getElementById('mobileDrawer');
-  const siteLinksDrawer = document.getElementById('siteLinksDrawer');
   
-  // Mobile FAB click handler (short press)
-  if (fab) {
-    fab.addEventListener('click', function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      
-      // Only trigger if it wasn't a long press
-      if (!fabLongPressTriggered) {
-        // Open Add Task popup
-        const taskPopup = document.getElementById('taskPopup');
-        if (taskPopup) {
-          taskPopup.classList.remove('hidden');
-        }
-      }
-      fabLongPressTriggered = false;
-    });
-    
-    // Mobile FAB long press handler
-    fab.addEventListener('mousedown', function(e) {
-      fabLongPressTriggered = false;
-      fabPressTimer = setTimeout(() => {
-        fabLongPressTriggered = true;
-        // Open Site Links drawer
-        if (siteLinksDrawer) {
-          siteLinksDrawer.classList.remove('hidden');
-        }
-      }, 500); // 500ms for long press
-    });
-    
-    fab.addEventListener('mouseup', function(e) {
-      clearTimeout(fabPressTimer);
-    });
-    
-    fab.addEventListener('mouseleave', function(e) {
-      clearTimeout(fabPressTimer);
-    });
-    
-    // Touch events for mobile
-    fab.addEventListener('touchstart', function(e) {
-      fabLongPressTriggered = false;
-      fabPressTimer = setTimeout(() => {
-        fabLongPressTriggered = true;
-        // Open Site Links drawer
-        if (siteLinksDrawer) {
-          siteLinksDrawer.classList.remove('hidden');
-        }
-      }, 500);
-    });
-    
-    fab.addEventListener('touchend', function(e) {
-      clearTimeout(fabPressTimer);
-    });
-  }
-
-// === DRAWER HANDLING ===
+  // === DRAWER HANDLING ===
   const desktopDrawer = document.getElementById('drawer');
   const quickActionsBtn = document.getElementById('quick-actions-btn');
   
