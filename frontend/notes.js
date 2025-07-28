@@ -1,33 +1,7 @@
 // === NOTES MANAGEMENT ===
 // Modern notes system with search, tags, and collections
 
-// Test function to check if modals work
-function testModal() {
-  console.log('Testing modal...');
-  const popup = document.getElementById('note-preview-popup');
-  if (popup) {
-    console.log('Found popup, attempting to show...');
-    
-    // Simple approach - just remove hidden class
-    popup.classList.remove('hidden');
-    
-    // Add test content
-    const titleEl = document.getElementById('popup-note-title');
-    if (titleEl) titleEl.textContent = 'TEST MODAL - CLICK TO CLOSE';
-    
-    // Add click to close
-    popup.onclick = function() {
-      popup.classList.add('hidden');
-    };
-    
-    console.log('Modal should now be visible');
-  } else {
-    console.error('Popup not found!');
-  }
-}
 
-// Make test function global
-window.testModal = testModal;
 
 document.addEventListener("DOMContentLoaded", () => {
   // DOM Elements
