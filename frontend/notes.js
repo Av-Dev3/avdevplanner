@@ -245,6 +245,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Click to preview
     card.addEventListener('click', () => {
+      console.log('Note card clicked:', note);
       showNotePreview(note);
     });
 
@@ -253,9 +254,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // === NOTE ACTIONS ===
   function showNotePreview(note) {
+    console.log('showNotePreview called with:', note);
+    
     const titleEl = document.getElementById('popup-note-title');
     const contentEl = document.getElementById('popup-note-content');
     const tagsEl = document.getElementById('popup-note-tags');
+    const popup = document.getElementById('note-preview-popup');
+
+    console.log('Found elements:', { titleEl, contentEl, tagsEl, popup });
 
     if (titleEl) titleEl.textContent = note.title || "(No Title)";
     if (contentEl) contentEl.textContent = note.content || "";
@@ -264,10 +270,22 @@ document.addEventListener("DOMContentLoaded", () => {
     if (tagsEl) {
       tagsEl.innerHTML = tags.length > 0 
         ? tags.map(tag => `<span class="note-tag">#${tag}</span>`).join('')
-        : '';
+        : '<span style="color: #6c757d; font-style: italic;">No tags</span>';
     }
 
-    document.getElementById('note-preview-popup').classList.remove('hidden');
+    // Add note date if available
+    const dateEl = document.getElementById('popup-note-date');
+    if (dateEl) {
+      const date = note.date || note.created_at;
+      dateEl.textContent = date ? formatPrettyDate(date) : '';
+    }
+
+    if (popup) {
+      popup.classList.remove('hidden');
+      console.log('Popup should now be visible');
+    } else {
+      console.error('Note preview popup not found!');
+    }
   }
 
   function editNote(note) {
@@ -690,7 +708,14 @@ document.addEventListener("DOMContentLoaded", () => {
     if (tagsEl) {
       tagsEl.innerHTML = tags.length > 0 
         ? tags.map(tag => `<span class="note-tag">#${tag}</span>`).join('')
-        : '';
+        : '<span style="color: #6c757d; font-style: italic;">No tags</span>';
+    }
+
+    // Add note date if available
+    const dateEl = document.getElementById('popup-note-date');
+    if (dateEl) {
+      const date = note.date || note.created_at;
+      dateEl.textContent = date ? formatPrettyDate(date) : '';
     }
 
     const popup = document.getElementById('note-preview-popup');
@@ -716,7 +741,14 @@ document.addEventListener("DOMContentLoaded", () => {
     if (tagsEl) {
       tagsEl.innerHTML = tags.length > 0 
         ? tags.map(tag => `<span class="note-tag">#${tag}</span>`).join('')
-        : '';
+        : '<span style="color: #6c757d; font-style: italic;">No tags</span>';
+    }
+
+    // Add note date if available
+    const dateEl = document.getElementById('popup-note-date');
+    if (dateEl) {
+      const date = note.date || note.created_at;
+      dateEl.textContent = date ? formatPrettyDate(date) : '';
     }
 
     const popup = document.getElementById('note-preview-popup');
@@ -743,7 +775,14 @@ document.addEventListener("DOMContentLoaded", () => {
     if (tagsEl) {
       tagsEl.innerHTML = tags.length > 0 
         ? tags.map(tag => `<span class="note-tag">#${tag}</span>`).join('')
-        : '';
+        : '<span style="color: #6c757d; font-style: italic;">No tags</span>';
+    }
+
+    // Add note date if available
+    const dateEl = document.getElementById('popup-note-date');
+    if (dateEl) {
+      const date = note.date || note.created_at;
+      dateEl.textContent = date ? formatPrettyDate(date) : '';
     }
 
     const popup = document.getElementById('note-preview-popup');

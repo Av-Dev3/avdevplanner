@@ -208,10 +208,11 @@
     <div id="note-preview-popup" class="modal glass-modal hidden">
       <div class="modal__content">
         <button class="modal__close" onclick="document.getElementById('note-preview-popup').classList.add('hidden')">&times;</button>
-        <h3 id="popup-note-title" class="modal__title"></h3>
         <div class="note-preview-content">
-          <p id="popup-note-content" class="note-content"></p>
+          <h3 id="popup-note-title" class="note-title"></h3>
+          <div id="popup-note-content" class="note-content"></div>
           <div id="popup-note-tags" class="note-tags"></div>
+          <div id="popup-note-date" class="note-meta"></div>
         </div>
         <div class="note-preview-actions">
           <button class="note-action-btn edit-note">Edit</button>
