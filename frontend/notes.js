@@ -265,7 +265,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Click to preview
-    card.addEventListener('click', () => {
+    card.addEventListener('click', (e) => {
+      // Don't trigger if clicking on action buttons
+      if (e.target.closest('.note-actions')) {
+        return;
+      }
       console.log('Note card clicked:', note);
       showNotePreview(note);
     });
@@ -303,6 +307,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (popup) {
       popup.classList.remove('hidden');
+      // Force display flex for mobile
+      popup.style.display = 'flex';
+      popup.style.alignItems = 'center';
+      popup.style.justifyContent = 'center';
       console.log('Popup should now be visible');
     } else {
       console.error('Note preview popup not found!');
@@ -543,10 +551,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // Create a temporary popup to show tagged notes
     const popup = document.createElement('div');
     popup.className = 'modal glass-modal';
-    popup.style.cssText = 'display: flex; z-index: 9999; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); align-items: center; justify-content: center;';
+    popup.style.cssText = 'display: flex; z-index: 9999; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); align-items: center; justify-content: center; padding: 1rem;';
     
     popup.innerHTML = `
-      <div class="modal__content" style="z-index: 10000; max-width: 600px; max-height: 80vh; overflow: hidden;">
+      <div class="modal__content" style="z-index: 10000; width: 95%; max-width: 600px; max-height: 80vh; overflow: hidden; margin: 0 auto;">
         <button class="modal__close" onclick="this.closest('.modal').remove()" style="position: absolute; top: 16px; right: 16px; background: none; border: none; color: white; font-size: 24px; cursor: pointer; z-index: 10001;">&times;</button>
         <h2 class="modal__title" style="margin-bottom: 20px; color: white; font-size: 1.5rem; font-weight: 600;">Notes tagged with #${tag}</h2>
         <div class="tagged-notes-list">
@@ -557,7 +565,7 @@ document.addEventListener("DOMContentLoaded", () => {
               <p>${note.content ? note.content.substring(0, 100) + (note.content.length > 100 ? '...' : '') : ''}</p>
               <div class="note-meta">
                 <small class="note-date">${formatPrettyDate(note.date || note.created_at)}</small>
-                ${note.notebook ? `<small class="note-collection">📁 ${note.notebook}</small>` : ''}
+                ${note.notebook ? `<small class="note-collection">📚 ${note.notebook}</small>` : ''}
               </div>
             </div>
           `).join('')}
@@ -799,6 +807,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const popup = document.getElementById('note-preview-popup');
     popup.classList.remove('hidden');
     popup.style.zIndex = '10001';
+    // Force display flex for mobile
+    popup.style.display = 'flex';
+    popup.style.alignItems = 'center';
+    popup.style.justifyContent = 'center';
   };
 
   window.showNotePreviewFromTag = function(note, tagPopup) {
@@ -832,6 +844,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const popup = document.getElementById('note-preview-popup');
     popup.classList.remove('hidden');
     popup.style.zIndex = '10001';
+    // Force display flex for mobile
+    popup.style.display = 'flex';
+    popup.style.alignItems = 'center';
+    popup.style.justifyContent = 'center';
   };
 
   window.showNotePreviewFromCollection = function(note) {
@@ -866,6 +882,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const popup = document.getElementById('note-preview-popup');
     popup.classList.remove('hidden');
     popup.style.zIndex = '10001';
+    // Force display flex for mobile
+    popup.style.display = 'flex';
+    popup.style.alignItems = 'center';
+    popup.style.justifyContent = 'center';
   };
 
   // === INITIALIZATION ===
