@@ -1,7 +1,9 @@
 /* === NOTES DASHBOARD STYLES === */
 
-/* Standalone notes styles - no dashboard import to avoid conflicts */
+/* === NOTES PAGE STYLES === */
+/* Completely standalone notes page design system */
 :root {
+  --notes-bg: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
   --glass-bg: rgba(26, 26, 26, 0.8);
   --glass-blur: blur(20px);
   --border-color: rgba(255, 255, 255, 0.1);
@@ -11,11 +13,6 @@
   --text-secondary: rgba(255, 255, 255, 0.7);
   --text-muted: rgba(255, 255, 255, 0.5);
   --notes-accent: #8b4513;
-  --tasks-accent: #dc2626;
-  --goals-accent: #059669;
-  --lessons-accent: #d97706;
-  --focus-accent: #7c3aed;
-  --motivation-accent: #be185d;
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   --popup-glass: rgba(26, 26, 26, 0.95);
   --popup-blur: blur(20px);
@@ -27,7 +24,7 @@ body {
   margin: 0;
   padding: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  background: var(--notes-bg);
   color: var(--text-primary);
   min-height: 100vh;
   overflow-x: hidden;
@@ -36,7 +33,73 @@ body {
 .modern-dashboard {
   min-height: 100vh;
   padding: 2rem 0;
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  background: var(--notes-bg);
+}
+
+/* === NOTES HEADER === */
+.dashboard-header {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--glass-shadow);
+}
+
+.dashboard-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.dashboard-title {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.title-icon {
+  background: linear-gradient(135deg, var(--notes-accent), #a0522d);
+  border-radius: 12px;
+  padding: 0.75rem;
+  color: white;
+}
+
+.title-text h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  margin-bottom: 0.25rem;
+}
+
+.title-text p {
+  color: var(--text-secondary);
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.action-btn {
+  background: linear-gradient(135deg, var(--notes-accent), #a0522d);
+  color: white;
+  border: none;
+  border-radius: var(--radius-small);
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--glass-shadow);
 }
 
 /* === SEARCH CONTAINER === */
