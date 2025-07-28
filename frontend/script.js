@@ -311,6 +311,21 @@ if (container) {
 
     container.innerHTML = "";
 
+    // Check if no tasks
+    if (Object.keys(tasksByDate).length === 0) {
+      container.innerHTML = `
+        <div class="tasks-empty">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+            <path d="M9 11l3 3L22 4"/>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+          </svg>
+          <h3>No Tasks Yet</h3>
+          <p>Start by adding your first task to manage your daily activities and stay organized.</p>
+        </div>
+      `;
+      return;
+    }
+
     const sortedDates = Object.keys(tasksByDate).sort();
 
     if (selectedDate) {
@@ -334,7 +349,7 @@ if (container) {
       groupDiv.appendChild(heading);
 
       const grid = document.createElement("div");
-      grid.className = "task-grid";
+      grid.className = "tasks-row";
 
       tasksByDate[date].forEach((task) => {
         const card = document.createElement("div");
@@ -346,7 +361,7 @@ if (container) {
             <span class="task-time">🕐 ${formatTime(task.time)}</span>
             <span class="task-status">${task.completed ? "✅ Completed" : "⏳ Pending"}</span>
           </div>
-          ${task.notes ? `<p>${task.notes}</p>` : ""}
+          ${task.notes ? `<div class="task-notes">${task.notes}</div>` : ""}
         `;
 
         // === Subtasks ===
