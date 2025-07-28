@@ -3,41 +3,13 @@
 
 // Test function to check if modals work
 function testModal() {
-  alert('Test modal function called!');
   console.log('Testing modal...');
   const popup = document.getElementById('note-preview-popup');
   if (popup) {
     console.log('Found popup, attempting to show...');
     
-    // Check current styles
-    console.log('Current display:', getComputedStyle(popup).display);
-    console.log('Current visibility:', getComputedStyle(popup).visibility);
-    console.log('Current z-index:', getComputedStyle(popup).zIndex);
-    console.log('Current position:', getComputedStyle(popup).position);
-    
+    // Simple approach - just remove hidden class
     popup.classList.remove('hidden');
-    popup.style.display = 'flex';
-    popup.style.position = 'fixed';
-    popup.style.top = '0';
-    popup.style.left = '0';
-    popup.style.right = '0';
-    popup.style.bottom = '0';
-    popup.style.width = '100vw';
-    popup.style.height = '100vh';
-    popup.style.backgroundColor = 'red'; // Make it red so we can see it
-    popup.style.alignItems = 'center';
-    popup.style.justifyContent = 'center';
-    popup.style.zIndex = '99999';
-    popup.style.visibility = 'visible';
-    popup.style.opacity = '1';
-    
-    // Check if body has overflow hidden
-    console.log('Body overflow:', getComputedStyle(document.body).overflow);
-    console.log('Body position:', getComputedStyle(document.body).position);
-    
-    // Force body to allow modal
-    document.body.style.overflow = 'visible';
-    document.body.style.position = 'static';
     
     // Add test content
     const titleEl = document.getElementById('popup-note-title');
@@ -46,17 +18,9 @@ function testModal() {
     // Add click to close
     popup.onclick = function() {
       popup.classList.add('hidden');
-      popup.style.display = 'none';
     };
     
-    // Check final styles
-    console.log('Final display:', getComputedStyle(popup).display);
-    console.log('Final visibility:', getComputedStyle(popup).visibility);
-    console.log('Final z-index:', getComputedStyle(popup).zIndex);
-    console.log('Final position:', getComputedStyle(popup).position);
-    console.log('Final background:', getComputedStyle(popup).backgroundColor);
-    
-    console.log('Modal should now be visible in RED');
+    console.log('Modal should now be visible');
   } else {
     console.error('Popup not found!');
   }

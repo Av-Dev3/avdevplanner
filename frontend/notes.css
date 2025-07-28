@@ -1,7 +1,43 @@
 /* === NOTES DASHBOARD STYLES === */
 
-/* Import dashboard variables and base styles */
-@import url('dashboard.css');
+/* Standalone notes styles - no dashboard import to avoid conflicts */
+:root {
+  --glass-bg: rgba(26, 26, 26, 0.8);
+  --glass-blur: blur(20px);
+  --border-color: rgba(255, 255, 255, 0.1);
+  --radius: 16px;
+  --radius-small: 8px;
+  --text-primary: rgba(255, 255, 255, 0.9);
+  --text-secondary: rgba(255, 255, 255, 0.7);
+  --text-muted: rgba(255, 255, 255, 0.5);
+  --notes-accent: #8b4513;
+  --tasks-accent: #dc2626;
+  --goals-accent: #059669;
+  --lessons-accent: #d97706;
+  --focus-accent: #7c3aed;
+  --motivation-accent: #be185d;
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  --popup-glass: rgba(26, 26, 26, 0.95);
+  --popup-blur: blur(20px);
+  --popup-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+/* === BASE STYLES === */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.modern-dashboard {
+  min-height: 100vh;
+  padding: 2rem 0;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+}
 
 /* === SEARCH CONTAINER === */
 .search-container {
@@ -595,80 +631,68 @@
   opacity: 0.8;
 }
 
-/* === POPUP Z-INDEX FIXES === */
-/* Override dashboard.css modal styles completely */
+/* === MODAL STYLES === */
+/* Simple, direct modal styles without conflicts */
 .modal {
-  z-index: 9999 !important;
-  display: none !important;
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  background: rgba(0, 0, 0, 0.5) !important;
-  align-items: center !important;
-  justify-content: center !important;
-  padding: 1rem !important;
-  overflow: hidden !important;
-  /* Override dashboard.css defaults */
-  inset: auto !important;
-  transition: none !important;
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 10000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .modal:not(.hidden) {
   display: flex !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-}
-
-/* Force override for glass-modal class */
-.glass-modal {
-  background: rgba(0, 0, 0, 0.5) !important;
-  padding: 1rem !important;
 }
 
 .modal__content {
-  z-index: 10000 !important;
-  width: 90% !important;
-  max-width: 600px !important;
-  max-height: 90vh !important;
-  margin: 0 auto !important;
-  position: relative !important;
-  background: var(--glass-bg) !important;
-  backdrop-filter: var(--glass-blur) !important;
-  border: 1px solid var(--border-color) !important;
-  border-radius: var(--radius) !important;
-  box-shadow: var(--glass-shadow) !important;
-  padding: 2rem !important;
-  overflow-y: auto !important;
+  background: var(--popup-glass);
+  backdrop-filter: var(--popup-blur);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 2rem;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: var(--popup-shadow);
 }
 
-#note-preview-popup {
-  z-index: 10001 !important;
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
+.modal__close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1.5rem;
+  transition: all 0.2s ease;
 }
 
-#note-preview-popup:not(.hidden) {
-  display: flex !important;
-  visibility: visible !important;
-  opacity: 1 !important;
+.modal__close:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--text-primary);
 }
 
-#collection-notes-popup {
-  z-index: 9999 !important;
-  display: none !important;
-  visibility: hidden !important;
-  opacity: 0 !important;
-}
-
-#collection-notes-popup:not(.hidden) {
-  display: flex !important;
-  visibility: visible !important;
-  opacity: 1 !important;
+.modal__title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
 }
 
 .tagged-notes-list {
