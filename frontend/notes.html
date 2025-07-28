@@ -153,6 +153,13 @@
               <span class="action-subtitle">Add a new note</span>
             </div>
           </button>
+          <button class="desktop-action-btn notes-action" onclick="document.getElementById('collectionPopup').classList.remove('hidden'); document.getElementById('drawer').classList.add('hidden')">
+            <div class="action-icon">📁</div>
+            <div class="action-text">
+              <span class="action-title">New Collection</span>
+              <span class="action-subtitle">Create a collection</span>
+            </div>
+          </button>
         </div>
       </div>
     </div>
@@ -164,6 +171,7 @@
         <h2 class="modal__title card--notes">Quick Actions</h2>
         <ul class="drawer__links">
           <li><button onclick="document.getElementById('notePopup').classList.remove('hidden')">Create Note</button></li>
+          <li><button onclick="document.getElementById('collectionPopup').classList.remove('hidden')">New Collection</button></li>
         </ul>
       </div>
     </div>

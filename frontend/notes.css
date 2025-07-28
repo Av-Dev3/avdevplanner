@@ -43,45 +43,7 @@
   transform: translateY(0);
 }
 
-.desktop-drawer__content {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 2rem;
-}
-
-.desktop-drawer__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-}
-
-.desktop-drawer__title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin: 0;
-}
-
-.desktop-drawer__close {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid var(--border-color);
-  color: var(--text-secondary);
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 1.5rem;
-  transition: all 0.2s ease;
-}
-
-.desktop-drawer__close:hover {
-  background: rgba(255, 255, 255, 0.2);
-  color: var(--text-primary);
-}
+/* Desktop drawer styles are handled by dashboard.css */
 
 /* Desktop drawer styles are handled by dashboard.css */
 
