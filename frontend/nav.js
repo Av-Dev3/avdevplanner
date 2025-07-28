@@ -71,12 +71,16 @@ document.addEventListener('DOMContentLoaded', () => {
         siteLinksDrawer?.classList.remove('drawer-visible');
       }
     } else if (isGoals) {
-      const goalPopup = document.getElementById('goal-form-popup');
-      if (goalPopup) {
-        goalPopup.classList.remove('hidden');
-        goalPopup.addEventListener('click', (e) => {
-          if (e.target === goalPopup) goalPopup.classList.add('hidden');
-        });
+      // Open mobile drawer for goals page (not direct popup)
+      if (mobileDrawer) {
+        if (mobileDrawer.classList.contains('hidden')) {
+          mobileDrawer.classList.remove('hidden');
+          setTimeout(() => mobileDrawer.classList.add('drawer-visible'), 10);
+        } else {
+          mobileDrawer.classList.remove('drawer-visible');
+          setTimeout(() => mobileDrawer.classList.add('hidden'), 300);
+        }
+        siteLinksDrawer?.classList.remove('drawer-visible');
       }
     } else if (isDaily) {
       // Daily page: only open site links (no quick actions)
