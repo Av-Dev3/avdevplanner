@@ -34,7 +34,7 @@
 }
 
 .task-date-group h3 {
-  color: var(--text-primary) !important;
+  color: var(--text-primary);
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 1rem;
