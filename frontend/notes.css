@@ -596,6 +596,7 @@
 }
 
 /* === POPUP Z-INDEX FIXES === */
+/* Override dashboard.css modal styles completely */
 .modal {
   z-index: 9999 !important;
   display: none !important;
@@ -611,12 +612,21 @@
   justify-content: center !important;
   padding: 1rem !important;
   overflow: hidden !important;
+  /* Override dashboard.css defaults */
+  inset: auto !important;
+  transition: none !important;
 }
 
 .modal:not(.hidden) {
   display: flex !important;
   visibility: visible !important;
   opacity: 1 !important;
+}
+
+/* Force override for glass-modal class */
+.glass-modal {
+  background: rgba(0, 0, 0, 0.5) !important;
+  padding: 1rem !important;
 }
 
 .modal__content {
