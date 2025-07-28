@@ -80,60 +80,70 @@
 }
 
 .desktop-drawer__actions {
+  padding: 24px 32px 32px;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 16px;
 }
 
 .desktop-action-btn {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 1.5rem;
-  background: var(--glass-bg);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius);
-  color: var(--text-primary);
+  gap: 16px;
+  padding: 20px 24px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
   cursor: pointer;
   transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   text-align: left;
+  width: 100%;
 }
 
 .desktop-action-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
   transform: translateY(-2px);
-  box-shadow: var(--glass-shadow);
-  border-color: var(--notes-accent);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+.desktop-action-btn:active {
+  transform: translateY(0);
 }
 
 .action-icon {
-  font-size: 2rem;
-  width: 60px;
-  height: 60px;
+  font-size: 32px;
+  width: 48px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 12px;
   background: rgba(255, 255, 255, 0.1);
-  border-radius: var(--radius-small);
   flex-shrink: 0;
 }
 
 .notes-action .action-icon {
-  background: linear-gradient(135deg, var(--notes-accent), #9b59b6);
+  background: linear-gradient(135deg, rgba(155, 89, 182, 0.2), rgba(155, 89, 182, 0.1));
+  border: 1px solid rgba(155, 89, 182, 0.3);
 }
 
 .action-text {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .action-title {
-  display: block;
   font-size: 1.1rem;
   font-weight: 600;
-  margin-bottom: 0.25rem;
+  color: var(--text-primary);
 }
 
 .action-subtitle {
-  display: block;
   font-size: 0.9rem;
   color: var(--text-secondary);
 }
@@ -251,25 +261,21 @@
 .modal__form, .ai__form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  padding: 32px;
-  overflow-y: auto;
-  max-height: calc(85vh - 120px);
+  gap: 1.2rem;
 }
 
 .modal__form input,
 .modal__form textarea,
 .ai__form input {
-  padding: 16px 20px;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.9);
+  padding: 1rem 1.2rem;
+  border-radius: var(--radius-small);
+  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
   font-size: 1rem;
   resize: none;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: inherit;
-  backdrop-filter: blur(8px);
 }
 
 .modal__form input:focus,
@@ -277,37 +283,31 @@
 .ai__form input:focus {
   outline: none;
   border-color: var(--notes-accent);
-  background: rgba(255, 255, 255, 0.15);
-  box-shadow: 
-    0 0 0 3px rgba(155, 89, 182, 0.3),
-    0 8px 24px rgba(0, 0, 0, 0.2);
-  transform: translateY(-2px);
+  background: rgba(155, 89, 182, 0.1);
+  box-shadow: 0 0 0 3px rgba(155, 89, 182, 0.1);
+  transform: translateY(-1px);
 }
 
 .modal__form input::placeholder,
 .modal__form textarea::placeholder,
 .ai__form input::placeholder {
-  color: rgba(255, 255, 255, 0.5);
-  opacity: 1;
+  color: var(--text-muted);
+  opacity: 0.7;
 }
 
 .modal__submit {
   font-size: 1rem;
   font-weight: 600;
   border: none;
-  border-radius: 12px;
-  padding: 16px 32px;
+  border-radius: var(--radius-small);
+  padding: 1rem 0;
   margin-top: 0.5rem;
   background: linear-gradient(135deg, var(--notes-accent), #9b59b6);
   color: white;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
-  box-shadow: 
-    0 8px 24px rgba(155, 89, 182, 0.3),
-    0 0 0 1px rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(8px);
 }
 
 .modal__submit::before {
@@ -1072,23 +1072,21 @@ body {
 }
 
 .modal__content {
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.08));
-  backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 24px;
-  padding: 0;
-  min-width: 480px;
+  background: var(--popup-glass);
+  backdrop-filter: var(--popup-blur);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 2.5rem 2rem;
+  min-width: 400px;
   max-width: 90vw;
-  max-height: 85vh;
-  overflow: hidden;
+  max-height: 90vh;
+  overflow-y: auto;
   position: relative;
-  box-shadow: 
-    0 32px 64px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(255, 255, 255, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  box-shadow: var(--popup-shadow);
   display: flex;
   flex-direction: column;
-  animation: modalFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  align-items: stretch;
+  animation: modalFadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 @keyframes modalFadeIn {
@@ -1104,23 +1102,22 @@ body {
 
 .modal__close {
   position: absolute;
-  right: 20px;
-  top: 20px;
-  background: rgba(255, 255, 255, 0.15);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 1.25rem;
+  right: 1.5rem;
+  top: 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-size: 1.5rem;
   line-height: 1;
   cursor: pointer;
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 10;
-  backdrop-filter: blur(8px);
+  z-index: 2;
 }
 
 .modal__close:hover {
@@ -1136,17 +1133,14 @@ body {
 
 .modal__title {
   text-align: left;
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin: 0;
-  padding: 32px 32px 24px 32px;
-  color: rgba(255, 255, 255, 0.95);
-  letter-spacing: -0.02em;
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+  letter-spacing: 0.025em;
   display: flex;
   align-items: center;
-  gap: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.03);
+  gap: 0.75rem;
 }
 
 .modal__title::before {
@@ -1353,16 +1347,13 @@ body {
     min-width: auto !important;
     max-height: 80vh !important;
     margin: 0 auto !important;
-    background: linear-gradient(145deg, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.08)) !important;
-    backdrop-filter: blur(24px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.15) !important;
-    border-radius: 20px !important;
-    box-shadow: 
-      0 32px 64px rgba(0, 0, 0, 0.4),
-      0 0 0 1px rgba(255, 255, 255, 0.1),
-      inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
-    padding: 0 !important;
-    overflow: hidden !important;
+    background: var(--glass-bg) !important;
+    backdrop-filter: var(--glass-blur) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: var(--radius) !important;
+    box-shadow: var(--glass-shadow) !important;
+    padding: 1.5rem !important;
+    overflow-y: auto !important;
   }
 
   .note-preview-content {
