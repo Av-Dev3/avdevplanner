@@ -14,6 +14,7 @@
   --text-muted: rgba(255, 255, 255, 0.5);
   --notes-accent: #9b59b6;
   --tasks-accent: #e74c3c;
+  --lessons-accent: #f39c12;
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   --popup-glass: rgba(26, 26, 26, 0.95);
   --popup-blur: blur(20px);
@@ -240,6 +241,88 @@
 .drawer__links li a:active,
 .drawer__links li button:active {
   transform: translateX(2px) scale(0.98);
+}
+
+/* === FORM STYLES === */
+.modal__form, .ai__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.modal__form input,
+.modal__form textarea,
+.ai__form input {
+  padding: 1rem 1.2rem;
+  border-radius: var(--radius-small);
+  border: 1px solid var(--border-color);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+  font-size: 1rem;
+  resize: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: inherit;
+}
+
+.modal__form input:focus,
+.modal__form textarea:focus,
+.ai__form input:focus {
+  outline: none;
+  border-color: var(--notes-accent);
+  background: rgba(155, 89, 182, 0.1);
+  box-shadow: 0 0 0 3px rgba(155, 89, 182, 0.1);
+  transform: translateY(-1px);
+}
+
+.modal__form input::placeholder,
+.modal__form textarea::placeholder,
+.ai__form input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.7;
+}
+
+.modal__submit {
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: var(--radius-small);
+  padding: 1rem 0;
+  margin-top: 0.5rem;
+  background: linear-gradient(135deg, var(--notes-accent), #ffe066);
+  color: #1a1a2e;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.modal__submit::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.modal__submit:hover::before {
+  left: 100%;
+}
+
+.card--notes.modal__submit {
+  background: linear-gradient(135deg, var(--notes-accent), #ffe066);
+  color: #1a1a2e;
+}
+
+.modal__submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.modal__submit:active {
+  transform: translateY(0);
 }
 
 /* === RESPONSIVE STYLES === */
