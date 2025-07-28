@@ -117,6 +117,10 @@
   flex-shrink: 0;
 }
 
+.notes-action .action-icon {
+  background: linear-gradient(135deg, var(--notes-accent), #9b59b6);
+}
+
 .action-text {
   flex: 1;
 }
@@ -356,7 +360,7 @@
 /* === RESPONSIVE STYLES === */
 @media (max-width: 768px) {
   .action-btn {
-    display: none;
+    display: none !important;
   }
 }
 
@@ -1327,8 +1331,9 @@ body {
 
   .modal__content {
     width: 95% !important;
-    max-width: none !important;
-    max-height: 90vh !important;
+    max-width: 95vw !important;
+    min-width: auto !important;
+    max-height: 80vh !important;
     margin: 0 auto !important;
     background: var(--glass-bg) !important;
     backdrop-filter: var(--glass-blur) !important;
@@ -1336,6 +1341,7 @@ body {
     border-radius: var(--radius) !important;
     box-shadow: var(--glass-shadow) !important;
     padding: 1.5rem !important;
+    overflow-y: auto !important;
   }
 
   .note-preview-content {
@@ -1360,6 +1366,38 @@ body {
   .note-preview-actions .note-action-btn {
     width: 100%;
     padding: 0.75rem;
+  }
+
+  /* Ensure close button works on mobile */
+  .modal__close {
+    position: absolute !important;
+    right: 1.5rem !important;
+    top: 1.5rem !important;
+    z-index: 10 !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-secondary) !important;
+    font-size: 1.5rem !important;
+    line-height: 1 !important;
+    cursor: pointer !important;
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+
+  .modal__close:hover {
+    color: var(--text-primary) !important;
+    background: rgba(255, 255, 255, 0.2) !important;
+    transform: scale(1.1) !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+  }
+
+  .modal__close:active {
+    transform: scale(0.95) !important;
   }
 }
 
