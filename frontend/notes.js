@@ -238,6 +238,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     deleteBtn.addEventListener('click', (e) => {
       e.stopPropagation();
+      console.log('Delete button clicked for note:', note);
+      console.log('Note ID:', note.id || note._id);
       deleteNote(note);
     });
 
@@ -311,8 +313,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const confirmDelete = confirm("Are you sure you want to delete this note?");
     if (!confirmDelete) return;
 
+    const noteId = note.id || note._id;
+    if (!noteId) {
+      showErrorMessage("Cannot delete note: No ID found");
+      return;
+    }
+
     try {
-      const res = await fetch(`https://avdevplanner.onrender.com/notes/${note.id || note._id}`, {
+      const res = await fetch(`https://avdevplanner.onrender.com/notes/${noteId}`, {
         method: "DELETE"
       });
 
@@ -320,12 +328,12 @@ document.addEventListener("DOMContentLoaded", () => {
         await loadNotes();
         showSuccessMessage("Note deleted successfully!");
       } else {
-        console.error("Failed to delete note");
-        showErrorMessage("Failed to delete note");
+        console.error("Failed to delete note:", res.status, res.statusText);
+        showErrorMessage(`Failed to delete note: ${res.status} ${res.statusText}`);
       }
     } catch (error) {
       console.error("Error deleting note:", error);
-      showErrorMessage("Error deleting note");
+      showErrorMessage("Error deleting note: " + error.message);
     }
   }
 
@@ -516,14 +524,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     allNotes.forEach((note) => {
       const notebook = note.notebook?.trim();
-      if (!collectionMap.has(notebook)) {
-        collectionMap.set(notebook, []);
+      if (notebook) { // Only add if notebook exists and is not empty
+        if (!collectionMap.has(notebook)) {
+          collectionMap.set(notebook, []);
+        }
+        collectionMap.get(notebook).push(note);
       }
-      collectionMap.get(notebook).push(note);
     });
 
     saved.forEach((name) => {
-      if (!collectionMap.has(name)) {
+      if (name && !collectionMap.has(name)) {
         collectionMap.set(name, []);
       }
     });
@@ -544,8 +554,10 @@ document.addEventListener("DOMContentLoaded", () => {
     collectionList.innerHTML = "";
 
     collectionMap.forEach((notes, notebook) => {
-      const card = createCollectionCard(notebook, notes);
-      collectionList.appendChild(card);
+      if (notebook) { // Only create cards for valid notebook names
+        const card = createCollectionCard(notebook, notes);
+        collectionList.appendChild(card);
+      }
     });
   }
 
@@ -553,8 +565,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const card = document.createElement("div");
     card.className = "collection-card";
 
+    const displayName = notebook || "Untitled";
+    
     card.innerHTML = `
-      <h3>${notebook || "Untitled"}</h3>
+      <h3>${displayName}</h3>
       <div class="collection-count">${notes.length} note${notes.length !== 1 ? "s" : ""}</div>
     `;
 
@@ -565,15 +579,19 @@ document.addEventListener("DOMContentLoaded", () => {
     // Right-click delete popup
     card.addEventListener("contextmenu", (e) => {
       e.preventDefault();
-      showCollectionOptions(notebook, e.clientX, e.clientY);
+      if (notebook) { // Only allow deletion of named collections
+        showCollectionOptions(notebook, e.clientX, e.clientY);
+      }
     });
 
     // Long-press for mobile delete popup
     let longPressTimer;
     card.addEventListener("touchstart", (e) => {
       longPressTimer = setTimeout(() => {
-        const touch = e.touches[0];
-        showCollectionOptions(notebook, touch.clientX, touch.clientY);
+        if (notebook) { // Only allow deletion of named collections
+          const touch = e.touches[0];
+          showCollectionOptions(notebook, touch.clientX, touch.clientY);
+        }
       }, 800);
     });
 
@@ -628,12 +646,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.addEventListener("click", closePopup);
 
-    popup.querySelector("[data-action='delete']").addEventListener("click", () => {
-      if (confirm(`Delete collection "${notebook}"?`)) {
-        const saved = JSON.parse(localStorage.getItem("emptyCollections") || "[]");
-        const updated = saved.filter((name) => name !== notebook);
-        localStorage.setItem("emptyCollections", JSON.stringify(updated));
-        renderCollections();
+    popup.querySelector("[data-action='delete']").addEventListener("click", async () => {
+      if (confirm(`Delete collection "${notebook}"? This will remove the collection from all notes.`)) {
+        try {
+          // Update all notes in this collection to remove the notebook field
+          const notesToUpdate = allNotes.filter(note => note.notebook === notebook);
+          
+          for (const note of notesToUpdate) {
+            await fetch(`https://avdevplanner.onrender.com/notes/${note.id || note._id}`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ ...note, notebook: null }),
+            });
+          }
+          
+          // Remove from localStorage if it exists there
+          const saved = JSON.parse(localStorage.getItem("emptyCollections") || "[]");
+          const updated = saved.filter((name) => name !== notebook);
+          localStorage.setItem("emptyCollections", JSON.stringify(updated));
+          
+          // Reload notes and re-render
+          await loadNotes();
+          showSuccessMessage("Collection deleted successfully!");
+        } catch (error) {
+          console.error("Error deleting collection:", error);
+          showErrorMessage("Error deleting collection");
+        }
       }
       closePopup();
     });
