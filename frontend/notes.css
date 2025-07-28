@@ -582,6 +582,9 @@
 /* === POPUP Z-INDEX FIXES === */
 .modal {
   z-index: 9999 !important;
+}
+
+.modal:not(.hidden) {
   display: flex !important;
   align-items: center;
   justify-content: center;
