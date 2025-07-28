@@ -1719,6 +1719,11 @@ body, .modern-dashboard {
   border: 1px solid rgba(243, 156, 18, 0.3);
 }
 
+.notes-action .action-icon {
+  background: linear-gradient(135deg, rgba(155, 89, 182, 0.2), rgba(155, 89, 182, 0.1));
+  border: 1px solid rgba(155, 89, 182, 0.3);
+}
+
 .action-text {
   flex: 1;
   display: flex;

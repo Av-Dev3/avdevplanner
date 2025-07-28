@@ -83,74 +83,7 @@
   color: var(--text-primary);
 }
 
-.desktop-drawer__actions {
-  padding: 24px 32px 32px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.desktop-action-btn {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 20px 24px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  text-align: left;
-  width: 100%;
-}
-
-.desktop-action-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(255, 255, 255, 0.2);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-}
-
-.desktop-action-btn:active {
-  transform: translateY(0);
-}
-
-.action-icon {
-  font-size: 32px;
-  width: 48px;
-  height: 48px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.1);
-  flex-shrink: 0;
-}
-
-.notes-action .action-icon {
-  background: linear-gradient(135deg, rgba(155, 89, 182, 0.2), rgba(155, 89, 182, 0.1));
-  border: 1px solid rgba(155, 89, 182, 0.3);
-}
-
-.action-text {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.action-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.action-subtitle {
-  font-size: 0.9rem;
-  color: var(--text-secondary);
-}
+/* Desktop drawer styles are handled by dashboard.css */
 
 /* === DRAWER MODAL === */
 .drawer-modal {
