@@ -284,6 +284,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // === NOTE ACTIONS ===
   function showNotePreview(note) {
     console.log('showNotePreview called with:', note);
+    console.log('Note ID:', note.id || note._id);
+    console.log('Note title:', note.title);
     
     const titleEl = document.getElementById('popup-note-title');
     const contentEl = document.getElementById('popup-note-content');
@@ -291,6 +293,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const popup = document.getElementById('note-preview-popup');
 
     console.log('Found elements:', { titleEl, contentEl, tagsEl, popup });
+    console.log('Popup element exists:', !!popup);
+    console.log('Popup classes before:', popup?.className);
 
     if (titleEl) titleEl.textContent = note.title || "(No Title)";
     if (contentEl) contentEl.textContent = note.content || "";
@@ -311,6 +315,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (popup) {
       popup.classList.remove('hidden');
+      console.log('Popup classes after removing hidden:', popup.className);
+      console.log('Popup display style:', getComputedStyle(popup).display);
       console.log('Popup should now be visible');
     } else {
       console.error('Note preview popup not found!');

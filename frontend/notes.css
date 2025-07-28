@@ -598,7 +598,7 @@
 /* === POPUP Z-INDEX FIXES === */
 .modal {
   z-index: 9999 !important;
-  display: none;
+  display: none !important;
   position: fixed;
   top: 0;
   left: 0;
@@ -625,10 +625,20 @@
 
 #note-preview-popup {
   z-index: 10001 !important;
+  display: none !important;
+}
+
+#note-preview-popup:not(.hidden) {
+  display: flex !important;
 }
 
 #collection-notes-popup {
   z-index: 9999 !important;
+  display: none !important;
+}
+
+#collection-notes-popup:not(.hidden) {
+  display: flex !important;
 }
 
 .tagged-notes-list {
