@@ -1,4 +1,46 @@
 // === NOTES MANAGEMENT ===
+// Modern notes system with search, tags, and collections
+
+// Test function to check if modals work
+function testModal() {
+  console.log('Testing modal...');
+  const popup = document.getElementById('note-preview-popup');
+  if (popup) {
+    console.log('Found popup, attempting to show...');
+    popup.classList.remove('hidden');
+    popup.style.display = 'flex';
+    popup.style.position = 'fixed';
+    popup.style.top = '0';
+    popup.style.left = '0';
+    popup.style.right = '0';
+    popup.style.bottom = '0';
+    popup.style.width = '100vw';
+    popup.style.height = '100vh';
+    popup.style.backgroundColor = 'red'; // Make it red so we can see it
+    popup.style.alignItems = 'center';
+    popup.style.justifyContent = 'center';
+    popup.style.zIndex = '99999';
+    popup.style.visibility = 'visible';
+    popup.style.opacity = '1';
+    
+    // Add test content
+    const titleEl = document.getElementById('popup-note-title');
+    if (titleEl) titleEl.textContent = 'TEST MODAL - CLICK TO CLOSE';
+    
+    // Add click to close
+    popup.onclick = function() {
+      popup.classList.add('hidden');
+      popup.style.display = 'none';
+    };
+    
+    console.log('Modal should now be visible in RED');
+  } else {
+    console.error('Popup not found!');
+  }
+}
+
+// Make test function global
+window.testModal = testModal;
 
 document.addEventListener("DOMContentLoaded", () => {
   // DOM Elements
