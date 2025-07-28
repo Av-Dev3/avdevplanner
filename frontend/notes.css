@@ -599,46 +599,66 @@
 .modal {
   z-index: 9999 !important;
   display: none !important;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  align-items: center;
-  justify-content: center;
-  padding: 1rem;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background: rgba(0, 0, 0, 0.5) !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 1rem !important;
+  overflow: hidden !important;
 }
 
 .modal:not(.hidden) {
   display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 .modal__content {
   z-index: 10000 !important;
-  width: 90%;
-  max-width: 600px;
-  max-height: 90vh;
-  margin: 0 auto;
-  position: relative;
+  width: 90% !important;
+  max-width: 600px !important;
+  max-height: 90vh !important;
+  margin: 0 auto !important;
+  position: relative !important;
+  background: var(--glass-bg) !important;
+  backdrop-filter: var(--glass-blur) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: var(--radius) !important;
+  box-shadow: var(--glass-shadow) !important;
+  padding: 2rem !important;
+  overflow-y: auto !important;
 }
 
 #note-preview-popup {
   z-index: 10001 !important;
   display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
 }
 
 #note-preview-popup:not(.hidden) {
   display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 #collection-notes-popup {
   z-index: 9999 !important;
   display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
 }
 
 #collection-notes-popup:not(.hidden) {
   display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 .tagged-notes-list {
@@ -813,14 +833,34 @@
 
   /* Mobile popup fixes */
   .modal:not(.hidden) {
-    padding: 1rem;
+    padding: 1rem !important;
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  
+  .modal {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 9999 !important;
   }
 
   .modal__content {
-    width: 95%;
-    max-width: none;
-    max-height: 90vh;
-    margin: 0 auto;
+    width: 95% !important;
+    max-width: none !important;
+    max-height: 90vh !important;
+    margin: 0 auto !important;
+    background: var(--glass-bg) !important;
+    backdrop-filter: var(--glass-blur) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: var(--radius) !important;
+    box-shadow: var(--glass-shadow) !important;
+    padding: 1.5rem !important;
   }
 
   .note-preview-content {
