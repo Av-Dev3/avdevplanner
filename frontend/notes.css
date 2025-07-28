@@ -1240,6 +1240,9 @@ body {
     width: 100vw !important;
     height: 100vh !important;
     z-index: 9999 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
 
   .modal__content {
