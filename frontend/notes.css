@@ -12,7 +12,7 @@
   --text-primary: rgba(255, 255, 255, 0.9);
   --text-secondary: rgba(255, 255, 255, 0.7);
   --text-muted: rgba(255, 255, 255, 0.5);
-  --notes-accent: #8b4513;
+  --notes-accent: #9b59b6;
   --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   --popup-glass: rgba(26, 26, 26, 0.95);
   --popup-blur: blur(20px);
@@ -62,7 +62,7 @@ body {
 }
 
 .title-icon {
-  background: linear-gradient(135deg, var(--notes-accent), #a0522d);
+  background: linear-gradient(135deg, var(--notes-accent), #8e44ad);
   border-radius: 12px;
   padding: 0.75rem;
   color: white;
@@ -83,7 +83,7 @@ body {
 }
 
 .action-btn {
-  background: linear-gradient(135deg, var(--notes-accent), #a0522d);
+  background: linear-gradient(135deg, var(--notes-accent), #8e44ad);
   color: white;
   border: none;
   border-radius: var(--radius-small);
