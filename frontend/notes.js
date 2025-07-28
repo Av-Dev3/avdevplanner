@@ -124,6 +124,27 @@ document.addEventListener("DOMContentLoaded", () => {
     try {
       const res = await fetch("https://avdevplanner.onrender.com/notes");
       allNotes = await res.json();
+      
+      // Filter out notes with undefined IDs and log them
+      const validNotes = [];
+      const invalidNotes = [];
+      
+      allNotes.forEach(note => {
+        const noteId = note.id || note._id;
+        if (noteId) {
+          validNotes.push(note);
+        } else {
+          invalidNotes.push(note);
+          console.warn("Found note with no ID:", note);
+        }
+      });
+      
+      if (invalidNotes.length > 0) {
+        console.warn(`${invalidNotes.length} notes with no ID found and will be skipped`);
+        showErrorMessage(`${invalidNotes.length} notes with invalid IDs found and skipped`);
+      }
+      
+      allNotes = validNotes;
       filteredNotes = [...allNotes];
       
       // Update collection select options
@@ -332,15 +353,22 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!confirmDelete) return;
 
     const noteId = note.id || note._id;
+    console.log("Attempting to delete note:", note);
+    console.log("Note ID:", noteId);
+    
     if (!noteId) {
-      showErrorMessage("Cannot delete note: No ID found");
+      console.error("Cannot delete note: No ID found", note);
+      showErrorMessage("Cannot delete note: No ID found. This note may be corrupted.");
       return;
     }
 
     try {
+      console.log("Sending DELETE request to:", `https://avdevplanner.onrender.com/notes/${noteId}`);
       const res = await fetch(`https://avdevplanner.onrender.com/notes/${noteId}`, {
         method: "DELETE"
       });
+
+      console.log("Delete response:", res.status, res.statusText);
 
       if (res.ok) {
         await loadNotes();
@@ -693,13 +721,34 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
           // Update all notes in this collection to remove the notebook field
           const notesToUpdate = allNotes.filter(note => note.notebook === notebook);
+          let successCount = 0;
+          let errorCount = 0;
           
           for (const note of notesToUpdate) {
-            await fetch(`https://avdevplanner.onrender.com/notes/${note.id || note._id}`, {
-              method: "PUT",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ ...note, notebook: null }),
-            });
+            const noteId = note.id || note._id;
+            if (!noteId) {
+              console.warn("Skipping note with no ID:", note);
+              errorCount++;
+              continue;
+            }
+            
+            try {
+              const res = await fetch(`https://avdevplanner.onrender.com/notes/${noteId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ...note, notebook: null }),
+              });
+              
+              if (res.ok) {
+                successCount++;
+              } else {
+                console.error(`Failed to update note ${noteId}:`, res.status, res.statusText);
+                errorCount++;
+              }
+            } catch (error) {
+              console.error(`Error updating note ${noteId}:`, error);
+              errorCount++;
+            }
           }
           
           // Remove from localStorage if it exists there
@@ -709,7 +758,12 @@ document.addEventListener("DOMContentLoaded", () => {
           
           // Reload notes and re-render
           await loadNotes();
-          showSuccessMessage("Collection deleted successfully!");
+          
+          if (errorCount > 0) {
+            showSuccessMessage(`Collection deleted! ${successCount} notes updated, ${errorCount} failed.`);
+          } else {
+            showSuccessMessage("Collection deleted successfully!");
+          }
         } catch (error) {
           console.error("Error deleting collection:", error);
           showErrorMessage("Error deleting collection");
