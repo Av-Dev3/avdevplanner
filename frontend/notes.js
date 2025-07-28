@@ -69,9 +69,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (tabName === 'notes') {
       renderNotes();
     } else if (tabName === 'tags') {
-      renderTags();
+      if (typeof window.renderTags === 'function') {
+        window.renderTags();
+      }
     } else if (tabName === 'collections') {
-      renderCollections();
+      if (typeof window.renderCollections === 'function') {
+        window.renderCollections();
+      }
     }
   }
 
@@ -148,55 +152,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Collection form submission
-  const collectionForm = document.getElementById("collection-form");
-  if (collectionForm) {
-    collectionForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
 
-      const collectionName = document.getElementById("collection-name").value.trim();
-      const collectionDescription = document.getElementById("collection-description").value.trim();
-
-      if (!collectionName) {
-        showErrorMessage("Collection name is required");
-        return;
-      }
-
-      try {
-        // Create a note with the collection name as the notebook
-        const newNote = {
-          title: collectionName,
-          content: collectionDescription || `Collection: ${collectionName}`,
-          tags: [],
-          notebook: collectionName,
-          date: new Date().toISOString().split('T')[0],
-          completed: false,
-        };
-
-        const res = await fetch("https://avdevplanner.onrender.com/notes", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(newNote),
-        });
-
-        if (res.ok) {
-          // Reset form and close popup
-          collectionForm.reset();
-          document.getElementById("collectionPopup").classList.add("hidden");
-          
-          // Reload notes to update collections
-          await loadNotes();
-          showSuccessMessage("Collection created successfully!");
-        } else {
-          console.error("Failed to create collection");
-          showErrorMessage("Failed to create collection");
-        }
-      } catch (error) {
-        console.error("Error creating collection:", error);
-        showErrorMessage("Error creating collection");
-      }
-    });
-  }
 
   // === LOAD NOTES ===
   async function loadNotes() {
@@ -668,7 +624,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // === RENDER COLLECTIONS ===
-  function renderCollections() {
+  async function renderCollections() {
     const collectionList = document.getElementById("collection-list");
     if (!collectionList) {
       console.error("Collection list element not found!");
@@ -676,48 +632,57 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     console.log("Rendering collections...");
-    console.log("All notes:", allNotes);
     
-    const collectionMap = new Map();
-
-    allNotes.forEach((note) => {
-      const notebook = note.notebook?.trim();
-      console.log("Note notebook:", notebook, "for note:", note.title);
-      if (notebook) { // Only add if notebook exists and is not empty
-        if (!collectionMap.has(notebook)) {
-          collectionMap.set(notebook, []);
-        }
-        collectionMap.get(notebook).push(note);
+    try {
+      // Fetch collections from the API
+      const res = await fetch("https://avdevplanner.onrender.com/collections");
+      const collections = await res.json();
+      
+      console.log("Collections from API:", collections);
+      
+      if (!collections || Object.keys(collections).length === 0) {
+        collectionList.innerHTML = `
+          <div class="collections-empty">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+              <path d="M3 3h18v18H3zM21 9H3M21 15H3M12 3v18"/>
+            </svg>
+            <h3>No Collections Yet</h3>
+            <p>Create collections to organize your notes.</p>
+          </div>
+        `;
+        return;
       }
-    });
 
-    if (collectionMap.size === 0) {
+      collectionList.innerHTML = "";
+
+      // Create collection cards for each collection
+      Object.entries(collections).forEach(([collectionName, noteIds]) => {
+        console.log("Creating collection card for:", collectionName, "with", noteIds.length, "notes");
+        
+        // Find the actual notes for this collection
+        const notes = allNotes.filter(note => {
+          const noteId = note.id || note._id;
+          return noteId && noteIds.includes(noteId);
+        });
+        
+        const card = createCollectionCard(collectionName, notes);
+        collectionList.appendChild(card);
+        console.log("Collection card added to DOM");
+      });
+      
+      console.log("Total collections rendered:", collectionList.children.length);
+    } catch (error) {
+      console.error("Error loading collections:", error);
       collectionList.innerHTML = `
         <div class="collections-empty">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
             <path d="M3 3h18v18H3zM21 9H3M21 15H3M12 3v18"/>
           </svg>
-          <h3>No Collections Yet</h3>
-          <p>Create collections to organize your notes.</p>
+          <h3>Error Loading Collections</h3>
+          <p>Failed to load collections from server.</p>
         </div>
       `;
-      return;
     }
-
-    collectionList.innerHTML = "";
-
-    console.log("Final collection map:", collectionMap);
-    
-    collectionMap.forEach((notes, notebook) => {
-      if (notebook) { // Only create cards for valid notebook names
-        console.log("Creating collection card for:", notebook, "with", notes.length, "notes");
-        const card = createCollectionCard(notebook, notes);
-        collectionList.appendChild(card);
-        console.log("Collection card added to DOM");
-      }
-    });
-    
-    console.log("Total collections rendered:", collectionList.children.length);
   }
 
   function createCollectionCard(notebook, notes) {
