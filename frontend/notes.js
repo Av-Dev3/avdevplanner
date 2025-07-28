@@ -163,26 +163,34 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       try {
-        // Store the collection in localStorage for now
-        const savedCollections = JSON.parse(localStorage.getItem("emptyCollections") || "[]");
-        
-        // Check if collection already exists
-        if (savedCollections.includes(collectionName)) {
-          showErrorMessage("Collection already exists");
-          return;
+        // Create a note with the collection name as the notebook
+        const newNote = {
+          title: collectionName,
+          content: collectionDescription || `Collection: ${collectionName}`,
+          tags: [],
+          notebook: collectionName,
+          date: new Date().toISOString().split('T')[0],
+          completed: false,
+        };
+
+        const res = await fetch("https://avdevplanner.onrender.com/notes", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newNote),
+        });
+
+        if (res.ok) {
+          // Reset form and close popup
+          collectionForm.reset();
+          document.getElementById("collectionPopup").classList.add("hidden");
+          
+          // Reload notes to update collections
+          await loadNotes();
+          showSuccessMessage("Collection created successfully!");
+        } else {
+          console.error("Failed to create collection");
+          showErrorMessage("Failed to create collection");
         }
-
-        // Add new collection
-        savedCollections.push(collectionName);
-        localStorage.setItem("emptyCollections", JSON.stringify(savedCollections));
-
-        // Reset form and close popup
-        collectionForm.reset();
-        document.getElementById("collectionPopup").classList.add("hidden");
-        
-        // Reload notes to update collections
-        await loadNotes();
-        showSuccessMessage("Collection created successfully!");
       } catch (error) {
         console.error("Error creating collection:", error);
         showErrorMessage("Error creating collection");
@@ -671,8 +679,6 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("All notes:", allNotes);
     
     const collectionMap = new Map();
-    const saved = JSON.parse(localStorage.getItem("emptyCollections") || "[]");
-    console.log("Saved empty collections:", saved);
 
     allNotes.forEach((note) => {
       const notebook = note.notebook?.trim();
@@ -682,12 +688,6 @@ document.addEventListener("DOMContentLoaded", () => {
           collectionMap.set(notebook, []);
         }
         collectionMap.get(notebook).push(note);
-      }
-    });
-
-    saved.forEach((name) => {
-      if (name && !collectionMap.has(name)) {
-        collectionMap.set(name, []);
       }
     });
 
@@ -863,10 +863,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
           }
           
-          // Remove from localStorage if it exists there
-          const saved = JSON.parse(localStorage.getItem("emptyCollections") || "[]");
-          const updated = saved.filter((name) => name !== notebook);
-          localStorage.setItem("emptyCollections", JSON.stringify(updated));
+
           
           // Reload notes and re-render
           await loadNotes();
