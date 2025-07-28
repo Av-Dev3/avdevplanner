@@ -206,7 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="note-content">${note.content || ""}</div>
       <div class="note-meta">
         <div class="note-date">${formatPrettyDate(note.date || note.created_at)}</div>
-        ${note.notebook ? `<div class="note-collection">📁 ${note.notebook}</div>` : ''}
+        ${note.notebook ? `<div class="note-collection">📚 ${note.notebook}</div>` : ''}
       </div>
       ${tagsHtml}
       <div class="note-actions">
@@ -358,13 +358,37 @@ document.addEventListener("DOMContentLoaded", () => {
   // === UTILITY FUNCTIONS ===
   function formatPrettyDate(dateStr) {
     if (!dateStr) return "";
-    const [year, month, day] = dateStr.split("-");
-    const date = new Date(`${year}-${month}-${day}T00:00:00`);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
+    
+    try {
+      // Handle different date formats
+      let date;
+      if (dateStr.includes('-')) {
+        // Handle ISO date format (YYYY-MM-DD)
+        const [year, month, day] = dateStr.split("-");
+        if (year && month && day) {
+          date = new Date(`${year}-${month}-${day}T00:00:00`);
+        } else {
+          date = new Date(dateStr);
+        }
+      } else {
+        // Handle other date formats
+        date = new Date(dateStr);
+      }
+      
+      // Check if date is valid
+      if (isNaN(date.getTime())) {
+        return "No date";
+      }
+      
+      return date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+    } catch (error) {
+      console.error("Error formatting date:", dateStr, error);
+      return "No date";
+    }
   }
 
   function groupNotesByDate(notes) {
