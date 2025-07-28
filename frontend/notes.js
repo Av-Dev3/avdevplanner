@@ -274,6 +274,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
       console.log('Note card clicked:', note);
+      console.log('Calling showNotePreview...');
       showNotePreview(note);
     });
 
@@ -547,6 +548,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function showTaggedNotes(tag, notes) {
+    console.log('showTaggedNotes called with:', tag, notes);
+    console.log('Creating tag popup...');
+    
     // Create a temporary popup to show tagged notes
     const popup = document.createElement('div');
     popup.className = 'modal glass-modal';
