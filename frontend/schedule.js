@@ -284,6 +284,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.log("Goals container:", document.getElementById("modal-goals").innerHTML);
       console.log("Lessons container:", document.getElementById("modal-lessons").innerHTML);
 
+      // Move modal to body to avoid positioning issues
+      if (dayModal.parentElement !== document.body) {
+        document.body.appendChild(dayModal);
+      }
+      
       // Show modal
       dayModal.classList.remove("hidden");
       console.log("Modal should now be visible");
@@ -323,6 +328,22 @@ document.addEventListener("DOMContentLoaded", async () => {
         child.style.transform = 'none';
         child.style.transformOrigin = 'top left';
       });
+      
+      // Reset scroll position and ensure modal is positioned correctly
+      window.scrollTo(0, 0);
+      
+      // Force modal positioning after a brief delay to ensure DOM updates
+      setTimeout(() => {
+        dayModal.style.position = "fixed";
+        dayModal.style.top = "0";
+        dayModal.style.left = "0";
+        dayModal.style.right = "0";
+        dayModal.style.bottom = "0";
+        dayModal.style.width = "100vw";
+        dayModal.style.height = "100vh";
+        dayModal.style.transform = "none";
+        dayModal.style.transformOrigin = "top left";
+      }, 10);
 
       // Debug modal visibility
       console.log("Modal final computed styles:");
