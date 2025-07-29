@@ -554,10 +554,6 @@
   /* Show mobile list view */
   .mobile-schedule-list {
     display: block !important;
-  }
-  
-  .mobile-schedule-list {
-    display: none;
     padding: 0.5rem;
   }
   

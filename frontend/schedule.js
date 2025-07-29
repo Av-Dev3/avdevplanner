@@ -351,6 +351,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function createMobileList() {
+    console.log("Creating mobile list...");
     const monthNames = [
       "January", "February", "March", "April", "May", "June",
       "July", "August", "September", "October", "November", "December"
@@ -360,6 +361,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const firstDay = new Date(currentYear, currentMonth, 1);
     const lastDay = new Date(currentYear, currentMonth + 1, 0);
     const daysInMonth = lastDay.getDate();
+    
+    console.log(`Creating ${daysInMonth} mobile day items`);
 
     for (let day = 1; day <= daysInMonth; day++) {
       const date = new Date(currentYear, currentMonth, day);
@@ -389,6 +392,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         e.preventDefault();
         e.stopPropagation();
         console.log("Mobile day clicked:", date);
+        console.log("Event target:", e.target);
+        console.log("Day item element:", dayItem);
         showDayDetails(date);
       });
 
@@ -397,6 +402,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       let touchStartY = 0;
       
       dayItem.addEventListener("touchstart", (e) => {
+        console.log("Touch start on mobile day:", date);
         touchStartTime = Date.now();
         touchStartY = e.touches[0].clientY;
       }, { passive: true });
@@ -407,16 +413,23 @@ document.addEventListener("DOMContentLoaded", async () => {
         const touchDuration = touchEndTime - touchStartTime;
         const touchDistance = Math.abs(touchEndY - touchStartY);
         
+        console.log("Touch end on mobile day:", date);
+        console.log("Touch duration:", touchDuration, "Touch distance:", touchDistance);
+        
         // Only trigger if it's a short tap (not a scroll)
         if (touchDuration < 300 && touchDistance < 10) {
           e.preventDefault();
           e.stopPropagation();
           console.log("Mobile day tapped:", date);
           showDayDetails(date);
+        } else {
+          console.log("Touch ignored - too long or too far");
         }
       }, { passive: false });
 
       mobileScheduleList.appendChild(dayItem);
     }
+    console.log("Mobile list created with", daysInMonth, "items");
+    console.log("Mobile schedule list element:", mobileScheduleList);
   }
 });
