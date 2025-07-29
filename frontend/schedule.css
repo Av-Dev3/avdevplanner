@@ -9,6 +9,11 @@
   padding-bottom: 8rem; /* Increased bottom padding for mobile nav */
 }
 
+/* Mobile list view - hidden by default */
+.mobile-schedule-list {
+  display: none;
+}
+
 /* Calendar Header */
 .calendar-header {
   margin-bottom: 2rem;
