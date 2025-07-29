@@ -113,6 +113,33 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
     
+    // Handle mobile drawer button clicks
+    const mobileDrawerButtons = mobileDrawer.querySelectorAll('.drawer__links button');
+    if (mobileDrawerButtons) {
+      mobileDrawerButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          // Get the target popup from the onclick attribute
+          const onclickAttr = button.getAttribute('onclick');
+          if (onclickAttr) {
+            // Extract the popup ID from the onclick attribute
+            const match = onclickAttr.match(/getElementById\('([^']+)'\)/);
+            if (match) {
+              const popupId = match[1];
+              const popup = document.getElementById(popupId);
+              if (popup) {
+                // Close mobile drawer first
+                mobileDrawer.classList.add('hidden');
+                // Open the target popup
+                popup.classList.remove('hidden');
+              }
+            }
+          }
+        });
+      });
+    }
 
   }
   
