@@ -105,23 +105,37 @@ document.addEventListener("DOMContentLoaded", async () => {
       </div>
     `;
 
-    // Add click event for day details
+    // Enhanced click and touch handling for mobile
+    let touchStartTime = 0;
+    let touchStartY = 0;
+
+    // Mouse click event
     dayElement.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
       showDayDetails(date);
     });
 
-    // Add touch events for mobile
+    // Touch start event
     dayElement.addEventListener("touchstart", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-    });
+      touchStartTime = Date.now();
+      touchStartY = e.touches[0].clientY;
+    }, { passive: true });
 
+    // Touch end event
     dayElement.addEventListener("touchend", (e) => {
       e.preventDefault();
       e.stopPropagation();
-      showDayDetails(date);
+      
+      const touchEndTime = Date.now();
+      const touchEndY = e.changedTouches[0].clientY;
+      const touchDuration = touchEndTime - touchStartTime;
+      const touchDistance = Math.abs(touchEndY - touchStartY);
+      
+      // Only trigger if it's a short tap (not a scroll) and minimal movement
+      if (touchDuration < 300 && touchDistance < 10) {
+        showDayDetails(date);
+      }
     });
 
     return dayElement;
@@ -208,6 +222,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   async function showDayDetails(date) {
+    console.log("showDayDetails called for date:", date);
+    
     const dateStr = date.toLocaleDateString("en-CA");
     const formattedDate = date.toLocaleDateString("en-US", {
       weekday: "long",
@@ -229,6 +245,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       const dayGoals = goals.filter(g => g.date === dateStr);
       const dayLessons = lessons.filter(l => l.date === dateStr);
 
+      console.log("Day data loaded:", { dayTasks, dayGoals, dayLessons });
+
       // Populate modal sections
       populateModalSection("modal-tasks", dayTasks, "task");
       populateModalSection("modal-goals", dayGoals, "goal");
@@ -236,6 +254,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       // Show modal
       dayModal.classList.remove("hidden");
+      console.log("Modal should now be visible");
+      
+      // Force modal to be visible on mobile
+      dayModal.style.display = "flex";
+      dayModal.style.visibility = "visible";
+      dayModal.style.opacity = "1";
+      dayModal.style.zIndex = "1000";
 
     } catch (error) {
       console.error("Error loading day details:", error);

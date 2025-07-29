@@ -6,7 +6,7 @@
   padding: 2rem;
   max-width: 1400px;
   margin: 0 auto;
-  padding-bottom: 8rem;
+  padding-bottom: 8rem; /* Increased bottom padding for mobile nav */
 }
 
 /* Calendar Header */
@@ -412,6 +412,7 @@
 @media (max-width: 1024px) {
   .schedule-content {
     padding: 1.5rem;
+    padding-bottom: 8rem; /* Maintain bottom padding */
   }
   
   .calendar-days {
@@ -436,6 +437,7 @@
 @media (max-width: 768px) {
   .schedule-content {
     padding: 1rem;
+    padding-bottom: 8rem; /* Maintain bottom padding */
   }
   
   .calendar-nav {
@@ -473,6 +475,7 @@
 @media (max-width: 480px) {
   .schedule-content {
     padding: 0.75rem;
+    padding-bottom: 8rem; /* Maintain bottom padding */
   }
   
   .calendar-nav {
