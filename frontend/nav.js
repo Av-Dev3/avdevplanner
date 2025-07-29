@@ -141,4 +141,37 @@ document.addEventListener('DOMContentLoaded', () => {
       isDrawerOpen = false;
     });
   }
+
+  // === MOBILE QUICK ACTIONS BUTTONS ===
+  const mobileAddTaskBtn = document.getElementById('mobileAddTaskBtn');
+  const mobileAddGoalBtn = document.getElementById('mobileAddGoalBtn');
+  const mobileAddLessonBtn = document.getElementById('mobileAddLessonBtn');
+
+  if (mobileAddTaskBtn) {
+    mobileAddTaskBtn.addEventListener('click', function() {
+      if (mobileDrawer) mobileDrawer.classList.add('hidden');
+      setTimeout(function() {
+        const popup = document.getElementById('taskPopup');
+        if (popup) popup.classList.remove('hidden');
+      }, 10);
+    });
+  }
+  if (mobileAddGoalBtn) {
+    mobileAddGoalBtn.addEventListener('click', function() {
+      if (mobileDrawer) mobileDrawer.classList.add('hidden');
+      setTimeout(function() {
+        const popup = document.getElementById('goalPopup');
+        if (popup) popup.classList.remove('hidden');
+      }, 10);
+    });
+  }
+  if (mobileAddLessonBtn) {
+    mobileAddLessonBtn.addEventListener('click', function() {
+      if (mobileDrawer) mobileDrawer.classList.add('hidden');
+      setTimeout(function() {
+        const popup = document.getElementById('lessonPopup');
+        if (popup) popup.classList.remove('hidden');
+      }, 10);
+    });
+  }
 });
