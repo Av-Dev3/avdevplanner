@@ -112,6 +112,18 @@ document.addEventListener("DOMContentLoaded", async () => {
       showDayDetails(date);
     });
 
+    // Add touch events for mobile
+    dayElement.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    });
+
+    dayElement.addEventListener("touchend", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      showDayDetails(date);
+    });
+
     return dayElement;
   }
 

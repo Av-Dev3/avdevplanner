@@ -155,6 +155,24 @@
         </div>
       </div>
     </div>
+
+    <!-- Site Links Drawer -->
+    <div id="siteLinksDrawer" class="modal drawer-modal hidden">
+      <div class="drawer__content">
+        <button class="modal__close" onclick="document.getElementById('siteLinksDrawer').classList.add('hidden')">&times;</button>
+        <h2 class="modal__title card--tasks">Site Links</h2>
+        <ul class="drawer__links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="schedule.html">Schedule</a></li>
+          <li><a href="daily.html">Daily</a></li>
+          <li><a href="weekly.html">Weekly</a></li>
+          <li><a href="goals.html">Goals</a></li>
+          <li><a href="tasks.html">Tasks</a></li>
+          <li><a href="lessons.html">Lessons</a></li>
+          <li><a href="notes.html">Notes</a></li>
+        </ul>
+      </div>
+    </div>
   </div>
 
   <!-- Footer -->
@@ -164,20 +182,6 @@
     <span>Code</span>
     <span>Repeat</span>
   </footer>
-
-  <!-- Site Links Drawer -->
-  <div id="siteLinksDrawer" class="pointer-events-none fixed bottom-[120px] left-1/2 transform -translate-x-[45%] opacity-0 scale-95 transition-all duration-300 w-40 bg-[#1a1a1a] text-white p-3 rounded-xl shadow-lg z-50">
-    <div class="flex flex-col space-y-3 text-sm">
-      <a href="index.html" class="hover:text-[#b91c1c]">Home</a>
-      <a href="schedule.html" class="hover:text-[#b91c1c]">Schedule</a>
-      <a href="daily.html" class="hover:text-[#b91c1c]">Daily</a>
-      <a href="weekly.html" class="hover:text-[#b91c1c]">Weekly</a>
-      <a href="goals.html" class="hover:text-[#b91c1c]">Goals</a>
-      <a href="tasks.html" class="hover:text-[#b91c1c]">Tasks</a>
-      <a href="lessons.html" class="hover:text-[#b91c1c]">Lessons</a>
-      <a href="notes.html" class="hover:text-[#b91c1c]">Notes</a>
-    </div>
-  </div>
 
   <!-- Bottom Nav (mobile only) -->
   <div class="block md:hidden">
