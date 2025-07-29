@@ -105,18 +105,45 @@ document.addEventListener("DOMContentLoaded", async () => {
       </div>
     `;
 
-    // Simple click handling for both desktop and mobile
+    // Enhanced touch and click handling for mobile and desktop
+    let touchStartTime = 0;
+    let touchStartY = 0;
+    let touchStartX = 0;
+
+    // Mouse click event
     dayElement.addEventListener("click", (e) => {
+      console.log("Click event triggered");
       e.preventDefault();
       e.stopPropagation();
       showDayDetails(date);
     });
 
-    // Simple touch handling for mobile
+    // Touch start event
+    dayElement.addEventListener("touchstart", (e) => {
+      console.log("Touch start event triggered");
+      touchStartTime = Date.now();
+      touchStartY = e.touches[0].clientY;
+      touchStartX = e.touches[0].clientX;
+    }, { passive: true });
+
+    // Touch end event
     dayElement.addEventListener("touchend", (e) => {
+      console.log("Touch end event triggered");
       e.preventDefault();
       e.stopPropagation();
-      showDayDetails(date);
+      
+      const touchEndTime = Date.now();
+      const touchEndY = e.changedTouches[0].clientY;
+      const touchEndX = e.changedTouches[0].clientX;
+      const touchDuration = touchEndTime - touchStartTime;
+      const touchDistanceY = Math.abs(touchEndY - touchStartY);
+      const touchDistanceX = Math.abs(touchEndX - touchStartX);
+      
+      // Only trigger if it's a short tap with minimal movement
+      if (touchDuration < 300 && touchDistanceY < 10 && touchDistanceX < 10) {
+        console.log("Valid touch detected, showing day details");
+        showDayDetails(date);
+      }
     });
 
     return dayElement;

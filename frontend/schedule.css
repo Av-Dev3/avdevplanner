@@ -92,6 +92,9 @@
   transition: all 0.3s ease;
   position: relative;
   background: var(--card-bg);
+  pointer-events: auto;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .calendar-day:hover {
