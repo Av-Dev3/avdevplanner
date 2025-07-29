@@ -34,10 +34,8 @@ document.addEventListener('DOMContentLoaded', () => {
       // Show/hide mobile drawer using modal style
       if (mobileDrawer.classList.contains('hidden')) {
         mobileDrawer.classList.remove('hidden');
-        setTimeout(() => mobileDrawer.classList.add('drawer-visible'), 10); // Animate in
       } else {
-        mobileDrawer.classList.remove('drawer-visible');
-        setTimeout(() => mobileDrawer.classList.add('hidden'), 300); // Animate out
+        mobileDrawer.classList.add('hidden');
       }
       siteLinksDrawer?.classList.remove('drawer-visible');
     } 
@@ -47,10 +45,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (mobileDrawer) {
         if (mobileDrawer.classList.contains('hidden')) {
           mobileDrawer.classList.remove('hidden');
-          setTimeout(() => mobileDrawer.classList.add('drawer-visible'), 10);
         } else {
-          mobileDrawer.classList.remove('drawer-visible');
-          setTimeout(() => mobileDrawer.classList.add('hidden'), 300);
+          mobileDrawer.classList.add('hidden');
         }
         siteLinksDrawer?.classList.remove('drawer-visible');
       }
@@ -59,10 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (mobileDrawer) {
         if (mobileDrawer.classList.contains('hidden')) {
           mobileDrawer.classList.remove('hidden');
-          setTimeout(() => mobileDrawer.classList.add('drawer-visible'), 10);
         } else {
-          mobileDrawer.classList.remove('drawer-visible');
-          setTimeout(() => mobileDrawer.classList.add('hidden'), 300);
+          mobileDrawer.classList.add('hidden');
         }
         siteLinksDrawer?.classList.remove('drawer-visible');
       }
@@ -71,10 +65,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (mobileDrawer) {
         if (mobileDrawer.classList.contains('hidden')) {
           mobileDrawer.classList.remove('hidden');
-          setTimeout(() => mobileDrawer.classList.add('drawer-visible'), 10);
         } else {
-          mobileDrawer.classList.remove('drawer-visible');
-          setTimeout(() => mobileDrawer.classList.add('hidden'), 300);
+          mobileDrawer.classList.add('hidden');
         }
         siteLinksDrawer?.classList.remove('drawer-visible');
       }
@@ -83,10 +75,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (mobileDrawer) {
         if (mobileDrawer.classList.contains('hidden')) {
           mobileDrawer.classList.remove('hidden');
-          setTimeout(() => mobileDrawer.classList.add('drawer-visible'), 10);
         } else {
-          mobileDrawer.classList.remove('drawer-visible');
-          setTimeout(() => mobileDrawer.classList.add('hidden'), 300);
+          mobileDrawer.classList.add('hidden');
         }
         siteLinksDrawer?.classList.remove('drawer-visible');
       }
@@ -133,12 +123,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const insideLinks = siteLinksDrawer?.contains(e.target);
 
     if (!insideFab && !insideDrawer && !insideLinks) {
-      mobileDrawer?.classList.remove('drawer-visible');
+      mobileDrawer?.classList.add('hidden');
       siteLinksDrawer?.classList.remove('drawer-visible');
-      // Hide modal drawer for homepage
-      if (isHome && mobileDrawer && !mobileDrawer.classList.contains('hidden')) {
-        setTimeout(() => mobileDrawer.classList.add('hidden'), 300);
-      }
       isDrawerOpen = false;
     }
   });
