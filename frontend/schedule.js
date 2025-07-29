@@ -391,7 +391,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         </div>
       `;
 
-      // Add click event for mobile
+      // Add click/touch event for mobile - single handler
       dayItem.addEventListener("click", (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -400,14 +400,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.log("Day item element:", dayItem);
         showDayDetails(date);
       });
-
-      // Add touch event for mobile - simplified
-      dayItem.addEventListener("touchend", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        console.log("Mobile day touched:", date);
-        showDayDetails(date);
-      }, { passive: false });
 
       mobileScheduleList.appendChild(dayItem);
     }
