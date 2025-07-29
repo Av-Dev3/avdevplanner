@@ -105,37 +105,18 @@ document.addEventListener("DOMContentLoaded", async () => {
       </div>
     `;
 
-    // Enhanced click and touch handling for mobile
-    let touchStartTime = 0;
-    let touchStartY = 0;
-
-    // Mouse click event
+    // Simple click handling for both desktop and mobile
     dayElement.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
       showDayDetails(date);
     });
 
-    // Touch start event
-    dayElement.addEventListener("touchstart", (e) => {
-      touchStartTime = Date.now();
-      touchStartY = e.touches[0].clientY;
-    }, { passive: true });
-
-    // Touch end event
+    // Simple touch handling for mobile
     dayElement.addEventListener("touchend", (e) => {
       e.preventDefault();
       e.stopPropagation();
-      
-      const touchEndTime = Date.now();
-      const touchEndY = e.changedTouches[0].clientY;
-      const touchDuration = touchEndTime - touchStartTime;
-      const touchDistance = Math.abs(touchEndY - touchStartY);
-      
-      // Only trigger if it's a short tap (not a scroll) and minimal movement
-      if (touchDuration < 300 && touchDistance < 10) {
-        showDayDetails(date);
-      }
+      showDayDetails(date);
     });
 
     return dayElement;
