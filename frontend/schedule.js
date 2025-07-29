@@ -397,34 +397,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         showDayDetails(date);
       });
 
-      // Add touch event for mobile with better handling
-      let touchStartTime = 0;
-      let touchStartY = 0;
-      
-      dayItem.addEventListener("touchstart", (e) => {
-        console.log("Touch start on mobile day:", date);
-        touchStartTime = Date.now();
-        touchStartY = e.touches[0].clientY;
-      }, { passive: true });
-      
+      // Add touch event for mobile - simplified
       dayItem.addEventListener("touchend", (e) => {
-        const touchEndTime = Date.now();
-        const touchEndY = e.changedTouches[0].clientY;
-        const touchDuration = touchEndTime - touchStartTime;
-        const touchDistance = Math.abs(touchEndY - touchStartY);
-        
-        console.log("Touch end on mobile day:", date);
-        console.log("Touch duration:", touchDuration, "Touch distance:", touchDistance);
-        
-        // Only trigger if it's a short tap (not a scroll)
-        if (touchDuration < 300 && touchDistance < 10) {
-          e.preventDefault();
-          e.stopPropagation();
-          console.log("Mobile day tapped:", date);
-          showDayDetails(date);
-        } else {
-          console.log("Touch ignored - too long or too far");
-        }
+        e.preventDefault();
+        e.stopPropagation();
+        console.log("Mobile day touched:", date);
+        showDayDetails(date);
       }, { passive: false });
 
       mobileScheduleList.appendChild(dayItem);
