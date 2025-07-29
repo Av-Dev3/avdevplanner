@@ -377,8 +377,8 @@
   }
   
   .daily-row {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.75rem;
+    grid-template-columns: 1fr;
+    gap: 1rem;
   }
   
   .log-entries-container {
@@ -416,8 +416,8 @@
   }
   
   .daily-row {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.5rem;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
   }
   
   .daily-item-card,
