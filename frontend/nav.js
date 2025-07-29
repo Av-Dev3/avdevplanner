@@ -144,31 +144,51 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Handle mobile drawer button clicks for all pages
-  if (mobileDrawer) {
-    const mobileDrawerButtons = mobileDrawer.querySelectorAll('.drawer__links button');
-    mobileDrawerButtons.forEach(button => {
-      button.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        // Get the target popup from the onclick attribute
-        const onclickAttr = button.getAttribute('onclick');
-        if (onclickAttr) {
-          // Extract the popup ID from the onclick attribute
-          const match = onclickAttr.match(/getElementById\('([^']+)'\)/);
-          if (match) {
-            const popupId = match[1];
-            const popup = document.getElementById(popupId);
-            if (popup) {
-              // Close mobile drawer first
-              mobileDrawer.classList.add('hidden');
-              // Open the target popup
-              popup.classList.remove('hidden');
-            }
-          }
-        }
+  function setupMobileDrawerButtons() {
+    const mobileDrawer = document.getElementById('mobileDrawer');
+    if (mobileDrawer) {
+      const mobileDrawerButtons = mobileDrawer.querySelectorAll('.drawer__links button');
+      mobileDrawerButtons.forEach(button => {
+        // Remove any existing listeners to prevent duplicates
+        button.removeEventListener('click', handleMobileDrawerButtonClick);
+        button.addEventListener('click', handleMobileDrawerButtonClick);
       });
-    });
+    }
+  }
+
+  function handleMobileDrawerButtonClick(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Get the target popup from the onclick attribute
+    const onclickAttr = this.getAttribute('onclick');
+    if (onclickAttr) {
+      // Extract the popup ID from the onclick attribute
+      const match = onclickAttr.match(/getElementById\('([^']+)'\)/);
+      if (match) {
+        const popupId = match[1];
+        const popup = document.getElementById(popupId);
+        const mobileDrawer = document.getElementById('mobileDrawer');
+        if (popup && mobileDrawer) {
+          // Close mobile drawer first
+          mobileDrawer.classList.add('hidden');
+          // Open the target popup
+          popup.classList.remove('hidden');
+        }
+      }
+    }
+  }
+
+  // Set up mobile drawer buttons immediately
+  setupMobileDrawerButtons();
+
+  // Also set up when mobile drawer becomes visible (in case buttons are added dynamically)
+  const observer = new MutationObserver(() => {
+    setupMobileDrawerButtons();
+  });
+
+  if (mobileDrawer) {
+    observer.observe(mobileDrawer, { childList: true, subtree: true });
   }
 
   const openAiBtn = document.getElementById('openAiPopup');
