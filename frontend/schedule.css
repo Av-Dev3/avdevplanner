@@ -442,56 +442,13 @@
 
 @media (max-width: 768px) {
   .schedule-content {
-    padding: 1rem;
-    padding-bottom: 8rem; /* Maintain bottom padding */
-  }
-  
-  .calendar-nav {
-    gap: 0.75rem;
-  }
-  
-  .calendar-title {
-    font-size: 1.2rem;
-  }
-  
-  .calendar-days {
-    min-height: 450px;
-    gap: 0.4rem;
-  }
-  
-  .calendar-day {
-    min-height: 70px;
-    padding: 0.6rem;
-    border-radius: 10px;
-  }
-  
-  .day-number {
-    font-size: 1rem;
-    margin-bottom: 0.4rem;
-  }
-  
-  .day-events {
-    gap: 0.3rem;
-  }
-  
-  .event-indicator {
-    font-size: 0.55rem;
-    padding: 0.15rem 0.3rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .schedule-content {
     padding: 0.75rem;
     padding-bottom: 8rem; /* Maintain bottom padding */
   }
   
   .calendar-nav {
     gap: 0.5rem;
-  }
-  
-  .calendar-nav-btn {
-    padding: 0.5rem;
+    margin-bottom: 0.75rem;
   }
   
   .calendar-title {
@@ -499,27 +456,77 @@
   }
   
   .calendar-days {
-    min-height: 400px;
+    min-height: 320px;
     gap: 0.3rem;
   }
   
   .calendar-day {
-    min-height: 60px;
-    padding: 0.5rem;
+    min-height: 50px;
+    padding: 0.4rem;
     border-radius: 8px;
-    font-size: 0.9rem;
   }
   
   .day-number {
     font-size: 0.9rem;
     margin-bottom: 0.3rem;
-    font-weight: 600;
+  }
+  
+  .day-events {
+    gap: 0.2rem;
   }
   
   .event-indicator {
     font-size: 0.5rem;
-    padding: 0.1rem 0.3rem;
-    margin-bottom: 0.1rem;
+    padding: 0.1rem 0.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .schedule-content {
+    padding: 0.5rem;
+    padding-bottom: 8rem; /* Maintain bottom padding */
+  }
+  
+  .calendar-nav {
+    gap: 0.3rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .calendar-nav-btn {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.8rem;
+  }
+  
+  .calendar-title {
+    font-size: 1rem;
+  }
+  
+  .calendar-days {
+    min-height: 280px;
+    gap: 0.2rem;
+  }
+  
+  .calendar-day {
+    min-height: 40px;
+    padding: 0.3rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+  }
+  
+  .day-number {
+    font-size: 0.8rem;
+    margin-bottom: 0.2rem;
+    font-weight: 600;
+  }
+  
+  .day-events {
+    gap: 0.1rem;
+  }
+  
+  .event-indicator {
+    font-size: 0.4rem;
+    padding: 0.05rem 0.2rem;
+    margin-bottom: 0.05rem;
   }
   
   .detail-item-meta {
