@@ -178,7 +178,7 @@ li a.active::after {
 }
 
 /* Dashboard link styling - make it stand out */
-.main-nav li:first-child a {
+.main-nav li a[href="index.html"] {
   background: linear-gradient(135deg, #e74c3c, #c0392b);
   color: white;
   font-weight: 600;
@@ -188,7 +188,7 @@ li a.active::after {
   transition: all 0.3s ease;
 }
 
-.main-nav li:first-child a:hover {
+.main-nav li a[href="index.html"]:hover {
   background: linear-gradient(135deg, #c0392b, #a93226);
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(231, 76, 60, 0.4);

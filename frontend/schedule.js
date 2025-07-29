@@ -105,21 +105,26 @@ document.addEventListener("DOMContentLoaded", async () => {
       </div>
     `;
 
-    // Simple and reliable touch/click handling for mobile and desktop
+    // Enhanced touch and click handling for mobile and desktop
     dayElement.addEventListener("click", (e) => {
-      console.log("Click event triggered");
+      console.log("Click event triggered for date:", date);
       e.preventDefault();
       e.stopPropagation();
       showDayDetails(date);
     });
 
-    // Simple touch handling for mobile - just use touchstart
-    dayElement.addEventListener("touchstart", (e) => {
-      console.log("Touch start event triggered");
+    // Touch handling for mobile
+    dayElement.addEventListener("touchend", (e) => {
+      console.log("Touch end event triggered for date:", date);
       e.preventDefault();
       e.stopPropagation();
       showDayDetails(date);
     });
+
+    // Also add touchstart to prevent default behavior
+    dayElement.addEventListener("touchstart", (e) => {
+      console.log("Touch start event triggered for date:", date);
+    }, { passive: true });
 
     return dayElement;
   }
