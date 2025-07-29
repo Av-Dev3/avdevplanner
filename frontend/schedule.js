@@ -2,122 +2,175 @@ document.addEventListener("DOMContentLoaded", async () => {
   const scheduleContainer = document.getElementById("schedule-container");
   const template = document.getElementById("day-expand-template");
 
+  // Initialize quick actions
+  initializeQuickActions();
+
   const todayStr = new Date().toLocaleDateString("en-CA");
 
-  const [tasks, goals, lessons] = await Promise.all([
-    fetch("https://avdevplanner.onrender.com/tasks").then((res) => res.json()),
-    fetch("https://avdevplanner.onrender.com/goals").then((res) => res.json()),
-    fetch("https://avdevplanner.onrender.com/lessons").then((res) => res.json()),
-  ]);
+  try {
+    const [tasks, goals, lessons] = await Promise.all([
+      fetch("https://avdevplanner.onrender.com/tasks").then((res) => res.json()),
+      fetch("https://avdevplanner.onrender.com/goals").then((res) => res.json()),
+      fetch("https://avdevplanner.onrender.com/lessons").then((res) => res.json()),
+    ]);
 
-  for (let i = 0; i < 30; i++) {
-    const date = new Date();
-    date.setDate(date.getDate() + i);
-    const dateStr = date.toLocaleDateString("en-CA");
-    const pretty = date.toLocaleDateString("en-US", {
-      weekday: "long",
-      month: "long",
-      day: "numeric",
-    });
+    for (let i = 0; i < 30; i++) {
+      const date = new Date();
+      date.setDate(date.getDate() + i);
+      const dateStr = date.toLocaleDateString("en-CA");
+      const dayName = date.toLocaleDateString("en-US", { weekday: "long" });
+      const pretty = date.toLocaleDateString("en-US", {
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+      });
 
-    const dayCard = document.createElement("div");
-    dayCard.className = "bg-[#1f1f1f] rounded-xl p-4 shadow-md transition-all transform hover:-translate-y-1 hover:shadow-[0_4px_12px_rgba(76,142,218,0.35)]";
-    dayCard.innerHTML = `<h3 class="text-lg font-semibold">${pretty}</h3>`;
+      const dayCard = document.createElement("div");
+      dayCard.className = "day-card";
+      
+      const dayHeader = document.createElement("div");
+      dayHeader.className = `day-header ${dayName.toLowerCase()}`;
+      dayHeader.innerHTML = `
+        <div>
+          <h3 class="day-title">${dayName}</h3>
+          <p class="day-date">${pretty}</p>
+        </div>
+        <span class="day-toggle">▼</span>
+      `;
 
-    const expandContent = template.content.cloneNode(true);
+      const expandContent = template.content.cloneNode(true);
+      const dayContent = document.createElement("div");
+      dayContent.className = "day-content";
+      dayContent.appendChild(expandContent);
 
-    const taskContainer = expandContent.querySelector(".task-container");
-    const goalContainer = expandContent.querySelector(".goal-container");
-    const lessonContainer = expandContent.querySelector(".lesson-container");
+      const taskContainer = dayContent.querySelector(".task-container");
+      const goalContainer = dayContent.querySelector(".goal-container");
+      const lessonContainer = dayContent.querySelector(".lesson-container");
 
-    const dayTasks = tasks.filter((t) => t.date === dateStr);
-    const dayGoals = goals.filter((g) => g.date === dateStr);
-    const dayLessons = lessons.filter((l) => l.date === dateStr);
+      const dayTasks = tasks.filter((t) => t.date === dateStr);
+      const dayGoals = goals.filter((g) => g.date === dateStr);
+      const dayLessons = lessons.filter((l) => l.date === dateStr);
 
-    appendCards(dayTasks, taskContainer);
-    appendCards(dayGoals, goalContainer);
-    appendLessonCards(dayLessons, lessonContainer);
+      appendCards(dayTasks, taskContainer, "task");
+      appendCards(dayGoals, goalContainer, "goal");
+      appendLessonCards(dayLessons, lessonContainer);
 
-    setupSwipe(taskContainer);
-    setupSwipe(goalContainer);
-    setupSwipe(lessonContainer);
+      dayCard.appendChild(dayHeader);
+      dayCard.appendChild(dayContent);
 
-    const expander = document.createElement("div");
-    expander.classList.add("day-expanded");
-    expander.appendChild(expandContent);
-    expander.style.display = "none";
-    dayCard.appendChild(expander);
+      // Toggle functionality
+      dayHeader.addEventListener("click", () => {
+        const isExpanded = dayContent.classList.contains("expanded");
+        const toggle = dayHeader.querySelector(".day-toggle");
+        
+        // Close all other day cards
+        document.querySelectorAll(".day-content").forEach(content => {
+          content.classList.remove("expanded");
+        });
+        document.querySelectorAll(".day-toggle").forEach(t => {
+          t.classList.remove("expanded");
+        });
+        
+        // Toggle current card
+        if (!isExpanded) {
+          dayContent.classList.add("expanded");
+          toggle.classList.add("expanded");
+        }
+      });
 
-    dayCard.addEventListener("click", (e) => {
-      const isOpen = expander.style.display === "block";
-      document.querySelectorAll(".day-expanded").forEach((el) => (el.style.display = "none"));
-      expander.style.display = isOpen ? "none" : "block";
-      e.stopPropagation();
-    });
-
-    scheduleContainer.appendChild(dayCard);
+      scheduleContainer.appendChild(dayCard);
+    }
+  } catch (error) {
+    console.error("Error loading schedule data:", error);
+    scheduleContainer.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">📅</div>
+        <div class="empty-state-text">Unable to load schedule</div>
+        <div class="empty-state-subtext">Please check your connection and try again</div>
+      </div>
+    `;
   }
 });
 
-function appendCards(items, container) {
+function appendCards(items, container, type) {
   if (!items.length) {
-    container.innerHTML = "<p class='text-xs'>No entries.</p>";
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">${type === 'task' ? '📝' : type === 'goal' ? '🎯' : '📚'}</div>
+        <div class="empty-state-text">No ${type}s for this day</div>
+        <div class="empty-state-subtext">Add some ${type}s to get started</div>
+      </div>
+    `;
     return;
   }
 
   items.forEach((item) => {
-    const card = createFullCard(
-      item.text || item.title || "Untitled",
-      item.notes,
-      item.prettyDate,
-      item.time
-    );
+    const card = createItemCard(item, type);
     container.appendChild(card);
   });
 }
 
 function appendLessonCards(lessons, container) {
   if (!lessons.length) {
-    container.innerHTML = "<p class='text-xs'>No lessons.</p>";
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">📚</div>
+        <div class="empty-state-text">No lessons for this day</div>
+        <div class="empty-state-subtext">Add some lessons to get started</div>
+      </div>
+    `;
     return;
   }
+  
   lessons.forEach((lesson) => {
-    const content = `${lesson.description || ""}${lesson.notes ? ` (${lesson.notes})` : ""}`;
-    const card = createFullCard(
-      lesson.title,
-      `Category: ${lesson.category || "N/A"} | Priority: ${lesson.priority || "Normal"} | ${content}`,
-      lesson.prettyDate
-    );
+    const card = createItemCard(lesson, "lesson");
     container.appendChild(card);
   });
 }
 
-function createFullCard(title, notes, date, time) {
-  const div = document.createElement("div");
-  div.className =
-    "snap-center shrink-0 w-full sm:w-[240px] bg-[#2b2b2b] rounded-lg p-4 shadow-inner text-sm";
+function createItemCard(item, type) {
+  const card = document.createElement("div");
+  card.className = "day-item-card";
+  
+  const title = item.text || item.title || "Untitled";
+  const description = item.notes || item.description || "";
+  const time = item.time ? formatTime(item.time) : "";
+  const status = item.completed ? "completed" : "pending";
+  const statusText = item.completed ? "Completed" : "Pending";
+  
+  let metaContent = "";
+  if (type === "lesson") {
+    const category = item.category || "N/A";
+    const priority = item.priority || "Normal";
+    metaContent = `
+      <span>📚 ${category}</span>
+      <span>⭐ ${priority}</span>
+    `;
+  } else {
+    metaContent = `
+      <span>🕐 ${time || "No time set"}</span>
+      <span class="day-item-status ${status}">${statusText}</span>
+    `;
+  }
 
-  const timeDisplay =
-    time && time.includes("M")
-      ? `<p><small>Time: ${time}</small></p>`
-      : time
-      ? `<p><small>Time: ${formatTime(time)}</small></p>`
-      : "";
-
-  const dateDisplay =
-    date && date.includes(",")
-      ? `<p><small>Date: ${date}</small></p>`
-      : date
-      ? `<p><small>Date: ${formatPrettyDate(date)}</small></p>`
-      : "";
-
-  div.innerHTML = `
-    <h3 class="font-semibold mb-1">${title}</h3>
-    ${notes ? `<p class="mb-1">${notes}</p>` : ""}
-    ${timeDisplay}
-    ${dateDisplay}
+  card.innerHTML = `
+    <h4 class="day-item-title">${title}</h4>
+    ${description ? `<p class="day-item-description">${description}</p>` : ""}
+    <div class="day-item-meta">
+      ${metaContent}
+    </div>
   `;
-  return div;
+  
+  return card;
+}
+
+function formatTime(timeStr) {
+  if (!timeStr) return "";
+  const [h, m] = timeStr.split(":");
+  const hour = parseInt(h);
+  const suffix = hour >= 12 ? "PM" : "AM";
+  const adjusted = hour % 12 === 0 ? 12 : hour % 12;
+  return `${adjusted}:${m} ${suffix}`;
 }
 
 function formatPrettyDate(dateStr) {
@@ -129,50 +182,121 @@ function formatPrettyDate(dateStr) {
   });
 }
 
-function formatTime(timeStr) {
-  const [h, m] = timeStr.split(":");
-  const hour = parseInt(h);
-  const suffix = hour >= 12 ? "PM" : "AM";
-  const adjusted = hour % 12 === 0 ? 12 : hour % 12;
-  return `${adjusted}:${m} ${suffix}`;
+// Quick Actions Functionality
+function initializeQuickActions() {
+  const quickActionsBtn = document.getElementById("quick-actions-btn");
+  const fab = document.getElementById("fab");
+  const desktopDrawer = document.getElementById("desktopDrawer");
+  const mobileDrawer = document.getElementById("mobileDrawer");
+  const desktopDrawerClose = document.getElementById("desktop-drawer-close");
+  const mobileDrawerClose = document.getElementById("mobile-drawer-close");
+
+  // Desktop quick actions
+  quickActionsBtn.addEventListener("click", () => {
+    desktopDrawer.classList.remove("hidden");
+  });
+
+  desktopDrawerClose.addEventListener("click", () => {
+    desktopDrawer.classList.add("hidden");
+  });
+
+  // Mobile quick actions
+  fab.addEventListener("click", () => {
+    mobileDrawer.classList.remove("hidden");
+  });
+
+  mobileDrawerClose.addEventListener("click", () => {
+    mobileDrawer.classList.add("hidden");
+  });
+
+  // Action buttons
+  document.querySelectorAll('[data-action]').forEach(button => {
+    button.addEventListener("click", (e) => {
+      const action = e.currentTarget.getAttribute("data-action");
+      openModal(action);
+      
+      // Close drawers
+      desktopDrawer.classList.add("hidden");
+      mobileDrawer.classList.add("hidden");
+    });
+  });
+
+  // Modal functionality
+  initializeModals();
 }
 
-function setupSwipe(container) {
-  container.classList.add(
-    "flex",
-    "overflow-x-auto",
-    "snap-x",
-    "snap-mandatory",
-    "scroll-smooth",
-    "no-scrollbar",
-    "gap-3"
-  );
-  container.style.scrollbarWidth = "none";
-  container.style.msOverflowStyle = "none";
-  container.style.overflowY = "hidden";
-  container.style.webkitOverflowScrolling = "touch";
+function openModal(type) {
+  const modal = document.getElementById(`${type}Popup`);
+  const closeBtn = document.getElementById(`${type}-close`);
+  const form = document.getElementById(`${type}Form`);
+  const input = document.getElementById(`${type}Input`);
 
-  if (window.innerWidth >= 768) {
-    container.classList.remove(
-      "flex",
-      "overflow-x-auto",
-      "snap-x",
-      "snap-mandatory",
-      "scroll-smooth"
-    );
-    container.style.overflow = "visible";
-    container.style.display = "grid";
-    container.style.gridTemplateColumns = "repeat(auto-fit, minmax(200px, 1fr))";
-    container.style.gap = "1rem";
-  }
+  modal.classList.remove("hidden");
+  input.focus();
+
+  closeBtn.addEventListener("click", () => {
+    modal.classList.add("hidden");
+  });
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const text = input.value.trim();
+    if (!text) return;
+
+    try {
+      const response = await fetch(`https://avdevplanner.onrender.com/${type}s`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          text: text,
+          date: new Date().toLocaleDateString("en-CA"),
+          completed: false,
+        }),
+      });
+
+      if (response.ok) {
+        modal.classList.add("hidden");
+        input.value = "";
+        // Reload the page to show new item
+        location.reload();
+      } else {
+        console.error("Failed to add item");
+      }
+    } catch (error) {
+      console.error("Error adding item:", error);
+    }
+  });
+
+  // Close modal when clicking outside
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      modal.classList.add("hidden");
+    }
+  });
 }
 
-// === Close expanded sections when clicking outside any card ===
+function initializeModals() {
+  // Close modals with Escape key
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      document.querySelectorAll(".modal").forEach(modal => {
+        modal.classList.add("hidden");
+      });
+    }
+  });
+}
+
+// Close expanded sections when clicking outside
 document.addEventListener("click", (event) => {
-  const insideAnyDay = event.target.closest("#schedule-container > div");
+  const insideAnyDay = event.target.closest(".day-card");
   if (!insideAnyDay) {
-    document.querySelectorAll(".day-expanded").forEach((el) => {
-      el.style.display = "none";
+    document.querySelectorAll(".day-content").forEach((content) => {
+      content.classList.remove("expanded");
+    });
+    document.querySelectorAll(".day-toggle").forEach((toggle) => {
+      toggle.classList.remove("expanded");
     });
   }
 });
