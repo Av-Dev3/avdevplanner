@@ -285,12 +285,26 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.log("Modal classes:", dayModal.className);
       console.log("Modal display:", dayModal.style.display);
       console.log("Modal visibility:", dayModal.style.visibility);
+      console.log("Modal computed display:", window.getComputedStyle(dayModal).display);
+      console.log("Modal computed visibility:", window.getComputedStyle(dayModal).visibility);
+      console.log("Modal computed opacity:", window.getComputedStyle(dayModal).opacity);
+      console.log("Modal computed z-index:", window.getComputedStyle(dayModal).zIndex);
       
       // Force modal to be visible on mobile
       dayModal.style.display = "flex";
       dayModal.style.visibility = "visible";
       dayModal.style.opacity = "1";
       dayModal.style.zIndex = "1000";
+      
+      // Additional mobile-specific styles
+      dayModal.style.position = "fixed";
+      dayModal.style.top = "0";
+      dayModal.style.left = "0";
+      dayModal.style.width = "100%";
+      dayModal.style.height = "100%";
+      dayModal.style.background = "rgba(0, 0, 0, 0.8)";
+      dayModal.style.alignItems = "center";
+      dayModal.style.justifyContent = "center";
 
     } catch (error) {
       console.error("Error loading day details:", error);
