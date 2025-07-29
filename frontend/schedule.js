@@ -306,11 +306,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       dayModal.style.position = "fixed";
       dayModal.style.top = "0";
       dayModal.style.left = "0";
-      dayModal.style.width = "100%";
-      dayModal.style.height = "100%";
+      dayModal.style.right = "0";
+      dayModal.style.bottom = "0";
+      dayModal.style.width = "100vw";
+      dayModal.style.height = "100vh";
       dayModal.style.background = "rgba(0, 0, 0, 0.8)";
       dayModal.style.alignItems = "center";
       dayModal.style.justifyContent = "center";
+      dayModal.style.transform = "none";
 
       // Debug modal visibility
       console.log("Modal final computed styles:");
