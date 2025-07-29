@@ -93,12 +93,12 @@
     </div>
 
     <!-- Mobile Quick Actions Drawer (hidden on desktop) -->
-    <div id="mobileDrawer" class="modal drawer-modal block md:hidden">
+    <div id="mobileDrawer" class="modal drawer-modal hidden block md:hidden">
       <div class="drawer__content">
         <button class="modal__close" onclick="document.getElementById('mobileDrawer').classList.add('hidden')">&times;</button>
         <h2 class="modal__title card--tasks">Quick Actions</h2>
         <ul class="drawer__links">
-          <li><button onclick="document.getElementById('taskPopup').classList.remove('hidden'); document.getElementById('mobileDrawer').classList.add('hidden')">Add Task</button></li>
+          <li><button onclick="document.getElementById('taskPopup').classList.remove('hidden')">Add Task</button></li>
         </ul>
       </div>
     </div>
