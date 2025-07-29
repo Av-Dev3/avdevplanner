@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const isGoals = path.includes('goals');
   const isDaily = path.includes('daily') && !path.includes('daily.css');
   const isWeekly = path.includes('weekly') && !path.includes('weekly.css');
+  const isSchedule = path.includes('schedule') && !path.includes('schedule.css');
 
   let isDrawerOpen = false;
   let longPressTriggered = false;
@@ -88,6 +89,12 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } else if (isWeekly) {
       // Weekly page: only open site links (no quick actions)
+      if (siteLinksDrawer) {
+        siteLinksDrawer.classList.add('drawer-visible');
+        siteLinksDrawer.classList.remove('hidden');
+      }
+    } else if (isSchedule) {
+      // Schedule page: only open site links (no quick actions)
       if (siteLinksDrawer) {
         siteLinksDrawer.classList.add('drawer-visible');
         siteLinksDrawer.classList.remove('hidden');

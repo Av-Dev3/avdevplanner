@@ -116,20 +116,148 @@
   color: white;
 }
 
-.calendar-day.has-events {
-  background: linear-gradient(135deg, rgba(231, 76, 60, 0.1), rgba(192, 57, 43, 0.1));
-  border-color: var(--tasks-accent);
+/* Day of week colors - matching weekly page */
+.calendar-day[data-day="0"], /* Sunday */
+.calendar-day[data-day="7"],
+.calendar-day[data-day="14"],
+.calendar-day[data-day="21"],
+.calendar-day[data-day="28"],
+.calendar-day[data-day="35"] {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
 }
 
-.calendar-day.has-events::after {
-  content: '';
-  position: absolute;
-  top: 0.25rem;
-  right: 0.25rem;
-  width: 8px;
-  height: 8px;
-  background: var(--tasks-accent);
-  border-radius: 50%;
+.calendar-day[data-day="0"] .day-number,
+.calendar-day[data-day="7"] .day-number,
+.calendar-day[data-day="14"] .day-number,
+.calendar-day[data-day="21"] .day-number,
+.calendar-day[data-day="28"] .day-number,
+.calendar-day[data-day="35"] .day-number {
+  color: white;
+}
+
+.calendar-day[data-day="1"], /* Monday */
+.calendar-day[data-day="8"],
+.calendar-day[data-day="15"],
+.calendar-day[data-day="22"],
+.calendar-day[data-day="29"],
+.calendar-day[data-day="36"] {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white;
+}
+
+.calendar-day[data-day="1"] .day-number,
+.calendar-day[data-day="8"] .day-number,
+.calendar-day[data-day="15"] .day-number,
+.calendar-day[data-day="22"] .day-number,
+.calendar-day[data-day="29"] .day-number,
+.calendar-day[data-day="36"] .day-number {
+  color: white;
+}
+
+.calendar-day[data-day="2"], /* Tuesday */
+.calendar-day[data-day="9"],
+.calendar-day[data-day="16"],
+.calendar-day[data-day="23"],
+.calendar-day[data-day="30"],
+.calendar-day[data-day="37"] {
+  background: linear-gradient(135deg, #f39c12, #e67e22);
+  color: white;
+}
+
+.calendar-day[data-day="2"] .day-number,
+.calendar-day[data-day="9"] .day-number,
+.calendar-day[data-day="16"] .day-number,
+.calendar-day[data-day="23"] .day-number,
+.calendar-day[data-day="30"] .day-number,
+.calendar-day[data-day="37"] .day-number {
+  color: white;
+}
+
+.calendar-day[data-day="3"], /* Wednesday */
+.calendar-day[data-day="10"],
+.calendar-day[data-day="17"],
+.calendar-day[data-day="24"],
+.calendar-day[data-day="31"],
+.calendar-day[data-day="38"] {
+  background: linear-gradient(135deg, #27ae60, #2ecc71);
+  color: white;
+}
+
+.calendar-day[data-day="3"] .day-number,
+.calendar-day[data-day="10"] .day-number,
+.calendar-day[data-day="17"] .day-number,
+.calendar-day[data-day="24"] .day-number,
+.calendar-day[data-day="31"] .day-number,
+.calendar-day[data-day="38"] .day-number {
+  color: white;
+}
+
+.calendar-day[data-day="4"], /* Thursday */
+.calendar-day[data-day="11"],
+.calendar-day[data-day="18"],
+.calendar-day[data-day="25"],
+.calendar-day[data-day="32"],
+.calendar-day[data-day="39"] {
+  background: linear-gradient(135deg, #9b59b6, #8e44ad);
+  color: white;
+}
+
+.calendar-day[data-day="4"] .day-number,
+.calendar-day[data-day="11"] .day-number,
+.calendar-day[data-day="18"] .day-number,
+.calendar-day[data-day="25"] .day-number,
+.calendar-day[data-day="32"] .day-number,
+.calendar-day[data-day="39"] .day-number {
+  color: white;
+}
+
+.calendar-day[data-day="5"], /* Friday */
+.calendar-day[data-day="12"],
+.calendar-day[data-day="19"],
+.calendar-day[data-day="26"],
+.calendar-day[data-day="33"],
+.calendar-day[data-day="40"] {
+  background: linear-gradient(135deg, #e67e22, #d35400);
+  color: white;
+}
+
+.calendar-day[data-day="5"] .day-number,
+.calendar-day[data-day="12"] .day-number,
+.calendar-day[data-day="19"] .day-number,
+.calendar-day[data-day="26"] .day-number,
+.calendar-day[data-day="33"] .day-number,
+.calendar-day[data-day="40"] .day-number {
+  color: white;
+}
+
+.calendar-day[data-day="6"], /* Saturday */
+.calendar-day[data-day="13"],
+.calendar-day[data-day="20"],
+.calendar-day[data-day="27"],
+.calendar-day[data-day="34"],
+.calendar-day[data-day="41"] {
+  background: linear-gradient(135deg, #1abc9c, #16a085);
+  color: white;
+}
+
+.calendar-day[data-day="6"] .day-number,
+.calendar-day[data-day="13"] .day-number,
+.calendar-day[data-day="20"] .day-number,
+.calendar-day[data-day="27"] .day-number,
+.calendar-day[data-day="34"] .day-number,
+.calendar-day[data-day="41"] .day-number {
+  color: white;
+}
+
+/* Override other-month styling for colored days */
+.calendar-day.other-month[data-day] {
+  background: var(--card-bg);
+  color: var(--text-muted);
+}
+
+.calendar-day.other-month[data-day] .day-number {
+  color: var(--text-muted);
 }
 
 /* Day Content */
@@ -156,6 +284,9 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .event-indicator.task {
@@ -267,6 +398,79 @@
   color: var(--text-muted);
   font-style: italic;
   padding: 1rem;
+}
+
+/* FAB Button Styling */
+#fab {
+  background: linear-gradient(135deg, #b91c1c, #dc2626);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(185, 28, 28, 0.4);
+  transition: all 0.3s ease;
+  z-index: 50;
+}
+
+#fab:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(185, 28, 28, 0.6);
+}
+
+#fab:active {
+  transform: scale(0.95);
+}
+
+/* Site Links Drawer */
+#siteLinksDrawer {
+  position: fixed;
+  bottom: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 160px;
+  background: var(--popup-glass);
+  backdrop-filter: var(--popup-blur);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius);
+  padding: 1rem;
+  box-shadow: var(--popup-shadow);
+  z-index: 50;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+#siteLinksDrawer.drawer-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+#siteLinksDrawer .flex {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+#siteLinksDrawer a {
+  color: var(--text-primary);
+  text-decoration: none;
+  font-size: 0.9rem;
+  padding: 0.5rem;
+  border-radius: var(--radius-small);
+  transition: all 0.3s ease;
+}
+
+#siteLinksDrawer a:hover {
+  color: #b91c1c;
+  background: var(--glass-bg);
 }
 
 /* Responsive Design */

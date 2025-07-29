@@ -44,6 +44,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
+  // Close modal with Escape key
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !dayModal.classList.contains("hidden")) {
+      dayModal.classList.add("hidden");
+    }
+  });
+
   async function updateCalendar() {
     // Update month title
     const monthNames = [
@@ -79,8 +86,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     const dayNumber = date.getDate();
     const isCurrentMonth = date.getMonth() === currentMonth;
     const isToday = date.toDateString() === new Date().toDateString();
+    const dayOfWeek = date.getDay(); // 0 = Sunday, 1 = Monday, etc.
 
     dayElement.className = "calendar-day";
+    dayElement.setAttribute("data-day", dayOfWeek.toString());
+    
     if (!isCurrentMonth) {
       dayElement.classList.add("other-month");
     }
@@ -96,7 +106,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     `;
 
     // Add click event for day details
-    dayElement.addEventListener("click", () => {
+    dayElement.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
       showDayDetails(date);
     });
 
