@@ -176,7 +176,12 @@ document.addEventListener('DOMContentLoaded', () => {
       if (mobileDrawer) mobileDrawer.classList.add('hidden');
       setTimeout(function() {
         const popup = document.getElementById('lessonPopup');
-        if (popup) popup.classList.remove('hidden');
+        if (popup) {
+          popup.classList.remove('hidden');
+          console.log('lessonPopup .hidden removed');
+          const style = window.getComputedStyle(popup);
+          console.log('lessonPopup display:', style.display, 'visibility:', style.visibility, 'opacity:', style.opacity);
+        }
       }, 10);
     });
   }
