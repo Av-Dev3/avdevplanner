@@ -97,22 +97,12 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Mobile drawer handling
   if (mobileDrawer) {
-    const mobileDrawerContent = mobileDrawer.querySelector('.drawer__content');
-    
-    // Prevent mobile drawer from closing when clicking inside
-    if (mobileDrawerContent) {
-      mobileDrawerContent.addEventListener('click', function(e) {
-        e.stopPropagation();
-      });
-    }
-    
     // Close mobile drawer when clicking outside
     mobileDrawer.addEventListener('click', function(e) {
       if (e.target === mobileDrawer) {
         mobileDrawer.classList.add('hidden');
       }
     });
-
   }
   
   // Site Links drawer handling
