@@ -242,8 +242,7 @@ if (container) {
       const groupDiv = document.createElement("div");
       groupDiv.className = "task-date-group";
 
-      const heading = document.createElement("h2");
-      heading.className = "task-date-heading";
+      const heading = document.createElement("h3");
       heading.textContent = formatDate(date);
       groupDiv.appendChild(heading);
 
