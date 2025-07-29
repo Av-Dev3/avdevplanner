@@ -512,6 +512,35 @@
     cursor: pointer;
     transition: all 0.3s ease;
   }
+
+  /* Mobile day colors - matching weekly page */
+  .mobile-day-item[data-day="0"] { /* Sunday */
+    border-left: 4px solid #e74c3c;
+  }
+  
+  .mobile-day-item[data-day="1"] { /* Monday */
+    border-left: 4px solid #3498db;
+  }
+  
+  .mobile-day-item[data-day="2"] { /* Tuesday */
+    border-left: 4px solid #2ecc71;
+  }
+  
+  .mobile-day-item[data-day="3"] { /* Wednesday */
+    border-left: 4px solid #f39c12;
+  }
+  
+  .mobile-day-item[data-day="4"] { /* Thursday */
+    border-left: 4px solid #9b59b6;
+  }
+  
+  .mobile-day-item[data-day="5"] { /* Friday */
+    border-left: 4px solid #e67e22;
+  }
+  
+  .mobile-day-item[data-day="6"] { /* Saturday */
+    border-left: 4px solid #1abc9c;
+  }
   
   .mobile-day-item:hover {
     background: var(--glass-bg);

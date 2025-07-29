@@ -372,6 +372,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const dayItem = document.createElement("div");
       dayItem.className = "mobile-day-item";
       dayItem.setAttribute("data-date", date.toISOString().split('T')[0]);
+      dayItem.setAttribute("data-day", date.getDay().toString());
 
       dayItem.innerHTML = `
         <div class="mobile-day-header">
@@ -384,9 +385,20 @@ document.addEventListener("DOMContentLoaded", async () => {
       `;
 
       // Add click event for mobile
-      dayItem.addEventListener("click", () => {
+      dayItem.addEventListener("click", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log("Mobile day clicked:", date);
         showDayDetails(date);
       });
+
+      // Add touch event for mobile
+      dayItem.addEventListener("touchstart", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        console.log("Mobile day touched:", date);
+        showDayDetails(date);
+      }, { passive: false });
 
       mobileScheduleList.appendChild(dayItem);
     }
