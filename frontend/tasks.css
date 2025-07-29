@@ -34,7 +34,7 @@
 }
 
 .task-date-group h3 {
-  color: var(--text-primary);
+  color: var(--text-primary) !important;
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 1rem;
@@ -43,12 +43,9 @@
   gap: 0.5rem;
 }
 
+/* Remove the red line next to the date group title */
 .task-date-group h3::before {
-  content: '';
-  width: 4px;
-  height: 20px;
-  background: var(--tasks-accent);
-  border-radius: 2px;
+  content: none !important;
 }
 
 .tasks-row {
