@@ -506,3 +506,7 @@
 .tasks-content .task-date-group h3 {
   color: #fff !important;
 }
+
+.task-actions {
+  margin-top: 1rem;
+}
