@@ -127,16 +127,8 @@
 }
 
 .task-card .task-time {
-  display: inline-block;
-  padding: 0.25rem 0.5rem;
-  border-radius: 12px;
-  font-size: 0.7rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  background: rgba(231, 76, 60, 0.1);
-  color: var(--tasks-accent);
-  border: 1px solid rgba(231, 76, 60, 0.2);
+  color: var(--text-muted);
+  font-size: 0.8rem;
 }
 
 .task-card .task-notes {
