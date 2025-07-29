@@ -143,40 +143,31 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  const taskBtn = document.getElementById('addTaskBtn');
-  const goalBtn = document.getElementById('addGoalBtn');
-  const lessonBtn = document.getElementById('addLessonBtn');
-
-  const showPopup = (id) => {
-    const popup = document.getElementById(id);
-    if (!popup) return;
-    popup.classList.remove('hidden');
-    popup.addEventListener('click', (e) => {
-      if (e.target === popup) popup.classList.add('hidden');
-    });
-  };
-
-  if (taskBtn) {
-    taskBtn.addEventListener('click', () => {
-      showPopup('taskPopup');
-      mobileDrawer?.classList.remove('drawer-visible');
-      isDrawerOpen = false;
-    });
-  }
-
-  if (goalBtn) {
-    goalBtn.addEventListener('click', () => {
-      showPopup('goalPopup');
-      mobileDrawer?.classList.remove('drawer-visible');
-      isDrawerOpen = false;
-    });
-  }
-
-  if (lessonBtn) {
-    lessonBtn.addEventListener('click', () => {
-      showPopup('lessonPopup');
-      mobileDrawer?.classList.remove('drawer-visible');
-      isDrawerOpen = false;
+  // Handle mobile drawer button clicks for all pages
+  if (mobileDrawer) {
+    const mobileDrawerButtons = mobileDrawer.querySelectorAll('.drawer__links button');
+    mobileDrawerButtons.forEach(button => {
+      button.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // Get the target popup from the onclick attribute
+        const onclickAttr = button.getAttribute('onclick');
+        if (onclickAttr) {
+          // Extract the popup ID from the onclick attribute
+          const match = onclickAttr.match(/getElementById\('([^']+)'\)/);
+          if (match) {
+            const popupId = match[1];
+            const popup = document.getElementById(popupId);
+            if (popup) {
+              // Close mobile drawer first
+              mobileDrawer.classList.add('hidden');
+              // Open the target popup
+              popup.classList.remove('hidden');
+            }
+          }
+        }
+      });
     });
   }
 
