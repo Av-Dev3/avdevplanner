@@ -1782,6 +1782,15 @@ body, .modern-dashboard {
 }
 
 #taskPopup, #goalPopup, #lessonPopup {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   z-index: 99999 !important;
 }
 
