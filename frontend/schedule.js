@@ -1,302 +1,280 @@
 document.addEventListener("DOMContentLoaded", async () => {
-  const scheduleContainer = document.getElementById("schedule-container");
-  const template = document.getElementById("day-expand-template");
+  let currentDate = new Date();
+  let currentMonth = currentDate.getMonth();
+  let currentYear = currentDate.getFullYear();
 
-  // Initialize quick actions
-  initializeQuickActions();
+  const calendarDays = document.getElementById("calendar-days");
+  const currentMonthElement = document.getElementById("current-month");
+  const prevMonthBtn = document.getElementById("prev-month");
+  const nextMonthBtn = document.getElementById("next-month");
+  const dayModal = document.getElementById("dayModal");
+  const dayModalClose = document.getElementById("day-modal-close");
+  const modalDayTitle = document.getElementById("modal-day-title");
 
-  const todayStr = new Date().toLocaleDateString("en-CA");
+  // Initialize calendar
+  updateCalendar();
 
-  try {
-    const [tasks, goals, lessons] = await Promise.all([
-      fetch("https://avdevplanner.onrender.com/tasks").then((res) => res.json()),
-      fetch("https://avdevplanner.onrender.com/goals").then((res) => res.json()),
-      fetch("https://avdevplanner.onrender.com/lessons").then((res) => res.json()),
-    ]);
-
-    for (let i = 0; i < 30; i++) {
-      const date = new Date();
-      date.setDate(date.getDate() + i);
-      const dateStr = date.toLocaleDateString("en-CA");
-      const dayName = date.toLocaleDateString("en-US", { weekday: "long" });
-      const pretty = date.toLocaleDateString("en-US", {
-        weekday: "long",
-        month: "long",
-        day: "numeric",
-      });
-
-      const dayCard = document.createElement("div");
-      dayCard.className = "day-card";
-      
-      const dayHeader = document.createElement("div");
-      dayHeader.className = `day-header ${dayName.toLowerCase()}`;
-      dayHeader.innerHTML = `
-        <div>
-          <h3 class="day-title">${dayName}</h3>
-          <p class="day-date">${pretty}</p>
-        </div>
-        <span class="day-toggle">▼</span>
-      `;
-
-      const expandContent = template.content.cloneNode(true);
-      const dayContent = document.createElement("div");
-      dayContent.className = "day-content";
-      dayContent.appendChild(expandContent);
-
-      const taskContainer = dayContent.querySelector(".task-container");
-      const goalContainer = dayContent.querySelector(".goal-container");
-      const lessonContainer = dayContent.querySelector(".lesson-container");
-
-      const dayTasks = tasks.filter((t) => t.date === dateStr);
-      const dayGoals = goals.filter((g) => g.date === dateStr);
-      const dayLessons = lessons.filter((l) => l.date === dateStr);
-
-      appendCards(dayTasks, taskContainer, "task");
-      appendCards(dayGoals, goalContainer, "goal");
-      appendLessonCards(dayLessons, lessonContainer);
-
-      dayCard.appendChild(dayHeader);
-      dayCard.appendChild(dayContent);
-
-      // Toggle functionality
-      dayHeader.addEventListener("click", () => {
-        const isExpanded = dayContent.classList.contains("expanded");
-        const toggle = dayHeader.querySelector(".day-toggle");
-        
-        // Close all other day cards
-        document.querySelectorAll(".day-content").forEach(content => {
-          content.classList.remove("expanded");
-        });
-        document.querySelectorAll(".day-toggle").forEach(t => {
-          t.classList.remove("expanded");
-        });
-        
-        // Toggle current card
-        if (!isExpanded) {
-          dayContent.classList.add("expanded");
-          toggle.classList.add("expanded");
-        }
-      });
-
-      scheduleContainer.appendChild(dayCard);
+  // Event listeners
+  prevMonthBtn.addEventListener("click", () => {
+    currentMonth--;
+    if (currentMonth < 0) {
+      currentMonth = 11;
+      currentYear--;
     }
-  } catch (error) {
-    console.error("Error loading schedule data:", error);
-    scheduleContainer.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-state-icon">📅</div>
-        <div class="empty-state-text">Unable to load schedule</div>
-        <div class="empty-state-subtext">Please check your connection and try again</div>
-      </div>
-    `;
-  }
-});
-
-function appendCards(items, container, type) {
-  if (!items.length) {
-    container.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-state-icon">${type === 'task' ? '📝' : type === 'goal' ? '🎯' : '📚'}</div>
-        <div class="empty-state-text">No ${type}s for this day</div>
-        <div class="empty-state-subtext">Add some ${type}s to get started</div>
-      </div>
-    `;
-    return;
-  }
-
-  items.forEach((item) => {
-    const card = createItemCard(item, type);
-    container.appendChild(card);
-  });
-}
-
-function appendLessonCards(lessons, container) {
-  if (!lessons.length) {
-    container.innerHTML = `
-      <div class="empty-state">
-        <div class="empty-state-icon">📚</div>
-        <div class="empty-state-text">No lessons for this day</div>
-        <div class="empty-state-subtext">Add some lessons to get started</div>
-      </div>
-    `;
-    return;
-  }
-  
-  lessons.forEach((lesson) => {
-    const card = createItemCard(lesson, "lesson");
-    container.appendChild(card);
-  });
-}
-
-function createItemCard(item, type) {
-  const card = document.createElement("div");
-  card.className = "day-item-card";
-  
-  const title = item.text || item.title || "Untitled";
-  const description = item.notes || item.description || "";
-  const time = item.time ? formatTime(item.time) : "";
-  const status = item.completed ? "completed" : "pending";
-  const statusText = item.completed ? "Completed" : "Pending";
-  
-  let metaContent = "";
-  if (type === "lesson") {
-    const category = item.category || "N/A";
-    const priority = item.priority || "Normal";
-    metaContent = `
-      <span>📚 ${category}</span>
-      <span>⭐ ${priority}</span>
-    `;
-  } else {
-    metaContent = `
-      <span>🕐 ${time || "No time set"}</span>
-      <span class="day-item-status ${status}">${statusText}</span>
-    `;
-  }
-
-  card.innerHTML = `
-    <h4 class="day-item-title">${title}</h4>
-    ${description ? `<p class="day-item-description">${description}</p>` : ""}
-    <div class="day-item-meta">
-      ${metaContent}
-    </div>
-  `;
-  
-  return card;
-}
-
-function formatTime(timeStr) {
-  if (!timeStr) return "";
-  const [h, m] = timeStr.split(":");
-  const hour = parseInt(h);
-  const suffix = hour >= 12 ? "PM" : "AM";
-  const adjusted = hour % 12 === 0 ? 12 : hour % 12;
-  return `${adjusted}:${m} ${suffix}`;
-}
-
-function formatPrettyDate(dateStr) {
-  const date = new Date(dateStr);
-  return date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
-
-// Quick Actions Functionality
-function initializeQuickActions() {
-  const quickActionsBtn = document.getElementById("quick-actions-btn");
-  const fab = document.getElementById("fab");
-  const desktopDrawer = document.getElementById("desktopDrawer");
-  const mobileDrawer = document.getElementById("mobileDrawer");
-  const desktopDrawerClose = document.getElementById("desktop-drawer-close");
-  const mobileDrawerClose = document.getElementById("mobile-drawer-close");
-
-  // Desktop quick actions
-  quickActionsBtn.addEventListener("click", () => {
-    desktopDrawer.classList.remove("hidden");
+    updateCalendar();
   });
 
-  desktopDrawerClose.addEventListener("click", () => {
-    desktopDrawer.classList.add("hidden");
-  });
-
-  // Mobile quick actions
-  fab.addEventListener("click", () => {
-    mobileDrawer.classList.remove("hidden");
-  });
-
-  mobileDrawerClose.addEventListener("click", () => {
-    mobileDrawer.classList.add("hidden");
-  });
-
-  // Action buttons
-  document.querySelectorAll('[data-action]').forEach(button => {
-    button.addEventListener("click", (e) => {
-      const action = e.currentTarget.getAttribute("data-action");
-      openModal(action);
-      
-      // Close drawers
-      desktopDrawer.classList.add("hidden");
-      mobileDrawer.classList.add("hidden");
-    });
-  });
-
-  // Modal functionality
-  initializeModals();
-}
-
-function openModal(type) {
-  const modal = document.getElementById(`${type}Popup`);
-  const closeBtn = document.getElementById(`${type}-close`);
-  const form = document.getElementById(`${type}Form`);
-  const input = document.getElementById(`${type}Input`);
-
-  modal.classList.remove("hidden");
-  input.focus();
-
-  closeBtn.addEventListener("click", () => {
-    modal.classList.add("hidden");
-  });
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const text = input.value.trim();
-    if (!text) return;
-
-    try {
-      const response = await fetch(`https://avdevplanner.onrender.com/${type}s`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          text: text,
-          date: new Date().toLocaleDateString("en-CA"),
-          completed: false,
-        }),
-      });
-
-      if (response.ok) {
-        modal.classList.add("hidden");
-        input.value = "";
-        // Reload the page to show new item
-        location.reload();
-      } else {
-        console.error("Failed to add item");
-      }
-    } catch (error) {
-      console.error("Error adding item:", error);
+  nextMonthBtn.addEventListener("click", () => {
+    currentMonth++;
+    if (currentMonth > 11) {
+      currentMonth = 0;
+      currentYear++;
     }
+    updateCalendar();
+  });
+
+  dayModalClose.addEventListener("click", () => {
+    dayModal.classList.add("hidden");
   });
 
   // Close modal when clicking outside
-  modal.addEventListener("click", (e) => {
-    if (e.target === modal) {
-      modal.classList.add("hidden");
+  dayModal.addEventListener("click", (e) => {
+    if (e.target === dayModal) {
+      dayModal.classList.add("hidden");
     }
   });
-}
 
-function initializeModals() {
-  // Close modals with Escape key
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") {
-      document.querySelectorAll(".modal").forEach(modal => {
-        modal.classList.add("hidden");
+  async function updateCalendar() {
+    // Update month title
+    const monthNames = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+    currentMonthElement.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+
+    // Clear calendar
+    calendarDays.innerHTML = "";
+
+    // Get first day of month and number of days
+    const firstDay = new Date(currentYear, currentMonth, 1);
+    const lastDay = new Date(currentYear, currentMonth + 1, 0);
+    const startDate = new Date(firstDay);
+    startDate.setDate(startDate.getDate() - firstDay.getDay());
+
+    // Create calendar grid
+    for (let i = 0; i < 42; i++) { // 6 weeks * 7 days
+      const date = new Date(startDate);
+      date.setDate(startDate.getDate() + i);
+
+      const dayElement = createDayElement(date);
+      calendarDays.appendChild(dayElement);
+    }
+
+    // Load data for the current month
+    await loadMonthData();
+  }
+
+  function createDayElement(date) {
+    const dayElement = document.createElement("div");
+    const dayNumber = date.getDate();
+    const isCurrentMonth = date.getMonth() === currentMonth;
+    const isToday = date.toDateString() === new Date().toDateString();
+
+    dayElement.className = "calendar-day";
+    if (!isCurrentMonth) {
+      dayElement.classList.add("other-month");
+    }
+    if (isToday) {
+      dayElement.classList.add("today");
+    }
+
+    dayElement.innerHTML = `
+      <div class="day-number">${dayNumber}</div>
+      <div class="day-events" id="events-${date.toISOString().split('T')[0]}">
+        <!-- Events will be populated here -->
+      </div>
+    `;
+
+    // Add click event for day details
+    dayElement.addEventListener("click", () => {
+      showDayDetails(date);
+    });
+
+    return dayElement;
+  }
+
+  async function loadMonthData() {
+    try {
+      const [tasks, goals, lessons] = await Promise.all([
+        fetch("https://avdevplanner.onrender.com/tasks").then((res) => res.json()),
+        fetch("https://avdevplanner.onrender.com/goals").then((res) => res.json()),
+        fetch("https://avdevplanner.onrender.com/lessons").then((res) => res.json()),
+      ]);
+
+      // Group data by date
+      const dataByDate = {};
+
+      // Process tasks
+      tasks.forEach(task => {
+        const date = task.date;
+        if (!dataByDate[date]) {
+          dataByDate[date] = { tasks: [], goals: [], lessons: [] };
+        }
+        dataByDate[date].tasks.push(task);
       });
-    }
-  });
-}
 
-// Close expanded sections when clicking outside
-document.addEventListener("click", (event) => {
-  const insideAnyDay = event.target.closest(".day-card");
-  if (!insideAnyDay) {
-    document.querySelectorAll(".day-content").forEach((content) => {
-      content.classList.remove("expanded");
+      // Process goals
+      goals.forEach(goal => {
+        const date = goal.date;
+        if (!dataByDate[date]) {
+          dataByDate[date] = { tasks: [], goals: [], lessons: [] };
+        }
+        dataByDate[date].goals.push(goal);
+      });
+
+      // Process lessons
+      lessons.forEach(lesson => {
+        const date = lesson.date;
+        if (!dataByDate[date]) {
+          dataByDate[date] = { tasks: [], goals: [], lessons: [] };
+        }
+        dataByDate[date].lessons.push(lesson);
+      });
+
+      // Populate calendar with events
+      Object.keys(dataByDate).forEach(date => {
+        const eventsContainer = document.getElementById(`events-${date}`);
+        if (eventsContainer) {
+          const dayData = dataByDate[date];
+          const totalEvents = dayData.tasks.length + dayData.goals.length + dayData.lessons.length;
+          
+          if (totalEvents > 0) {
+            // Add has-events class to the day
+            const dayElement = eventsContainer.closest('.calendar-day');
+            dayElement.classList.add('has-events');
+
+            // Show event indicators
+            if (dayData.tasks.length > 0) {
+              const taskIndicator = document.createElement("div");
+              taskIndicator.className = "event-indicator task";
+              taskIndicator.textContent = `${dayData.tasks.length} task${dayData.tasks.length > 1 ? 's' : ''}`;
+              eventsContainer.appendChild(taskIndicator);
+            }
+
+            if (dayData.goals.length > 0) {
+              const goalIndicator = document.createElement("div");
+              goalIndicator.className = "event-indicator goal";
+              goalIndicator.textContent = `${dayData.goals.length} goal${dayData.goals.length > 1 ? 's' : ''}`;
+              eventsContainer.appendChild(goalIndicator);
+            }
+
+            if (dayData.lessons.length > 0) {
+              const lessonIndicator = document.createElement("div");
+              lessonIndicator.className = "event-indicator lesson";
+              lessonIndicator.textContent = `${dayData.lessons.length} lesson${dayData.lessons.length > 1 ? 's' : ''}`;
+              eventsContainer.appendChild(lessonIndicator);
+            }
+          }
+        }
+      });
+
+    } catch (error) {
+      console.error("Error loading month data:", error);
+    }
+  }
+
+  async function showDayDetails(date) {
+    const dateStr = date.toLocaleDateString("en-CA");
+    const formattedDate = date.toLocaleDateString("en-US", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric"
     });
-    document.querySelectorAll(".day-toggle").forEach((toggle) => {
-      toggle.classList.remove("expanded");
+
+    modalDayTitle.textContent = formattedDate;
+
+    try {
+      const [tasks, goals, lessons] = await Promise.all([
+        fetch("https://avdevplanner.onrender.com/tasks").then((res) => res.json()),
+        fetch("https://avdevplanner.onrender.com/goals").then((res) => res.json()),
+        fetch("https://avdevplanner.onrender.com/lessons").then((res) => res.json()),
+      ]);
+
+      const dayTasks = tasks.filter(t => t.date === dateStr);
+      const dayGoals = goals.filter(g => g.date === dateStr);
+      const dayLessons = lessons.filter(l => l.date === dateStr);
+
+      // Populate modal sections
+      populateModalSection("modal-tasks", dayTasks, "task");
+      populateModalSection("modal-goals", dayGoals, "goal");
+      populateModalSection("modal-lessons", dayLessons, "lesson");
+
+      // Show modal
+      dayModal.classList.remove("hidden");
+
+    } catch (error) {
+      console.error("Error loading day details:", error);
+    }
+  }
+
+  function populateModalSection(containerId, items, type) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = "";
+
+    if (items.length === 0) {
+      container.innerHTML = `<div class="empty-detail">No ${type}s for this day</div>`;
+      return;
+    }
+
+    items.forEach(item => {
+      const itemElement = createDetailItem(item, type);
+      container.appendChild(itemElement);
     });
+  }
+
+  function createDetailItem(item, type) {
+    const itemElement = document.createElement("div");
+    itemElement.className = "detail-item";
+
+    const title = item.text || item.title || "Untitled";
+    const description = item.notes || item.description || "";
+    const time = item.time ? formatTime(item.time) : "";
+    const status = item.completed ? "completed" : "pending";
+    const statusText = item.completed ? "Completed" : "Pending";
+
+    let metaContent = "";
+    if (type === "lesson") {
+      const category = item.category || "N/A";
+      const priority = item.priority || "Normal";
+      metaContent = `
+        <span>📚 ${category}</span>
+        <span>⭐ ${priority}</span>
+      `;
+    } else {
+      metaContent = `
+        <span>🕐 ${time || "No time set"}</span>
+        <span class="detail-item-status ${status}">${statusText}</span>
+      `;
+    }
+
+    itemElement.innerHTML = `
+      <div class="detail-item-title">${title}</div>
+      ${description ? `<div class="detail-item-description">${description}</div>` : ""}
+      <div class="detail-item-meta">
+        ${metaContent}
+      </div>
+    `;
+
+    return itemElement;
+  }
+
+  function formatTime(timeStr) {
+    if (!timeStr) return "";
+    const [h, m] = timeStr.split(":");
+    const hour = parseInt(h);
+    const suffix = hour >= 12 ? "PM" : "AM";
+    const adjusted = hour % 12 === 0 ? 12 : hour % 12;
+    return `${adjusted}:${m} ${suffix}`;
   }
 });
