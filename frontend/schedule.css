@@ -415,6 +415,64 @@
   padding: 1rem;
 }
 
+/* Mobile Modal Styles */
+@media (max-width: 480px) {
+  .modal {
+    padding: 0 !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+  }
+  
+  .modal__content {
+    width: 100% !important;
+    height: 100vh !important;
+    max-width: 100% !important;
+    max-height: 100vh !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    padding: 1rem !important;
+    overflow-y: auto !important;
+    position: relative !important;
+  }
+  
+  .modal__title {
+    font-size: 1.2rem !important;
+    margin-bottom: 1rem !important;
+    padding-right: 2rem !important;
+  }
+  
+  .modal__close {
+    position: absolute !important;
+    top: 1rem !important;
+    right: 1rem !important;
+    font-size: 1.5rem !important;
+    z-index: 1001 !important;
+    background: var(--card-bg) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: 50% !important;
+    width: 2rem !important;
+    height: 2rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+  }
+  
+  .modal__body {
+    max-height: calc(100vh - 120px) !important;
+    overflow-y: auto !important;
+    padding: 0 !important;
+  }
+  
+  .detail-section {
+    margin-bottom: 1rem !important;
+  }
+  
+  .detail-item {
+    padding: 0.5rem !important;
+  }
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
   .schedule-content {

@@ -392,12 +392,28 @@ document.addEventListener("DOMContentLoaded", async () => {
         showDayDetails(date);
       });
 
-      // Add touch event for mobile
+      // Add touch event for mobile with better handling
+      let touchStartTime = 0;
+      let touchStartY = 0;
+      
       dayItem.addEventListener("touchstart", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        console.log("Mobile day touched:", date);
-        showDayDetails(date);
+        touchStartTime = Date.now();
+        touchStartY = e.touches[0].clientY;
+      }, { passive: true });
+      
+      dayItem.addEventListener("touchend", (e) => {
+        const touchEndTime = Date.now();
+        const touchEndY = e.changedTouches[0].clientY;
+        const touchDuration = touchEndTime - touchStartTime;
+        const touchDistance = Math.abs(touchEndY - touchStartY);
+        
+        // Only trigger if it's a short tap (not a scroll)
+        if (touchDuration < 300 && touchDistance < 10) {
+          e.preventDefault();
+          e.stopPropagation();
+          console.log("Mobile day tapped:", date);
+          showDayDetails(date);
+        }
       }, { passive: false });
 
       mobileScheduleList.appendChild(dayItem);
