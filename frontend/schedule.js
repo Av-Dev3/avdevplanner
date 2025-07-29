@@ -278,6 +278,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       populateModalSection("modal-goals", dayGoals, "goal");
       populateModalSection("modal-lessons", dayLessons, "lesson");
 
+      // Debug modal content
+      console.log("Modal content after population:");
+      console.log("Tasks container:", document.getElementById("modal-tasks").innerHTML);
+      console.log("Goals container:", document.getElementById("modal-goals").innerHTML);
+      console.log("Lessons container:", document.getElementById("modal-lessons").innerHTML);
+
       // Show modal
       dayModal.classList.remove("hidden");
       console.log("Modal should now be visible");
@@ -305,6 +311,20 @@ document.addEventListener("DOMContentLoaded", async () => {
       dayModal.style.background = "rgba(0, 0, 0, 0.8)";
       dayModal.style.alignItems = "center";
       dayModal.style.justifyContent = "center";
+
+      // Debug modal visibility
+      console.log("Modal final computed styles:");
+      console.log("Display:", window.getComputedStyle(dayModal).display);
+      console.log("Visibility:", window.getComputedStyle(dayModal).visibility);
+      console.log("Opacity:", window.getComputedStyle(dayModal).opacity);
+      console.log("Z-index:", window.getComputedStyle(dayModal).zIndex);
+      console.log("Position:", window.getComputedStyle(dayModal).position);
+      console.log("Top:", window.getComputedStyle(dayModal).top);
+      console.log("Left:", window.getComputedStyle(dayModal).left);
+      console.log("Width:", window.getComputedStyle(dayModal).width);
+      console.log("Height:", window.getComputedStyle(dayModal).height);
+      console.log("Background:", window.getComputedStyle(dayModal).background);
+      console.log("Modal is in DOM:", document.body.contains(dayModal));
 
     } catch (error) {
       console.error("Error loading day details:", error);
