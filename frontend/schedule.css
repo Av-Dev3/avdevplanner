@@ -116,15 +116,16 @@
   color: white;
 }
 
-/* Day of week colors - matching weekly page */
+/* Day of week colors - using subtle borders instead of loud backgrounds */
 .calendar-day[data-day="0"], /* Sunday */
 .calendar-day[data-day="7"],
 .calendar-day[data-day="14"],
 .calendar-day[data-day="21"],
 .calendar-day[data-day="28"],
 .calendar-day[data-day="35"] {
-  background: linear-gradient(135deg, #3498db, #2980b9);
-  color: white;
+  background: var(--card-bg);
+  color: var(--text-primary);
+  border: 2px solid #3498db;
 }
 
 .calendar-day[data-day="0"] .day-number,
@@ -133,7 +134,7 @@
 .calendar-day[data-day="21"] .day-number,
 .calendar-day[data-day="28"] .day-number,
 .calendar-day[data-day="35"] .day-number {
-  color: white;
+  color: var(--text-primary);
 }
 
 .calendar-day[data-day="1"], /* Monday */
@@ -142,8 +143,9 @@
 .calendar-day[data-day="22"],
 .calendar-day[data-day="29"],
 .calendar-day[data-day="36"] {
-  background: linear-gradient(135deg, #e74c3c, #c0392b);
-  color: white;
+  background: var(--card-bg);
+  color: var(--text-primary);
+  border: 2px solid #e74c3c;
 }
 
 .calendar-day[data-day="1"] .day-number,
@@ -152,7 +154,7 @@
 .calendar-day[data-day="22"] .day-number,
 .calendar-day[data-day="29"] .day-number,
 .calendar-day[data-day="36"] .day-number {
-  color: white;
+  color: var(--text-primary);
 }
 
 .calendar-day[data-day="2"], /* Tuesday */
@@ -161,8 +163,9 @@
 .calendar-day[data-day="23"],
 .calendar-day[data-day="30"],
 .calendar-day[data-day="37"] {
-  background: linear-gradient(135deg, #f39c12, #e67e22);
-  color: white;
+  background: var(--card-bg);
+  color: var(--text-primary);
+  border: 2px solid #f39c12;
 }
 
 .calendar-day[data-day="2"] .day-number,
@@ -171,7 +174,7 @@
 .calendar-day[data-day="23"] .day-number,
 .calendar-day[data-day="30"] .day-number,
 .calendar-day[data-day="37"] .day-number {
-  color: white;
+  color: var(--text-primary);
 }
 
 .calendar-day[data-day="3"], /* Wednesday */
@@ -180,8 +183,9 @@
 .calendar-day[data-day="24"],
 .calendar-day[data-day="31"],
 .calendar-day[data-day="38"] {
-  background: linear-gradient(135deg, #27ae60, #2ecc71);
-  color: white;
+  background: var(--card-bg);
+  color: var(--text-primary);
+  border: 2px solid #27ae60;
 }
 
 .calendar-day[data-day="3"] .day-number,
@@ -190,7 +194,7 @@
 .calendar-day[data-day="24"] .day-number,
 .calendar-day[data-day="31"] .day-number,
 .calendar-day[data-day="38"] .day-number {
-  color: white;
+  color: var(--text-primary);
 }
 
 .calendar-day[data-day="4"], /* Thursday */
@@ -199,8 +203,9 @@
 .calendar-day[data-day="25"],
 .calendar-day[data-day="32"],
 .calendar-day[data-day="39"] {
-  background: linear-gradient(135deg, #9b59b6, #8e44ad);
-  color: white;
+  background: var(--card-bg);
+  color: var(--text-primary);
+  border: 2px solid #9b59b6;
 }
 
 .calendar-day[data-day="4"] .day-number,
@@ -209,7 +214,7 @@
 .calendar-day[data-day="25"] .day-number,
 .calendar-day[data-day="32"] .day-number,
 .calendar-day[data-day="39"] .day-number {
-  color: white;
+  color: var(--text-primary);
 }
 
 .calendar-day[data-day="5"], /* Friday */
@@ -218,8 +223,9 @@
 .calendar-day[data-day="26"],
 .calendar-day[data-day="33"],
 .calendar-day[data-day="40"] {
-  background: linear-gradient(135deg, #e67e22, #d35400);
-  color: white;
+  background: var(--card-bg);
+  color: var(--text-primary);
+  border: 2px solid #e67e22;
 }
 
 .calendar-day[data-day="5"] .day-number,
@@ -228,7 +234,7 @@
 .calendar-day[data-day="26"] .day-number,
 .calendar-day[data-day="33"] .day-number,
 .calendar-day[data-day="40"] .day-number {
-  color: white;
+  color: var(--text-primary);
 }
 
 .calendar-day[data-day="6"], /* Saturday */
@@ -237,8 +243,9 @@
 .calendar-day[data-day="27"],
 .calendar-day[data-day="34"],
 .calendar-day[data-day="41"] {
-  background: linear-gradient(135deg, #1abc9c, #16a085);
-  color: white;
+  background: var(--card-bg);
+  color: var(--text-primary);
+  border: 2px solid #1abc9c;
 }
 
 .calendar-day[data-day="6"] .day-number,
@@ -247,13 +254,14 @@
 .calendar-day[data-day="27"] .day-number,
 .calendar-day[data-day="34"] .day-number,
 .calendar-day[data-day="41"] .day-number {
-  color: white;
+  color: var(--text-primary);
 }
 
 /* Override other-month styling for colored days */
 .calendar-day.other-month[data-day] {
-  background: var(--card-bg);
+  background: rgba(255, 255, 255, 0.02);
   color: var(--text-muted);
+  border: 2px solid rgba(255, 255, 255, 0.1);
 }
 
 .calendar-day.other-month[data-day] .day-number {
