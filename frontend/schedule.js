@@ -281,6 +281,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       // Show modal
       dayModal.classList.remove("hidden");
       console.log("Modal should now be visible");
+      console.log("Modal element:", dayModal);
+      console.log("Modal classes:", dayModal.className);
+      console.log("Modal display:", dayModal.style.display);
+      console.log("Modal visibility:", dayModal.style.visibility);
       
       // Force modal to be visible on mobile
       dayModal.style.display = "flex";
