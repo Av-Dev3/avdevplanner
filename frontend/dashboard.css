@@ -1781,3 +1781,7 @@ body, .modern-dashboard {
   }
 }
 
+#taskPopup, #goalPopup, #lessonPopup {
+  z-index: 99999 !important;
+}
+

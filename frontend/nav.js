@@ -154,7 +154,17 @@ document.addEventListener('DOMContentLoaded', () => {
       if (mobileDrawer) mobileDrawer.classList.add('hidden');
       setTimeout(function() {
         const popup = document.getElementById('taskPopup');
-        if (popup) popup.classList.remove('hidden');
+        if (popup) {
+          popup.classList.remove('hidden');
+          popup.style.zIndex = 99999;
+          console.log('taskPopup .hidden removed');
+          const style = window.getComputedStyle(popup);
+          console.log('taskPopup display:', style.display, 'visibility:', style.visibility, 'opacity:', style.opacity, 'z-index:', style.zIndex);
+          console.log('taskPopup bounding rect:', popup.getBoundingClientRect());
+          if (popup.parentElement) {
+            console.log('taskPopup parent:', popup.parentElement.tagName, popup.parentElement.className);
+          }
+        }
       }, 10);
     });
   }
@@ -165,7 +175,17 @@ document.addEventListener('DOMContentLoaded', () => {
       if (mobileDrawer) mobileDrawer.classList.add('hidden');
       setTimeout(function() {
         const popup = document.getElementById('goalPopup');
-        if (popup) popup.classList.remove('hidden');
+        if (popup) {
+          popup.classList.remove('hidden');
+          popup.style.zIndex = 99999;
+          console.log('goalPopup .hidden removed');
+          const style = window.getComputedStyle(popup);
+          console.log('goalPopup display:', style.display, 'visibility:', style.visibility, 'opacity:', style.opacity, 'z-index:', style.zIndex);
+          console.log('goalPopup bounding rect:', popup.getBoundingClientRect());
+          if (popup.parentElement) {
+            console.log('goalPopup parent:', popup.parentElement.tagName, popup.parentElement.className);
+          }
+        }
       }, 10);
     });
   }
@@ -178,9 +198,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const popup = document.getElementById('lessonPopup');
         if (popup) {
           popup.classList.remove('hidden');
+          popup.style.zIndex = 99999;
           console.log('lessonPopup .hidden removed');
           const style = window.getComputedStyle(popup);
-          console.log('lessonPopup display:', style.display, 'visibility:', style.visibility, 'opacity:', style.opacity);
+          console.log('lessonPopup display:', style.display, 'visibility:', style.visibility, 'opacity:', style.opacity, 'z-index:', style.zIndex);
+          console.log('lessonPopup bounding rect:', popup.getBoundingClientRect());
+          if (popup.parentElement) {
+            console.log('lessonPopup parent:', popup.parentElement.tagName, popup.parentElement.className);
+          }
         }
       }, 10);
     });
