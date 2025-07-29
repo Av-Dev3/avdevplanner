@@ -502,3 +502,7 @@
   transform: scale(1.05);
   text-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
 }
+
+.tasks-content .task-date-group h3 {
+  color: #fff !important;
+}
