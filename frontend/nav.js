@@ -148,7 +148,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const mobileAddLessonBtn = document.getElementById('mobileAddLessonBtn');
 
   if (mobileAddTaskBtn) {
+    console.log('Attaching listener to mobileAddTaskBtn');
     mobileAddTaskBtn.addEventListener('click', function() {
+      console.log('mobileAddTaskBtn clicked');
       if (mobileDrawer) mobileDrawer.classList.add('hidden');
       setTimeout(function() {
         const popup = document.getElementById('taskPopup');
@@ -157,7 +159,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
   if (mobileAddGoalBtn) {
+    console.log('Attaching listener to mobileAddGoalBtn');
     mobileAddGoalBtn.addEventListener('click', function() {
+      console.log('mobileAddGoalBtn clicked');
       if (mobileDrawer) mobileDrawer.classList.add('hidden');
       setTimeout(function() {
         const popup = document.getElementById('goalPopup');
@@ -166,7 +170,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
   if (mobileAddLessonBtn) {
+    console.log('Attaching listener to mobileAddLessonBtn');
     mobileAddLessonBtn.addEventListener('click', function() {
+      console.log('mobileAddLessonBtn clicked');
       if (mobileDrawer) mobileDrawer.classList.add('hidden');
       setTimeout(function() {
         const popup = document.getElementById('lessonPopup');
