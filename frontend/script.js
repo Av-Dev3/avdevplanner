@@ -254,7 +254,7 @@ if (container) {
         card.className = "task-card";
 
         card.innerHTML = `
-          <h3>${task.text}</h3>
+          <h4>${task.text}</h4>
           <div class="task-meta">
             <span class="task-time">🕐 ${formatTime(task.time)}</span>
             <span class="task-status">${task.completed ? "✅ Completed" : "⏳ Pending"}</span>

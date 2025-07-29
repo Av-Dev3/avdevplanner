@@ -91,7 +91,7 @@
   transform: scaleX(1);
 }
 
-.task-card h3 {
+.task-card h4 {
   color: var(--text-primary);
   font-size: 1.1rem;
   font-weight: 600;
