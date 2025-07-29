@@ -314,6 +314,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       dayModal.style.alignItems = "center";
       dayModal.style.justifyContent = "center";
       dayModal.style.transform = "none";
+      dayModal.style.transformOrigin = "top left";
+      dayModal.style.willChange = "auto";
+      
+      // Force all child elements to have no transform
+      const modalChildren = dayModal.querySelectorAll('*');
+      modalChildren.forEach(child => {
+        child.style.transform = 'none';
+        child.style.transformOrigin = 'top left';
+      });
 
       // Debug modal visibility
       console.log("Modal final computed styles:");
