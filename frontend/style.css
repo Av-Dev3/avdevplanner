@@ -177,6 +177,22 @@ li a.active::after {
   border-radius: 1px;
 }
 
+/* Dashboard link styling - make it stand out */
+.main-nav li:first-child a {
+  background: linear-gradient(135deg, #e74c3c, #c0392b);
+  color: white;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+  transition: all 0.3s ease;
+}
+
+.main-nav li:first-child a:hover {
+  background: linear-gradient(135deg, #c0392b, #a93226);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(231, 76, 60, 0.4);
+}
 
 
 /* DROPDOWN */
