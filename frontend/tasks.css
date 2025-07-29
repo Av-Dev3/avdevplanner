@@ -33,10 +33,14 @@
   border-color: var(--tasks-accent);
 }
 
-.task-date-group h3,
-.task-date-group h3 span,
-.task-date-group h3 strong {
-  color: var(--text-primary) !important;
+.task-date-group h3 {
+  color: var(--text-primary);
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 .task-date-group h3::before {
   content: '';
