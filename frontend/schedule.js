@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   let currentYear = currentDate.getFullYear();
 
   const calendarDays = document.getElementById("calendar-days");
+  const mobileScheduleList = document.getElementById("mobile-schedule-list");
   const currentMonthElement = document.getElementById("current-month");
   const prevMonthBtn = document.getElementById("prev-month");
   const nextMonthBtn = document.getElementById("next-month");
@@ -61,6 +62,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Clear calendar
     calendarDays.innerHTML = "";
+    mobileScheduleList.innerHTML = "";
 
     // Get first day of month and number of days
     const firstDay = new Date(currentYear, currentMonth, 1);
@@ -68,7 +70,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const startDate = new Date(firstDay);
     startDate.setDate(startDate.getDate() - firstDay.getDay());
 
-    // Create calendar grid
+    // Create calendar grid for desktop
     for (let i = 0; i < 42; i++) { // 6 weeks * 7 days
       const date = new Date(startDate);
       date.setDate(startDate.getDate() + i);
@@ -76,6 +78,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       const dayElement = createDayElement(date);
       calendarDays.appendChild(dayElement);
     }
+
+    // Create mobile list view
+    createMobileList();
 
     // Load data for the current month
     await loadMonthData();
@@ -202,6 +207,39 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
           }
         }
+
+        // Populate mobile list with events
+        const mobileDayItem = document.querySelector(`[data-date="${date}"]`);
+        if (mobileDayItem) {
+          const dayData = dataByDate[date];
+          const totalEvents = dayData.tasks.length + dayData.goals.length + dayData.lessons.length;
+          
+          if (totalEvents > 0) {
+            const eventsContainer = mobileDayItem.querySelector('.mobile-day-events');
+            eventsContainer.innerHTML = ''; // Clear "No events scheduled"
+            
+            if (dayData.tasks.length > 0) {
+              const taskBadge = document.createElement("div");
+              taskBadge.className = "mobile-event-badge task";
+              taskBadge.textContent = `${dayData.tasks.length} task${dayData.tasks.length > 1 ? 's' : ''}`;
+              eventsContainer.appendChild(taskBadge);
+            }
+
+            if (dayData.goals.length > 0) {
+              const goalBadge = document.createElement("div");
+              goalBadge.className = "mobile-event-badge goal";
+              goalBadge.textContent = `${dayData.goals.length} goal${dayData.goals.length > 1 ? 's' : ''}`;
+              eventsContainer.appendChild(goalBadge);
+            }
+
+            if (dayData.lessons.length > 0) {
+              const lessonBadge = document.createElement("div");
+              lessonBadge.className = "mobile-event-badge lesson";
+              lessonBadge.textContent = `${dayData.lessons.length} lesson${dayData.lessons.length > 1 ? 's' : ''}`;
+              eventsContainer.appendChild(lessonBadge);
+            }
+          }
+        }
       });
 
     } catch (error) {
@@ -308,10 +346,49 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function formatTime(timeStr) {
     if (!timeStr) return "";
-    const [h, m] = timeStr.split(":");
-    const hour = parseInt(h);
-    const suffix = hour >= 12 ? "PM" : "AM";
-    const adjusted = hour % 12 === 0 ? 12 : hour % 12;
-    return `${adjusted}:${m} ${suffix}`;
+    const time = new Date(`2000-01-01T${timeStr}`);
+    return time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function createMobileList() {
+    const monthNames = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+    const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    
+    const firstDay = new Date(currentYear, currentMonth, 1);
+    const lastDay = new Date(currentYear, currentMonth + 1, 0);
+    const daysInMonth = lastDay.getDate();
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = new Date(currentYear, currentMonth, day);
+      const dayName = dayNames[date.getDay()];
+      const formattedDate = date.toLocaleDateString('en-US', { 
+        month: 'short', 
+        day: 'numeric' 
+      });
+
+      const dayItem = document.createElement("div");
+      dayItem.className = "mobile-day-item";
+      dayItem.setAttribute("data-date", date.toISOString().split('T')[0]);
+
+      dayItem.innerHTML = `
+        <div class="mobile-day-header">
+          <div class="mobile-day-date">${formattedDate}</div>
+          <div class="mobile-day-name">${dayName}</div>
+        </div>
+        <div class="mobile-day-events">
+          <div class="mobile-no-events">No events scheduled</div>
+        </div>
+      `;
+
+      // Add click event for mobile
+      dayItem.addEventListener("click", () => {
+        showDayDetails(date);
+      });
+
+      mobileScheduleList.appendChild(dayItem);
+    }
   }
 });
