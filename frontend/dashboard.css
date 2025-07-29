@@ -1794,3 +1794,9 @@ body, .modern-dashboard {
   z-index: 99999 !important;
 }
 
+#taskPopup.hidden,
+#goalPopup.hidden,
+#lessonPopup.hidden {
+  display: none !important;
+}
+
