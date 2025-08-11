@@ -902,27 +902,76 @@
 }
 
 .toolbar-select {
-  background: var(--glass-bg);
-  border: 1px solid var(--border-color);
+  background: rgba(30, 41, 59, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-small);
   padding: 6px 8px;
-  color: var(--text-primary);
+  color: #e2e8f0;
   font-size: 13px;
   cursor: pointer;
   min-width: 80px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23e2e8f0' stroke-width='2'%3E%3Cpolyline points='6,9 12,15 18,9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 12px;
+  padding-right: 28px;
 }
 
 .toolbar-select:focus {
   outline: none;
-  border-color: var(--notes-accent);
+  border-color: #9b59b6;
   box-shadow: 0 0 0 3px rgba(155, 89, 182, 0.1);
-  background: rgba(255, 255, 255, 0.08);
+  background-color: rgba(30, 41, 59, 0.95);
 }
 
 .toolbar-select option {
-  background: var(--dashboard-bg);
-  color: var(--text-primary);
-  padding: 8px;
+  background-color: #1e293b;
+  color: #e2e8f0;
+  padding: 8px 12px;
+  border: none;
+}
+
+.toolbar-select option:checked {
+  background-color: #9b59b6;
+  color: #ffffff;
+}
+
+.toolbar-select option:hover {
+  background-color: #334155;
+}
+
+/* Firefox specific dropdown styling */
+@-moz-document url-prefix() {
+  .toolbar-select {
+    background-image: none;
+    padding-right: 8px;
+  }
+  
+  .toolbar-select option {
+    background-color: #1e293b !important;
+    color: #e2e8f0 !important;
+  }
+}
+
+/* Webkit specific improvements */
+.toolbar-select::-webkit-scrollbar {
+  width: 8px;
+}
+
+.toolbar-select::-webkit-scrollbar-track {
+  background: #1e293b;
+}
+
+.toolbar-select::-webkit-scrollbar-thumb {
+  background: #475569;
+  border-radius: 4px;
+}
+
+.toolbar-select::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
 }
 
 .toolbar-btn {
