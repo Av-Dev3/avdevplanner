@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
   async function loadData() {
     try {
       // Load notes from backend
-      const notesResponse = await fetch('/notes');
+      const notesResponse = await fetch('https://avdevplanner.onrender.com/notes');
       if (notesResponse.ok) {
         state.notes = await notesResponse.json();
       }
@@ -462,13 +462,13 @@ document.addEventListener("DOMContentLoaded", () => {
     };
     
     try {
-      const response = await fetch('/notes', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(note)
-      });
+          const response = await fetch('https://avdevplanner.onrender.com/notes', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(note)
+    });
       
       if (response.ok) {
         const savedNote = await response.json();
@@ -559,20 +559,20 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!note.id) return; // Don't save notes without ID
     
     try {
-      const response = await fetch(`/notes/${note.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          title: note.title,
-          content: note.content,
-          pinned: note.pinned || false,
-          tags: note.tags || [],
-          notebook: note.notebook || '',
-          modified_at: new Date().toISOString()
-        })
-      });
+          const response = await fetch(`https://avdevplanner.onrender.com/notes/${note.id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        title: note.title,
+        content: note.content,
+        pinned: note.pinned || false,
+        tags: note.tags || [],
+        notebook: note.notebook || '',
+        modified_at: new Date().toISOString()
+      })
+    });
       
       if (response.ok) {
         updateCounts();
@@ -767,9 +767,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!state.currentNote || !confirm('Are you sure you want to delete this note?')) return;
     
     try {
-      const response = await fetch(`/notes/${state.currentNote.id}`, {
-        method: 'DELETE'
-      });
+          const response = await fetch(`https://avdevplanner.onrender.com/notes/${state.currentNote.id}`, {
+      method: 'DELETE'
+    });
       
       if (response.ok) {
         // Remove from local state
