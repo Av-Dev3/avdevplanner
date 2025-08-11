@@ -330,6 +330,16 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="notebook-name">${notebook.name}</div>
           <div class="notebook-count">${notebook.noteCount} notes</div>
         </div>
+        <div class="notebook-actions">
+          <button class="notebook-delete-btn" onclick="event.stopPropagation(); deleteNotebook('${notebook.id}')" title="Delete Notebook">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="3,6 5,6 21,6"></polyline>
+              <path d="M19,6v14a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6m3,0V4a2,2,0,0,1,2-2h4a2,2,0,0,1,2,2V6"></path>
+              <line x1="10" y1="11" x2="10" y2="17"></line>
+              <line x1="14" y1="11" x2="14" y2="17"></line>
+            </svg>
+          </button>
+        </div>
       </div>
     `).join('');
     
@@ -429,7 +439,18 @@ document.addEventListener("DOMContentLoaded", () => {
             <h4 class="note-title">${note.title || 'Untitled Note'}</h4>
             <div class="note-actions">
               ${note.pinned ? '<span class="pin-indicator">📌</span>' : ''}
-              <button class="note-menu-btn" onclick="event.stopPropagation(); toggleNoteMenu(${note.id})">⋯</button>
+              <div class="note-menu">
+                <button class="note-menu-btn" onclick="event.stopPropagation(); toggleNoteMenu(${note.id})">⋯</button>
+                <div class="note-menu-dropdown hidden" data-note-id="${note.id}">
+                  <button onclick="event.stopPropagation(); selectNote(${note.id}); togglePin()">
+                    ${note.pinned ? 'Unpin' : 'Pin'} Note
+                  </button>
+                  <button onclick="event.stopPropagation(); duplicateNote(${note.id})">Duplicate</button>
+                  <button onclick="event.stopPropagation(); exportNote(${note.id})">Export</button>
+                  <div class="dropdown-divider"></div>
+                  <button onclick="event.stopPropagation(); deleteNoteById(${note.id})" class="danger">Delete</button>
+                </div>
+              </div>
             </div>
           </div>
           <p class="note-preview">${preview}${preview.length >= 150 ? '...' : ''}</p>
@@ -763,19 +784,47 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
   
-  window.deleteNote = async () => {
+    window.deleteNote = async () => {
     if (!state.currentNote || !confirm('Are you sure you want to delete this note?')) return;
     
     try {
-          const response = await fetch(`https://avdevplanner.onrender.com/notes/${state.currentNote.id}`, {
-      method: 'DELETE'
-    });
+      const response = await fetch(`https://avdevplanner.onrender.com/notes/${state.currentNote.id}`, {
+        method: 'DELETE'
+      });
       
       if (response.ok) {
         // Remove from local state
         state.notes = state.notes.filter(note => note.id !== state.currentNote.id);
         state.currentNote = null;
         showWelcomeState();
+        updateCounts();
+        renderAll();
+      }
+    } catch (error) {
+      console.error('Failed to delete note:', error);
+      alert('Failed to delete note. Please try again.');
+    }
+  };
+
+  window.deleteNoteById = async (noteId) => {
+    const note = state.notes.find(n => n.id === noteId);
+    if (!note || !confirm(`Are you sure you want to delete "${note.title || 'Untitled Note'}"?`)) return;
+    
+    try {
+      const response = await fetch(`https://avdevplanner.onrender.com/notes/${noteId}`, {
+        method: 'DELETE'
+      });
+      
+      if (response.ok) {
+        // Remove from local state
+        state.notes = state.notes.filter(n => n.id !== noteId);
+        
+        // If this was the current note, clear the editor
+        if (state.currentNote?.id === noteId) {
+          state.currentNote = null;
+          showWelcomeState();
+        }
+        
         updateCounts();
         renderAll();
       }
@@ -794,6 +843,21 @@ document.addEventListener("DOMContentLoaded", () => {
   window.toggleEditorMenu = () => {
     if (elements.editorDropdown) {
       elements.editorDropdown.classList.toggle('hidden');
+    }
+  };
+
+  window.toggleNoteMenu = (noteId) => {
+    // Close all other note menus first
+    document.querySelectorAll('.note-menu-dropdown').forEach(menu => {
+      if (menu.dataset.noteId !== noteId.toString()) {
+        menu.classList.add('hidden');
+      }
+    });
+    
+    // Toggle the clicked menu
+    const menu = document.querySelector(`.note-menu-dropdown[data-note-id="${noteId}"]`);
+    if (menu) {
+      menu.classList.toggle('hidden');
     }
   };
 
@@ -838,18 +902,56 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   window.createNewNotebook = () => {
-    const name = prompt('Enter notebook name:');
-    if (name && name.trim()) {
-      const colors = ['#9b59b6', '#e74c3c', '#27ae60', '#f39c12', '#3498db'];
-      const newNotebook = {
-        id: Date.now().toString(),
-        name: name.trim(),
-        color: colors[Math.floor(Math.random() * colors.length)],
-        noteCount: 0
-      };
-      state.notebooks.push(newNotebook);
-      renderNotebooks();
+    const modal = document.getElementById('createNotebookModal');
+    const form = document.getElementById('create-notebook-form');
+    const nameInput = document.getElementById('notebook-name');
+    const colorInput = document.getElementById('notebook-color');
+    
+    if (!modal || !form) return;
+    
+    // Reset form
+    form.reset();
+    colorInput.value = '#9b59b6';
+    
+    // Show modal
+    modal.classList.remove('hidden');
+    
+    // Focus on name input
+    setTimeout(() => {
+      nameInput.focus();
+    }, 100);
+  };
+
+  window.deleteNotebook = (notebookId) => {
+    const notebook = state.notebooks.find(n => n.id === notebookId);
+    if (!notebook) return;
+    
+    const notesInNotebook = state.notes.filter(note => note.notebook === notebookId);
+    
+    let confirmMessage = `Delete notebook "${notebook.name}"?`;
+    if (notesInNotebook.length > 0) {
+      confirmMessage += `\n\nThis will move ${notesInNotebook.length} note${notesInNotebook.length !== 1 ? 's' : ''} to the "General" notebook.`;
     }
+    
+    if (!confirm(confirmMessage)) return;
+    
+    // Move notes to General notebook
+    notesInNotebook.forEach(async (note) => {
+      note.notebook = 'general';
+      await saveNote(note);
+    });
+    
+    // Remove notebook from state
+    state.notebooks = state.notebooks.filter(n => n.id !== notebookId);
+    
+    // If this was the current notebook, switch to General
+    if (state.currentNotebook === notebookId) {
+      state.currentNotebook = 'general';
+    }
+    
+    // Update UI
+    updateCounts();
+    renderAll();
   };
 
   window.toggleSidebarView = () => {
@@ -1076,6 +1178,62 @@ document.addEventListener("DOMContentLoaded", () => {
     document.execCommand('insertHTML', false, '<input type="checkbox"> ');
   };
 
+  // === NOTEBOOK FORM HANDLING ===
+  const createNotebookForm = document.getElementById('create-notebook-form');
+  const colorPresets = document.querySelectorAll('.color-preset');
+  const colorInput = document.getElementById('notebook-color');
+
+  if (createNotebookForm) {
+    createNotebookForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const nameInput = document.getElementById('notebook-name');
+      const name = nameInput.value.trim();
+      
+      if (!name) return;
+      
+      const newNotebook = {
+        id: Date.now().toString(),
+        name: name,
+        color: colorInput.value,
+        noteCount: 0
+      };
+      
+      state.notebooks.push(newNotebook);
+      renderNotebooks();
+      
+      // Close modal
+      document.getElementById('createNotebookModal').classList.add('hidden');
+      
+      // Select the new notebook
+      selectNotebook(newNotebook.id);
+    });
+  }
+
+  // Color preset handling
+  colorPresets.forEach(preset => {
+    preset.addEventListener('click', () => {
+      const color = preset.dataset.color;
+      colorInput.value = color;
+      
+      // Update active state
+      colorPresets.forEach(p => p.classList.remove('active'));
+      preset.classList.add('active');
+    });
+  });
+
   // === INITIALIZE APP ===
   init();
+
+  // Close dropdowns when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.note-menu') && !e.target.closest('.editor-menu')) {
+      document.querySelectorAll('.note-menu-dropdown').forEach(menu => {
+        menu.classList.add('hidden');
+      });
+      if (elements.editorDropdown) {
+        elements.editorDropdown.classList.add('hidden');
+      }
+    }
+  });
 });
