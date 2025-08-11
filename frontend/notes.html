@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="dashboard.css">
   <link rel="stylesheet" href="notes.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <title>Notes - Dashboard</title>
@@ -67,71 +68,472 @@
         </div>
       </div>
 
-      <!-- Search Bar -->
-      <div class="search-container">
-        <div class="search-wrapper">
-          <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="11" cy="11" r="8"/>
-            <path d="m21 21-4.35-4.35"/>
-          </svg>
-          <input type="text" id="search-input" placeholder="Search notes, tags, or collections..." class="search-input"/>
-          <button id="clear-search" class="clear-search-btn hidden">&times;</button>
-        </div>
-
-      </div>
-
-      <!-- Notes Content -->
+      <!-- Modern Notes App -->
       <div class="notes-content">
-        <!-- Tab Navigation -->
-        <div class="tab-navigation">
-          <button id="tab-notes" class="tab-btn active" data-tab="notes">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-              <polyline points="14,2 14,8 20,8"/>
-              <line x1="16" y1="13" x2="8" y2="13"/>
-              <line x1="16" y1="17" x2="8" y2="17"/>
-              <polyline points="10,9 9,9 8,9"/>
-            </svg>
-            Notes
-          </button>
-          <button id="tab-tags" class="tab-btn" data-tab="tags">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
-              <line x1="7" y1="7" x2="7.01" y2="7"/>
-            </svg>
-            Tags
-          </button>
-          <button id="tab-collections" class="tab-btn" data-tab="collections">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M3 3h18v18H3zM21 9H3M21 15H3M12 3v18"/>
-            </svg>
-            Collections
-          </button>
-        </div>
+        <div class="notes-app">
+          <!-- Left Sidebar - Notebooks & Organization -->
+          <div class="notes-sidebar">
+            <!-- Sidebar Header -->
+            <div class="sidebar-header">
+              <h2 class="sidebar-title">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                  <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                </svg>
+                My Notes
+              </h2>
+              <div class="sidebar-actions">
+                <button class="sidebar-btn" onclick="createNewNotebook()" title="New Notebook">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14,2 14,8 20,8"/>
+                    <line x1="12" y1="18" x2="12" y2="12"/>
+                    <line x1="9" y1="15" x2="15" y2="15"/>
+                  </svg>
+                </button>
+                <button class="sidebar-btn" onclick="toggleSidebarView()" title="Toggle View">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="6" x2="21" y2="6"/>
+                    <line x1="3" y1="12" x2="21" y2="12"/>
+                    <line x1="3" y1="18" x2="21" y2="18"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
 
-        <!-- Tab Content -->
-        <div class="tab-content-wrapper">
-          <!-- Notes Tab -->
-          <div id="notes-tab" class="tab-content active">
-            <div id="notes-by-week-container" class="notes-grid"></div>
-          </div>
+            <!-- Search & Filters -->
+            <div class="search-section">
+              <div class="search-container">
+                <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"/>
+                  <path d="m21 21-4.35-4.35"/>
+                </svg>
+                <input type="text" id="global-search" placeholder="Search notes and notebooks..." class="search-input"/>
+                <button class="search-filter-btn" onclick="toggleSearchFilters()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="22,3 2,3 10,12.46 10,19 14,21 14,12.46"/>
+                  </svg>
+                </button>
+              </div>
+              <div id="search-filters" class="search-filters hidden">
+                <div class="filter-group">
+                  <label>Sort by:</label>
+                  <select id="sort-by">
+                    <option value="modified">Last Modified</option>
+                    <option value="created">Date Created</option>
+                    <option value="title">Title</option>
+                    <option value="size">Size</option>
+                  </select>
+                </div>
+                <div class="filter-group">
+                  <label>Filter:</label>
+                  <div class="filter-tags">
+                    <button class="filter-tag active" data-filter="all">All</button>
+                    <button class="filter-tag" data-filter="pinned">Pinned</button>
+                    <button class="filter-tag" data-filter="recent">Recent</button>
+                    <button class="filter-tag" data-filter="archived">Archived</button>
+                  </div>
+                </div>
+              </div>
+            </div>
 
-          <!-- Tags Tab -->
-          <div id="tags-tab" class="tab-content">
-            <div id="tag-list" class="tags-grid"></div>
-          </div>
-
-          <!-- Collections Tab -->
-          <div id="collections-tab" class="tab-content">
-            <div class="collections-header">
-              <button id="create-collection-btn" class="collection-create-btn">
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+              <button class="quick-action-btn primary" onclick="createNewNote()">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M12 5v14M5 12h14"/>
                 </svg>
-                New Collection
+                New Note
               </button>
+
             </div>
-            <div id="collection-list" class="collections-grid"></div>
+
+            <!-- Notebooks List -->
+            <div class="notebooks-section">
+              <div class="section-header">
+                <h3>Notebooks</h3>
+                <span id="notebooks-count" class="count">0</span>
+              </div>
+              <div id="notebooks-list" class="notebooks-list"></div>
+            </div>
+
+            <!-- Tags Cloud -->
+            <div class="tags-section">
+              <div class="section-header">
+                <h3>Tags</h3>
+                <button class="section-action" onclick="manageTagsModal()">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                  </svg>
+                </button>
+              </div>
+              <div id="tags-cloud" class="tags-cloud"></div>
+            </div>
+          </div>
+
+          <!-- Center Panel - Notes List -->
+          <div class="notes-panel">
+            <div class="panel-header">
+              <div class="panel-title">
+                <h3 id="current-view-title">All Notes</h3>
+                <span id="notes-count" class="count">0 notes</span>
+              </div>
+              <div class="panel-actions">
+                <div class="view-toggle">
+                  <button class="view-btn active" data-view="list" title="List View">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="3" y1="6" x2="21" y2="6"/>
+                      <line x1="3" y1="12" x2="21" y2="12"/>
+                      <line x1="3" y1="18" x2="21" y2="18"/>
+                    </svg>
+                  </button>
+                  <button class="view-btn" data-view="grid" title="Grid View">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="3" y="3" width="7" height="7"/>
+                      <rect x="14" y="3" width="7" height="7"/>
+                      <rect x="14" y="14" width="7" height="7"/>
+                      <rect x="3" y="14" width="7" height="7"/>
+                    </svg>
+                  </button>
+                </div>
+                <button class="panel-action-btn" onclick="selectAllNotes()" title="Select All">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 11l3 3L22 4"/>
+                    <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                  </svg>
+                </button>
+                <button class="panel-action-btn" onclick="exportSelected()" title="Export">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17,8 12,3 7,8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div id="notes-list-container" class="notes-list-container">
+              <!-- Notes will be populated here -->
+            </div>
+          </div>
+
+          <!-- Right Panel - Editor -->
+          <div class="editor-panel">
+            <!-- Welcome State -->
+            <div id="welcome-state" class="welcome-state">
+              <div class="welcome-content">
+                <div class="welcome-icon">
+                  <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                    <polyline points="14,2 14,8 20,8"/>
+                    <line x1="16" y1="13" x2="8" y2="13"/>
+                    <line x1="16" y1="17" x2="8" y2="17"/>
+                    <line x1="10" y1="9" x2="8" y2="9"/>
+                  </svg>
+                </div>
+                <h2>Welcome to Your Notes</h2>
+                <p>Select a note to start editing, or create a new one to begin writing.</p>
+                <div class="welcome-actions">
+                  <button class="welcome-btn primary" onclick="createNewNote()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M12 5v14M5 12h14"/>
+                    </svg>
+                    Create New Note
+                  </button>
+
+                </div>
+              </div>
+            </div>
+
+            <!-- Note Editor -->
+            <div id="note-editor" class="note-editor hidden">
+              <!-- Editor Header -->
+              <div class="editor-header">
+                <div class="editor-title-section">
+                  <input type="text" id="note-title" placeholder="Untitled Note" class="note-title-input"/>
+                  <div class="note-path" id="note-path">
+                    <span class="notebook-name">General</span> / <span class="note-name">Untitled Note</span>
+                  </div>
+                </div>
+                <div class="editor-actions">
+                  <button class="editor-action-btn" onclick="togglePin()" id="pin-btn" title="Pin Note">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M12 17l-6-6h12l-6 6z"/>
+                    </svg>
+                  </button>
+                  <button class="editor-action-btn" onclick="shareNote()" title="Share">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="18" cy="5" r="3"/>
+                      <circle cx="6" cy="12" r="3"/>
+                      <circle cx="18" cy="19" r="3"/>
+                      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+                      <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+                    </svg>
+                  </button>
+                  <button class="editor-action-btn" onclick="showNoteInfo()" title="Note Info">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10"/>
+                      <line x1="12" y1="16" x2="12" y2="12"/>
+                      <line x1="12" y1="8" x2="12.01" y2="8"/>
+                    </svg>
+                  </button>
+                  <div class="editor-menu">
+                    <button class="editor-action-btn" onclick="toggleEditorMenu()" title="More Actions">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="1"/>
+                        <circle cx="12" cy="5" r="1"/>
+                        <circle cx="12" cy="19" r="1"/>
+                      </svg>
+                    </button>
+                    <div id="editor-dropdown" class="editor-dropdown hidden">
+                      <button onclick="duplicateNote()">Duplicate Note</button>
+                      <button onclick="moveToNotebook()">Move to Notebook</button>
+                      <button onclick="exportNote()">Export Note</button>
+                      <div class="dropdown-divider"></div>
+                      <button onclick="archiveNote()">Archive Note</button>
+                      <button onclick="deleteNote()" class="danger">Delete Note</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Advanced Toolbar -->
+              <div class="advanced-toolbar">
+                <div class="toolbar-section">
+                  <select id="font-family" class="toolbar-select">
+                    <option value="system">System</option>
+                    <option value="serif">Serif</option>
+                    <option value="mono">Monospace</option>
+                  </select>
+                  <select id="font-size" class="toolbar-select">
+                    <option value="12">12px</option>
+                    <option value="14" selected>14px</option>
+                    <option value="16">16px</option>
+                    <option value="18">18px</option>
+                    <option value="20">20px</option>
+                    <option value="24">24px</option>
+                  </select>
+                  <select id="heading-level" class="toolbar-select">
+                    <option value="">Normal</option>
+                    <option value="h1">Heading 1</option>
+                    <option value="h2">Heading 2</option>
+                    <option value="h3">Heading 3</option>
+                    <option value="h4">Heading 4</option>
+                    <option value="h5">Heading 5</option>
+                    <option value="h6">Heading 6</option>
+                  </select>
+                </div>
+
+                <div class="toolbar-section">
+                  <button class="toolbar-btn" data-command="bold" title="Bold (Ctrl+B)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/>
+                      <path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/>
+                    </svg>
+                  </button>
+                  <button class="toolbar-btn" data-command="italic" title="Italic (Ctrl+I)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="19" y1="4" x2="10" y2="4"/>
+                      <line x1="14" y1="20" x2="5" y2="20"/>
+                      <line x1="15" y1="4" x2="9" y2="20"/>
+                    </svg>
+                  </button>
+                  <button class="toolbar-btn" data-command="underline" title="Underline (Ctrl+U)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M6 3v7a6 6 0 0 0 6 6 6 6 0 0 0 6-6V3"/>
+                      <line x1="4" y1="21" x2="20" y2="21"/>
+                    </svg>
+                  </button>
+                  <button class="toolbar-btn" data-command="strikeThrough" title="Strikethrough">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M6 16c0 2.2 1.8 4 4 4s4-1.8 4-4c0-1.1-.4-2.1-1-2.8"/>
+                      <path d="M6 10c0-2.2 1.8-4 4-4s4 1.8 4 4"/>
+                      <line x1="4" y1="12" x2="20" y2="12"/>
+                    </svg>
+                  </button>
+                </div>
+
+                <div class="toolbar-section">
+                  <button class="toolbar-btn" onclick="insertLink()" title="Insert Link (Ctrl+K)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.72"/>
+                      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.72-1.72"/>
+                    </svg>
+                  </button>
+                  <button class="toolbar-btn" onclick="insertImage()" title="Insert Image">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                      <circle cx="8.5" cy="8.5" r="1.5"/>
+                      <polyline points="21,15 16,10 5,21"/>
+                    </svg>
+                  </button>
+                  <button class="toolbar-btn" onclick="insertTable()" title="Insert Table">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                      <line x1="3" y1="9" x2="21" y2="9"/>
+                      <line x1="3" y1="15" x2="21" y2="15"/>
+                      <line x1="12" y1="3" x2="12" y2="21"/>
+                    </svg>
+                  </button>
+                  <button class="toolbar-btn" onclick="insertCodeBlock()" title="Code Block">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="16,18 22,12 16,6"/>
+                      <polyline points="8,6 2,12 8,18"/>
+                    </svg>
+                  </button>
+                </div>
+
+                <div class="toolbar-section">
+                  <button class="toolbar-btn" data-command="insertUnorderedList" title="Bullet List">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="8" y1="6" x2="21" y2="6"/>
+                      <line x1="8" y1="12" x2="21" y2="12"/>
+                      <line x1="8" y1="18" x2="21" y2="18"/>
+                      <line x1="3" y1="6" x2="3.01" y2="6"/>
+                      <line x1="3" y1="12" x2="3.01" y2="12"/>
+                      <line x1="3" y1="18" x2="3.01" y2="18"/>
+                    </svg>
+                  </button>
+                  <button class="toolbar-btn" data-command="insertOrderedList" title="Numbered List">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="10" y1="6" x2="21" y2="6"/>
+                      <line x1="10" y1="12" x2="21" y2="12"/>
+                      <line x1="10" y1="18" x2="21" y2="18"/>
+                      <path d="M4 6h1v4"/>
+                      <path d="M4 10h2"/>
+                      <path d="M6 18H4c0-1 2-2 2-3s-1-1.5-2-1"/>
+                    </svg>
+                  </button>
+                  <button class="toolbar-btn" onclick="insertCheckList()" title="Checklist">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M9 11l3 3L22 4"/>
+                      <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+                    </svg>
+                  </button>
+                </div>
+
+                <div class="toolbar-section">
+                  <button class="toolbar-btn" data-command="justifyLeft" title="Align Left">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="17" y1="10" x2="3" y2="10"/>
+                      <line x1="21" y1="6" x2="3" y2="6"/>
+                      <line x1="21" y1="14" x2="3" y2="14"/>
+                      <line x1="17" y1="18" x2="3" y2="18"/>
+                    </svg>
+                  </button>
+                  <button class="toolbar-btn" data-command="justifyCenter" title="Align Center">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="18" y1="10" x2="6" y2="10"/>
+                      <line x1="21" y1="6" x2="3" y2="6"/>
+                      <line x1="21" y1="14" x2="3" y2="14"/>
+                      <line x1="18" y1="18" x2="6" y2="18"/>
+                    </svg>
+                  </button>
+                  <button class="toolbar-btn" data-command="justifyRight" title="Align Right">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="21" y1="10" x2="7" y2="10"/>
+                      <line x1="21" y1="6" x2="3" y2="6"/>
+                      <line x1="21" y1="14" x2="3" y2="14"/>
+                      <line x1="21" y1="18" x2="7" y2="18"/>
+                    </svg>
+                  </button>
+                </div>
+
+                <div class="toolbar-section">
+                  <button class="toolbar-btn" onclick="toggleFullscreen()" title="Fullscreen (F11)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/>
+                    </svg>
+                  </button>
+                  <button class="toolbar-btn" onclick="togglePreview()" title="Preview">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                      <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Tags Input -->
+              <div class="tags-input-section">
+                <div class="tags-input-container">
+                  <svg class="tags-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
+                    <line x1="7" y1="7" x2="7.01" y2="7"/>
+                  </svg>
+                  <input type="text" id="tags-input" placeholder="Add tags..." class="tags-input"/>
+                  <div id="current-tags" class="current-tags"></div>
+                </div>
+              </div>
+
+              <!-- Content Editor -->
+              <div id="note-content" class="note-content" contenteditable="true" data-placeholder="Start writing your note..."></div>
+
+              <!-- Status Bar -->
+              <div class="status-bar">
+                <div class="status-left">
+                  <span class="status-item">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="10"/>
+                      <polyline points="12,6 12,12 16,14"/>
+                    </svg>
+                    <span id="last-saved">Auto-saved</span>
+                  </span>
+                  <span class="status-item">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                      <polyline points="14,2 14,8 20,8"/>
+                      <line x1="16" y1="13" x2="8" y2="13"/>
+                      <line x1="16" y1="17" x2="8" y2="17"/>
+                    </svg>
+                    <span id="word-count">0 words</span>
+                  </span>
+                  <span class="status-item">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    </svg>
+                    <span id="char-count">0 characters</span>
+                  </span>
+                </div>
+                <div class="status-right">
+                  <span class="status-item">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                      <line x1="16" y1="2" x2="16" y2="6"/>
+                      <line x1="8" y1="2" x2="8" y2="6"/>
+                      <line x1="3" y1="10" x2="21" y2="10"/>
+                    </svg>
+                    <span id="created-date">Created today</span>
+                  </span>
+                  <span class="status-item">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                      <path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                    </svg>
+                    <span id="modified-date">Modified now</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tags Management Modal -->
+    <div id="tagsModal" class="modal glass-modal hidden">
+      <div class="modal__content">
+        <button class="modal__close" onclick="document.getElementById('tagsModal').classList.add('hidden')">&times;</button>
+        <h2 class="modal__title card--notes">Manage Tags</h2>
+        <div class="tags-manager">
+          <div class="tags-stats">
+            <p>You have <span id="total-tags-count">0</span> tags across <span id="tagged-notes-count">0</span> notes.</p>
+          </div>
+          <div class="tags-list" id="tags-manager-list">
+            <!-- Tags will be populated here -->
+          </div>
+          <div class="tags-actions">
+            <button class="modal__submit card--notes" onclick="cleanupUnusedTags()">Remove Unused Tags</button>
           </div>
         </div>
       </div>
@@ -145,18 +547,11 @@
           <button class="desktop-drawer__close" onclick="document.getElementById('drawer').classList.add('hidden')">&times;</button>
         </div>
         <div class="desktop-drawer__actions">
-          <button class="desktop-action-btn notes-action" onclick="document.getElementById('notePopup').classList.remove('hidden'); document.getElementById('drawer').classList.add('hidden')">
+          <button class="desktop-action-btn notes-action" onclick="createNewNote(); document.getElementById('drawer').classList.add('hidden')">
             <div class="action-icon">📝</div>
             <div class="action-text">
               <span class="action-title">Create Note</span>
               <span class="action-subtitle">Add a new note</span>
-            </div>
-          </button>
-          <button class="desktop-action-btn notes-action" onclick="document.getElementById('collectionPopup').classList.remove('hidden'); document.getElementById('drawer').classList.add('hidden')">
-            <div class="action-icon">📁</div>
-            <div class="action-text">
-              <span class="action-title">New Collection</span>
-              <span class="action-subtitle">Create a collection</span>
             </div>
           </button>
         </div>
@@ -169,65 +564,8 @@
         <button class="modal__close" onclick="document.getElementById('mobileDrawer').classList.add('hidden')">&times;</button>
         <h2 class="modal__title card--notes">Quick Actions</h2>
         <ul class="drawer__links">
-          <li><button onclick="document.getElementById('notePopup').classList.remove('hidden')">Create Note</button></li>
-          <li><button onclick="document.getElementById('collectionPopup').classList.remove('hidden')">New Collection</button></li>
+          <li><button onclick="createNewNote(); document.getElementById('mobileDrawer').classList.add('hidden')">Create Note</button></li>
         </ul>
-      </div>
-    </div>
-
-    <!-- Create Note Popup -->
-    <div id="notePopup" class="modal glass-modal hidden">
-      <div class="modal__content">
-        <button class="modal__close" onclick="document.getElementById('notePopup').classList.add('hidden')">&times;</button>
-        <h2 class="modal__title card--notes">Create Note</h2>
-        <form id="note-form" class="modal__form">
-          <input type="text" id="note-title" placeholder="Note title" required/>
-          <textarea id="note-content" placeholder="Write your note..." rows="4" required></textarea>
-          <input type="text" id="note-tags" placeholder="Tags (comma-separated)"/>
-          <select id="note-collection" class="collection-select">
-            <option value="">No collection</option>
-          </select>
-          <button type="submit" class="modal__submit card--notes">Create Note</button>
-        </form>
-      </div>
-    </div>
-
-    <!-- Create Collection Popup -->
-    <div id="collectionPopup" class="modal glass-modal hidden">
-      <div class="modal__content">
-        <button class="modal__close" onclick="document.getElementById('collectionPopup').classList.add('hidden')">&times;</button>
-        <h2 class="modal__title card--notes">Create Collection</h2>
-        <form id="collection-form" class="modal__form">
-          <input type="text" id="collection-name" placeholder="Collection name" required/>
-          <textarea id="collection-description" placeholder="Description (optional)" rows="3"></textarea>
-          <button type="submit" class="modal__submit card--notes">Create Collection</button>
-        </form>
-      </div>
-    </div>
-
-    <!-- Note Preview Popup -->
-    <div id="note-preview-popup" class="modal glass-modal hidden">
-      <div class="modal__content">
-        <button class="modal__close" onclick="document.getElementById('note-preview-popup').classList.add('hidden')">&times;</button>
-        <div class="note-preview-content">
-          <h3 id="popup-note-title" class="note-title"></h3>
-          <div id="popup-note-content" class="note-content"></div>
-          <div id="popup-note-tags" class="note-tags"></div>
-          <div id="popup-note-date" class="note-meta"></div>
-        </div>
-        <div class="note-preview-actions">
-          <button class="note-action-btn edit-note">Edit</button>
-          <button class="note-action-btn delete-note">Delete</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Collection Notes Popup -->
-    <div id="collection-notes-popup" class="modal glass-modal hidden">
-      <div class="modal__content">
-        <button class="modal__close" onclick="document.getElementById('collection-notes-popup').classList.add('hidden')">&times;</button>
-        <h3 id="collection-popup-title" class="modal__title"></h3>
-        <div id="collection-notes-list" class="collection-notes-list"></div>
       </div>
     </div>
 
@@ -264,7 +602,7 @@
           </svg>
           <span class="text-xs truncate">Cal</span>
         </a>
-        <button id="fab" class="bg-[#b91c1c] w-10 h-10 rounded-full text-white flex items-center justify-center shadow-xl transform -translate-y-4 hover:scale-105 transition z-50 mx-1">+</button>
+        <button id="fab" class="bg-[#b91c1c] w-10 h-10 rounded-full text-white flex items-center justify-center shadow-xl transform -translate-y-4 hover:scale-105 transition z-50">+</button>
         <a href="daily.html" class="flex flex-col items-center text-xs hover:text-[#b91c1c] min-w-0 flex-1">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 mb-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -282,8 +620,6 @@
 
     <script src="nav.js"></script>
     <script src="notes.js"></script>
-    <script src="collections.js"></script>
-    <script src="tags.js"></script>
   </div>
 
   <!-- Footer -->

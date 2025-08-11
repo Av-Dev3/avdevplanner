@@ -1,936 +1,1081 @@
-// === NOTES MANAGEMENT ===
-// Modern notes system with search, tags, and collections
-
-
+// === MODERN NOTES APP ===
+// Professional note-taking application with notebooks, tags, and advanced features
 
 document.addEventListener("DOMContentLoaded", () => {
-  // DOM Elements
-  const notesContainer = document.getElementById("notes-by-week-container");
-  const noteForm = document.getElementById("note-form");
-  const titleInput = document.getElementById("note-title");
-  const contentInput = document.getElementById("note-content");
-  const tagsInput = document.getElementById("note-tags");
-  const collectionSelect = document.getElementById("note-collection");
-  const searchInput = document.getElementById("search-input");
-  const clearSearchBtn = document.getElementById("clear-search");
-  const tabButtons = document.querySelectorAll(".tab-btn");
-  const tabContents = document.querySelectorAll(".tab-content");
-
-  let allNotes = [];
-  let filteredNotes = [];
-  let currentTab = 'notes';
-
-  // === TAB NAVIGATION ===
-  tabButtons.forEach(button => {
-    button.addEventListener('click', () => {
-      const tabName = button.getAttribute('data-tab');
-      switchTab(tabName);
-    });
-  });
-
-  function switchTab(tabName) {
-    // Update active tab button
-    tabButtons.forEach(btn => btn.classList.remove('active'));
-    document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
-
-    // Update active tab content
-    tabContents.forEach(content => content.classList.remove('active'));
-    document.getElementById(`${tabName}-tab`).classList.add('active');
-
-    currentTab = tabName;
-    
-    // Reload content based on current tab
-    if (tabName === 'notes') {
-      renderNotes();
-    } else if (tabName === 'tags') {
-      if (typeof window.renderTags === 'function') {
-        window.renderTags();
-      }
-    } else if (tabName === 'collections') {
-      if (typeof window.renderCollections === 'function') {
-        window.renderCollections();
-      }
-    }
-  }
-
-  // === SEARCH FUNCTIONALITY ===
-  if (searchInput) {
-    searchInput.addEventListener('input', (e) => {
-      const searchTerm = e.target.value.toLowerCase();
-      performSearch(searchTerm);
-    });
-  }
-
-  if (clearSearchBtn) {
-    clearSearchBtn.addEventListener('click', () => {
-      searchInput.value = '';
-      clearSearchBtn.classList.add('hidden');
-      filteredNotes = [...allNotes];
-      renderNotes();
-    });
-  }
-
-  function performSearch(searchTerm) {
-    if (!searchTerm.trim()) {
-      filteredNotes = [...allNotes];
-      clearSearchBtn.classList.add('hidden');
-    } else {
-      filteredNotes = allNotes.filter(note => {
-        const titleMatch = note.title?.toLowerCase().includes(searchTerm);
-        const contentMatch = note.content?.toLowerCase().includes(searchTerm);
-        const tagsMatch = note.tags?.some(tag => tag.toLowerCase().includes(searchTerm));
-        const collectionMatch = note.notebook?.toLowerCase().includes(searchTerm);
-        
-        return titleMatch || contentMatch || tagsMatch || collectionMatch;
-      });
-      clearSearchBtn.classList.remove('hidden');
-    }
-    
-    renderNotes();
-  }
-
-  // === FORM SUBMISSION ===
-  if (noteForm) {
-    noteForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const newNote = {
-        title: titleInput.value.trim(),
-        content: contentInput.value.trim(),
-        tags: tagsInput.value.trim() ? tagsInput.value.split(',').map(tag => tag.trim()) : [],
-        notebook: collectionSelect.value || null,
-        date: new Date().toISOString().split('T')[0],
-        completed: false,
-      };
-
-      try {
-        const res = await fetch("https://avdevplanner.onrender.com/notes", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(newNote),
-        });
-
-        if (res.ok) {
-          noteForm.reset();
-          document.getElementById("notePopup").classList.add("hidden");
-          await loadNotes();
-          showSuccessMessage("Note created successfully!");
-        } else {
-          console.error("Failed to save note");
-          showErrorMessage("Failed to save note");
-        }
-      } catch (error) {
-        console.error("Error saving note:", error);
-        showErrorMessage("Error saving note");
-      }
-    });
-  }
-
-
-
-  // === LOAD NOTES ===
-  async function loadNotes() {
-    try {
-      const res = await fetch("https://avdevplanner.onrender.com/notes");
-      allNotes = await res.json();
-      
-      // Filter out notes with undefined IDs and log them
-      const validNotes = [];
-      const invalidNotes = [];
-      
-      allNotes.forEach(note => {
-        const noteId = note.id || note._id;
-        if (noteId) {
-          validNotes.push(note);
-        } else {
-          invalidNotes.push(note);
-          console.warn("Found note with no ID:", note);
-        }
-      });
-      
-      if (invalidNotes.length > 0) {
-        console.warn(`${invalidNotes.length} notes with no ID found and will be skipped`);
-        showErrorMessage(`${invalidNotes.length} notes with invalid IDs found and skipped`);
-      }
-      
-      allNotes = validNotes;
-      filteredNotes = [...allNotes];
-      
-      // Update collection select options
-      updateCollectionSelect();
-      
-      // Always render collections data (needed for all tabs)
-      renderCollections();
-      
-      // Render based on current tab
-      if (currentTab === 'notes') {
-        renderNotes();
-      } else if (currentTab === 'tags') {
-        renderTags();
-      } else if (currentTab === 'collections') {
-        renderCollections();
-      }
-    } catch (err) {
-      console.error("Error loading notes:", err);
-      showErrorMessage("Error loading notes");
-    }
-  }
-
-  // === RENDER NOTES ===
-  function renderNotes() {
-    if (!notesContainer) return;
-    
-    notesContainer.innerHTML = "";
-
-    if (!filteredNotes.length) {
-      notesContainer.innerHTML = `
-        <div class="notes-empty">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-            <polyline points="14,2 14,8 20,8"/>
-            <line x1="16" y1="13" x2="8" y2="13"/>
-            <line x1="16" y1="17" x2="8" y2="17"/>
-            <polyline points="10,9 9,9 8,9"/>
-          </svg>
-          <h3>No Notes Found</h3>
-          <p>${searchInput?.value ? 'Try adjusting your search terms.' : 'Start by creating your first note.'}</p>
-        </div>
-      `;
-      return;
-    }
-
-    const grouped = groupNotesByDate(filteredNotes);
-    
-    Object.keys(grouped)
-      .sort()
-      .forEach((date) => {
-        const groupDiv = document.createElement("div");
-        groupDiv.className = "notes-week-group";
-
-        const groupTitle = document.createElement("h3");
-        groupTitle.textContent = formatPrettyDate(date);
-        groupDiv.appendChild(groupTitle);
-
-        const grid = document.createElement("div");
-        grid.className = "notes-row";
-
-        grouped[date].forEach((note) => {
-          const card = createNoteCard(note);
-          grid.appendChild(card);
-        });
-
-        groupDiv.appendChild(grid);
-        notesContainer.appendChild(groupDiv);
-      });
-  }
-
-  // === CREATE NOTE CARD ===
-  function createNoteCard(note) {
-    const card = document.createElement("div");
-    card.className = "note-card";
-
-    const tags = note.tags || [];
-    const tagsHtml = tags.length > 0 
-      ? `<div class="note-tags">${tags.map(tag => `<span class="note-tag">#${tag}</span>`).join('')}</div>`
-      : '';
-
-    card.innerHTML = `
-      <h4>${note.title || "(No Title)"}</h4>
-      <div class="note-content">${note.content || ""}</div>
-      <div class="note-meta">
-        <div class="note-date">${formatPrettyDate(note.date || note.created_at)}</div>
-        ${note.notebook ? `<div class="note-collection">📚 ${note.notebook}</div>` : ''}
-      </div>
-      ${tagsHtml}
-      <div class="note-actions">
-        <button class="note-action-btn edit-btn" data-note-id="${note.id || note._id}">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
-            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
-          </svg>
-          Edit
-        </button>
-        <button class="note-action-btn delete-btn" data-note-id="${note.id || note._id}">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="3,6 5,6 21,6"/>
-            <path d="M19,6v14a2,2,0,0,1-2,2H7a2,2,0,0,1-2-2V6m3,0V4a2,2,0,0,1,2-2h4a2,2,0,0,1,2,2V6"/>
-          </svg>
-          Delete
-        </button>
-      </div>
-    `;
-
-    // Add event listeners
-    const editBtn = card.querySelector('.edit-btn');
-    const deleteBtn = card.querySelector('.delete-btn');
-
-    editBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      editNote(note);
-    });
-
-    deleteBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      console.log('Delete button clicked for note:', note);
-      console.log('Note ID:', note.id || note._id);
-      deleteNote(note);
-    });
-
-    // Click to preview
-    card.addEventListener('click', (e) => {
-      // Don't trigger if clicking on action buttons
-      if (e.target.closest('.note-actions')) {
-        return;
-      }
-      console.log('Note card clicked:', note);
-      console.log('Calling showNotePreview...');
-      showNotePreview(note);
-    });
-
-    return card;
-  }
-
-  // === NOTE ACTIONS ===
-  function showNotePreview(note) {
-    console.log('showNotePreview called with:', note);
-    console.log('Note ID:', note.id || note._id);
-    console.log('Note title:', note.title);
-    
-    const titleEl = document.getElementById('popup-note-title');
-    const contentEl = document.getElementById('popup-note-content');
-    const tagsEl = document.getElementById('popup-note-tags');
-    const popup = document.getElementById('note-preview-popup');
-
-    console.log('Found elements:', { titleEl, contentEl, tagsEl, popup });
-    console.log('Popup element exists:', !!popup);
-    console.log('Popup classes before:', popup?.className);
-
-    if (titleEl) titleEl.textContent = note.title || "(No Title)";
-    if (contentEl) contentEl.textContent = note.content || "";
-    
-    const tags = note.tags || [];
-    if (tagsEl) {
-      tagsEl.innerHTML = tags.length > 0 
-        ? tags.map(tag => `<span class="note-tag">#${tag}</span>`).join('')
-        : '<span style="color: #6c757d; font-style: italic;">No tags</span>';
-    }
-
-    // Add note date if available
-    const dateEl = document.getElementById('popup-note-date');
-    if (dateEl) {
-      const date = note.date || note.created_at;
-      dateEl.textContent = date ? formatPrettyDate(date) : '';
-    }
-
-    if (popup) {
-      popup.classList.remove('hidden');
-      console.log('Popup classes after removing hidden:', popup.className);
-      console.log('Popup should now be visible');
-    } else {
-      console.error('Note preview popup not found!');
-    }
-  }
-
-  function editNote(note) {
-    // For now, just show a prompt - you can enhance this later
-    const newTitle = prompt("Edit note title:", note.title);
-    if (newTitle === null) return;
-
-    const newContent = prompt("Edit note content:", note.content);
-    if (newContent === null) return;
-
-    const newTags = prompt("Edit tags (comma-separated):", note.tags?.join(', ') || '');
-    if (newTags === null) return;
-
-    updateNote(note, {
-      title: newTitle.trim(),
-      content: newContent.trim(),
-      tags: newTags.trim() ? newTags.split(',').map(tag => tag.trim()) : []
-    });
-  }
-
-  async function updateNote(note, updates) {
-    try {
-      const res = await fetch(`https://avdevplanner.onrender.com/notes/${note.id || note._id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...note, ...updates }),
-      });
-
-      if (res.ok) {
-        await loadNotes();
-        showSuccessMessage("Note updated successfully!");
-      } else {
-        console.error("Failed to update note");
-        showErrorMessage("Failed to update note");
-      }
-    } catch (error) {
-      console.error("Error updating note:", error);
-      showErrorMessage("Error updating note");
-    }
-  }
-
-  async function deleteNote(note) {
-    const confirmDelete = confirm("Are you sure you want to delete this note?");
-    if (!confirmDelete) return;
-
-    const noteId = note.id || note._id;
-    console.log("Attempting to delete note:", note);
-    console.log("Note ID:", noteId);
-    
-    if (!noteId) {
-      console.error("Cannot delete note: No ID found", note);
-      showErrorMessage("Cannot delete note: No ID found. This note may be corrupted.");
-      return;
-    }
-
-    try {
-      console.log("Sending DELETE request to:", `https://avdevplanner.onrender.com/notes/${noteId}`);
-      const res = await fetch(`https://avdevplanner.onrender.com/notes/${noteId}`, {
-        method: "DELETE"
-      });
-
-      console.log("Delete response:", res.status, res.statusText);
-
-      if (res.ok) {
-        await loadNotes();
-        showSuccessMessage("Note deleted successfully!");
-      } else {
-        console.error("Failed to delete note:", res.status, res.statusText);
-        showErrorMessage(`Failed to delete note: ${res.status} ${res.statusText}`);
-      }
-    } catch (error) {
-      console.error("Error deleting note:", error);
-      showErrorMessage("Error deleting note: " + error.message);
-    }
-  }
-
-  // === UTILITY FUNCTIONS ===
-  function formatPrettyDate(dateStr) {
-    if (!dateStr) return "";
-    
-    try {
-      // Handle different date formats
-      let date;
-      if (dateStr.includes('-')) {
-        // Handle ISO date format (YYYY-MM-DD)
-        const [year, month, day] = dateStr.split("-");
-        if (year && month && day) {
-          date = new Date(`${year}-${month}-${day}T00:00:00`);
-        } else {
-          date = new Date(dateStr);
-        }
-      } else {
-        // Handle other date formats
-        date = new Date(dateStr);
-      }
-      
-      // Check if date is valid
-      if (isNaN(date.getTime())) {
-        return "No date";
-      }
-      
-      return date.toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      });
-    } catch (error) {
-      console.error("Error formatting date:", dateStr, error);
-      return "No date";
-    }
-  }
-
-  function groupNotesByDate(notes) {
-    const groups = {};
-    const formatter = new Intl.DateTimeFormat("en-CA", {
-      timeZone: "America/Los_Angeles",
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    });
-
-    notes.forEach((note) => {
-      const rawDate = note.date || note.created_at;
-      const parsed = new Date(rawDate);
-      const vegasDateStr = formatter.format(parsed);
-      if (!groups[vegasDateStr]) groups[vegasDateStr] = [];
-      groups[vegasDateStr].push(note);
-    });
-
-    return groups;
-  }
-
-  function updateCollectionSelect() {
-    if (!collectionSelect) return;
-    
-    const collections = new Set();
-    allNotes.forEach(note => {
-      if (note.notebook) collections.add(note.notebook);
-    });
-
-    // Clear existing options except the first one
-    collectionSelect.innerHTML = '<option value="">No collection</option>';
-    
-    collections.forEach(collection => {
-      const option = document.createElement('option');
-      option.value = collection;
-      option.textContent = collection;
-      collectionSelect.appendChild(option);
-    });
-  }
-
-  // === MESSAGE FUNCTIONS ===
-  function showSuccessMessage(message) {
-    const successDiv = document.createElement("div");
-    successDiv.className = "fixed top-4 right-4 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg z-50";
-    successDiv.textContent = message;
-    document.body.appendChild(successDiv);
-    
-    setTimeout(() => {
-      successDiv.remove();
-    }, 3000);
-  }
-
-  function showErrorMessage(message) {
-    const errorDiv = document.createElement("div");
-    errorDiv.className = "fixed top-4 right-4 bg-red-600 text-white px-4 py-2 rounded-lg shadow-lg z-50";
-    errorDiv.textContent = message;
-    document.body.appendChild(errorDiv);
-    
-    setTimeout(() => {
-      errorDiv.remove();
-    }, 3000);
-  }
-
-  // === RENDER TAGS ===
-  function renderTags() {
-    const tagList = document.getElementById("tag-list");
-    if (!tagList) return;
-
-    const tagMap = new Map();
-    
-    allNotes.forEach(note => {
-      const tags = note.tags || [];
-      tags.forEach(tag => {
-        if (!tagMap.has(tag)) {
-          tagMap.set(tag, []);
-        }
-        tagMap.get(tag).push(note);
-      });
-    });
-
-    if (tagMap.size === 0) {
-      tagList.innerHTML = `
-        <div class="tags-empty">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-            <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>
-            <line x1="7" y1="7" x2="7.01" y2="7"/>
-          </svg>
-          <h3>No Tags Yet</h3>
-          <p>Create notes with tags to see them here.</p>
-        </div>
-      `;
-      return;
-    }
-
-    tagList.innerHTML = "";
-
-    // Sort tags by number of notes (descending)
-    const sortedTags = Array.from(tagMap.entries()).sort((a, b) => b[1].length - a[1].length);
-
-    sortedTags.forEach(([tag, notes]) => {
-      const card = createTagCard(tag, notes);
-      tagList.appendChild(card);
-    });
-  }
-
-  function createTagCard(tag, notes) {
-    const card = document.createElement("div");
-    card.className = "tag-card";
-
-    card.innerHTML = `
-      <h3>#${tag}</h3>
-      <div class="tag-count">${notes.length} note${notes.length !== 1 ? 's' : ''}</div>
-    `;
-
-    card.addEventListener('click', () => {
-      showTaggedNotes(tag, notes);
-    });
-
-    return card;
-  }
-
-  function showTaggedNotes(tag, notes) {
-    console.log('showTaggedNotes called with:', tag, notes);
-    console.log('Creating tag popup...');
-    
-    // Use the existing collection notes popup instead of creating a new one
-    const popup = document.getElementById('collection-notes-popup');
-    const titleEl = document.getElementById('collection-popup-title');
-    const listEl = document.getElementById('collection-notes-list');
-
-    if (titleEl) titleEl.textContent = `Notes tagged with #${tag}`;
-    
-    if (listEl) {
-      if (notes.length === 0) {
-        listEl.innerHTML = '<p class="text-center text-gray-400">No notes found with this tag.</p>';
-      } else {
-        listEl.innerHTML = notes.map(note => `
-          <div class="collection-note-item" onclick="showNotePreviewFromTag(${JSON.stringify(note).replace(/"/g, '&quot;')})" style="cursor: pointer;">
-            <h4>${note.title || '(No Title)'}</h4>
-            <p>${note.content ? note.content.substring(0, 100) + (note.content.length > 100 ? '...' : '') : ''}</p>
-            <div class="note-meta">
-              <small class="note-date">${formatPrettyDate(note.date || note.created_at)}</small>
-              ${note.notebook ? `<small class="note-collection">📚 ${note.notebook}</small>` : ''}
-            </div>
-          </div>
-        `).join('');
-      }
-    }
-
-    if (popup) {
-      popup.classList.remove('hidden');
-      console.log('Tag popup opened');
-    } else {
-      console.error('Collection notes popup not found!');
-    }
-  }
-
-  // === RENDER COLLECTIONS ===
-  async function renderCollections() {
-    const collectionList = document.getElementById("collection-list");
-    if (!collectionList) {
-      console.error("Collection list element not found!");
-      return;
-    }
-
-    console.log("Rendering collections...");
-    
-    try {
-      // Fetch collections from the API
-      const res = await fetch("https://avdevplanner.onrender.com/collections");
-      const collections = await res.json();
-      
-      console.log("Collections from API:", collections);
-      
-      if (!collections || Object.keys(collections).length === 0) {
-        collectionList.innerHTML = `
-          <div class="collections-empty">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-              <path d="M3 3h18v18H3zM21 9H3M21 15H3M12 3v18"/>
-            </svg>
-            <h3>No Collections Yet</h3>
-            <p>Create collections to organize your notes.</p>
-          </div>
-        `;
-        return;
-      }
-
-      collectionList.innerHTML = "";
-
-      // Create collection cards for each collection
-      Object.entries(collections).forEach(([collectionName, noteIds]) => {
-        console.log("Creating collection card for:", collectionName, "with", noteIds.length, "notes");
-        
-        // Find the actual notes for this collection
-        const notes = allNotes.filter(note => {
-          const noteId = note.id || note._id;
-          return noteId && noteIds.includes(noteId);
-        });
-        
-        const card = createCollectionCard(collectionName, notes);
-        collectionList.appendChild(card);
-        console.log("Collection card added to DOM");
-      });
-      
-      console.log("Total collections rendered:", collectionList.children.length);
-    } catch (error) {
-      console.error("Error loading collections:", error);
-      collectionList.innerHTML = `
-        <div class="collections-empty">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-            <path d="M3 3h18v18H3zM21 9H3M21 15H3M12 3v18"/>
-          </svg>
-          <h3>Error Loading Collections</h3>
-          <p>Failed to load collections from server.</p>
-        </div>
-      `;
-    }
-  }
-
-  function createCollectionCard(notebook, notes) {
-    const card = document.createElement("div");
-    card.className = "collection-card";
-
-    const displayName = notebook || "Untitled";
-    
-    card.innerHTML = `
-      <h3>${displayName}</h3>
-      <div class="collection-count">${notes.length} note${notes.length !== 1 ? "s" : ""}</div>
-    `;
-
-    card.addEventListener('click', () => {
-      showCollectionNotes(notebook, notes);
-    });
-
-    // Right-click delete popup
-    card.addEventListener("contextmenu", (e) => {
-      e.preventDefault();
-      if (notebook) { // Only allow deletion of named collections
-        showCollectionOptions(notebook, e.clientX, e.clientY);
-      }
-    });
-
-    // Long-press for mobile delete popup
-    let longPressTimer;
-    card.addEventListener("touchstart", (e) => {
-      longPressTimer = setTimeout(() => {
-        if (notebook) { // Only allow deletion of named collections
-          const touch = e.touches[0];
-          showCollectionOptions(notebook, touch.clientX, touch.clientY);
-        }
-      }, 800);
-    });
-
-    card.addEventListener("touchend", () => clearTimeout(longPressTimer));
-
-    return card;
-  }
-
-  function showCollectionNotes(notebook, notes) {
-    console.log('showCollectionNotes called with:', notebook, notes);
-    
-    const popup = document.getElementById('collection-notes-popup');
-    const titleEl = document.getElementById('collection-popup-title');
-    const listEl = document.getElementById('collection-notes-list');
-
-    if (!popup) {
-      console.error('Collection notes popup not found!');
-      return;
-    }
-
-    if (titleEl) titleEl.textContent = notebook || "Untitled";
-    
-    if (listEl) {
-      if (notes.length === 0) {
-        listEl.innerHTML = '<p class="text-center text-gray-400">No notes in this collection.</p>';
-      } else {
-        listEl.innerHTML = notes.map(note => `
-          <div class="collection-note-item" onclick="showNotePreviewFromCollection(${JSON.stringify(note).replace(/"/g, '&quot;')})" style="cursor: pointer;">
-            <h4>${note.title || '(No Title)'}</h4>
-            <p>${note.content ? note.content.substring(0, 100) + (note.content.length > 100 ? '...' : '') : ''}</p>
-            <div class="note-meta">
-              <small class="note-date">${formatPrettyDate(note.date || note.created_at)}</small>
-            </div>
-          </div>
-        `).join('');
-      }
-    }
-
-    popup.classList.remove('hidden');
-    // Force inline styles to override any CSS conflicts
-    popup.style.display = 'flex';
-    popup.style.position = 'fixed';
-    popup.style.top = '0';
-    popup.style.left = '0';
-    popup.style.right = '0';
-    popup.style.bottom = '0';
-    popup.style.width = '100vw';
-    popup.style.height = '100vh';
-    popup.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-    popup.style.alignItems = 'center';
-    popup.style.justifyContent = 'center';
-    popup.style.zIndex = '9999';
-    popup.style.visibility = 'visible';
-    popup.style.opacity = '1';
-    
-    console.log('Collection notes popup opened');
-  }
-
-  function showCollectionOptions(notebook, x, y) {
-    const popup = document.createElement("div");
-    popup.className = "fixed z-50 bg-[#1f1f1f] border border-neutral-700 text-white rounded shadow-lg p-2 text-sm";
-    popup.style.top = `${y}px`;
-    popup.style.left = `${x}px`;
-
-    popup.innerHTML = `
-      <button class="block w-full text-left px-2 py-1 hover:bg-[#b91c1c]" data-action="delete">Delete Collection</button>
-    `;
-
-    document.body.appendChild(popup);
-
-    const closePopup = () => {
-      popup.remove();
-      document.removeEventListener("click", closePopup);
-    };
-
-    document.addEventListener("click", closePopup);
-
-    popup.querySelector("[data-action='delete']").addEventListener("click", async () => {
-      if (confirm(`Delete collection "${notebook}"? This will remove the collection from all notes.`)) {
-        try {
-          // Update all notes in this collection to remove the notebook field
-          const notesToUpdate = allNotes.filter(note => note.notebook === notebook);
-          let successCount = 0;
-          let errorCount = 0;
-          
-          for (const note of notesToUpdate) {
-            const noteId = note.id || note._id;
-            if (!noteId) {
-              console.warn("Skipping note with no ID:", note);
-              errorCount++;
-              continue;
-            }
-            
-            try {
-              const res = await fetch(`https://avdevplanner.onrender.com/notes/${noteId}`, {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ ...note, notebook: null }),
-              });
-              
-              if (res.ok) {
-                successCount++;
-              } else {
-                console.error(`Failed to update note ${noteId}:`, res.status, res.statusText);
-                errorCount++;
-              }
-            } catch (error) {
-              console.error(`Error updating note ${noteId}:`, error);
-              errorCount++;
-            }
-          }
-          
-
-          
-          // Reload notes and re-render
-          await loadNotes();
-          
-          if (errorCount > 0) {
-            showSuccessMessage(`Collection deleted! ${successCount} notes updated, ${errorCount} failed.`);
-          } else {
-            showSuccessMessage("Collection deleted successfully!");
-          }
-        } catch (error) {
-          console.error("Error deleting collection:", error);
-          showErrorMessage("Error deleting collection");
-        }
-      }
-      closePopup();
-    });
-  }
-
-  // === GLOBAL FUNCTIONS ===
-  window.formatPrettyDate = formatPrettyDate;
-  
-  window.showNotePreview = function(note) {
-    const titleEl = document.getElementById('popup-note-title');
-    const contentEl = document.getElementById('popup-note-content');
-    const tagsEl = document.getElementById('popup-note-tags');
-
-    if (titleEl) titleEl.textContent = note.title || "(No Title)";
-    if (contentEl) contentEl.textContent = note.content || "";
-    
-    const tags = note.tags || [];
-    if (tagsEl) {
-      tagsEl.innerHTML = tags.length > 0 
-        ? tags.map(tag => `<span class="note-tag">#${tag}</span>`).join('')
-        : '<span style="color: #6c757d; font-style: italic;">No tags</span>';
-    }
-
-    // Add note date if available
-    const dateEl = document.getElementById('popup-note-date');
-    if (dateEl) {
-      const date = note.date || note.created_at;
-      dateEl.textContent = date ? formatPrettyDate(date) : '';
-    }
-
-    const popup = document.getElementById('note-preview-popup');
-    if (popup) {
-      popup.classList.remove('hidden');
-      console.log('Note preview popup opened');
-    } else {
-      console.error('Note preview popup not found!');
-    }
+  // === STATE MANAGEMENT ===
+  let state = {
+    notes: [],
+    notebooks: [],
+    tags: [],
+    currentNote: null,
+    currentNotebook: null,
+    currentView: 'all',
+    searchQuery: '',
+    sortBy: 'modified',
+    filterBy: 'all',
+    isFullscreen: false,
+    isPreview: false,
+    autoSaveTimeout: null
   };
 
-  window.showNotePreviewFromTag = function(note) {
-    // Close the collection notes popup first
-    const collectionPopup = document.getElementById('collection-notes-popup');
-    if (collectionPopup) {
-      collectionPopup.classList.add('hidden');
-    }
+  // === DOM ELEMENTS ===
+  const elements = {
+    // Sidebar
+    notebooksList: document.getElementById('notebooks-list'),
+    notebooksCount: document.getElementById('notebooks-count'),
+    tagsCloud: document.getElementById('tags-cloud'),
+    globalSearch: document.getElementById('global-search'),
+    searchFilters: document.getElementById('search-filters'),
+    sortBy: document.getElementById('sort-by'),
     
-    // Then show the note preview
-    const titleEl = document.getElementById('popup-note-title');
-    const contentEl = document.getElementById('popup-note-content');
-    const tagsEl = document.getElementById('popup-note-tags');
-
-    if (titleEl) titleEl.textContent = note.title || "(No Title)";
-    if (contentEl) contentEl.textContent = note.content || "";
+    // Notes Panel
+    currentViewTitle: document.getElementById('current-view-title'),
+    notesCount: document.getElementById('notes-count'),
+    notesListContainer: document.getElementById('notes-list-container'),
+    viewBtns: document.querySelectorAll('.view-btn'),
     
-    const tags = note.tags || [];
-    if (tagsEl) {
-      tagsEl.innerHTML = tags.length > 0 
-        ? tags.map(tag => `<span class="note-tag">#${tag}</span>`).join('')
-        : '<span style="color: #6c757d; font-style: italic;">No tags</span>';
-    }
-
-    // Add note date if available
-    const dateEl = document.getElementById('popup-note-date');
-    if (dateEl) {
-      const date = note.date || note.created_at;
-      dateEl.textContent = date ? formatPrettyDate(date) : '';
-    }
-
-    const popup = document.getElementById('note-preview-popup');
-    if (popup) {
-      popup.classList.remove('hidden');
-      console.log('Note preview popup opened from tag');
-    } else {
-      console.error('Note preview popup not found!');
-    }
-  };
-
-  window.showNotePreviewFromCollection = function(note) {
-    // Close the collection popup first
-    const collectionPopup = document.getElementById('collection-notes-popup');
-    if (collectionPopup) {
-      collectionPopup.classList.add('hidden');
-    }
+    // Editor
+    welcomeState: document.getElementById('welcome-state'),
+    noteEditor: document.getElementById('note-editor'),
+    noteTitle: document.getElementById('note-title'),
+    notePath: document.getElementById('note-path'),
+    editorDropdown: document.getElementById('editor-dropdown'),
     
-    // Then show the note preview
-    const titleEl = document.getElementById('popup-note-title');
-    const contentEl = document.getElementById('popup-note-content');
-    const tagsEl = document.getElementById('popup-note-tags');
-
-    if (titleEl) titleEl.textContent = note.title || "(No Title)";
-    if (contentEl) contentEl.textContent = note.content || "";
+    // Toolbar
+    fontFamily: document.getElementById('font-family'),
+    fontSize: document.getElementById('font-size'),
+    headingLevel: document.getElementById('heading-level'),
+    toolbarBtns: document.querySelectorAll('.toolbar-btn'),
     
-    const tags = note.tags || [];
-    if (tagsEl) {
-      tagsEl.innerHTML = tags.length > 0 
-        ? tags.map(tag => `<span class="note-tag">#${tag}</span>`).join('')
-        : '<span style="color: #6c757d; font-style: italic;">No tags</span>';
-    }
-
-    // Add note date if available
-    const dateEl = document.getElementById('popup-note-date');
-    if (dateEl) {
-      const date = note.date || note.created_at;
-      dateEl.textContent = date ? formatPrettyDate(date) : '';
-    }
-
-    const popup = document.getElementById('note-preview-popup');
-    if (popup) {
-      popup.classList.remove('hidden');
-      console.log('Note preview popup opened from collection');
-    } else {
-      console.error('Note preview popup not found!');
-    }
+    // Tags
+    tagsInput: document.getElementById('tags-input'),
+    currentTags: document.getElementById('current-tags'),
+    
+    // Content
+    noteContent: document.getElementById('note-content'),
+    
+    // Status Bar
+    lastSaved: document.getElementById('last-saved'),
+    wordCount: document.getElementById('word-count'),
+    charCount: document.getElementById('char-count'),
+    createdDate: document.getElementById('created-date'),
+    modifiedDate: document.getElementById('modified-date')
   };
 
   // === INITIALIZATION ===
-  loadNotes();
+  async function init() {
+    await loadData();
+    setupEventListeners();
+    setupToolbar();
+    setupAutoSave();
+    renderAll();
+    
+    // Show welcome state initially
+    showWelcomeState();
+  }
+
+  // === DATA MANAGEMENT ===
+  async function loadData() {
+    try {
+      // Load notes from backend
+      const notesResponse = await fetch('/notes');
+      if (notesResponse.ok) {
+        state.notes = await notesResponse.json();
+      }
+      
+      // Create default notebooks (stored in frontend state only for organization)
+      state.notebooks = [
+        { id: 'general', name: 'General', color: '#9b59b6', noteCount: 0 },
+        { id: 'personal', name: 'Personal', color: '#e74c3c', noteCount: 0 },
+        { id: 'work', name: 'Work', color: '#27ae60', noteCount: 0 }
+      ];
+      
+      // Extract tags from notes
+      state.tags = extractTags();
+      
+      updateCounts();
+    } catch (error) {
+      console.error('Failed to load data:', error);
+    }
+  }
+
+  function extractTags() {
+    const tagSet = new Set();
+    state.notes.forEach(note => {
+      if (note.tags && Array.isArray(note.tags)) {
+        note.tags.forEach(tag => tagSet.add(tag));
+      }
+    });
+    return Array.from(tagSet).map(tag => ({
+      name: tag,
+      count: state.notes.filter(note => note.tags && note.tags.includes(tag)).length
+    }));
+  }
+
+  function updateCounts() {
+    // Update notebook counts
+    state.notebooks.forEach(notebook => {
+      notebook.noteCount = state.notes.filter(note => 
+        note.notebook === notebook.id || (notebook.id === 'general' && !note.notebook)
+      ).length;
+    });
+    
+    // Update tag counts
+    state.tags.forEach(tag => {
+      tag.count = state.notes.filter(note => 
+        note.tags && note.tags.includes(tag.name)
+      ).length;
+    });
+  }
+
+  // === EVENT LISTENERS ===
+  function setupEventListeners() {
+    // Search
+    elements.globalSearch.addEventListener('input', handleSearch);
+    elements.sortBy.addEventListener('change', handleSortChange);
+    
+    // Filter tags
+    document.querySelectorAll('.filter-tag').forEach(btn => {
+      btn.addEventListener('click', handleFilterChange);
+    });
+    
+    // View toggle
+    elements.viewBtns.forEach(btn => {
+      btn.addEventListener('click', handleViewChange);
+    });
+    
+    // Note title
+    if (elements.noteTitle) {
+      elements.noteTitle.addEventListener('input', handleTitleChange);
+    }
+    
+    // Tags input
+    if (elements.tagsInput) {
+      elements.tagsInput.addEventListener('keydown', handleTagsInput);
+    }
+    
+    // Content editor
+    if (elements.noteContent) {
+      elements.noteContent.addEventListener('input', handleContentChange);
+      elements.noteContent.addEventListener('paste', handlePaste);
+    }
+    
+    // Font controls
+    if (elements.fontFamily) elements.fontFamily.addEventListener('change', handleFontFamilyChange);
+    if (elements.fontSize) elements.fontSize.addEventListener('change', handleFontSizeChange);
+    if (elements.headingLevel) elements.headingLevel.addEventListener('change', handleHeadingChange);
+    
+    // Keyboard shortcuts
+    document.addEventListener('keydown', handleKeyboardShortcuts);
+    
+    // Auto-save on page unload
+    window.addEventListener('beforeunload', saveCurrentNote);
+  }
+
+  function setupToolbar() {
+    elements.toolbarBtns.forEach(btn => {
+      const command = btn.getAttribute('data-command');
+      if (command) {
+        btn.addEventListener('click', () => executeCommand(command));
+      }
+    });
+  }
+
+  function setupAutoSave() {
+    // Auto-save every 30 seconds
+    setInterval(() => {
+      if (state.currentNote) {
+        saveCurrentNote();
+      }
+    }, 30000);
+  }
+
+  // === EVENT HANDLERS ===
+  function handleSearch(e) {
+    state.searchQuery = e.target.value.toLowerCase();
+    filterAndRenderNotes();
+  }
+
+  function handleSortChange(e) {
+    state.sortBy = e.target.value;
+    filterAndRenderNotes();
+  }
+
+  function handleFilterChange(e) {
+    document.querySelectorAll('.filter-tag').forEach(btn => btn.classList.remove('active'));
+    e.target.classList.add('active');
+    state.filterBy = e.target.getAttribute('data-filter');
+    filterAndRenderNotes();
+  }
+
+  function handleViewChange(e) {
+    elements.viewBtns.forEach(btn => btn.classList.remove('active'));
+    e.target.classList.add('active');
+    const view = e.target.getAttribute('data-view');
+    toggleNotesView(view);
+  }
+
+  function handleTitleChange(e) {
+    if (state.currentNote) {
+      state.currentNote.title = e.target.value || 'Untitled Note';
+      updateNotePath();
+      scheduleAutoSave();
+    }
+  }
+
+  function handleTagsInput(e) {
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault();
+      const tag = e.target.value.trim();
+      if (tag && state.currentNote) {
+        addTag(tag);
+        e.target.value = '';
+      }
+    } else if (e.key === 'Backspace' && e.target.value === '') {
+      removeLastTag();
+    }
+  }
+
+  function handleContentChange(e) {
+    if (state.currentNote) {
+      state.currentNote.content = e.target.innerHTML;
+      state.currentNote.modified_at = new Date().toISOString();
+      updateWordCount();
+      updateStatusBar();
+      scheduleAutoSave();
+    }
+  }
+
+  function handlePaste(e) {
+    e.preventDefault();
+    const text = e.clipboardData.getData('text/plain');
+    document.execCommand('insertText', false, text);
+  }
+
+  function handleFontFamilyChange(e) {
+    const fontFamily = e.target.value;
+    applyFontFamily(fontFamily);
+  }
+
+  function handleFontSizeChange(e) {
+    const fontSize = e.target.value + 'px';
+    document.execCommand('fontSize', false, '7');
+    const fontElements = document.querySelectorAll('font[size="7"]');
+    fontElements.forEach(el => {
+      el.removeAttribute('size');
+      el.style.fontSize = fontSize;
+    });
+  }
+
+  function handleHeadingChange(e) {
+    const heading = e.target.value;
+    if (heading) {
+      document.execCommand('formatBlock', false, heading);
+    } else {
+      document.execCommand('formatBlock', false, 'div');
+    }
+  }
+
+  function handleKeyboardShortcuts(e) {
+    if (e.ctrlKey || e.metaKey) {
+      switch (e.key) {
+        case 'b':
+          e.preventDefault();
+          executeCommand('bold');
+          break;
+        case 'i':
+          e.preventDefault();
+          executeCommand('italic');
+          break;
+        case 'u':
+          e.preventDefault();
+          executeCommand('underline');
+          break;
+        case 'k':
+          e.preventDefault();
+          insertLink();
+          break;
+        case 's':
+          e.preventDefault();
+          saveCurrentNote();
+          break;
+        case 'n':
+          e.preventDefault();
+          createNewNote();
+          break;
+      }
+    }
+    
+    if (e.key === 'F11') {
+      e.preventDefault();
+      toggleFullscreen();
+    }
+  }
+
+  // === RENDERING ===
+  function renderAll() {
+    renderNotebooks();
+    renderTags();
+    filterAndRenderNotes();
+  }
+
+  function renderNotebooks() {
+    if (!elements.notebooksList) return;
+    
+    elements.notebooksList.innerHTML = state.notebooks.map(notebook => `
+      <div class="notebook-item ${state.currentNotebook === notebook.id ? 'active' : ''}" 
+           onclick="selectNotebook('${notebook.id}')">
+        <div class="notebook-icon" style="background: ${notebook.color}"></div>
+        <div class="notebook-info">
+          <div class="notebook-name">${notebook.name}</div>
+          <div class="notebook-count">${notebook.noteCount} notes</div>
+        </div>
+      </div>
+    `).join('');
+    
+    if (elements.notebooksCount) {
+      elements.notebooksCount.textContent = state.notebooks.length;
+    }
+  }
+
+  function renderTags() {
+    if (!elements.tagsCloud) return;
+    
+    elements.tagsCloud.innerHTML = state.tags.map(tag => `
+      <span class="tag-item" onclick="filterByTag('${tag.name}')" title="${tag.count} notes">
+        ${tag.name}
+      </span>
+    `).join('');
+  }
+
+  function filterAndRenderNotes() {
+    let filteredNotes = [...state.notes];
+    
+    // Apply search filter
+    if (state.searchQuery) {
+      filteredNotes = filteredNotes.filter(note => 
+        note.title.toLowerCase().includes(state.searchQuery) ||
+        note.content.toLowerCase().includes(state.searchQuery) ||
+        (note.tags && note.tags.some(tag => tag.toLowerCase().includes(state.searchQuery)))
+      );
+    }
+    
+    // Apply category filter
+    switch (state.filterBy) {
+      case 'pinned':
+        filteredNotes = filteredNotes.filter(note => note.pinned);
+        break;
+      case 'recent':
+        const weekAgo = new Date();
+        weekAgo.setDate(weekAgo.getDate() - 7);
+        filteredNotes = filteredNotes.filter(note => 
+          new Date(note.modified_at || note.created_at) > weekAgo
+        );
+        break;
+      case 'archived':
+        filteredNotes = filteredNotes.filter(note => note.archived);
+        break;
+    }
+    
+    // Apply notebook filter
+    if (state.currentNotebook) {
+      filteredNotes = filteredNotes.filter(note => 
+        note.notebook === state.currentNotebook ||
+        (state.currentNotebook === 'general' && !note.notebook)
+      );
+    }
+    
+    // Sort notes
+    filteredNotes.sort((a, b) => {
+      switch (state.sortBy) {
+        case 'title':
+          return a.title.localeCompare(b.title);
+        case 'created':
+          return new Date(b.created_at) - new Date(a.created_at);
+        case 'size':
+          return (b.content?.length || 0) - (a.content?.length || 0);
+        case 'modified':
+        default:
+          return new Date(b.modified_at || b.created_at) - new Date(a.modified_at || a.created_at);
+      }
+    });
+    
+    renderNotesList(filteredNotes);
+  }
+
+  function renderNotesList(notes) {
+    if (!elements.notesListContainer) return;
+    
+    if (notes.length === 0) {
+      elements.notesListContainer.innerHTML = `
+        <div class="empty-state">
+          <p>No notes found</p>
+        </div>
+      `;
+      if (elements.notesCount) elements.notesCount.textContent = '0 notes';
+      return;
+    }
+    
+    const isGridView = document.querySelector('.view-btn[data-view="grid"]')?.classList.contains('active');
+    
+    elements.notesListContainer.innerHTML = notes.map(note => {
+      const preview = stripHtml(note.content || '').substring(0, 150);
+      const modifiedDate = formatDate(note.modified_at || note.created_at);
+      
+      return `
+        <div class="note-list-item ${state.currentNote?.id === note.id ? 'active' : ''} ${isGridView ? 'grid-view' : 'list-view'}" 
+             onclick="selectNote(${note.id})">
+          <div class="note-header">
+            <h4 class="note-title">${note.title || 'Untitled Note'}</h4>
+            <div class="note-actions">
+              ${note.pinned ? '<span class="pin-indicator">📌</span>' : ''}
+              <button class="note-menu-btn" onclick="event.stopPropagation(); toggleNoteMenu(${note.id})">⋯</button>
+            </div>
+          </div>
+          <p class="note-preview">${preview}${preview.length >= 150 ? '...' : ''}</p>
+          <div class="note-meta">
+            <span class="note-date">${modifiedDate}</span>
+            ${note.tags && note.tags.length > 0 ? 
+              `<div class="note-tags">${note.tags.slice(0, 3).map(tag => `<span class="tag">${tag}</span>`).join('')}</div>` : 
+              ''
+            }
+          </div>
+        </div>
+      `;
+    }).join('');
+    
+    if (elements.notesCount) {
+      elements.notesCount.textContent = `${notes.length} note${notes.length !== 1 ? 's' : ''}`;
+    }
+  }
+
+  // === NOTE MANAGEMENT ===
+  async function createNewNote() {
+    const note = {
+      title: 'Untitled Note',
+      content: '',
+      notebook: state.currentNotebook || 'general',
+      tags: [],
+      pinned: false,
+      created_at: new Date().toISOString(),
+      modified_at: new Date().toISOString()
+    };
+    
+    try {
+      const response = await fetch('/notes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(note)
+      });
+      
+      if (response.ok) {
+        const savedNote = await response.json();
+        // Add the ID from backend response
+        note.id = savedNote.id || savedNote.note_id;
+        state.notes.unshift(note);
+        selectNote(note.id);
+        updateCounts();
+        renderAll();
+        
+        // Focus on title input
+        setTimeout(() => {
+          if (elements.noteTitle) {
+            elements.noteTitle.focus();
+            elements.noteTitle.select();
+          }
+        }, 100);
+      }
+    } catch (error) {
+      console.error('Failed to create note:', error);
+    }
+  }
+
+  function selectNote(noteId) {
+    const note = state.notes.find(n => n.id === noteId);
+    if (!note) return;
+    
+    // Save current note before switching
+    if (state.currentNote) {
+      saveCurrentNote();
+    }
+    
+    state.currentNote = note;
+    showNoteEditor();
+    loadNoteIntoEditor(note);
+    updateActiveNoteInList();
+  }
+
+  function loadNoteIntoEditor(note) {
+    if (elements.noteTitle) {
+      elements.noteTitle.value = note.title || '';
+    }
+    
+    if (elements.noteContent) {
+      elements.noteContent.innerHTML = note.content || '';
+    }
+    
+    updateNotePath();
+    loadNoteTags(note);
+    updateStatusBar();
+    updateWordCount();
+  }
+
+  function updateNotePath() {
+    if (!elements.notePath || !state.currentNote) return;
+    
+    const notebook = state.notebooks.find(nb => nb.id === state.currentNote.notebook) || 
+                    state.notebooks.find(nb => nb.id === 'general');
+    const noteName = state.currentNote.title || 'Untitled Note';
+    
+    elements.notePath.innerHTML = `
+      <span class="notebook-name">${notebook.name}</span> / <span class="note-name">${noteName}</span>
+    `;
+  }
+
+  function loadNoteTags(note) {
+    if (!elements.currentTags) return;
+    
+    elements.currentTags.innerHTML = (note.tags || []).map(tag => `
+      <span class="current-tag">
+        ${tag}
+        <button onclick="removeTag('${tag}')" class="remove-tag">×</button>
+      </span>
+    `).join('');
+  }
+
+  async function saveCurrentNote() {
+    if (!state.currentNote) return;
+    
+    await saveNote(state.currentNote);
+    updateStatusBar();
+    if (elements.lastSaved) {
+      elements.lastSaved.textContent = 'Saved';
+    }
+  }
+
+  async function saveNote(note) {
+    if (!note.id) return; // Don't save notes without ID
+    
+    try {
+      const response = await fetch(`/notes/${note.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title: note.title,
+          content: note.content,
+          pinned: note.pinned || false,
+          tags: note.tags || [],
+          notebook: note.notebook || '',
+          modified_at: new Date().toISOString()
+        })
+      });
+      
+      if (response.ok) {
+        updateCounts();
+        // Update the note in local state
+        const noteIndex = state.notes.findIndex(n => n.id === note.id);
+        if (noteIndex !== -1) {
+          state.notes[noteIndex] = { ...note };
+        }
+        renderAll();
+      }
+    } catch (error) {
+      console.error('Failed to save note:', error);
+    }
+  }
+
+  function scheduleAutoSave() {
+    clearTimeout(state.autoSaveTimeout);
+    state.autoSaveTimeout = setTimeout(() => {
+      saveCurrentNote();
+    }, 2000);
+    
+    if (elements.lastSaved) {
+      elements.lastSaved.textContent = 'Saving...';
+    }
+  }
+
+  // === UI MANAGEMENT ===
+  function showWelcomeState() {
+    if (elements.welcomeState) elements.welcomeState.classList.remove('hidden');
+    if (elements.noteEditor) elements.noteEditor.classList.add('hidden');
+  }
+
+  function showNoteEditor() {
+    if (elements.welcomeState) elements.welcomeState.classList.add('hidden');
+    if (elements.noteEditor) elements.noteEditor.classList.remove('hidden');
+  }
+
+  function updateActiveNoteInList() {
+    document.querySelectorAll('.note-list-item').forEach(item => {
+      item.classList.remove('active');
+    });
+    
+    if (state.currentNote) {
+      const activeItem = document.querySelector(`[onclick="selectNote(${state.currentNote.id})"]`);
+      if (activeItem) {
+        activeItem.classList.add('active');
+      }
+    }
+  }
+
+  function updateWordCount() {
+    if (!elements.wordCount || !elements.charCount || !state.currentNote) return;
+    
+    const text = stripHtml(state.currentNote.content || '');
+    const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+    const chars = text.length;
+    
+    elements.wordCount.textContent = `${words} word${words !== 1 ? 's' : ''}`;
+    elements.charCount.textContent = `${chars} character${chars !== 1 ? 's' : ''}`;
+  }
+
+  function updateStatusBar() {
+    if (!state.currentNote) return;
+    
+    if (elements.createdDate) {
+      elements.createdDate.textContent = `Created ${formatDate(state.currentNote.created_at)}`;
+    }
+    
+    if (elements.modifiedDate) {
+      elements.modifiedDate.textContent = `Modified ${formatDate(state.currentNote.modified_at)}`;
+    }
+  }
+
+  // === TOOLBAR FUNCTIONS ===
+  function executeCommand(command) {
+    document.execCommand(command, false, null);
+    elements.noteContent.focus();
+    
+    // Update button states
+    updateToolbarStates();
+    
+    // Trigger content change
+    if (state.currentNote) {
+      handleContentChange({ target: elements.noteContent });
+    }
+  }
+
+  function updateToolbarStates() {
+    elements.toolbarBtns.forEach(btn => {
+      const command = btn.getAttribute('data-command');
+      if (command && document.queryCommandState(command)) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    });
+  }
+
+  function applyFontFamily(fontFamily) {
+    let fontFamilyValue;
+    switch (fontFamily) {
+      case 'serif':
+        fontFamilyValue = 'Georgia, serif';
+        break;
+      case 'mono':
+        fontFamilyValue = 'Monaco, Consolas, monospace';
+        break;
+      default:
+        fontFamilyValue = '-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif';
+    }
+    
+    if (elements.noteContent) {
+      elements.noteContent.style.fontFamily = fontFamilyValue;
+    }
+  }
+
+  // === TAG MANAGEMENT ===
+  function addTag(tagName) {
+    if (!state.currentNote || !tagName) return;
+    
+    if (!state.currentNote.tags) {
+      state.currentNote.tags = [];
+    }
+    
+    if (!state.currentNote.tags.includes(tagName)) {
+      state.currentNote.tags.push(tagName);
+      loadNoteTags(state.currentNote);
+      scheduleAutoSave();
+      
+      // Update tags state
+      state.tags = extractTags();
+      renderTags();
+    }
+  }
+
+  function removeTag(tagName) {
+    if (!state.currentNote || !state.currentNote.tags) return;
+    
+    state.currentNote.tags = state.currentNote.tags.filter(tag => tag !== tagName);
+    loadNoteTags(state.currentNote);
+    scheduleAutoSave();
+    
+    // Update tags state
+    state.tags = extractTags();
+    renderTags();
+  }
+
+  function removeLastTag() {
+    if (!state.currentNote || !state.currentNote.tags || state.currentNote.tags.length === 0) return;
+    
+    state.currentNote.tags.pop();
+    loadNoteTags(state.currentNote);
+    scheduleAutoSave();
+  }
+
+  // === UTILITY FUNCTIONS ===
+  function stripHtml(html) {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || '';
+  }
+
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffMs = now - date;
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    
+    if (diffDays === 0) {
+      return 'Today';
+    } else if (diffDays === 1) {
+      return 'Yesterday';
+    } else if (diffDays < 7) {
+      return `${diffDays} days ago`;
+    } else {
+      return date.toLocaleDateString();
+    }
+  }
+
+  // === GLOBAL FUNCTIONS (called from HTML) ===
+  window.createNewNote = createNewNote;
+  window.selectNote = selectNote;
+  window.togglePin = () => {
+    if (state.currentNote) {
+      state.currentNote.pinned = !state.currentNote.pinned;
+      scheduleAutoSave();
+      filterAndRenderNotes();
+    }
+  };
+  
+  window.deleteNote = async () => {
+    if (!state.currentNote || !confirm('Are you sure you want to delete this note?')) return;
+    
+    try {
+      const response = await fetch(`/notes/${state.currentNote.id}`, {
+        method: 'DELETE'
+      });
+      
+      if (response.ok) {
+        // Remove from local state
+        state.notes = state.notes.filter(note => note.id !== state.currentNote.id);
+        state.currentNote = null;
+        showWelcomeState();
+        updateCounts();
+        renderAll();
+      }
+    } catch (error) {
+      console.error('Failed to delete note:', error);
+      alert('Failed to delete note. Please try again.');
+    }
+  };
+
+  window.toggleSearchFilters = () => {
+    if (elements.searchFilters) {
+      elements.searchFilters.classList.toggle('hidden');
+    }
+  };
+
+  window.toggleEditorMenu = () => {
+    if (elements.editorDropdown) {
+      elements.editorDropdown.classList.toggle('hidden');
+    }
+  };
+
+  window.insertLink = () => {
+    const url = prompt('Enter URL:');
+    if (url) {
+      document.execCommand('createLink', false, url);
+    }
+  };
+
+  window.insertImage = () => {
+    const url = prompt('Enter image URL:');
+    if (url) {
+      document.execCommand('insertImage', false, url);
+    }
+  };
+
+  window.toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+  };
+
+  window.togglePreview = () => {
+    // Preview functionality would be implemented here
+    console.log('Preview mode toggle');
+  };
+
+  // Additional missing functions
+  window.selectNotebook = (notebookId) => {
+    state.currentNotebook = notebookId;
+    filterAndRenderNotes();
+    renderNotebooks();
+  };
+
+  window.filterByTag = (tagName) => {
+    elements.globalSearch.value = tagName;
+    state.searchQuery = tagName.toLowerCase();
+    filterAndRenderNotes();
+  };
+
+  window.createNewNotebook = () => {
+    const name = prompt('Enter notebook name:');
+    if (name && name.trim()) {
+      const colors = ['#9b59b6', '#e74c3c', '#27ae60', '#f39c12', '#3498db'];
+      const newNotebook = {
+        id: Date.now().toString(),
+        name: name.trim(),
+        color: colors[Math.floor(Math.random() * colors.length)],
+        noteCount: 0
+      };
+      state.notebooks.push(newNotebook);
+      renderNotebooks();
+    }
+  };
+
+  window.toggleSidebarView = () => {
+    // Toggle between list and compact view
+    console.log('Toggle sidebar view');
+  };
+
+  window.selectAllNotes = () => {
+    console.log('Select all notes');
+  };
+
+  window.exportSelected = () => {
+    console.log('Export selected notes');
+  };
+
+
+
+  window.manageTagsModal = () => {
+    showTagsManager();
+  };
+
+  function showTagsManager() {
+    const modal = document.getElementById('tagsModal');
+    const tagsList = document.getElementById('tags-manager-list');
+    const totalTagsCount = document.getElementById('total-tags-count');
+    const taggedNotesCount = document.getElementById('tagged-notes-count');
+    
+    if (!modal || !tagsList) return;
+    
+    // Update stats
+    const taggedNotes = state.notes.filter(note => note.tags && note.tags.length > 0);
+    totalTagsCount.textContent = state.tags.length;
+    taggedNotesCount.textContent = taggedNotes.length;
+    
+    // Render tags list
+    if (state.tags.length === 0) {
+      tagsList.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 20px;">No tags found. Create some notes with tags to manage them here.</p>';
+    } else {
+      tagsList.innerHTML = state.tags.map(tag => `
+        <div class="tag-manager-item">
+          <div class="tag-info">
+            <span class="tag-name">${tag.name}</span>
+            <span class="tag-count">${tag.count} note${tag.count !== 1 ? 's' : ''}</span>
+          </div>
+          <div class="tag-actions">
+            <button class="tag-action-btn" onclick="renameTag('${tag.name}')">Rename</button>
+            <button class="tag-action-btn delete" onclick="deleteTag('${tag.name}')">Delete</button>
+          </div>
+        </div>
+      `).join('');
+    }
+    
+    modal.classList.remove('hidden');
+  }
+
+  window.renameTag = async (oldName) => {
+    const newName = prompt(`Rename tag "${oldName}" to:`, oldName);
+    if (!newName || newName.trim() === '' || newName === oldName) return;
+    
+    const trimmedName = newName.trim();
+    
+    // Check if new name already exists
+    if (state.tags.some(tag => tag.name === trimmedName)) {
+      alert('A tag with that name already exists!');
+      return;
+    }
+    
+    // Update all notes with this tag
+    let updatedCount = 0;
+    for (const note of state.notes) {
+      if (note.tags && note.tags.includes(oldName)) {
+        note.tags = note.tags.map(tag => tag === oldName ? trimmedName : tag);
+        await saveNote(note);
+        updatedCount++;
+      }
+    }
+    
+    // Refresh tags and UI
+    state.tags = extractTags();
+    renderTags();
+    showTagsManager(); // Refresh the modal
+    
+    alert(`Renamed "${oldName}" to "${trimmedName}" in ${updatedCount} note${updatedCount !== 1 ? 's' : ''}.`);
+  };
+
+  window.deleteTag = async (tagName) => {
+    const tagInfo = state.tags.find(tag => tag.name === tagName);
+    if (!tagInfo) return;
+    
+    if (!confirm(`Delete tag "${tagName}"? This will remove it from ${tagInfo.count} note${tagInfo.count !== 1 ? 's' : ''}.`)) return;
+    
+    // Remove tag from all notes
+    let updatedCount = 0;
+    for (const note of state.notes) {
+      if (note.tags && note.tags.includes(tagName)) {
+        note.tags = note.tags.filter(tag => tag !== tagName);
+        await saveNote(note);
+        updatedCount++;
+      }
+    }
+    
+    // Refresh tags and UI
+    state.tags = extractTags();
+    renderTags();
+    showTagsManager(); // Refresh the modal
+    filterAndRenderNotes(); // Update notes list
+    
+    alert(`Deleted tag "${tagName}" from ${updatedCount} note${updatedCount !== 1 ? 's' : ''}.`);
+  };
+
+  window.cleanupUnusedTags = () => {
+    const unusedTags = state.tags.filter(tag => tag.count === 0);
+    
+    if (unusedTags.length === 0) {
+      alert('No unused tags found!');
+      return;
+    }
+    
+    if (!confirm(`Remove ${unusedTags.length} unused tag${unusedTags.length !== 1 ? 's' : ''}?`)) return;
+    
+    // Since tags are extracted from notes, unused tags are already not included
+    // This is more of a UI refresh
+    state.tags = extractTags();
+    renderTags();
+    showTagsManager();
+    
+    alert(`Cleaned up ${unusedTags.length} unused tag${unusedTags.length !== 1 ? 's' : ''}!`);
+  };
+
+  window.shareNote = () => {
+    if (state.currentNote) {
+      console.log('Share note:', state.currentNote.title);
+    }
+  };
+
+  window.showNoteInfo = () => {
+    if (state.currentNote) {
+      alert(`Note: ${state.currentNote.title}\nCreated: ${formatDate(state.currentNote.created_at)}\nModified: ${formatDate(state.currentNote.modified_at)}\nWords: ${stripHtml(state.currentNote.content || '').trim().split(/\s+/).length}`);
+    }
+  };
+
+  window.duplicateNote = () => {
+    if (state.currentNote) {
+      const duplicate = {
+        ...state.currentNote,
+        title: state.currentNote.title + ' (Copy)',
+        created_at: new Date().toISOString(),
+        modified_at: new Date().toISOString()
+      };
+      delete duplicate.id;
+      createNewNote();
+      // Set the duplicated content after creation
+      setTimeout(() => {
+        if (elements.noteTitle) elements.noteTitle.value = duplicate.title;
+        if (elements.noteContent) elements.noteContent.innerHTML = duplicate.content;
+        if (state.currentNote) {
+          state.currentNote.title = duplicate.title;
+          state.currentNote.content = duplicate.content;
+          state.currentNote.tags = [...duplicate.tags];
+        }
+      }, 200);
+    }
+  };
+
+  window.moveToNotebook = () => {
+    if (state.currentNote) {
+      const notebookNames = state.notebooks.map(nb => nb.name);
+      const choice = prompt(`Move to notebook:\n${notebookNames.map((name, i) => `${i + 1}. ${name}`).join('\n')}\n\nEnter number:`);
+      const index = parseInt(choice) - 1;
+      if (index >= 0 && index < state.notebooks.length) {
+        state.currentNote.notebook = state.notebooks[index].id;
+        updateNotePath();
+        saveCurrentNote();
+      }
+    }
+  };
+
+  window.exportNote = () => {
+    if (state.currentNote) {
+      const content = `# ${state.currentNote.title}\n\n${stripHtml(state.currentNote.content || '')}`;
+      const blob = new Blob([content], { type: 'text/markdown' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${state.currentNote.title || 'note'}.md`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  };
+
+  window.archiveNote = () => {
+    if (state.currentNote) {
+      state.currentNote.archived = !state.currentNote.archived;
+      saveCurrentNote();
+      filterAndRenderNotes();
+    }
+  };
+
+  window.insertTable = () => {
+    const rows = prompt('Number of rows:', '3');
+    const cols = prompt('Number of columns:', '3');
+    if (rows && cols) {
+      let table = '<table border="1"><tbody>';
+      for (let i = 0; i < parseInt(rows); i++) {
+        table += '<tr>';
+        for (let j = 0; j < parseInt(cols); j++) {
+          table += '<td>&nbsp;</td>';
+        }
+        table += '</tr>';
+      }
+      table += '</tbody></table>';
+      document.execCommand('insertHTML', false, table);
+    }
+  };
+
+  window.insertCodeBlock = () => {
+    const code = prompt('Enter code:');
+    if (code) {
+      document.execCommand('insertHTML', false, `<pre><code>${code}</code></pre>`);
+    }
+  };
+
+  window.insertCheckList = () => {
+    document.execCommand('insertHTML', false, '<input type="checkbox"> ');
+  };
+
+  // === INITIALIZE APP ===
+  init();
 });

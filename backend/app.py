@@ -351,6 +351,7 @@ def update_note(note_id):
             note["title"] = updated.get("title", note["title"])
             note["content"] = updated.get("content", note["content"])
             note["pinned"] = updated.get("pinned", note.get("pinned", False))
+            note["modified_at"] = updated.get("modified_at", note.get("modified_at", ""))
             note["tags"] = updated.get("tags", note.get("tags", []))
             note["notebook"] = updated.get("notebook", note.get("notebook", ""))
             save_json(NOTE_FILE, notes)
