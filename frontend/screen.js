@@ -8,7 +8,7 @@ window.addEventListener('DOMContentLoaded', () => {
   } else {
     sessionStorage.setItem('splashShown', 'true');
 
-    const animationDuration = 3000;
+    const animationDuration = 9000;
 
     if (aiBubble) aiBubble.classList.add('hidden'); // hide bubble during splash
 
