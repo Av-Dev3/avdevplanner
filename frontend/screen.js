@@ -1,5 +1,6 @@
 window.addEventListener('DOMContentLoaded', () => {
   const splash = document.getElementById('splash-screen');
+  const splashVideo = document.getElementById('splash-video');
   const aiBubble = document.getElementById('ai-chatbox-wrapper');
 
   if (sessionStorage.getItem('splashShown')) {
@@ -8,16 +9,32 @@ window.addEventListener('DOMContentLoaded', () => {
   } else {
     sessionStorage.setItem('splashShown', 'true');
 
-    const animationDuration = 9000;
-
     if (aiBubble) aiBubble.classList.add('hidden'); // hide bubble during splash
 
-    setTimeout(() => {
+    // Listen for when the video ends
+    splashVideo.addEventListener('ended', () => {
+      // Video finished playing, fade out the splash screen
       splash.classList.add('fade-out');
       setTimeout(() => {
         splash.remove();
         if (aiBubble) aiBubble.classList.remove('hidden'); // show bubble after splash
       }, 2000);
-    }, animationDuration);
+    });
+
+    // Fallback: if video doesn't play or takes too long, use timeout
+    const fallbackTimeout = setTimeout(() => {
+      if (splash.parentNode) { // Only if splash still exists
+        splash.classList.add('fade-out');
+        setTimeout(() => {
+          splash.remove();
+          if (aiBubble) aiBubble.classList.remove('hidden');
+        }, 2000);
+      }
+    }, 15000); // 15 second fallback
+
+    // Clear fallback if video ends normally
+    splashVideo.addEventListener('ended', () => {
+      clearTimeout(fallbackTimeout);
+    });
   }
 });
