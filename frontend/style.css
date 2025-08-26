@@ -69,7 +69,7 @@ body {
   }
 
   .nav-left .nav-flag {
-    height: 28px;
+    height: 40px;
     width: auto;
     white-space: nowrap;
     flex: 1;
@@ -78,7 +78,7 @@ body {
 }
 
 .nav-flag {
-  height: 30px;
+  height: 45px;
   width: auto;
   object-fit: contain;
   transition: all 0.3s ease;
@@ -439,7 +439,7 @@ header .main-nav li a[href="index.html"]:hover,
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    height: 25px;
+    height: 35px;
     width: auto;
   }
 
