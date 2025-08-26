@@ -78,7 +78,7 @@ body {
 }
 
 .nav-flag {
-  height: 45px;
+  height: 55px;
   width: auto;
   object-fit: contain;
   transition: all 0.3s ease;
