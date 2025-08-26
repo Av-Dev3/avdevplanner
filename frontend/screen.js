@@ -8,7 +8,7 @@ window.addEventListener('DOMContentLoaded', () => {
   } else {
     sessionStorage.setItem('splashShown', 'true');
 
-    const animationDuration = 9000; // 9 seconds for the splash image
+    const animationDuration = 7500; // 7.5 seconds for the splash image
 
     if (aiBubble) aiBubble.classList.add('hidden'); // hide bubble during splash
 
