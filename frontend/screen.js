@@ -1,6 +1,5 @@
 window.addEventListener('DOMContentLoaded', () => {
   const splash = document.getElementById('splash-screen');
-  const splashVideo = document.getElementById('splash-video');
   const aiBubble = document.getElementById('ai-chatbox-wrapper');
 
   if (sessionStorage.getItem('splashShown')) {
@@ -9,14 +8,9 @@ window.addEventListener('DOMContentLoaded', () => {
   } else {
     sessionStorage.setItem('splashShown', 'true');
 
-    const animationDuration = 5000; // 5 seconds for the splash video
+    const animationDuration = 5000; // 5 seconds for the splash image
 
     if (aiBubble) aiBubble.classList.add('hidden'); // hide bubble during splash
-
-    // Ensure video starts playing
-    if (splashVideo) {
-      splashVideo.play().catch(e => console.log('Video autoplay failed:', e));
-    }
 
     setTimeout(() => {
       splash.classList.add('fade-out');
